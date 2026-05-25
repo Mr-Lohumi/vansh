@@ -5,27 +5,27 @@
 
 /* ── VARIABLES ── */
 :root {
-  /* Backgrounds: White */
-  --bg: #f5f6f8;
+  /* Backgrounds: Premium White & Cream */
+  --bg: #fcfbfa;
   --bg-card: #ffffff;
-  --bg-elevated: #fafafa;
-  --bg-hover: rgba(171, 35, 48, 0.04);
+  --bg-elevated: #fbf9f6;
+  --bg-hover: rgba(171, 35, 48, 0.05);
   
   /* Borders */
-  --border: #e8e8e8;
-  --border-light: #f2f2f2;
+  --border: #e2dcd5;
+  --border-light: #f5f2ed;
 
-  /* Text: Charcoal */
-  --text: #111111;
-  --text-secondary: #444444;
-  --text-muted: #888888;
+  /* Text: Charcoal & Deep Red */
+  --text: #1d1b18;
+  --text-secondary: #4a453f;
+  --text-muted: #8e857b;
 
-  /* Accents: Royal Red & Shiny Gold */
-  --royal-red: #ab2330;
-  --royal-red-dim: rgba(171, 35, 48, 0.1);
+  /* Brand Theme: Royal Red & Champagne Gold */
+  --royal-red: #AB2330;
+  --royal-red-dim: rgba(171, 35, 48, 0.08);
   --royal-red-glow: rgba(171, 35, 48, 0.2);
 
-  --gold: #d4af37; /* Shimmering Champagne Gold */
+  --gold: #d4af37; /* Champagne Gold secondary accent */
   --gold-dim: rgba(212, 175, 55, 0.1);
   --gold-border: rgba(212, 175, 55, 0.4);
   --gold-glow: rgba(212, 175, 55, 0.25);

@@ -43,16 +43,10 @@ function isLoggedIn() {
 }
 
 /**
- * Loads current database directly from localStorage safely
+ * Loads current database directly from localStorage safely (with self-healing auto-repair)
  */
 function getActiveDatabase() {
-  try {
-    const saved = localStorage.getItem(DATABASE_KEY);
-    if (saved) return JSON.parse(saved);
-  } catch(e) {}
-  
-  // Return a minimal seed array if local storage is blank
-  return [
+  const seed = [
     { id:"P1", firstName:"Rajesh", lastName:"Sharma", gender:"M", age:75, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:[], spouse:"P14", nativePlace:"Uttarakhand", verified:true, gen:0, mobile:"9999999999", password:"vansh2025" },
     { id:"P14", firstName:"Savitri", lastName:"Sharma", gender:"F", age:73, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:[], spouse:"P1", nativePlace:"Uttarakhand", verified:true, gen:0, deceased:true, mobile:"", password:"" },
     { id:"P12", firstName:"Ram", lastName:"Prasad", gender:"M", age:76, caste:"Brahmin", subCaste:"Pandit", gotra:"Vashishta", parents:[], spouse:"P13", nativePlace:"Delhi", verified:true, gen:0, mobile:"", password:"" },
@@ -68,6 +62,21 @@ function getActiveDatabase() {
     { id:"P7", firstName:"Rahul", lastName:"Sharma", gender:"M", age:22, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P3","P4"], spouse:null, nativePlace:"Uttarakhand", verified:true, gen:2, mobile:"", password:"" },
     { id:"P8", firstName:"Aman", lastName:"Sharma", gender:"M", age:22, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P3","P4"], spouse:null, nativePlace:"Uttarakhand", verified:true, gen:2, mobile:"", password:"" }
   ];
+
+  try {
+    const saved = localStorage.getItem(DATABASE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Auto-repair if array is empty or corrupt
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed.some(m => m.id === 'P3')) {
+        return parsed;
+      }
+    }
+  } catch(e) {}
+  
+  // Save seed to repair local state
+  localStorage.setItem(DATABASE_KEY, JSON.stringify(seed));
+  return seed;
 }
 
 /**

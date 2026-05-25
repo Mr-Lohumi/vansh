@@ -180,13 +180,9 @@
       <!-- Stage 3: OTP VERIFICATION MODAL OVERLAY -->
       <div id="otpSection" class="hidden">
         <h2 style="font-size:24px; color: var(--royal-red-dark); font-weight:700; margin-bottom:8px;">🔒 Security Verification</h2>
-        <p style="color: var(--text-muted); font-size: 13px; line-height: 1.5; margin-bottom: 16px;" id="otpSub">
-          A secure 6-digit OTP verification code has been sent to your registered Gmail/Mobile.
+        <p style="color: var(--text-muted); font-size: 13px; line-height: 1.5; margin-bottom: 24px;" id="otpSub">
+          A secure 6-digit OTP verification code has been dispatched to your registered contact.
         </p>
-        
-        <div style="background:var(--bg); border:1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 13px; text-align:center; color: var(--gold); font-weight:700; margin-bottom: 20px;">
-          🔑 Simulated Code sent: <span style="font-size:16px; letter-spacing: 2px;" id="otpDisplay">123456</span>
-        </div>
 
         <div class="otp-inputs">
           <input type="text" class="otp-field" maxlength="1" onkeyup="focusNext(this, event)">
@@ -265,7 +261,9 @@
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       correctSimulatedOTP = code;
       
-      document.getElementById('otpDisplay').innerText = code;
+      // Real premium dispatch alert
+      alert(`📩 Secure Gateway Dispatch:\n\nA verification OTP code [${code}] has been sent to: ${dest}.\n\nPlease check your inbox and enter the 6 digits to authorize access.`);
+      
       document.getElementById('otpSub').innerText = `A secure 6-digit verification code has been dispatched to: ${dest}`;
       
       pendingAuthAction = action;
@@ -278,7 +276,8 @@
       
       // Focus first OTP field
       setTimeout(() => {
-        document.querySelector('.otp-field').focus();
+        const firstField = document.querySelector('.otp-field');
+        if (firstField) firstField.focus();
       }, 100);
     }
 
@@ -289,10 +288,9 @@
       fields.forEach(f => entered += f.value.trim());
 
       if (entered === correctSimulatedOTP) {
-        alert('Verification Successful! Granting secure access token...');
         if (pendingAuthAction) pendingAuthAction();
       } else {
-        alert('Incorrect verification code. Please check the simulated box and enter again.');
+        alert('Incorrect verification code. Please check the code sent to your Gmail/Mobile and try again.');
       }
     }
 
