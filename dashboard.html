@@ -232,7 +232,7 @@
         <div style="font-size:13px; font-weight:600; color:var(--text-muted); margin-bottom:8px;">@${authMember.username || 'user'}</div>
         <div style="font-size:14px; color:var(--text-secondary); margin-bottom:16px;">${getCasteLine(authMember)} · ${authMember.gotra} Gotra</div>
         
-        <div style="text-align:center; margin-bottom:24px; padding: 16px; background:var(--bg); border-radius:8px; width:100%; border:1px solid var(--border-light)">
+        <div style="text-align:center; margin-bottom:16px; padding: 16px; background:var(--bg); border-radius:8px; width:100%; border:1px solid var(--border-light)">
           <div style="font-size:12px; font-weight:600; font-family:'Cinzel',serif; letter-spacing:2px; color:var(--text-muted); margin-bottom:4px">
             ${authMember.age} YRS · ${authMember.gender === 'M' ? 'MALE' : 'FEMALE'}
           </div>
@@ -242,6 +242,25 @@
           <div style="font-size:12px; color:var(--gold); font-weight:700; text-transform:uppercase; letter-spacing:2px">
             ${authMember.spouse ? 'Married' : 'Single'}
           </div>
+        </div>
+        
+        <div style="width: 100%; text-align: left; font-size: 13px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px;">
+          ${authMember.location ? `<div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-light); padding-bottom:4px;">
+            <span style="color:var(--text-muted); font-weight:600;">Location:</span> <span style="color:var(--text); font-weight:600;">${authMember.location}</span>
+          </div>` : ''}
+          ${authMember.education ? `<div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-light); padding-bottom:4px;">
+            <span style="color:var(--text-muted); font-weight:600;">Education:</span> <span style="color:var(--text); font-weight:600; text-align:right;">${authMember.education}</span>
+          </div>` : ''}
+          ${authMember.company ? `<div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-light); padding-bottom:4px;">
+            <span style="color:var(--text-muted); font-weight:600;">Organization:</span> <span style="color:var(--text); font-weight:600; text-align:right;">${authMember.company} ${authMember.sector ? '('+authMember.sector+')' : ''}</span>
+          </div>` : ''}
+          ${authMember.manglik ? `<div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-light); padding-bottom:4px;">
+            <span style="color:var(--text-muted); font-weight:600;">Manglik:</span> <span style="color:var(--royal-red); font-weight:700; text-align:right;">${authMember.manglik}</span>
+          </div>` : ''}
+          ${authMember.diet ? `<div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-light); padding-bottom:4px;">
+            <span style="color:var(--text-muted); font-weight:600;">Diet:</span> <span style="color:var(--text); font-weight:600; text-align:right;">${authMember.diet}</span>
+          </div>` : ''}
+          ${authMember.bio ? `<div style="margin-top: 8px; font-style: italic; color: var(--text-secondary); line-height: 1.4; text-align: center;">"${authMember.bio}"</div>` : ''}
         </div>
         
         <div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid var(--border-light); padding-bottom:20px; margin-bottom:20px">
