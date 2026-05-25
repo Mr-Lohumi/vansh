@@ -7,26 +7,46 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css?v=3">
   <style>
-    .hero-card {
-      background: linear-gradient(135deg, #64121a 0%, #AB2330 100%);
-      color: #ffffff;
-      border: 1px solid rgba(212, 175, 55, 0.3); border-radius: var(--radius);
-      padding: 40px; margin-bottom: 32px; display: flex; align-items: center; gap: 32px;
-      box-shadow: 0 10px 30px rgba(171, 35, 48, 0.2);
+    body {
+      background-color: #2b060d; /* Deep rich maroon */
+      background-image: 
+        radial-gradient(circle at top right, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.15) 0%, transparent 40%);
+      color: #fdfaf0;
     }
-    .hero-avatar { width: 120px; height: 120px; font-size: 32px; border: 4px solid #AB2330; box-shadow: 0 0 0 2px var(--gold); border-radius: 50%; }
-    .hero-name { font-size: 32px; font-weight: 700; font-family: 'Cinzel', serif; display: flex; align-items: center; gap: 12px; margin-bottom: 6px; color: #ffffff; }
-    .hero-meta { font-size: 14px; color: rgba(255, 255, 255, 0.85); font-weight: 500;}
-    .hero-bio { font-size: 15px; color: rgba(255, 255, 255, 0.75); margin-top: 16px; line-height: 1.6; max-width: 700px; }
+    .main-area { background: transparent; }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(74, 14, 27, 0.95), rgba(43, 6, 13, 0.95));
+      color: #ffffff;
+      border: 2px solid var(--gold); border-radius: 12px;
+      padding: 40px; margin-bottom: 32px; display: flex; align-items: center; gap: 32px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 0 30px rgba(212,175,55,0.1);
+      position: relative; overflow: hidden;
+    }
+    
+    /* Decorative mandala corner */
+    .hero-card::before {
+      content: ''; position: absolute; top: -50px; left: -50px; width: 150px; height: 150px;
+      background: radial-gradient(circle, transparent 30%, var(--gold) 31%, var(--gold) 33%, transparent 34%, transparent 45%, var(--gold) 46%, var(--gold) 48%, transparent 49%);
+      opacity: 0.2; transform: rotate(45deg);
+    }
+
+    .hero-avatar { width: 130px; height: 130px; font-size: 36px; border: 3px solid #2b060d; box-shadow: 0 0 0 3px var(--gold), 0 0 20px rgba(212,175,55,0.5); border-radius: 50%; z-index: 1; }
+    .hero-name { font-size: 36px; font-weight: 800; font-family: 'Cinzel', serif; display: flex; align-items: center; gap: 12px; margin-bottom: 6px; color: var(--gold); text-shadow: 0 2px 10px rgba(212,175,55,0.3); text-transform: uppercase; letter-spacing: 2px; }
+    .hero-meta { font-size: 15px; color: #ffe89c; font-weight: 600; letter-spacing: 1px;}
+    .hero-bio { font-size: 15px; color: rgba(255, 255, 255, 0.8); margin-top: 16px; line-height: 1.6; max-width: 700px; }
     
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
-    .info-box { background: var(--bg-elevated); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 24px; }
-    .info-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
-    .info-val { font-size: 16px; font-weight: 600; font-family: 'Cinzel', serif; color: var(--text); }
+    .info-box { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; padding: 24px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+    .info-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #ffe89c; margin-bottom: 8px; font-weight: 700; }
+    .info-val { font-size: 18px; font-weight: 600; font-family: 'Cinzel', serif; color: #fff; }
     
-    .rel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-top: 24px; }
+    .rel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; margin-top: 24px; }
     .form-row { display: flex; gap: 16px; margin-bottom: 16px; }
     .form-row > div { flex: 1; }
+    
+    .section-header { border-bottom-color: rgba(212,175,55,0.2) !important; color: var(--gold) !important; }
   </style>
 </head>
 <body>
