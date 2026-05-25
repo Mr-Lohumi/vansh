@@ -25,11 +25,11 @@
     /* Stories / Announcements */
     .stories-container { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
     .stories-container::-webkit-scrollbar { display: none; }
-    .story-card { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0; transition: transform 0.2s; }
-    .story-card:hover { transform: scale(1.05); }
-    .story-ring { width: 72px; height: 72px; border-radius: 50%; padding: 3px; background: linear-gradient(135deg, var(--royal-red), #f9d976); box-shadow: 0 4px 12px var(--gold-glow); }
-    .story-img { width: 100%; height: 100%; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid var(--bg); }
-    .story-name { font-size: 11px; font-weight: 600; color: var(--text); text-transform: uppercase; letter-spacing: 1px; }
+    .story-card { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0; transition: transform 0.2s; width: 72px; }
+    .story-card:hover { transform: scale(1.02); }
+    .story-ring { width: 64px; height: 64px; border-radius: 50%; padding: 2px; background: #1877f2; }
+    .story-img { width: 100%; height: 100%; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid #ffffff; background-color: #f0f2f5; }
+    .story-name { font-size: 12px; font-weight: 500; color: #050505; max-width: 72px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; font-family: 'Inter', sans-serif;}
     
     /* Quick Actions Grid */
     .qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -86,24 +86,9 @@
           <!-- LEFT: The Feed -->
           <div class="feed-column">
             
-            <div class="section-header anim anim-delay-1" style="margin-bottom: 8px;">Royal Announcements</div>
-            <div class="stories-container anim anim-delay-1">
-              <div class="story-card" onclick="alert('Viewing Alliance Story...')">
-                <div class="story-ring"><div class="story-img" style="background-image:url('https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=400&q=80')"></div></div>
-                <div class="story-name">Priya & Deepak</div>
-              </div>
-              <div class="story-card" onclick="alert('Viewing Trust Milestone...')">
-                <div class="story-ring"><div class="story-img" style="background-image:url('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&q=80')"></div></div>
-                <div class="story-name">Legacy Trust</div>
-              </div>
-              <div class="story-card" onclick="alert('Viewing Event Reminder...')">
-                <div class="story-ring"><div class="story-img" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=80')"></div></div>
-                <div class="story-name">Anniversary</div>
-              </div>
-              <div class="story-card" style="opacity: 0.6">
-                <div class="story-ring" style="background: var(--border-light); box-shadow: none;"><div class="story-img" style="background: var(--bg-elevated); display:flex; align-items:center; justify-content:center; color: var(--royal-red); font-size: 24px;">+</div></div>
-                <div class="story-name">New Story</div>
-              </div>
+            <div class="section-header anim anim-delay-1" style="margin-bottom: 12px; font-size: 14px; font-family: 'Inter', sans-serif; font-weight: 600; color: #65676b; text-transform: none; letter-spacing: 0;">Announcements</div>
+            <div class="stories-container anim anim-delay-1" id="storiesContainer">
+              <!-- Rendered via JS -->
             </div>
             
             <div style="display: flex; gap: 12px; margin-bottom: 24px; overflow-x: auto; scrollbar-width: none;" class="anim anim-delay-2">
@@ -379,6 +364,36 @@
     }
 
     renderFeed();
+
+    // Dynamic Stories Rendering
+    const mockStories = [
+      { id: 1, name: "Priya & Deepak", img: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=400&q=80", type: "alliance" },
+      { id: 2, name: "Legacy Trust", img: "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&q=80", type: "trust" },
+      { id: 3, name: "Anniversary", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=80", type: "event" }
+    ];
+
+    function renderStories() {
+      const container = document.getElementById('storiesContainer');
+      if (!container) return;
+      
+      let html = `
+        <div class="story-card">
+          <div class="story-ring" style="background: #e0e0e0;"><div class="story-img" style="display:flex; align-items:center; justify-content:center; color: #1877f2; font-size: 28px; font-weight: 300;">+</div></div>
+          <div class="story-name">Add Story</div>
+        </div>
+      `;
+      
+      mockStories.forEach(story => {
+        html += `
+          <div class="story-card" onclick="alert('Viewing ${story.name}...')">
+            <div class="story-ring"><div class="story-img" style="background-image:url('${story.img}')"></div></div>
+            <div class="story-name">${story.name}</div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+    renderStories();
 
     function toggleRespect(postId) {
       const post = feedPosts.find(p => p.id === postId);
