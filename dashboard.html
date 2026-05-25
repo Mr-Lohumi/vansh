@@ -43,21 +43,21 @@
     .qa-icon { font-size: 24px; }
     .qa-lbl { font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-family: 'Inter', sans-serif; }
     
-    /* Enhanced Post Styling - Clean Royal Theme */
+    /* Enhanced Post Styling - Clean Flat Theme */
     .post-card { 
       background: #ffffff;
-      border: 1px solid #eaddcb; border-radius: 12px; padding: 24px; box-shadow: 0 4px 20px rgba(88, 24, 37, 0.05); 
-      color: #2c2520; position: relative; overflow: hidden; font-family: 'Inter', sans-serif;
+      border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); 
+      color: #050505; position: relative; overflow: hidden; font-family: 'Inter', sans-serif;
     }
-    .post-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-    .post-avatar { width: 52px; height: 52px; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid #581825; padding: 2px; }
-    .post-author { font-size: 18px; font-weight: 700; color: #581825; font-family: 'Cinzel', serif; letter-spacing: 1px; }
-    .post-time { font-size: 12px; font-weight: 600; color: #70655e; margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
-    .post-content { font-size: 15px; color: #4a3f35; line-height: 1.7; margin-bottom: 24px; }
-    .post-image { width: 100%; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eaddcb; }
-    .post-actions { display: flex; gap: 24px; border-top: 1px solid #eaddcb; padding-top: 20px; }
-    .post-action { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #70655e; cursor: pointer; transition: color 0.2s; font-family: 'Cinzel', serif; letter-spacing: 1px;}
-    .post-action:hover { color: #581825; }
+    .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .post-avatar { width: 48px; height: 48px; border-radius: 50%; background-size: cover; background-position: center; border: 1px solid #e0e0e0; background-color: #f0f2f5; }
+    .post-author { font-size: 16px; font-weight: 600; color: #050505; font-family: 'Inter', sans-serif; }
+    .post-time { font-size: 12px; font-weight: 500; color: #65676b; margin-top: 2px; }
+    .post-content { font-size: 15px; color: #050505; line-height: 1.5; margin-bottom: 16px; }
+    .post-image { width: 100%; border-radius: 8px; margin-bottom: 16px; border: 1px solid #e0e0e0; }
+    .post-actions { display: flex; gap: 24px; border-top: 1px solid #e0e0e0; padding-top: 12px; }
+    .post-action { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: #65676b; cursor: pointer; transition: background 0.2s; padding: 6px 12px; border-radius: 4px; font-family: 'Inter', sans-serif; }
+    .post-action:hover { background: #f0f2f5; }
     .post-action svg { width: 20px; height: 20px; }
     
     /* Widget Profile Centering Fix */
@@ -107,38 +107,38 @@
             </div>
             
             <div style="display: flex; gap: 12px; margin-bottom: 24px; overflow-x: auto; scrollbar-width: none;" class="anim anim-delay-2">
-              <button class="btn btn-outline" style="flex-shrink: 0; background: #ffffff; border: 1px solid #eaddcb; color: #581825; box-shadow: 0 2px 8px rgba(88, 24, 37, 0.05); font-weight: 600;" onclick="window.location.href='matchmaking.html'">
+              <button class="btn btn-outline" style="flex-shrink: 0; background: #ffffff; border: 1px solid #e0e0e0; color: #050505; font-weight: 600; border-radius: 8px;" onclick="window.location.href='matchmaking.html'">
                 👑 Request Alliance
               </button>
-              <button class="btn btn-outline" style="flex-shrink: 0; background: #ffffff; border: 1px solid #eaddcb; color: #581825; box-shadow: 0 2px 8px rgba(88, 24, 37, 0.05); font-weight: 600;" onclick="window.location.href='trust.html'">
+              <button class="btn btn-outline" style="flex-shrink: 0; background: #ffffff; border: 1px solid #e0e0e0; color: #050505; font-weight: 600; border-radius: 8px;" onclick="window.location.href='trust.html'">
                 🏛️ View Estate
               </button>
-              <button class="btn btn-outline" style="flex-shrink: 0; background: #ffffff; border: 1px solid #eaddcb; color: #581825; box-shadow: 0 2px 8px rgba(88, 24, 37, 0.05); font-weight: 600;" onclick="window.location.href='events.html'">
+              <button class="btn btn-outline" style="flex-shrink: 0; background: #ffffff; border: 1px solid #e0e0e0; color: #050505; font-weight: 600; border-radius: 8px;" onclick="window.location.href='events.html'">
                 💍 RSVP Events
               </button>
-              <button class="btn btn-outline" style="flex-shrink: 0; background: #ffffff; border: 1px solid #eaddcb; color: #581825; box-shadow: 0 2px 8px rgba(88, 24, 37, 0.05); font-weight: 600;" onclick="window.location.href='tree.html'">
+              <button class="btn btn-outline" style="flex-shrink: 0; background: #ffffff; border: 1px solid #e0e0e0; color: #050505; font-weight: 600; border-radius: 8px;" onclick="window.location.href='tree.html'">
                 ➕ Register Birth
               </button>
             </div>
 
             <!-- Create Post Box -->
-            <div class="post-card anim anim-delay-2" style="margin-bottom: 24px; padding: 20px;">
-              <div style="display: flex; gap: 16px; align-items: center;">
-                <div class="post-avatar" id="createPostAvatar" style="width: 44px; height: 44px; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#581825; font-size:16px;"></div>
-                <input type="text" id="postInput" placeholder="Share a royal announcement, upload a photo, or RSVP an event..." style="flex: 1; border: 1px solid #eaddcb; background: #f9f6f0; padding: 14px 20px; border-radius: 30px; font-family: inherit; font-size: 14px; outline: none; color: #2c2520;" onkeypress="if(event.key==='Enter') publishPost()">
+            <div class="post-card anim anim-delay-2" style="margin-bottom: 24px; padding: 16px;">
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <div class="post-avatar" id="createPostAvatar" style="width: 40px; height: 40px; display:flex; align-items:center; justify-content:center; font-weight:600; color:#050505; font-size:16px;"></div>
+                <input type="text" id="postInput" placeholder="What's on your mind?" style="flex: 1; border: none; background: #f0f2f5; padding: 10px 16px; border-radius: 20px; font-family: inherit; font-size: 15px; outline: none; color: #050505;" onkeypress="if(event.key==='Enter') publishPost()">
               </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; border-top: 1px solid #eaddcb; padding-top: 16px;">
-                <div style="display: flex; gap: 20px; padding-left: 8px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px solid #e0e0e0; padding-top: 12px;">
+                <div style="display: flex; gap: 16px; padding-left: 8px;">
                   <input type="file" id="postImageUpload" accept="image/*" style="display:none;" onchange="handlePostImageUpload(event)">
-                  <button onclick="document.getElementById('postImageUpload').click()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: #70655e; font-weight: 600; font-size: 13px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#581825'" onmouseout="this.style.color='#70655e'"><span style="font-size: 18px;">📸</span> Photo / Video</button>
-                  <button onclick="addFamilyEvent()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: #70655e; font-weight: 600; font-size: 13px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#581825'" onmouseout="this.style.color='#70655e'"><span style="font-size: 18px;">📅</span> Family Event</button>
-                  <button onclick="addMilestone()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: #70655e; font-weight: 600; font-size: 13px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#581825'" onmouseout="this.style.color='#70655e'"><span style="font-size: 18px;">📜</span> Milestone</button>
-                  <div id="postImagePreviewContainer" style="display:none; align-items:center; gap:8px; margin-left:auto; background:#f9f6f0; padding:4px 8px; border-radius:12px; font-size:11px; color:#581825; font-weight:600">
-                    <span id="postImagePreviewName">Image attached</span>
-                    <button onclick="removePostImage()" style="background:none;border:none;color:#ff4444;cursor:pointer;font-weight:bold;font-size:12px">✕</button>
+                  <button onclick="document.getElementById('postImageUpload').click()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: #65676b; font-weight: 600; font-size: 14px; cursor: pointer; padding: 6px 8px; border-radius: 4px;" onmouseover="this.style.background='#f0f2f5'" onmouseout="this.style.background='transparent'"><span style="font-size: 18px;">📸</span> Photo / Video</button>
+                  <button onclick="addFamilyEvent()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: #65676b; font-weight: 600; font-size: 14px; cursor: pointer; padding: 6px 8px; border-radius: 4px;" onmouseover="this.style.background='#f0f2f5'" onmouseout="this.style.background='transparent'"><span style="font-size: 18px;">📅</span> Event</button>
+                  <button onclick="addMilestone()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: #65676b; font-weight: 600; font-size: 14px; cursor: pointer; padding: 6px 8px; border-radius: 4px;" onmouseover="this.style.background='#f0f2f5'" onmouseout="this.style.background='transparent'"><span style="font-size: 18px;">📜</span> Milestone</button>
+                  <div id="postImagePreviewContainer" style="display:none; align-items:center; gap:8px; margin-left:auto; background:#f0f2f5; padding:4px 8px; border-radius:12px; font-size:12px; color:#050505; font-weight:500">
+                    <span id="postImagePreviewName">Attached</span>
+                    <button onclick="removePostImage()" style="background:none;border:none;color:#d93025;cursor:pointer;font-weight:bold;font-size:12px">✕</button>
                   </div>
                 </div>
-                <button class="btn" style="padding: 10px 24px; font-size: 13px; background:#581825; border:none; color:#ffffff; font-family:'Cinzel',serif; font-weight:700; letter-spacing:1px; border-radius: 6px;" onclick="publishPost()">Publish</button>
+                <button class="btn" style="padding: 8px 24px; font-size: 14px; background:#1877f2; border:none; color:#ffffff; font-family:'Inter',sans-serif; font-weight:600; border-radius: 6px;" onclick="publishPost()">Post</button>
               </div>
             </div>
             
@@ -356,19 +356,21 @@
             <div class="post-action" onclick="toggleCommentBox(${post.id})" style="cursor:pointer"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> Counsel ${post.comments && post.comments.length ? '(' + post.comments.length + ')' : ''}</div>
           </div>
           ${post.comments && post.comments.length ? `
-            <div style="margin-top: 12px; border-top: 1px solid #eaddcb; padding-top: 12px;">
+            <div style="margin-top: 12px; border-top: 1px solid #e0e0e0; padding-top: 12px;">
               ${post.comments.map(c => `
-                <div style="display:flex; gap:8px; margin-bottom:8px; font-size:13px;">
-                  <div style="font-weight:700; color:#581825; white-space:nowrap">${c.author}:</div>
-                  <div style="color:#4a3f35">${c.text}</div>
+                <div style="display:flex; gap:8px; margin-bottom:8px; font-size:14px; align-items: flex-start;">
+                  <div style="background: #f0f2f5; padding: 8px 12px; border-radius: 12px;">
+                    <div style="font-weight:600; color:#050505; margin-bottom: 2px;">${c.author}</div>
+                    <div style="color:#050505; line-height: 1.4;">${c.text}</div>
+                  </div>
                 </div>
               `).join('')}
             </div>
           ` : ''}
-          <div id="commentBox-${post.id}" style="display:none; margin-top: 12px; border-top: 1px solid #eaddcb; padding-top: 12px;">
-            <div style="display: flex; gap: 8px;">
-              <input type="text" id="commentInput-${post.id}" placeholder="Write a comment..." style="flex:1; padding:10px 16px; border-radius:30px; border:1px solid #eaddcb; background:#f9f6f0; font-size:13px; outline:none; color:#2c2520" onkeypress="if(event.key==='Enter') submitComment(${post.id})">
-              <button class="btn" style="padding: 10px 20px; font-size: 13px; background:#581825; border:none; color:#ffffff; font-family:'Cinzel',serif; font-weight:700; border-radius: 30px;" onclick="submitComment(${post.id})">Post</button>
+          <div id="commentBox-${post.id}" style="display:none; margin-top: 12px; border-top: 1px solid #e0e0e0; padding-top: 12px;">
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="text" id="commentInput-${post.id}" placeholder="Write a comment..." style="flex:1; padding:10px 16px; border-radius:20px; border:none; background:#f0f2f5; font-size:14px; outline:none; color:#050505; font-family: 'Inter', sans-serif;" onkeypress="if(event.key==='Enter') submitComment(${post.id})">
+              <button class="btn" style="padding: 8px 16px; font-size: 14px; background:transparent; border:none; color:#1877f2; font-family:'Inter',sans-serif; font-weight:600; cursor: pointer;" onclick="submitComment(${post.id})">Post</button>
             </div>
           </div>
         </div>
