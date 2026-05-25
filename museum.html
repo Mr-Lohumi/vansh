@@ -10,7 +10,10 @@
     /* Premium Indian Wedding Theme */
   <style>
     /* Exact Museum Image Replication */
-    .museum-body { background-color: #f6f3eb; }
+    .museum-body { 
+      background-color: #f6f3eb; 
+      background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+    }
     .main-area { background: transparent; }
 
     .museum-header-card { 
@@ -108,6 +111,15 @@
     .museum-title { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 800; color: #1a1a1a; margin-bottom: 6px; }
     .museum-year { font-size: 13px; font-weight: 700; color: #666; margin-bottom: 12px; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
     .museum-desc { font-size: 14px; color: #444; line-height: 1.6; }
+    
+    .btn-remove-art {
+      position: absolute; top: 12px; right: 12px; background: #fdfbf7;
+      color: #6e1b2f; border: 2px solid #6e1b2f; border-radius: 50%;
+      width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 10; opacity: 0; transition: 0.3s; font-size: 14px; font-weight: bold;
+    }
+    .museum-frame:hover .btn-remove-art { opacity: 1; }
+    .btn-remove-art:hover { background: #6e1b2f; color: #d4c297; transform: scale(1.1); }
 
     /* Modal Styles */
     .modal-overlay {
@@ -262,8 +274,9 @@
         return;
       }
 
-      grid.innerHTML = artifacts.map(art => `
+      grid.innerHTML = artifacts.map((art, idx) => `
         <div class="museum-frame">
+          <button class="btn-remove-art" onclick="deleteArtifact(${idx})" title="Remove Artifact">✕</button>
           <div class="frame-loop loop-tl"></div>
           <div class="frame-loop loop-tr"></div>
           <div class="frame-loop loop-bl"></div>
@@ -280,6 +293,14 @@
           </div>
         </div>
       `).join('');
+    }
+
+    function deleteArtifact(index) {
+      if(!confirm("Are you sure you want to permanently remove this artifact from the Royal Collection?")) return;
+      const artifacts = loadMuseum();
+      artifacts.splice(index, 1);
+      localStorage.setItem(MUSEUM_KEY, JSON.stringify(artifacts));
+      renderMuseum();
     }
 
     function openUploadModal() {
