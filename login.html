@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vansh (वंश) — Authentication</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Vansh (वंश) — Dynasty Gateway</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --royal-red: #AB2330;
@@ -16,11 +16,11 @@
       --text: #111111; --text-muted: #888888;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; overflow: hidden; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; overflow-x: hidden; }
     h1, h2, .brand { font-family: 'Cinzel', serif; }
     
     .split-left { flex: 1.2; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle at center, var(--royal-red) 0%, var(--royal-red-dark) 100%); position: relative; border-right: 1px solid var(--border); color: #fff;}
-    .split-right { flex: 1; display: flex; justify-content: center; align-items: center; }
+    .split-right { flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 20px; overflow-y: auto; }
 
     .brand-content { text-align: center; z-index: 10; }
     .brand { font-size: 80px; font-weight: 800; letter-spacing: 2px; margin-bottom: 16px; color: #fff; }
@@ -30,21 +30,27 @@
     .motif { position: absolute; width: 600px; height: 600px; opacity: 0.1; color: var(--gold); animation: spin 60s linear infinite;}
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
-    .login-card { background: var(--bg-card); padding: 48px; border-radius: 24px; border: 1px solid var(--border); width: 100%; max-width: 440px; box-shadow: 0 20px 60px rgba(0,0,0,0.05); }
+    .login-card { background: var(--bg-card); padding: 40px; border-radius: 24px; border: 1px solid var(--border); width: 100%; max-width: 460px; box-shadow: 0 20px 60px rgba(0,0,0,0.05); }
     
-    .login-header h2 { font-size: 32px; font-weight: 700; margin-bottom: 12px; color: var(--royal-red-dark); }
-    .login-header p { color: var(--text-muted); font-size: 14px; margin-bottom: 32px; }
-
-    .form-group { margin-bottom: 24px; }
-    .form-label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 8px; }
-    .form-input { width: 100%; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-family: inherit; font-size: 15px; transition: all 0.3s ease; }
+    .tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 28px; gap: 24px; }
+    .tab { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: var(--text-muted); padding-bottom: 10px; cursor: pointer; transition: all 0.3s; position: relative; border: none; background: none; }
+    .tab.active { color: var(--royal-red-dark); }
+    .tab.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px; background: var(--royal-red); }
+    
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 8px; }
+    .form-input { width: 100%; padding: 14px 18px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: inherit; font-size: 14px; transition: all 0.3s ease; }
     .form-input:focus { outline: none; border-color: var(--royal-red); box-shadow: 0 0 0 3px rgba(171, 35, 48, 0.1); }
     
-    .btn-gold { width: 100%; padding: 18px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: all 0.3s ease; display: inline-block; text-align: center; background: linear-gradient(135deg, #c5a017, #f9df8a, #c5a017); color: var(--royal-red-dark); border: none; font-family: 'Cinzel', serif; letter-spacing: 1px; box-shadow: 0 4px 14px var(--gold-glow); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .btn-gold { width: 100%; padding: 16px; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.3s ease; display: inline-block; text-align: center; background: linear-gradient(135deg, #c5a017, #f9df8a, #c5a017); color: var(--royal-red-dark); border: none; font-family: 'Cinzel', serif; letter-spacing: 1px; box-shadow: 0 4px 14px var(--gold-glow); }
     .btn-gold:hover { box-shadow: 0 10px 30px var(--gold-glow); transform: translateY(-2px); filter: brightness(1.1); }
     
-    .demo-link { display: block; text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 14px; cursor: pointer; border: none; background: none; font-family: inherit; width: 100%; text-decoration: underline; }
+    .demo-link { display: block; text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 13px; cursor: pointer; border: none; background: none; font-family: inherit; width: 100%; text-decoration: underline; }
     .demo-link:hover { color: var(--royal-red); }
+
+    .hidden { display: none; }
 
     @media (max-width: 900px) { .split-left { display: none; } .login-card { margin: 20px; } }
   </style>
@@ -62,78 +68,174 @@
   </div>
 
   <div class="split-right">
-    <div class="login-card">
-      <div class="login-header">
-        <h2>Welcome Back</h2>
-        <p>Sign in to manage your lineage and connect with your family network.</p>
+    <div class="login-card animate-fade">
+      
+      <!-- Premium Authentication Tabs -->
+      <div class="tabs">
+        <button class="tab active" id="tabSignIn" onclick="switchTab('signin')">Sign In</button>
+        <button class="tab" id="tabSignUp" onclick="switchTab('signup')">Sign Up</button>
       </div>
-      <form id="loginForm">
+
+      <!-- Form 1: SIGN IN -->
+      <form id="signInForm">
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px; line-height: 1.5;">Enter either your registered Member Name or your Mobile Number to access your family dashboard.</p>
         <div class="form-group">
-          <label class="form-label">Member Name</label>
-          <input type="text" class="form-input" value="Anand Sharma" required>
+          <label class="form-label">Name or Mobile Number</label>
+          <input type="text" id="loginKey" class="form-input" placeholder="e.g. Anand Sharma or 9876543210" required>
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
-          <input type="password" class="form-input" value="vansh2025" required>
+          <input type="password" id="loginPassword" class="form-input" placeholder="Enter password (default: vansh2025)" required>
         </div>
-        <button type="submit" class="btn-gold">Sign In</button>
+        <button type="submit" class="btn-gold" style="margin-top: 12px;">Enter Dynasty Dashboard</button>
+        <button type="button" class="demo-link" onclick="handleDemoAccess()">⚡ Try Instant Demo Access (Anand)</button>
       </form>
-      <button type="button" class="demo-link" onclick="handleDemo()">Try Demo Access (Anand)</button>
+
+      <!-- Form 2: SIGN UP -->
+      <form id="signUpForm" class="hidden">
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px; line-height: 1.5;">Register yourself directly into the family lineage book. All details immediately integrate into the tree.</p>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" id="regFirst" class="form-input" placeholder="e.g. Priya" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" id="regLast" class="form-input" placeholder="e.g. Sharma" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Mobile Number</label>
+          <input type="tel" id="regMobile" class="form-input" placeholder="e.g. 9876543210" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Create Password</label>
+          <input type="password" id="regPassword" class="form-input" placeholder="Create your login password" required>
+        </div>
+
+        <div style="border-top: 1px dashed var(--border); padding-top: 16px; margin-top: 16px; margin-bottom: 16px;">
+          <h4 style="font-family:'Cinzel',serif; font-size: 12px; color: var(--royal-red); margin-bottom: 12px; letter-spacing: 1px;">Dynasty Profile Details</h4>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Gender</label>
+              <select id="regGender" class="form-input" style="padding: 12px;">
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Age</label>
+              <input type="number" id="regAge" class="form-input" placeholder="Yrs" value="25" min="1" max="120">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Gotra</label>
+              <input type="text" id="regGotra" class="form-input" placeholder="e.g. Kashyap" value="Kashyap">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Caste / Tribe</label>
+              <input type="text" id="regCaste" class="form-input" placeholder="e.g. Brahmin" value="Brahmin">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Native Place (State / City)</label>
+            <input type="text" id="regNative" class="form-input" placeholder="e.g. Uttarakhand or Delhi">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-gold">Create Dynasty Profile & Enter</button>
+      </form>
+
     </div>
   </div>
 
   <script src="js/shared-auth.js"></script>
   <script>
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const nameInput = e.target.querySelector('input[type="text"]').value.trim();
+    // Tab Switcher
+    function switchTab(tabType) {
+      const tabSignIn = document.getElementById('tabSignIn');
+      const tabSignUp = document.getElementById('tabSignUp');
+      const signInForm = document.getElementById('signInForm');
+      const signUpForm = document.getElementById('signUpForm');
       
-      // Attempt to load current active family data
-      let members = [];
-      try {
-        const saved = localStorage.getItem('vansh_family_data_v2');
-        if (saved) members = JSON.parse(saved);
-      } catch(err) {}
-      
-      if (!members || members.length === 0) {
-        // Safe fallback if local storage is blank
-        login('P3', 'Anand Sharma');
-        window.location.href = 'dashboard.html';
-        return;
+      if (tabType === 'signin') {
+        tabSignIn.classList.add('active');
+        tabSignUp.classList.remove('active');
+        signInForm.classList.remove('hidden');
+        signUpForm.classList.add('hidden');
+      } else {
+        tabSignIn.classList.remove('active');
+        tabSignUp.classList.add('active');
+        signInForm.classList.add('hidden');
+        signUpForm.classList.remove('hidden');
       }
+    }
+
+    // SIGN IN SUBMIT HANDLER
+    document.getElementById('signInForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const loginKey = document.getElementById('loginKey').value;
+      const pass = document.getElementById('loginPassword').value;
       
-      // Try to find the member by Full Name or First Name
-      const matched = members.find(m => 
-        `${m.firstName} ${m.lastName}`.toLowerCase() === nameInput.toLowerCase() || 
-        m.firstName.toLowerCase() === nameInput.toLowerCase()
-      );
-      
-      if (matched) {
-        login(matched.id, `${matched.firstName} ${matched.lastName}`);
+      const res = authenticateUser(loginKey, pass);
+      if (res.success) {
         window.location.href = 'dashboard.html';
       } else {
-        alert(`"${nameInput}" not found in current family tree registry. Please enter a valid family member's name.`);
+        alert(res.message);
       }
     });
 
-    function handleDemo() {
-      // Load current active data to see if P3 still exists
-      let members = [];
-      try {
-        const saved = localStorage.getItem('vansh_family_data_v2');
-        if (saved) members = JSON.parse(saved);
-      } catch(err) {}
+    // SIGN UP SUBMIT HANDLER
+    document.getElementById('signUpForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const first = document.getElementById('regFirst').value;
+      const last = document.getElementById('regLast').value;
+      const mob = document.getElementById('regMobile').value;
+      const pass = document.getElementById('regPassword').value;
       
-      const p3 = members.find(m => m.id === 'P3');
-      if (p3) {
-        login('P3', `${p3.firstName} ${p3.lastName}`);
-      } else if (members.length > 0) {
-        // Fallback to first member if P3 was deleted/renamed
-        login(members[0].id, `${members[0].firstName} ${members[0].lastName}`);
+      const gender = document.getElementById('regGender').value;
+      const age = document.getElementById('regAge').value;
+      const gotra = document.getElementById('regGotra').value;
+      const caste = document.getElementById('regCaste').value;
+      const native = document.getElementById('regNative').value;
+
+      const res = registerUser(first, last, mob, pass, {
+        gender: gender,
+        age: age,
+        gotra: gotra,
+        caste: caste,
+        nativePlace: native
+      });
+
+      if (res.success) {
+        alert('Welcome to your Vansh Dynasty! Your profile is registered, auto-verified, and added to the family database.');
+        window.location.href = 'dashboard.html';
       } else {
-        login('P3', 'Anand Sharma');
+        alert(res.message);
       }
-      window.location.href = 'dashboard.html';
+    });
+
+    // Demo shortcut
+    function handleDemoAccess() {
+      const res = authenticateUser('9876543210', 'vansh2025');
+      if (res.success) {
+        window.location.href = 'dashboard.html';
+      } else {
+        // Fallback name search
+        const res2 = authenticateUser('Anand Sharma', 'vansh2025');
+        if (res2.success) {
+          window.location.href = 'dashboard.html';
+        } else {
+          alert('Demo user not found. Please register a new user using the Sign Up tab!');
+        }
+      }
     }
   </script>
 </body>
