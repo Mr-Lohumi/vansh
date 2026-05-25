@@ -25,11 +25,24 @@
     /* Stories / Announcements */
     .stories-container { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
     .stories-container::-webkit-scrollbar { display: none; }
-    .story-card { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0; transition: transform 0.2s; width: 72px; }
+    .story-card { 
+      width: 112px; height: 200px; border-radius: 12px; overflow: hidden; position: relative; 
+      cursor: pointer; flex-shrink: 0; transition: transform 0.2s; 
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e0e0e0;
+    }
     .story-card:hover { transform: scale(1.02); }
-    .story-ring { width: 64px; height: 64px; border-radius: 50%; padding: 2px; background: linear-gradient(135deg, #c5a059, #581825); }
-    .story-img { width: 100%; height: 100%; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid #ffffff; background-color: #f0f2f5; }
-    .story-name { font-size: 12px; font-weight: 500; color: #050505; max-width: 72px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; font-family: 'Inter', sans-serif;}
+    .story-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 0.3s; }
+    .story-card:hover .story-bg { transform: scale(1.05); }
+    .story-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%); }
+    .story-avatar { position: absolute; top: 12px; left: 12px; width: 32px; height: 32px; border-radius: 50%; border: 2px solid #c5a059; background-size: cover; background-position: center; z-index: 2; background-color: #581825; }
+    .story-name { position: absolute; bottom: 12px; left: 12px; right: 12px; font-size: 13px; font-weight: 600; color: #fff; font-family: 'Inter', sans-serif; z-index: 2; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+    
+    /* Add Story Card styling */
+    .add-story-card { background: #ffffff; display: flex; flex-direction: column; }
+    .add-story-img { height: 130px; background-size: cover; background-position: center; }
+    .add-story-bottom { height: 70px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 12px; }
+    .add-story-btn { position: absolute; top: -16px; width: 32px; height: 32px; border-radius: 50%; background: #581825; border: 3px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; font-weight: bold; }
+    .add-story-text { font-size: 13px; font-weight: 600; color: #050505; font-family: 'Inter', sans-serif; }
     
     /* Quick Actions Grid */
     .qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -377,16 +390,21 @@
       if (!container) return;
       
       let html = `
-        <div class="story-card" onclick="promptAddStory()">
-          <div class="story-ring" style="background: #e0e0e0;"><div class="story-img" style="display:flex; align-items:center; justify-content:center; color: #581825; font-size: 28px; font-weight: 300;">+</div></div>
-          <div class="story-name">Add Story</div>
+        <div class="story-card add-story-card" onclick="openAddStoryModal()">
+          <div class="add-story-img" style="background-image: url('https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=200&q=80');"></div>
+          <div class="add-story-bottom">
+            <div class="add-story-btn">+</div>
+            <div class="add-story-text">Create Story</div>
+          </div>
         </div>
       `;
       
       mockStories.forEach(story => {
         html += `
           <div class="story-card" onclick="viewStory('${story.name}', '${story.img}')">
-            <div class="story-ring"><div class="story-img" style="background-image:url('${story.img}')"></div></div>
+            <div class="story-bg" style="background-image:url('${story.img}')"></div>
+            <div class="story-overlay"></div>
+            <div class="story-avatar" style="background-image:url('${story.img}')"></div>
             <div class="story-name">${story.name}</div>
           </div>
         `;
@@ -395,10 +413,27 @@
     }
     renderStories();
 
-    function promptAddStory() {
-      const name = prompt("Enter a brief title for your story:");
-      if (!name) return;
-      const img = prompt("Enter an image URL for the story (leave blank for random):") || "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&q=80";
+    function openAddStoryModal() {
+      document.getElementById('addStoryModal').style.display = 'flex';
+    }
+
+    function closeAddStoryModal() {
+      document.getElementById('addStoryModal').style.display = 'none';
+      document.getElementById('newStoryTitle').value = '';
+    }
+
+    function submitNewStory() {
+      const name = document.getElementById('newStoryTitle').value.trim();
+      if (!name) {
+        alert("Please enter a title for your story.");
+        return;
+      }
+      const images = [
+        "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&q=80",
+        "https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=400&q=80",
+        "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=400&q=80"
+      ];
+      const img = images[Math.floor(Math.random() * images.length)];
       
       mockStories.unshift({
         id: Date.now(),
@@ -407,6 +442,7 @@
         type: "user"
       });
       renderStories();
+      closeAddStoryModal();
     }
 
     function viewStory(name, imgUrl) {
@@ -571,6 +607,18 @@
       <div style="position: absolute; top: 16px; left: 16px; color:#fff; font-size:18px; font-weight:600; text-shadow: 0 2px 4px rgba(0,0,0,0.5); z-index: 10;">${document.getElementById('storyViewerName')?.innerText || 'Story'}</div>
       <div id="storyViewerName" style="display:none;"></div>
       <div style="width:100%; aspect-ratio: 9/16; border-radius:16px; background-size:cover; background-position:center; box-shadow:0 10px 40px rgba(0,0,0,0.5);" id="storyViewerImage"></div>
+    </div>
+  </div>
+
+  <!-- Add Story Modal -->
+  <div id="addStoryModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9998; flex-direction:column; align-items:center; justify-content:center;">
+    <div style="background:#fff; width:90%; max-width:400px; border-radius:12px; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,0.3); position:relative;">
+      <h3 style="margin-top:0; margin-bottom:16px; font-family:'Inter', sans-serif; color:#050505;">Create Story</h3>
+      <input type="text" id="newStoryTitle" placeholder="Enter story text or title..." style="width:100%; padding:12px; border:1px solid #e0e0e0; border-radius:8px; font-family:'Inter', sans-serif; margin-bottom:20px; outline:none; font-size:14px;">
+      <div style="display:flex; justify-content:flex-end; gap:12px;">
+        <button onclick="closeAddStoryModal()" style="padding:10px 20px; background:#f0f2f5; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-family:'Inter', sans-serif;">Cancel</button>
+        <button onclick="submitNewStory()" style="padding:10px 20px; background:#1877f2; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-family:'Inter', sans-serif;">Share to Story</button>
+      </div>
     </div>
   </div>
 </body>
