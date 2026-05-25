@@ -120,8 +120,18 @@ function registerUser(firstName, lastName, email, password, details = {}) {
   }, 0);
   const nextId = 'P' + (maxId + 1);
 
+  // Generate unique username
+  const baseUsername = (firstName.trim() + "_" + lastName.trim()).toLowerCase().replace(/[^a-z0-9_]/g, '');
+  let newUsername = baseUsername || "user";
+  let counter = 1;
+  while (members.some(m => m.username === newUsername)) {
+    newUsername = baseUsername + counter;
+    counter++;
+  }
+
   const newMember = {
     id: nextId,
+    username: newUsername,
     firstName: firstName.trim(),
     lastName: lastName.trim(),
     email: cleanEmail,

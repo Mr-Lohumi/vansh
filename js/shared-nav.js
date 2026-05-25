@@ -100,38 +100,52 @@ function initNav(pageName) {
     
     const bellIcon = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>';
     
+    const invites = user ? getInvitesForUser(user.id) : [];
+    const bellBadge = invites.length > 0 ? `<div style="position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: var(--royal-red); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-card);">${invites.length}</div>` : '';
+    
+    let invitesHtml = '';
+    if (invites.length === 0) {
+      invitesHtml = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;">No pending requests</div>';
+    } else {
+      invites.forEach(inv => {
+        const fromM = getMemberById(inv.fromUserId);
+        const name = fromM ? getFullName(fromM) : 'Someone';
+        invitesHtml += `
+          <div style="padding: 16px; border-bottom: 1px solid var(--border-light);">
+            <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Relationship Request</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">${name} wants to add you as their ${inv.relationType}.</div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-gold btn-sm" style="flex:1" onclick="acceptInvite('${inv.id}'); window.location.reload();">Accept</button>
+              <button class="btn btn-outline btn-sm" style="flex:1" onclick="rejectInvite('${inv.id}'); window.location.reload();">Reject</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
     topbar.innerHTML = `
-      <div class="topbar-left">
-        <button class="topbar-hamburger" onclick="toggleSidebar()">${NAV_ICONS.hamburger}</button>
-        <div class="topbar-breadcrumb">Vansh / <b>${title}</b></div>
+      <div class="topbar-left" style="display: flex; align-items: center; gap: 32px; flex: 1;">
+        <div style="display: flex; align-items: center; gap: 16px; white-space: nowrap;">
+          <button class="topbar-hamburger" onclick="toggleSidebar()">${NAV_ICONS.hamburger}</button>
+          <div class="topbar-breadcrumb">Vansh / <b>${title}</b></div>
+        </div>
+        <div class="universal-search-container" style="position: relative; max-width: 400px; width: 100%;">
+          <input type="text" id="universalSearchInput" placeholder="Search by Name or @username..." style="width: 100%; padding: 10px 16px 10px 40px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-elevated); font-size: 13px; outline: none; transition: all 0.2s;">
+          <svg style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <div id="universalSearchResults" style="position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-height: 350px; overflow-y: auto; display: none; z-index: 50;"></div>
+        </div>
       </div>
       <div class="topbar-right" style="position: relative; display: flex; align-items: center; gap: 20px;">
         <div style="position: relative; cursor: pointer; display: flex; align-items: center;" onclick="document.getElementById('notifDropdown').classList.toggle('active')">
           <div style="width: 24px; height: 24px; color: var(--text-secondary);">${bellIcon}</div>
-          <div style="position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: var(--royal-red); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-card);">2</div>
+          ${bellBadge}
         </div>
         
         <div id="notifDropdown" class="notif-dropdown">
           <div style="padding: 16px; border-bottom: 1px solid var(--border-light); font-weight: 700; font-family: 'Cinzel', serif; display: flex; justify-content: space-between;">
             Requests
-            <span style="font-size: 11px; color: var(--gold); cursor: pointer;">Clear All</span>
           </div>
-          <div style="padding: 16px; border-bottom: 1px solid var(--border-light);">
-            <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Alliance Request</div>
-            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Rohan Verma has sent an alliance request for Priya Sharma. (100% Gotra Match)</div>
-            <div style="display: flex; gap: 8px;">
-              <button class="btn btn-gold btn-sm" style="flex:1" onclick="alert('Alliance Approved!'); document.getElementById('notifDropdown').classList.remove('active');">Approve</button>
-              <button class="btn btn-outline btn-sm" style="flex:1" onclick="alert('Alliance Rejected.'); document.getElementById('notifDropdown').classList.remove('active');">Reject</button>
-            </div>
-          </div>
-          <div style="padding: 16px;">
-            <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Network Join Request</div>
-            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Rahul Sharma (Gen 2) is requesting to claim their profile.</div>
-            <div style="display: flex; gap: 8px;">
-              <button class="btn btn-gold btn-sm" style="flex:1" onclick="alert('User Verified!'); document.getElementById('notifDropdown').classList.remove('active');">Verify</button>
-              <button class="btn btn-outline btn-sm" style="flex:1" onclick="alert('Request Denied.'); document.getElementById('notifDropdown').classList.remove('active');">Deny</button>
-            </div>
-          </div>
+          ${invitesHtml}
         </div>
         
         <div style="display: flex; align-items: center; gap: 12px; padding-left: 20px; border-left: 1px solid var(--border-light);">
@@ -171,6 +185,50 @@ function initNav(pageName) {
     const style = document.createElement('style');
     style.innerHTML = '.toast-container.show { transform: translateY(0) !important; }';
     document.head.appendChild(style);
+  }
+
+  // Universal Search Logic
+  const searchInput = document.getElementById('universalSearchInput');
+  const searchResults = document.getElementById('universalSearchResults');
+  if (searchInput && searchResults) {
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      if (!query) {
+        searchResults.style.display = 'none';
+        return;
+      }
+      
+      const results = familyMembers.filter(m => {
+        const full = getFullName(m).toLowerCase();
+        const un = (m.username || '').toLowerCase();
+        return full.includes(query) || un.includes(query);
+      }).slice(0, 10);
+      
+      if (results.length === 0) {
+        searchResults.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:13px">No members found</div>';
+      } else {
+        searchResults.innerHTML = results.map(m => {
+          const ava = m.imageUrl ? `background-image:url('${m.imageUrl}')` : getAvatarStyle(m);
+          return `
+            <a href="profile.html?id=${m.id}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border-light);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='transparent'">
+              <div style="width:36px;height:36px;border-radius:50%;background-size:cover;background-position:center;${ava};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--gold);flex-shrink:0">${m.imageUrl ? '' : getInitials(m)}</div>
+              <div style="min-width:0">
+                <div style="font-size:14px;font-weight:600;color:var(--text);font-family:'Cinzel',serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${getFullName(m)} ${m.verified ? '<span class="text-gold">✓</span>' : ''}</div>
+                <div style="font-size:11px;color:var(--text-secondary)">@${m.username || 'user'}</div>
+              </div>
+            </a>
+          `;
+        }).join('');
+      }
+      searchResults.style.display = 'block';
+    });
+    
+    // Close search on outside click
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+        searchResults.style.display = 'none';
+      }
+    });
   }
 }
 

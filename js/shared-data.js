@@ -7,7 +7,29 @@ const FAMILY_DATA_KEY = 'vansh_family_data_v2';
 function loadFamilyData() {
   try {
     const saved = localStorage.getItem(FAMILY_DATA_KEY);
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Backfill missing usernames
+      let changed = false;
+      parsed.forEach(m => {
+        if (!m.username) {
+          const baseUsername = ((m.firstName || "") + "_" + (m.lastName || "")).toLowerCase().replace(/[^a-z0-9_]/g, '');
+          let newUsername = baseUsername || "user";
+          let counter = 1;
+          while (parsed.some(other => other !== m && other.username === newUsername)) {
+            newUsername = baseUsername + counter;
+            counter++;
+          }
+          m.username = newUsername;
+          changed = true;
+        }
+      });
+      if (changed) {
+        // We defer saving back so it doesn't infinite loop, it will just get saved next time something edits.
+        // Actually it's safe to just update the array in memory, saveFamilyData can be called later.
+      }
+      return parsed;
+    }
   } catch(e) {}
   return [];
 }
@@ -22,6 +44,89 @@ function getFullName(m) { return `${m.firstName} ${m.lastName}`; }
 function getInitials(m) { return (m.firstName[0] || '') + (m.lastName[0] || ''); }
 function getCasteLine(m) { return `${m.caste}${m.subCaste ? ' (' + m.subCaste + ')' : ''}`; }
 function getVerifiedMembers() { return familyMembers.filter(m => m.verified); }
+
+// --- RELATIONSHIP INVITE SYSTEM ---
+const INVITES_DATA_KEY = 'vansh_invites_v1';
+
+function loadInvites() {
+  try {
+    const saved = localStorage.getItem(INVITES_DATA_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return [];
+}
+function saveInvites(invites) {
+  try { localStorage.setItem(INVITES_DATA_KEY, JSON.stringify(invites)); } catch(e) {}
+}
+
+let pendingInvites = loadInvites();
+
+function getInvitesForUser(userId) {
+  return pendingInvites.filter(i => i.toUserId === userId && i.status === 'pending');
+}
+
+function sendInvite(fromUserId, toUserId, relationType) {
+  // Check if an invite already exists
+  if (pendingInvites.some(i => i.fromUserId === fromUserId && i.toUserId === toUserId && i.status === 'pending')) {
+    return { success: false, message: 'Invite already pending.' };
+  }
+  
+  const invite = {
+    id: 'INV' + Date.now(),
+    fromUserId,
+    toUserId,
+    relationType, // 'brother', 'sister', 'spouse', 'parent', 'child'
+    status: 'pending',
+    timestamp: new Date().toISOString()
+  };
+  pendingInvites.push(invite);
+  saveInvites(pendingInvites);
+  return { success: true, message: 'Invite sent successfully.' };
+}
+
+function acceptInvite(inviteId) {
+  const invite = pendingInvites.find(i => i.id === inviteId);
+  if (!invite) return false;
+  
+  invite.status = 'accepted';
+  saveInvites(pendingInvites);
+  
+  const fromUser = getMemberById(invite.fromUserId);
+  const toUser = getMemberById(invite.toUserId);
+  if (!fromUser || !toUser) return false;
+  
+  // Link them based on relationType
+  if (invite.relationType === 'brother' || invite.relationType === 'sister') {
+    // Siblings share parents. Find parents of fromUser and add to toUser.
+    if (fromUser.parents && fromUser.parents.length > 0) {
+      if (!toUser.parents) toUser.parents = [];
+      fromUser.parents.forEach(p => {
+        if (!toUser.parents.includes(p)) toUser.parents.push(p);
+      });
+    }
+  } else if (invite.relationType === 'spouse') {
+    fromUser.spouse = toUser.id;
+    toUser.spouse = fromUser.id;
+  } else if (invite.relationType === 'parent') {
+    if (!fromUser.parents) fromUser.parents = [];
+    if (!fromUser.parents.includes(toUser.id)) fromUser.parents.push(toUser.id);
+  } else if (invite.relationType === 'child') {
+    if (!toUser.parents) toUser.parents = [];
+    if (!toUser.parents.includes(fromUser.id)) toUser.parents.push(fromUser.id);
+  }
+  
+  saveFamilyData(familyMembers);
+  return true;
+}
+
+function rejectInvite(inviteId) {
+  const invite = pendingInvites.find(i => i.id === inviteId);
+  if (!invite) return false;
+  invite.status = 'rejected';
+  saveInvites(pendingInvites);
+  return true;
+}
+// ----------------------------------
 
 function getAvatarStyle(m) {
   if (m.imageUrl) {

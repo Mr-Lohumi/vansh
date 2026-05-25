@@ -104,16 +104,16 @@
             </div>
             
             <div style="display: flex; gap: 12px; margin-bottom: 24px; overflow-x: auto; scrollbar-width: none;" class="anim anim-delay-2">
-              <button class="btn btn-outline" style="flex-shrink: 0; background: var(--bg-card); border-color: var(--border-light);" onclick="alert('Opening Alliance Engine...')">
+              <button class="btn btn-outline" style="flex-shrink: 0; background: var(--bg-card); border-color: var(--border-light);" onclick="window.location.href='matchmaking.html'">
                 👑 Request Alliance
               </button>
-              <button class="btn btn-outline" style="flex-shrink: 0; background: var(--bg-card); border-color: var(--border-light);" onclick="alert('Opening Estate Details...')">
+              <button class="btn btn-outline" style="flex-shrink: 0; background: var(--bg-card); border-color: var(--border-light);" onclick="window.location.href='trust.html'">
                 🏛️ View Estate
               </button>
               <button class="btn btn-outline" style="flex-shrink: 0; background: var(--bg-card); border-color: var(--border-light);" onclick="window.location.href='events.html'">
                 💍 RSVP Events
               </button>
-              <button class="btn btn-outline" style="flex-shrink: 0; background: var(--bg-card); border-color: var(--border-light);" onclick="alert('Opening Registration Form...')">
+              <button class="btn btn-outline" style="flex-shrink: 0; background: var(--bg-card); border-color: var(--border-light);" onclick="window.location.href='tree.html'">
                 ➕ Register Birth
               </button>
             </div>
@@ -122,7 +122,7 @@
             <div class="post-card anim anim-delay-2" style="margin-bottom: 24px; padding: 20px;">
               <div style="display: flex; gap: 16px; align-items: center;">
                 <div class="post-avatar" id="createPostAvatar" style="width: 44px; height: 44px; border-width: 1px; flex-shrink: 0; display:flex; align-items:center; justify-content:center; font-weight:bold; color:var(--gold); font-size:16px;"></div>
-                <input type="text" placeholder="Share a royal announcement, upload a photo, or RSVP an event..." style="flex: 1; border: 1px solid var(--border-light); background: var(--bg); padding: 14px 20px; border-radius: 30px; font-family: inherit; font-size: 14px; outline: none; color: var(--text);">
+                <input type="text" id="postInput" placeholder="Share a royal announcement, upload a photo, or RSVP an event..." style="flex: 1; border: 1px solid var(--border-light); background: var(--bg); padding: 14px 20px; border-radius: 30px; font-family: inherit; font-size: 14px; outline: none; color: var(--text);" onkeypress="if(event.key==='Enter') publishPost()">
               </div>
               <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; border-top: 1px solid var(--border-light); padding-top: 16px;">
                 <div style="display: flex; gap: 20px; padding-left: 8px;">
@@ -130,45 +130,12 @@
                   <button style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; font-size: 13px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--royal-red)'" onmouseout="this.style.color='var(--text-secondary)'"><span style="font-size: 18px;">📅</span> Family Event</button>
                   <button style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; font-size: 13px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--royal-red)'" onmouseout="this.style.color='var(--text-secondary)'"><span style="font-size: 18px;">📜</span> Milestone</button>
                 </div>
-                <button class="btn btn-gold btn-sm" style="padding: 10px 24px; font-size: 13px;" onclick="alert('Announcement published to the Family Dynasty network!')">Publish</button>
-              </div>
-            </div>
-
-            <!-- Posts -->
-            <div class="post-card anim anim-delay-3">
-              <div class="post-header">
-                <div class="post-avatar" style="background-image:url('https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80')"></div>
-                <div>
-                  <div class="post-author">Anand Sharma</div>
-                  <div class="post-time">2 hours ago · Public</div>
-                </div>
-              </div>
-              <div class="post-content">
-                Proud to announce the official verification of our dynasty on the Vansh platform. The entire family tree has been mapped with 100% gotra compliance. We welcome all matches for our eligible singles.
-              </div>
-              <img src="https://images.unsplash.com/photo-1510520434124-5bc7e642b61d?w=800&q=80" alt="Family Event" class="post-image">
-              <div class="post-actions">
-                <div class="post-action"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg> Respect (24)</div>
-                <div class="post-action"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> Counsel (5)</div>
+                <button class="btn btn-gold btn-sm" style="padding: 10px 24px; font-size: 13px;" onclick="publishPost()">Publish</button>
               </div>
             </div>
             
-            <div class="post-card anim anim-delay-4">
-              <div class="post-header">
-                <div class="post-avatar" style="background-image:url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80')"></div>
-                <div>
-                  <div class="post-author">Priya Sharma</div>
-                  <div class="post-time">Yesterday · Verified Match</div>
-                </div>
-              </div>
-              <div class="post-content">
-                Deepak and I have officially completed our alliance verification! Kashyap and Bharadwaj gotras successfully cross-referenced without conflicts. Looking forward to the ceremonies! 🎉💍
-              </div>
-              <div class="post-actions">
-                <div class="post-action"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg> Bless (112)</div>
-              </div>
-            </div>
-
+            <!-- Posts Container -->
+            <div id="feedContainer"></div>
           </div>
           
           <!-- RIGHT: Profile & History Widget -->
@@ -240,7 +207,8 @@
       <div class="wp-content">
         <div class="wp-avatar" style="${avaStyle}; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:700; color:var(--gold)">${avaTxt}</div>
         
-        <h2 style="font-family:'Cinzel',serif;font-size:22px;font-weight:700;margin-bottom:8px;color:var(--text)">${getFullName(authMember)}</h2>
+        <h2 style="font-family:'Cinzel',serif;font-size:22px;font-weight:700;margin-bottom:4px;color:var(--text)">${getFullName(authMember)}</h2>
+        <div style="font-size:13px; font-weight:600; color:var(--text-muted); margin-bottom:8px;">@${authMember.username || 'user'}</div>
         <div style="font-size:14px; color:var(--text-secondary); margin-bottom:16px;">${getCasteLine(authMember)} · ${authMember.gotra} Gotra</div>
         
         <div style="text-align:center; margin-bottom:24px; padding: 16px; background:var(--bg); border-radius:8px; width:100%; border:1px solid var(--border-light)">
@@ -273,6 +241,83 @@
     // Populate Create Post Avatar
     document.getElementById('createPostAvatar').setAttribute('style', `width: 44px; height: 44px; border-radius: 50%; border-width: 1px; flex-shrink: 0; display:flex; align-items:center; justify-content:center; font-weight:bold; color:var(--gold); font-size:16px; background-color: var(--bg-elevated); ${avaStyle}; background-size: cover; background-position: center; border: 2px solid var(--gold-border);`);
     if(avaTxt) document.getElementById('createPostAvatar').innerText = avaTxt;
+    if(avaTxt) document.getElementById('createPostAvatar').innerText = avaTxt;
+
+    // --- Feed Logic ---
+    let feedPosts = [];
+    try {
+      const savedFeed = localStorage.getItem('vansh_feed');
+      if (savedFeed) feedPosts = JSON.parse(savedFeed);
+      else {
+        feedPosts = [
+          {
+            id: 1, authorName: 'Anand Sharma', time: '2 hours ago', avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80',
+            content: 'Proud to announce the official verification of our dynasty on the Vansh platform. The entire family tree has been mapped with 100% gotra compliance. We welcome all matches for our eligible singles.',
+            image: 'https://images.unsplash.com/photo-1510520434124-5bc7e642b61d?w=800&q=80'
+          },
+          {
+            id: 2, authorName: 'Priya Sharma', time: 'Yesterday', avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80',
+            content: 'Deepak and I have officially completed our alliance verification! Kashyap and Bharadwaj gotras successfully cross-referenced without conflicts. Looking forward to the ceremonies! 🎉💍',
+            image: null
+          }
+        ];
+        localStorage.setItem('vansh_feed', JSON.stringify(feedPosts));
+      }
+    } catch(e) {}
+
+    function renderFeed() {
+      const feedHtml = feedPosts.map((post, idx) => `
+        <div class="post-card anim" style="animation-delay: ${0.06 * (idx + 1)}s">
+          <div class="post-header">
+            <div class="post-avatar" style="${post.avatarUrl.includes('url') ? post.avatarUrl : `background-image:url('${post.avatarUrl}')`}"></div>
+            <div>
+              <div class="post-author">${post.authorName}</div>
+              <div class="post-time">${post.time} · Public</div>
+            </div>
+          </div>
+          <div class="post-content">${post.content}</div>
+          ${post.image ? `<img src="${post.image}" alt="Post Media" class="post-image">` : ''}
+          <div class="post-actions">
+            <div class="post-action"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg> Respect</div>
+            <div class="post-action"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> Counsel</div>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('feedContainer').innerHTML = feedHtml;
+    }
+
+    renderFeed();
+
+    function publishPost() {
+      const input = document.getElementById('postInput');
+      if (!input) return;
+      const content = input.value.trim();
+      if (!content) return;
+      
+      const newPost = {
+        id: Date.now(),
+        authorName: getFullName(authMember),
+        time: 'Just now',
+        avatarUrl: avaStyle || `background-color:var(--bg-hover)`,
+        content: content,
+        image: null
+      };
+      
+      feedPosts.unshift(newPost);
+      localStorage.setItem('vansh_feed', JSON.stringify(feedPosts));
+      
+      input.value = '';
+      renderFeed();
+      
+      const toast = document.querySelector('.toast-container');
+      if (toast) {
+        toast.querySelector('.toast-title').innerText = "Royal Announcement Published";
+        toast.querySelector('.toast-msg').innerText = "Your network has been notified.";
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+      }
+    }
+    // ----------------------
 
     // Production Data Center Handlers
     function exportVanshData() {
