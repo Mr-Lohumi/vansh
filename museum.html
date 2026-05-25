@@ -43,27 +43,45 @@
     }
     .btn-royal:hover { background: var(--royal-red-dark); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
 
-    .museum-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 32px; }
-    
-    .museum-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border); border-radius: 8px;
-      overflow: hidden; box-shadow: var(--shadow-card); transition: transform 0.4s;
+    .museum-wall {
+      padding: 60px 40px; background: radial-gradient(circle at top, var(--bg) 0%, var(--bg-hover) 100%);
+      border-radius: 12px; border: 1px solid var(--border); box-shadow: inset 0 10px 30px rgba(0,0,0,0.02);
+      margin-bottom: 40px;
     }
-    .museum-item:hover { transform: scale(1.03); box-shadow: var(--shadow-hover); border-color: var(--royal-red); }
+    .museum-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 60px 40px; }
     
-    .museum-img { width: 100%; height: 260px; background-size: cover; background-position: center; border-bottom: 1px solid var(--border); position: relative; }
+    .museum-item-wrapper { display: flex; flex-direction: column; align-items: center; position: relative; }
+    .museum-item-wrapper::before {
+      content: ''; position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
+      width: 250px; height: 250px; background: radial-gradient(ellipse at top, rgba(255,255,255,0.7) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .museum-frame {
+      background: #fff; padding: 24px; border: 12px solid #1a1a1a;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15), inset 0 0 10px rgba(0,0,0,0.2);
+      border-radius: 2px; position: relative; z-index: 1; width: 100%; transition: transform 0.5s ease;
+    }
+    .museum-frame::after { content: ''; position: absolute; inset: 0; border: 1px solid #333; pointer-events: none; }
+    .museum-frame:hover { transform: scale(1.02); box-shadow: 0 30px 60px rgba(0,0,0,0.25); }
     
-    .museum-tag {
-      position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.9); color: var(--royal-red);
-      padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; backdrop-filter: blur(4px);
-      border: 1px solid var(--royal-red);
+    .museum-img { 
+      width: 100%; height: 320px; background-size: cover; background-position: center; 
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.5); position: relative;
     }
     
-    .museum-content { padding: 24px; text-align: center; }
-    .museum-title { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
-    .museum-year { font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
-    .museum-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; font-weight: 500; }
+    .museum-plaque {
+      background: #fcfbf8; border: 1px solid #e8e3d5; border-left: 4px solid var(--royal-red);
+      padding: 24px; width: 85%; margin: 24px auto 0; box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      position: relative; z-index: 2; text-align: center; border-radius: 2px;
+    }
+    .museum-plaque::before { content: '•'; position: absolute; top: 6px; left: 6px; color: #d4c8b8; font-size: 14px; line-height:1; }
+    .museum-plaque::after { content: '•'; position: absolute; top: 6px; right: 6px; color: #d4c8b8; font-size: 14px; line-height:1; }
+
+    .museum-tag { display: inline-block; color: var(--royal-red); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+    .museum-title { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 800; color: #1a1a1a; margin-bottom: 6px; }
+    .museum-year { font-size: 13px; font-weight: 700; color: #888; margin-bottom: 12px; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+    .museum-desc { font-size: 14px; color: #444; line-height: 1.6; font-style: italic; font-family: 'Georgia', serif; }
 
     /* Modal Styles */
     .modal-overlay {
@@ -104,8 +122,10 @@
           <button class="btn-royal" onclick="openUploadModal()">+ Add Artifact</button>
         </div>
         
-        <div class="museum-grid anim anim-delay-1" id="museumGrid">
-          <!-- Dynamic Content -->
+        <div class="museum-wall anim anim-delay-1">
+          <div class="museum-grid" id="museumGrid">
+            <!-- Dynamic Content -->
+          </div>
         </div>
         
       </div>
@@ -209,11 +229,12 @@
       }
 
       grid.innerHTML = artifacts.map(art => `
-        <div class="museum-item">
-          <div class="museum-img" style="background-image:url('${art.imgUrl || 'https://images.unsplash.com/photo-1505664194779-8beaceb93744?q=80&w=600&auto=format&fit=crop'}')">
-            <div class="museum-tag">${art.type}</div>
+        <div class="museum-item-wrapper">
+          <div class="museum-frame">
+            <div class="museum-img" style="background-image:url('${art.imgUrl || 'https://images.unsplash.com/photo-1505664194779-8beaceb93744?q=80&w=600&auto=format&fit=crop'}')"></div>
           </div>
-          <div class="museum-content">
+          <div class="museum-plaque">
+            <div class="museum-tag">${art.type}</div>
             <div class="museum-title">${art.title}</div>
             <div class="museum-year">${art.year}</div>
             <div class="museum-desc">${art.desc}</div>
