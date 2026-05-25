@@ -26,7 +26,13 @@ function login(userId, userName) {
 
 function logout() {
   localStorage.removeItem(AUTH_KEY);
-  window.location.href = 'login.html';
+  if (window.supabaseClient) {
+    window.supabaseClient.auth.signOut().then(() => {
+      window.location.href = 'login.html';
+    });
+  } else {
+    window.location.href = 'login.html';
+  }
 }
 
 function requireAuth() {
