@@ -267,22 +267,27 @@
     // --- Feed Logic ---
     let feedPosts = [];
     try {
-      const savedFeed = localStorage.getItem('vansh_feed');
+      const savedFeed = localStorage.getItem('vansh_feed_v2');
       if (savedFeed) feedPosts = JSON.parse(savedFeed);
       else {
+        // Find some people in network to make mock posts
+        let netMembers = familyMembers.filter(m => m.id !== authMember.id && getSmartIndianRelation(familyMembers, authMember.id, m.id) !== null);
+        let p1 = netMembers.length > 0 ? netMembers[0] : authMember;
+        let p2 = netMembers.length > 1 ? netMembers[1] : authMember;
+
         feedPosts = [
           {
-            id: 1, authorName: 'Anand Sharma', time: '2 hours ago', avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80',
+            id: 1, authorId: p1.id, authorName: getFullName(p1), time: '2 hours ago', avatarUrl: p1.imageUrl || '',
             content: 'Proud to announce the official verification of our dynasty on the Vansh platform. The entire family tree has been mapped with 100% gotra compliance. We welcome all matches for our eligible singles.',
             image: 'https://images.unsplash.com/photo-1510520434124-5bc7e642b61d?w=800&q=80'
           },
           {
-            id: 2, authorName: 'Priya Sharma', time: 'Yesterday', avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80',
-            content: 'Deepak and I have officially completed our alliance verification! Kashyap and Bharadwaj gotras successfully cross-referenced without conflicts. Looking forward to the ceremonies! 🎉💍',
+            id: 2, authorId: p2.id, authorName: getFullName(p2), time: 'Yesterday', avatarUrl: p2.imageUrl || '',
+            content: 'Officially completed our alliance verification! Kashyap and Bharadwaj gotras successfully cross-referenced without conflicts. Looking forward to the ceremonies! 🎉💍',
             image: null
           }
         ];
-        localStorage.setItem('vansh_feed', JSON.stringify(feedPosts));
+        localStorage.setItem('vansh_feed_v2', JSON.stringify(feedPosts));
       }
     } catch(e) {}
 
@@ -336,7 +341,7 @@
           post.respects += 1;
           post.hasRespected = true;
         }
-        localStorage.setItem('vansh_feed', JSON.stringify(feedPosts));
+        localStorage.setItem('vansh_feed_v2', JSON.stringify(feedPosts));
         renderFeed();
       }
     }
@@ -359,7 +364,7 @@
         if (text) {
           if (!post.comments) post.comments = [];
           post.comments.push({ author: getFullName(authMember), text: text });
-          localStorage.setItem('vansh_feed', JSON.stringify(feedPosts));
+          localStorage.setItem('vansh_feed_v2', JSON.stringify(feedPosts));
           renderFeed();
           // Box will be closed on re-render, we can re-open it if we want, or leave it closed.
           // Let's leave it open so they can see their comment.
@@ -420,7 +425,7 @@
       };
       
       feedPosts.unshift(newPost);
-      localStorage.setItem('vansh_feed', JSON.stringify(feedPosts));
+      localStorage.setItem('vansh_feed_v2', JSON.stringify(feedPosts));
       
       input.value = '';
       removePostImage();

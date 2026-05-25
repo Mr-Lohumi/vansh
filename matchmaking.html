@@ -72,7 +72,9 @@
       singles.forEach(s => {
         select.innerHTML += `<option value="${s.id}">${getFullName(s)} (${s.age}, ${s.gender}, ${s.gotra})</option>`;
       });
-      if(singles.find(s=>s.id==='P7')) select.value = 'P7';
+      const loggedInId = getAuthData().userId;
+      if(singles.find(s=>s.id===loggedInId)) select.value = loggedInId;
+      else if (singles.length > 0) select.value = singles[0].id;
     }
     
     function runEngine() {
