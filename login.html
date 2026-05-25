@@ -354,8 +354,8 @@
       });
 
       if (res.success) {
-        alert('Welcome! Your profile has been registered in the family dynasty.');
-        window.location.href = 'dashboard.html';
+        alert(res.message);
+        window.location.reload();
       } else {
         alert(res.message);
       }

@@ -315,29 +315,13 @@
     try {
       const savedFeed = localStorage.getItem('vansh_feed_v2');
       if (savedFeed) feedPosts = JSON.parse(savedFeed);
-      else {
-        // Find some people in network to make mock posts
-        let netMembers = familyMembers.filter(m => m.id !== authMember.id && getSmartIndianRelation(familyMembers, authMember.id, m.id) !== null);
-        let p1 = netMembers.length > 0 ? netMembers[0] : authMember;
-        let p2 = netMembers.length > 1 ? netMembers[1] : authMember;
-
-        feedPosts = [
-          {
-            id: 1, authorId: p1.id, authorName: getFullName(p1), time: '2 hours ago', avatarUrl: p1.imageUrl || '',
-            content: 'Proud to announce the official verification of our dynasty on the Vansh platform. The entire family tree has been mapped with 100% gotra compliance. We welcome all matches for our eligible singles.',
-            image: 'https://images.unsplash.com/photo-1510520434124-5bc7e642b61d?w=800&q=80'
-          },
-          {
-            id: 2, authorId: p2.id, authorName: getFullName(p2), time: 'Yesterday', avatarUrl: p2.imageUrl || '',
-            content: 'Officially completed our alliance verification! Kashyap and Bharadwaj gotras successfully cross-referenced without conflicts. Looking forward to the ceremonies! 🎉💍',
-            image: null
-          }
-        ];
-        localStorage.setItem('vansh_feed_v2', JSON.stringify(feedPosts));
-      }
     } catch(e) {}
 
     function renderFeed() {
+      if (feedPosts.length === 0) {
+        document.getElementById('feedContainer').innerHTML = `<div style="text-align:center; padding: 40px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; color: #65676b; font-size: 14px; margin-top: 20px;">No royal announcements yet. Be the first to share an update with the family!</div>`;
+        return;
+      }
       const feedHtml = feedPosts.map((post, idx) => `
         <div class="post-card anim" style="animation-delay: ${0.06 * (idx + 1)}s">
           <div class="post-header">
@@ -379,11 +363,11 @@
     renderFeed();
 
     // Dynamic Stories Rendering
-    const mockStories = [
-      { id: 1, name: "Priya & Deepak", img: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=400&q=80", type: "alliance" },
-      { id: 2, name: "Legacy Trust", img: "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&q=80", type: "trust" },
-      { id: 3, name: "Anniversary", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=80", type: "event" }
-    ];
+    let mockStories = [];
+    try {
+      const savedStories = localStorage.getItem('vansh_stories_v1');
+      if (savedStories) mockStories = JSON.parse(savedStories);
+    } catch(e) {}
 
     function renderStories() {
       const container = document.getElementById('storiesContainer');
@@ -468,6 +452,7 @@
         img: img,
         type: "user"
       });
+      localStorage.setItem('vansh_stories_v1', JSON.stringify(mockStories));
       renderStories();
       closeAddStoryModal();
     }

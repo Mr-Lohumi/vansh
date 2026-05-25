@@ -93,6 +93,9 @@ function authenticateUser(loginKey, password) {
   const correctPassword = matched.password ? matched.password.toString() : "vansh2025";
   const inputPassword = password ? password.toString() : "";
   if (inputPassword === correctPassword) {
+    if (matched.verified === false) {
+      return { success: false, message: "Your account is pending admin approval." };
+    }
     login(matched.id, `${matched.firstName || "Member"} ${matched.lastName || ""}`);
     return { success: true, member: matched };
   } else {
@@ -144,7 +147,7 @@ function registerUser(firstName, lastName, email, password, details = {}) {
     nativePlace: details.nativePlace || "",
     parents: [],
     spouse: null,
-    verified: true, // Auto-verify on registration
+    verified: false, // Pending Admin Approval
     gen: 2, // Default to Generation 2
     bio: "Lineage heir registered via production gateway.",
     education: details.education || "",
@@ -154,7 +157,6 @@ function registerUser(firstName, lastName, email, password, details = {}) {
   members.push(newMember);
   localStorage.setItem(DATABASE_KEY, JSON.stringify(members));
   
-  // Log them in immediately
-  login(newMember.id, `${newMember.firstName} ${newMember.lastName}`);
-  return { success: true, member: newMember };
+  // Do NOT log them in immediately, they need approval
+  return { success: true, member: newMember, message: "Registration successful. Please wait for an Admin to approve your account." };
 }
