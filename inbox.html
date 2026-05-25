@@ -3,67 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vansh (वंश) — Secure Inbox</title>
+  <title>Vansh (वंश) — Royal Inbox</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=5">
+  <link rel="stylesheet" href="css/shared.css?v=7">
   <style>
+    /* Premium Indian Wedding Theme */
+    body {
+      background-color: #2b060d;
+      background-image: 
+        radial-gradient(circle at top right, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.15) 0%, transparent 40%);
+      color: #fdfaf0;
+    }
+    .main-area { background: transparent; }
+
     .inbox-layout {
-      display: flex; gap: 24px; height: calc(100vh - 140px);
+      display: flex; gap: 24px; height: calc(100vh - 120px);
     }
     
     .inbox-list {
-      flex: 0 0 350px; background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: var(--radius); display: flex; flex-direction: column; overflow: hidden;
+      flex: 0 0 380px; 
+      background: linear-gradient(135deg, rgba(74, 14, 27, 0.95), rgba(43, 6, 13, 0.95));
+      border: 1px solid rgba(212,175,55,0.4); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
     }
-    .inbox-header { padding: 20px; border-bottom: 1px solid var(--border); font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; background: var(--bg-elevated);}
+    .inbox-header { 
+      padding: 24px; border-bottom: 1px solid rgba(212,175,55,0.2); 
+      font-family: 'Cinzel', serif; font-weight: 800; font-size: 20px; color: var(--gold);
+      text-transform: uppercase; letter-spacing: 2px;
+    }
     
+    .inbox-threads { overflow-y: auto; flex: 1; }
+
     .msg-item {
-      padding: 20px; border-bottom: 1px solid var(--border); display: flex; gap: 16px; cursor: pointer; transition: 0.2s;
+      padding: 20px; border-bottom: 1px solid rgba(212,175,55,0.1); display: flex; gap: 16px; cursor: pointer; transition: 0.3s;
     }
-    .msg-item:hover { background: var(--bg-hover); }
-    .msg-item.active { background: var(--gold-dim); border-left: 3px solid var(--gold); }
+    .msg-item:hover { background: rgba(212,175,55,0.05); }
+    .msg-item.active { background: rgba(212,175,55,0.15); border-left: 4px solid var(--gold); }
     
-    .msg-ava { width: 48px; height: 48px; border-radius: 50%; background-size: cover; background-position: center; border: 1px solid var(--gold); flex-shrink: 0; }
+    .msg-ava { width: 50px; height: 50px; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid var(--gold); flex-shrink: 0; box-shadow: 0 0 10px rgba(212,175,55,0.3);}
     .msg-details { flex: 1; min-width: 0; }
-    .msg-name { font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 4px; display: flex; justify-content: space-between;}
-    .msg-time { font-size: 11px; color: var(--text-muted); font-weight: 500; }
-    .msg-preview { font-size: 13px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .msg-name { font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 6px; display: flex; justify-content: space-between;}
+    .msg-time { font-size: 11px; color: #ffe89c; font-weight: 600; }
+    .msg-preview { font-size: 13px; color: rgba(255,255,255,0.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     
-    .msg-badge { background: var(--gold); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 10px; margin-left: 8px; }
+    .msg-badge { background: linear-gradient(135deg, #d4af37, #aa8620); color: #2b060d; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 12px; margin-top: 6px; display: inline-block; text-transform: uppercase; letter-spacing: 1px;}
     
     .inbox-view {
-      flex: 1; background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: var(--radius); display: flex; flex-direction: column; overflow: hidden;
+      flex: 1; background: linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+      border: 1px solid rgba(212,175,55,0.3);
+      border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; backdrop-filter: blur(10px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
     }
     
     .view-header {
-      padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 16px; background: var(--bg-elevated);
+      padding: 20px 24px; border-bottom: 1px solid rgba(212,175,55,0.3); display: flex; align-items: center; gap: 16px; 
+      background: linear-gradient(135deg, rgba(74, 14, 27, 0.9), rgba(43, 6, 13, 0.9));
     }
-    .view-header .msg-ava { width: 40px; height: 40px; }
+    .view-header .msg-ava { width: 44px; height: 44px; }
     
-    .view-body { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; background: var(--bg); }
+    .view-body { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; }
     
-    .chat-bubble { max-width: 70%; padding: 16px 20px; border-radius: 16px; font-size: 14px; line-height: 1.5; position: relative;}
-    .chat-left { background: var(--bg-card); border: 1px solid var(--border); align-self: flex-start; border-top-left-radius: 4px;}
-    .chat-right { background: var(--gold-dim); border: 1px solid var(--gold-border); color: var(--text); align-self: flex-end; border-top-right-radius: 4px;}
+    .chat-bubble { max-width: 75%; padding: 16px 20px; border-radius: 16px; font-size: 14px; line-height: 1.6; position: relative;}
+    .chat-left { background: rgba(0,0,0,0.4); border: 1px solid rgba(212,175,55,0.2); align-self: flex-start; border-top-left-radius: 4px; color: #fdfaf0;}
+    .chat-right { background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(170,134,32,0.2)); border: 1px solid var(--gold); color: #fff; align-self: flex-end; border-top-right-radius: 4px;}
     
-    .chat-time { font-size: 11px; color: var(--text-muted); margin-top: 8px; text-align: right; }
+    .chat-time { font-size: 11px; color: #ffe89c; margin-top: 8px; text-align: right; font-weight: 600;}
     
     .alliance-card {
-      background: var(--bg-card); border: 1px solid var(--gold); border-radius: 12px; padding: 20px;
-      margin-top: 12px; box-shadow: var(--shadow-sm);
+      background: linear-gradient(135deg, rgba(74, 14, 27, 0.95), rgba(43, 6, 13, 0.95)); 
+      border: 1px solid var(--gold); border-radius: 12px; padding: 20px;
+      margin-top: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.4);
     }
     
-    .view-input {
-      padding: 20px; border-top: 1px solid var(--border); background: var(--bg-card); display: flex; gap: 12px;
+    .btn-royal {
+      background: linear-gradient(135deg, #d4af37, #aa8620); color: #fff; border: none;
+      font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      padding: 10px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s;
+      box-shadow: 0 4px 15px rgba(212,175,55,0.3);
     }
-    .view-input input { flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 20px; outline: none; font-family: inherit; }
-    .view-input input:focus { border-color: var(--gold); }
+    .btn-royal:hover { background: linear-gradient(135deg, #ebd17a, #c49d29); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,175,55,0.5); }
+
+    .view-input {
+      padding: 20px; border-top: 1px solid rgba(212,175,55,0.3); background: rgba(0,0,0,0.3); display: flex; gap: 12px; align-items: center;
+    }
+    .view-input input { 
+      flex: 1; padding: 14px 20px; border: 1px solid rgba(212,175,55,0.4); border-radius: 24px; 
+      outline: none; font-family: inherit; background: rgba(0,0,0,0.4); color: #fff; font-size: 15px;
+    }
+    .view-input input::placeholder { color: rgba(255,255,255,0.4); }
+    .view-input input:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212,175,55,0.2); }
     
     @media (max-width: 900px) {
       .inbox-layout { flex-direction: column; height: auto; }
-      .inbox-list { flex: none; height: 300px; overflow-y: auto; }
-      .inbox-view { height: 500px; }
+      .inbox-list { flex: none; height: 350px; }
+      .inbox-view { height: 600px; }
     }
   </style>
 </head>
@@ -77,65 +111,14 @@
         <div class="inbox-layout anim">
           
           <div class="inbox-list">
-            <div class="inbox-header">Secure Messages</div>
-            
-            <div class="msg-item active">
-              <div class="msg-ava" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150&auto=format&fit=crop')"></div>
-              <div class="msg-details">
-                <div class="msg-name">Meera Verma <span class="msg-time">10:42 AM</span></div>
-                <div class="msg-preview">Regarding the alliance proposal...</div>
-                <div style="margin-top: 4px;"><span class="msg-badge">Alliance Request</span></div>
-              </div>
+            <div class="inbox-header">Royal Messages</div>
+            <div class="inbox-threads" id="threadsContainer">
+              <!-- Dynamically injected threads -->
             </div>
-            
-            <div class="msg-item">
-              <div class="msg-ava" id="avaUncle"></div>
-              <div class="msg-details">
-                <div class="msg-name">Anand Sharma <span class="msg-time">Yesterday</span></div>
-                <div class="msg-preview">Are you attending the anniversary next week?</div>
-              </div>
-            </div>
-            
           </div>
           
-          <div class="inbox-view">
-            <div class="view-header">
-              <div class="msg-ava" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150&auto=format&fit=crop')"></div>
-              <div>
-                <div style="font-weight: 700; color: var(--text);">Meera Verma</div>
-                <div style="font-size: 12px; color: var(--gold); font-weight: 600;">Verified Network Member</div>
-              </div>
-            </div>
-            
-            <div class="view-body">
-              <div style="text-align:center; font-size: 12px; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">Today</div>
-              
-              <div class="chat-bubble chat-left">
-                Namaste. I am writing to you through the Vansh secure network regarding a potential alliance for my son, Rohan Verma.
-                
-                <div class="alliance-card">
-                  <div style="font-family:'Cinzel', serif; font-weight: 700; color: var(--gold); margin-bottom: 8px;">Official Alliance Proposal</div>
-                  <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
-                    <b>Subject:</b> Rohan Verma (Gen 3)<br>
-                    <b>Gotra Match:</b> <span style="color: green">100% Exogamy Verified</span>
-                  </div>
-                  <button class="btn btn-primary btn-sm" onclick="alert('Viewing Secure Biodata...')">View Full Biodata</button>
-                </div>
-                
-                <div class="chat-time">10:42 AM</div>
-              </div>
-              
-              <div class="chat-bubble chat-right">
-                Namaste Meera ji. Thank you for reaching out via the network. We will review the biodata and consult with the family elders this evening.
-                <div class="chat-time">11:15 AM</div>
-              </div>
-              
-            </div>
-            
-            <div class="view-input">
-              <input type="text" placeholder="Type a secure message...">
-              <button class="btn btn-primary">Send</button>
-            </div>
+          <div class="inbox-view" id="activeChatView">
+            <!-- Dynamically injected chat window -->
           </div>
           
         </div>
@@ -150,10 +133,182 @@
   <script>
     if (!requireAuth()) throw '';
     initNav('inbox');
-    
-    const uncle = getMemberById('P3');
-    if(uncle && uncle.imageUrl) {
-      document.getElementById('avaUncle').style.backgroundImage = `url('${uncle.imageUrl}')`;
+
+    const INBOX_KEY = 'vansh_inbox_db';
+    let currentThreadId = null;
+
+    function formatTime(date) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function loadInbox() {
+      let data = localStorage.getItem(INBOX_KEY);
+      if (!data) {
+        // Seed Data
+        data = [
+          {
+            id: 'thread_1',
+            contactName: 'Meera Verma',
+            contactAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150&auto=format&fit=crop',
+            verified: true,
+            isAlliance: true,
+            messages: [
+              {
+                sender: 'them',
+                time: '10:42 AM',
+                text: 'Namaste. I am writing to you through the Vansh secure network regarding a potential alliance for my son, Rohan Verma.',
+                hasAllianceCard: true
+              },
+              {
+                sender: 'me',
+                time: '11:15 AM',
+                text: 'Namaste Meera ji. Thank you for reaching out via the network. We will review the biodata and consult with the family elders this evening.'
+              }
+            ]
+          },
+          {
+            id: 'thread_2',
+            contactName: 'Anand Sharma',
+            contactAvatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&auto=format&fit=crop',
+            verified: true,
+            isAlliance: false,
+            messages: [
+              {
+                sender: 'them',
+                time: 'Yesterday',
+                text: 'Are you attending the Patriarch council next week in Uttarakhand?'
+              }
+            ]
+          }
+        ];
+        localStorage.setItem(INBOX_KEY, JSON.stringify(data));
+      } else {
+        data = JSON.parse(data);
+      }
+      return data;
+    }
+
+    function renderThreads() {
+      const threads = loadInbox();
+      const container = document.getElementById('threadsContainer');
+      
+      container.innerHTML = threads.map(t => {
+        const lastMsg = t.messages[t.messages.length - 1];
+        const isActive = t.id === currentThreadId ? 'active' : '';
+        const badge = t.isAlliance ? `<div class="msg-badge">Alliance Request</div>` : '';
+        
+        return `
+          <div class="msg-item ${isActive}" onclick="openThread('${t.id}')">
+            <div class="msg-ava" style="background-image:url('${t.contactAvatar}')"></div>
+            <div class="msg-details">
+              <div class="msg-name">${t.contactName} <span class="msg-time">${lastMsg ? lastMsg.time : ''}</span></div>
+              <div class="msg-preview">${lastMsg ? lastMsg.text : 'No messages'}</div>
+              ${badge}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openThread(threadId) {
+      currentThreadId = threadId;
+      renderThreads(); // update active class
+      
+      const threads = loadInbox();
+      const thread = threads.find(t => t.id === threadId);
+      const container = document.getElementById('activeChatView');
+      
+      if (!thread) return;
+
+      const verifiedBadge = thread.verified ? `<div style="font-size: 12px; color: var(--gold); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">✓ Verified Lineage Member</div>` : '';
+
+      let messagesHtml = thread.messages.map(m => {
+        const bubbleClass = m.sender === 'me' ? 'chat-right' : 'chat-left';
+        let extraHtml = '';
+        
+        if (m.hasAllianceCard) {
+          extraHtml = `
+            <div class="alliance-card">
+              <div style="font-family:'Cinzel', serif; font-weight: 800; color: var(--gold); margin-bottom: 8px; font-size:16px;">Official Alliance Proposal</div>
+              <div style="font-size: 13px; color: #ffe89c; margin-bottom: 16px;">
+                <b>Subject:</b> Rohan Verma (Gen 3)<br>
+                <b>Gotra Match:</b> <span style="color: #4ade80">100% Exogamy Verified</span>
+              </div>
+              <button class="btn-royal" onclick="alert('Viewing Secure Biodata in Premium version...')">View Royal Biodata</button>
+            </div>
+          `;
+        }
+        
+        return `
+          <div class="chat-bubble ${bubbleClass}">
+            ${m.text}
+            ${extraHtml}
+            <div class="chat-time">${m.time}</div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <div class="view-header">
+          <div class="msg-ava" style="background-image:url('${thread.contactAvatar}')"></div>
+          <div>
+            <div style="font-weight: 800; color: #fff; font-size: 18px;">${thread.contactName}</div>
+            ${verifiedBadge}
+          </div>
+        </div>
+        
+        <div class="view-body" id="chatBody">
+          <div style="text-align:center; font-size: 12px; color: rgba(255,255,255,0.4); font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">Secure Chat History</div>
+          ${messagesHtml}
+        </div>
+        
+        <div class="view-input">
+          <input type="text" id="chatInput" placeholder="Type a secure message..." onkeypress="handleKeyPress(event)">
+          <button class="btn-royal" onclick="sendReply()">Send Royal Dispatch</button>
+        </div>
+      `;
+      
+      scrollToBottom();
+    }
+
+    function handleKeyPress(e) {
+      if (e.key === 'Enter') {
+        sendReply();
+      }
+    }
+
+    function sendReply() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text || !currentThreadId) return;
+      
+      const threads = loadInbox();
+      const thread = threads.find(t => t.id === currentThreadId);
+      
+      thread.messages.push({
+        sender: 'me',
+        time: formatTime(new Date()),
+        text: text
+      });
+      
+      localStorage.setItem(INBOX_KEY, JSON.stringify(threads));
+      
+      openThread(currentThreadId); // re-render chat
+    }
+
+    function scrollToBottom() {
+      const body = document.getElementById('chatBody');
+      if (body) {
+        body.scrollTop = body.scrollHeight;
+      }
+    }
+
+    // Initialize
+    const allThreads = loadInbox();
+    if(allThreads.length > 0) {
+      openThread(allThreads[0].id);
+    } else {
+      renderThreads();
     }
   </script>
 </body>
