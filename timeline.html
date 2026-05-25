@@ -107,20 +107,58 @@
   <script>
     if (!requireAuth()) throw '';
     
-    const p1 = getMemberById('P1');
-    const p3 = getMemberById('P3');
-    const p4 = getMemberById('P4');
-    const p6 = getMemberById('P6');
-    const p5 = getMemberById('P5');
+    const currentYear = new Date().getFullYear();
+    let events = [];
     
-    const events = [
-      { date: '1949', title: 'Rajesh Sharma Born', desc: 'Born in a small village in Uttarakhand, Rajesh represents the foundation of the current documented lineage. His early struggles and eventual move to the city laid the groundwork for the family\'s future success and expansion.', members: [p1] },
-      { date: '1971', title: 'Rajesh & Savitri Alliance', desc: 'A traditional marriage registered in Uttarakhand, initiating the first major branch expansion of the lineage. Savitri brought strength and unity to the growing household.', members: [p1, getMemberById('P14')] },
-      { date: '1974', title: 'Anand Sharma Born', desc: 'Second child of Rajesh and Savitri. Anand pursued higher education in engineering, representing the family\'s transition into the modern digital era and laying the foundation for Generation 1.', members: [p3] },
-      { date: '2000', title: 'Anand & Sunita Alliance', desc: 'A grand marriage ceremony held in Delhi. This alliance combined two strong, academically inclined bloodlines, significantly expanding the network\'s professional footprint.', members: [p3, p4] },
-      { date: '2023', title: 'Priya & Deepak Alliance', desc: 'A modern celebration held with 100% gotra exogamy compliance. This union bridged the Sharma and Verma networks, securing the next generation of the dynasty.', members: [p5, p6] },
-      { date: '2026', title: 'Vansh Platform Initiation', desc: 'The entire lineage was successfully digitized. The ancestral history, previously kept in physical records, is now verified and recorded dynamically on the Premium Network for all future descendants.', members: [] }
-    ];
+    // Add births
+    familyMembers.forEach(m => {
+      if (m.age) {
+        const birthYear = currentYear - m.age;
+        events.push({
+          year: birthYear,
+          date: birthYear.toString(),
+          title: `${m.firstName} Born`,
+          desc: `The birth of ${m.firstName} added a new generation to the lineage. ${m.nativePlace ? 'Native of ' + m.nativePlace + '.' : ''}`,
+          members: [m]
+        });
+      }
+    });
+
+    // Add marriages (deduplicate)
+    const processedMarriages = new Set();
+    familyMembers.forEach(m => {
+      if (m.spouse && !processedMarriages.has(m.id)) {
+        const spouse = getMemberById(m.spouse);
+        if (spouse) {
+          processedMarriages.add(m.id);
+          processedMarriages.add(spouse.id);
+          // Estimate marriage year: roughly when the older partner was 25
+          const olderAge = Math.max(m.age || 25, spouse.age || 25);
+          const marriageYear = (currentYear - olderAge) + 25;
+          if (marriageYear <= currentYear) {
+            events.push({
+              year: marriageYear,
+              date: marriageYear.toString(),
+              title: `${m.firstName} & ${spouse.firstName} Alliance`,
+              desc: `A grand union bringing together the ${m.gotra} and ${spouse.gotra} gotras.`,
+              members: [m, spouse]
+            });
+          }
+        }
+      }
+    });
+    
+    // Platform initiation
+    events.push({
+      year: currentYear,
+      date: currentYear.toString(),
+      title: 'Vansh Platform Initiation',
+      desc: 'The entire lineage was successfully digitized. The ancestral history is now dynamically recorded on the Premium Network.',
+      members: []
+    });
+
+    // Sort chronologically
+    events.sort((a, b) => a.year - b.year);
     
     const container = document.getElementById('dnaItems');
     let html = '';
