@@ -7,98 +7,74 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css?v=7">
   <style>
-    /* Premium Minimalist Royal Theme */
-    body {
-      background-color: #1a0408; /* Very dark rich maroon */
-      background-image: 
-        radial-gradient(circle at top right, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
-      color: #fdfaf0;
-    }
-    .main-area { background: transparent; }
-
     .inbox-layout {
-      display: flex; gap: 32px; height: calc(100vh - 120px); max-width: 1200px; margin: 0 auto;
+      display: flex; gap: 24px; height: calc(100vh - 140px);
     }
     
     .inbox-list {
-      flex: 0 0 360px; 
-      background: rgba(30, 5, 10, 0.6);
-      border: 1px solid rgba(212,175,55,0.15); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden;
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      flex: 0 0 350px; background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); display: flex; flex-direction: column; overflow: hidden;
     }
-    .inbox-header { 
-      padding: 28px 24px; border-bottom: 1px solid rgba(212,175,55,0.1); 
-      font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; color: #ffe89c;
-      text-transform: uppercase; letter-spacing: 3px;
-    }
+    .inbox-header { padding: 20px; border-bottom: 1px solid var(--border); font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; background: var(--bg-elevated);}
     
     .inbox-threads { overflow-y: auto; flex: 1; }
 
     .msg-item {
-      padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; gap: 16px; cursor: pointer; transition: 0.2s ease;
+      padding: 20px; border-bottom: 1px solid var(--border); display: flex; gap: 16px; cursor: pointer; transition: 0.2s;
     }
-    .msg-item:hover { background: rgba(255,255,255,0.03); }
-    .msg-item.active { background: rgba(212,175,55,0.08); position: relative; }
-    .msg-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--gold); }
+    .msg-item:hover { background: var(--bg-hover); }
+    .msg-item.active { background: var(--gold-dim); border-left: 3px solid var(--gold); }
     
-    .msg-ava { width: 48px; height: 48px; border-radius: 50%; background-size: cover; background-position: center; flex-shrink: 0; border: 1px solid rgba(212,175,55,0.3); }
-    .msg-details { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
-    .msg-name { font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 4px; display: flex; justify-content: space-between; letter-spacing: 0.5px;}
-    .msg-time { font-size: 11px; color: rgba(212,175,55,0.7); font-weight: 500; }
-    .msg-preview { font-size: 13px; color: rgba(255,255,255,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .msg-ava { width: 48px; height: 48px; border-radius: 50%; background-size: cover; background-position: center; border: 1px solid var(--gold); flex-shrink: 0; }
+    .msg-details { flex: 1; min-width: 0; }
+    .msg-name { font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 4px; display: flex; justify-content: space-between;}
+    .msg-time { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+    .msg-preview { font-size: 13px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     
-    .msg-badge { background: rgba(212,175,55,0.15); color: #ffe89c; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; margin-top: 8px; display: inline-block; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(212,175,55,0.3);}
+    .msg-badge { background: var(--gold); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 10px; margin-left: 8px; }
     
     .inbox-view {
-      flex: 1; background: rgba(30, 5, 10, 0.4);
-      border: 1px solid rgba(212,175,55,0.15);
-      border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; 
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      flex: 1; background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); display: flex; flex-direction: column; overflow: hidden;
     }
     
     .view-header {
-      padding: 24px 32px; border-bottom: 1px solid rgba(212,175,55,0.1); display: flex; align-items: center; gap: 16px; 
-      background: rgba(255,255,255,0.02);
+      padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 16px; background: var(--bg-elevated);
     }
-    .view-header .msg-ava { width: 44px; height: 44px; }
+    .view-header .msg-ava { width: 40px; height: 40px; }
     
-    .view-body { flex: 1; padding: 32px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; }
+    .view-body { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; background: var(--bg); }
     
-    .chat-bubble { max-width: 70%; padding: 16px 24px; border-radius: 20px; font-size: 14px; line-height: 1.6; position: relative;}
-    .chat-left { background: rgba(255,255,255,0.05); align-self: flex-start; border-top-left-radius: 4px; color: #eaeaea; }
-    .chat-right { background: rgba(212,175,55,0.15); border: 1px solid rgba(212,175,55,0.3); color: #fff; align-self: flex-end; border-top-right-radius: 4px;}
+    .chat-bubble { max-width: 70%; padding: 16px 20px; border-radius: 16px; font-size: 14px; line-height: 1.5; position: relative;}
+    .chat-left { background: var(--bg-card); border: 1px solid var(--border); align-self: flex-start; border-top-left-radius: 4px; color: var(--text);}
+    .chat-right { background: var(--gold-dim); border: 1px solid var(--gold-border); color: var(--text); align-self: flex-end; border-top-right-radius: 4px;}
     
-    .chat-time { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 8px; text-align: right; }
+    .chat-time { font-size: 11px; color: var(--text-muted); margin-top: 8px; text-align: right; }
     
     .alliance-card {
-      background: rgba(0,0,0,0.2); 
-      border: 1px solid rgba(212,175,55,0.2); border-radius: 12px; padding: 20px;
-      margin-top: 16px;
+      background: var(--bg-card); border: 1px solid var(--gold); border-radius: 12px; padding: 20px;
+      margin-top: 12px; box-shadow: var(--shadow-sm);
     }
-    
-    .btn-royal {
-      background: transparent; color: #ffe89c; border: 1px solid rgba(212,175,55,0.5);
-      font-family: 'Inter', sans-serif; font-weight: 500; font-size: 13px;
-      padding: 10px 24px; border-radius: 30px; cursor: pointer; transition: 0.3s;
-    }
-    .btn-royal:hover { background: rgba(212,175,55,0.1); border-color: var(--gold); color: #fff; }
 
+    .btn-royal {
+      background: var(--gold); color: #fff; border: none; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px;
+      padding: 10px 20px; border-radius: 6px; cursor: pointer; transition: 0.2s;
+    }
+    .btn-royal:hover { background: #b8972f; }
+    
     .view-input {
-      padding: 24px 32px; border-top: 1px solid rgba(212,175,55,0.1); background: rgba(255,255,255,0.02); display: flex; gap: 16px; align-items: center;
+      padding: 20px; border-top: 1px solid var(--border); background: var(--bg-card); display: flex; gap: 12px; align-items: center;
     }
     .view-input input { 
-      flex: 1; padding: 16px 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; 
-      outline: none; font-family: inherit; background: rgba(0,0,0,0.2); color: #fff; font-size: 14px;
-      transition: 0.3s;
+      flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 20px; 
+      outline: none; font-family: inherit; color: var(--text); background: var(--bg-elevated);
     }
-    .view-input input::placeholder { color: rgba(255,255,255,0.3); }
-    .view-input input:focus { border-color: rgba(212,175,55,0.5); background: rgba(0,0,0,0.4); }
+    .view-input input:focus { border-color: var(--gold); }
     
     @media (max-width: 900px) {
-      .inbox-layout { flex-direction: column; height: auto; gap: 24px; }
-      .inbox-list { flex: none; height: 350px; }
-      .inbox-view { height: 600px; }
+      .inbox-layout { flex-direction: column; height: auto; }
+      .inbox-list { flex: none; height: 300px; overflow-y: auto; }
+      .inbox-view { height: 500px; }
     }
   </style>
 </head>
@@ -231,9 +207,9 @@
           extraHtml = `
             <div class="alliance-card">
               <div style="font-family:'Cinzel', serif; font-weight: 800; color: var(--gold); margin-bottom: 8px; font-size:16px;">Official Alliance Proposal</div>
-              <div style="font-size: 13px; color: #ffe89c; margin-bottom: 16px;">
+              <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
                 <b>Subject:</b> Rohan Verma (Gen 3)<br>
-                <b>Gotra Match:</b> <span style="color: #4ade80">100% Exogamy Verified</span>
+                <b>Gotra Match:</b> <span style="color: var(--green)">100% Exogamy Verified</span>
               </div>
               <button class="btn-royal" onclick="alert('Viewing Secure Biodata in Premium version...')">View Royal Biodata</button>
             </div>
@@ -253,13 +229,13 @@
         <div class="view-header">
           <div class="msg-ava" style="background-image:url('${thread.contactAvatar}')"></div>
           <div>
-            <div style="font-weight: 800; color: #fff; font-size: 18px;">${thread.contactName}</div>
+            <div style="font-weight: 800; color: var(--text); font-size: 18px;">${thread.contactName}</div>
             ${verifiedBadge}
           </div>
         </div>
         
         <div class="view-body" id="chatBody">
-          <div style="text-align:center; font-size: 12px; color: rgba(255,255,255,0.4); font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">Secure Chat History</div>
+          <div style="text-align:center; font-size: 12px; color: var(--text-muted); font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">Secure Chat History</div>
           ${messagesHtml}
         </div>
         
