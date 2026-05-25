@@ -203,6 +203,22 @@
       throw new Error('Invalid authMember');
     }
 
+    // Calculate Dynamic Network Stats
+    let myNetworkCount = 0;
+    let myVerifiedCount = 0;
+    familyMembers.forEach(m => {
+      if (m.id === authMember.id) return;
+      const rel = getSmartIndianRelation(familyMembers, authMember.id, m.id);
+      if (rel) {
+        myNetworkCount++;
+        if (m.verified) myVerifiedCount++;
+      }
+    });
+    // Add 1 for the user themselves
+    myNetworkCount += 1;
+    myVerifiedCount += (authMember.verified ? 1 : 0);
+    const verifiedPercentFinal = myNetworkCount > 0 ? Math.round((myVerifiedCount / myNetworkCount) * 100) : 0;
+
     // User Widget - Properly Centered
     const avaStyle = authMember.imageUrl ? `background-image:url('${authMember.imageUrl}')` : getAvatarStyle(authMember);
     const avaTxt = authMember.imageUrl ? '' : getInitials(authMember);
@@ -230,18 +246,18 @@
         
         <div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid var(--border-light); padding-bottom:20px; margin-bottom:20px">
           <div style="text-align:center; flex:1; border-right:1px solid var(--border-light)">
-            <div style="font-size:24px; font-weight:700; font-family:'Cinzel',serif; color:var(--text)">${familyMembers.length}</div>
+            <div style="font-size:24px; font-weight:700; font-family:'Cinzel',serif; color:var(--text)">\${myNetworkCount}</div>
             <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:600">Network</div>
           </div>
           <div style="text-align:center; flex:1">
-            <div style="font-size:24px; font-weight:700; font-family:'Cinzel',serif; color:var(--text)">100%</div>
+            <div style="font-size:24px; font-weight:700; font-family:'Cinzel',serif; color:var(--text)">\${verifiedPercentFinal}%</div>
             <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:600">Verified</div>
           </div>
         </div>
         
         <a href="profile.html?id=${authMember.id}" class="btn btn-gold" style="width:100%">Edit My Profile</a>
       </div>
-    `;
+    \`;
 
     // Populate Create Post Avatar
     document.getElementById('createPostAvatar').setAttribute('style', `width: 44px; height: 44px; border-radius: 50%; border-width: 1px; flex-shrink: 0; display:flex; align-items:center; justify-content:center; font-weight:bold; color:var(--gold); font-size:16px; background-color: var(--bg-elevated); ${avaStyle}; background-size: cover; background-position: center; border: 2px solid var(--gold-border);`);
