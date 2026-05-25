@@ -91,7 +91,8 @@
       
       let html = '';
       
-      MATCHMAKING_DB.forEach(candidate => {
+      familyMembers.forEach(candidate => {
+        if(candidate.id === target.id) return;
         if(candidate.gender !== oppositeGender) return;
         if(candidate.age < minAge || candidate.age > maxAge) return;
         

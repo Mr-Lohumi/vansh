@@ -12,7 +12,7 @@ function loadFamilyData() {
       
       // MIGRATION: Purge demo data (P1, P2, P4, P5, etc) to go "Live"
       // Check if it looks like the old demo database
-      if (parsed.some(m => m.id === 'P1' && m.firstName === 'Anand')) {
+      if (parsed.some(m => m.lastName === 'Sharma' || m.firstName === 'Rajesh')) {
         let auth = null;
         try { auth = JSON.parse(localStorage.getItem('rootd_auth')); } catch(e) {}
         const userId = auth ? auth.userId : null;
