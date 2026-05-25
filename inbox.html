@@ -7,95 +7,96 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css?v=7">
   <style>
-    /* Premium Indian Wedding Theme */
+    /* Premium Minimalist Royal Theme */
     body {
-      background-color: #2b060d;
+      background-color: #1a0408; /* Very dark rich maroon */
       background-image: 
-        radial-gradient(circle at top right, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.15) 0%, transparent 40%);
+        radial-gradient(circle at top right, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
       color: #fdfaf0;
     }
     .main-area { background: transparent; }
 
     .inbox-layout {
-      display: flex; gap: 24px; height: calc(100vh - 120px);
+      display: flex; gap: 32px; height: calc(100vh - 120px); max-width: 1200px; margin: 0 auto;
     }
     
     .inbox-list {
-      flex: 0 0 380px; 
-      background: linear-gradient(135deg, rgba(74, 14, 27, 0.95), rgba(43, 6, 13, 0.95));
-      border: 1px solid rgba(212,175,55,0.4); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+      flex: 0 0 360px; 
+      background: rgba(30, 5, 10, 0.6);
+      border: 1px solid rgba(212,175,55,0.15); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden;
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     }
     .inbox-header { 
-      padding: 24px; border-bottom: 1px solid rgba(212,175,55,0.2); 
-      font-family: 'Cinzel', serif; font-weight: 800; font-size: 20px; color: var(--gold);
-      text-transform: uppercase; letter-spacing: 2px;
+      padding: 28px 24px; border-bottom: 1px solid rgba(212,175,55,0.1); 
+      font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; color: #ffe89c;
+      text-transform: uppercase; letter-spacing: 3px;
     }
     
     .inbox-threads { overflow-y: auto; flex: 1; }
 
     .msg-item {
-      padding: 20px; border-bottom: 1px solid rgba(212,175,55,0.1); display: flex; gap: 16px; cursor: pointer; transition: 0.3s;
+      padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; gap: 16px; cursor: pointer; transition: 0.2s ease;
     }
-    .msg-item:hover { background: rgba(212,175,55,0.05); }
-    .msg-item.active { background: rgba(212,175,55,0.15); border-left: 4px solid var(--gold); }
+    .msg-item:hover { background: rgba(255,255,255,0.03); }
+    .msg-item.active { background: rgba(212,175,55,0.08); position: relative; }
+    .msg-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--gold); }
     
-    .msg-ava { width: 50px; height: 50px; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid var(--gold); flex-shrink: 0; box-shadow: 0 0 10px rgba(212,175,55,0.3);}
-    .msg-details { flex: 1; min-width: 0; }
-    .msg-name { font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 6px; display: flex; justify-content: space-between;}
-    .msg-time { font-size: 11px; color: #ffe89c; font-weight: 600; }
-    .msg-preview { font-size: 13px; color: rgba(255,255,255,0.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .msg-ava { width: 48px; height: 48px; border-radius: 50%; background-size: cover; background-position: center; flex-shrink: 0; border: 1px solid rgba(212,175,55,0.3); }
+    .msg-details { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+    .msg-name { font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 4px; display: flex; justify-content: space-between; letter-spacing: 0.5px;}
+    .msg-time { font-size: 11px; color: rgba(212,175,55,0.7); font-weight: 500; }
+    .msg-preview { font-size: 13px; color: rgba(255,255,255,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     
-    .msg-badge { background: linear-gradient(135deg, #d4af37, #aa8620); color: #2b060d; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 12px; margin-top: 6px; display: inline-block; text-transform: uppercase; letter-spacing: 1px;}
+    .msg-badge { background: rgba(212,175,55,0.15); color: #ffe89c; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; margin-top: 8px; display: inline-block; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(212,175,55,0.3);}
     
     .inbox-view {
-      flex: 1; background: linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
-      border: 1px solid rgba(212,175,55,0.3);
-      border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; backdrop-filter: blur(10px);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      flex: 1; background: rgba(30, 5, 10, 0.4);
+      border: 1px solid rgba(212,175,55,0.15);
+      border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; 
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     }
     
     .view-header {
-      padding: 20px 24px; border-bottom: 1px solid rgba(212,175,55,0.3); display: flex; align-items: center; gap: 16px; 
-      background: linear-gradient(135deg, rgba(74, 14, 27, 0.9), rgba(43, 6, 13, 0.9));
+      padding: 24px 32px; border-bottom: 1px solid rgba(212,175,55,0.1); display: flex; align-items: center; gap: 16px; 
+      background: rgba(255,255,255,0.02);
     }
     .view-header .msg-ava { width: 44px; height: 44px; }
     
-    .view-body { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; }
+    .view-body { flex: 1; padding: 32px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; }
     
-    .chat-bubble { max-width: 75%; padding: 16px 20px; border-radius: 16px; font-size: 14px; line-height: 1.6; position: relative;}
-    .chat-left { background: rgba(0,0,0,0.4); border: 1px solid rgba(212,175,55,0.2); align-self: flex-start; border-top-left-radius: 4px; color: #fdfaf0;}
-    .chat-right { background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(170,134,32,0.2)); border: 1px solid var(--gold); color: #fff; align-self: flex-end; border-top-right-radius: 4px;}
+    .chat-bubble { max-width: 70%; padding: 16px 24px; border-radius: 20px; font-size: 14px; line-height: 1.6; position: relative;}
+    .chat-left { background: rgba(255,255,255,0.05); align-self: flex-start; border-top-left-radius: 4px; color: #eaeaea; }
+    .chat-right { background: rgba(212,175,55,0.15); border: 1px solid rgba(212,175,55,0.3); color: #fff; align-self: flex-end; border-top-right-radius: 4px;}
     
-    .chat-time { font-size: 11px; color: #ffe89c; margin-top: 8px; text-align: right; font-weight: 600;}
+    .chat-time { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 8px; text-align: right; }
     
     .alliance-card {
-      background: linear-gradient(135deg, rgba(74, 14, 27, 0.95), rgba(43, 6, 13, 0.95)); 
-      border: 1px solid var(--gold); border-radius: 12px; padding: 20px;
-      margin-top: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+      background: rgba(0,0,0,0.2); 
+      border: 1px solid rgba(212,175,55,0.2); border-radius: 12px; padding: 20px;
+      margin-top: 16px;
     }
     
     .btn-royal {
-      background: linear-gradient(135deg, #d4af37, #aa8620); color: #fff; border: none;
-      font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-      padding: 10px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s;
-      box-shadow: 0 4px 15px rgba(212,175,55,0.3);
+      background: transparent; color: #ffe89c; border: 1px solid rgba(212,175,55,0.5);
+      font-family: 'Inter', sans-serif; font-weight: 500; font-size: 13px;
+      padding: 10px 24px; border-radius: 30px; cursor: pointer; transition: 0.3s;
     }
-    .btn-royal:hover { background: linear-gradient(135deg, #ebd17a, #c49d29); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,175,55,0.5); }
+    .btn-royal:hover { background: rgba(212,175,55,0.1); border-color: var(--gold); color: #fff; }
 
     .view-input {
-      padding: 20px; border-top: 1px solid rgba(212,175,55,0.3); background: rgba(0,0,0,0.3); display: flex; gap: 12px; align-items: center;
+      padding: 24px 32px; border-top: 1px solid rgba(212,175,55,0.1); background: rgba(255,255,255,0.02); display: flex; gap: 16px; align-items: center;
     }
     .view-input input { 
-      flex: 1; padding: 14px 20px; border: 1px solid rgba(212,175,55,0.4); border-radius: 24px; 
-      outline: none; font-family: inherit; background: rgba(0,0,0,0.4); color: #fff; font-size: 15px;
+      flex: 1; padding: 16px 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; 
+      outline: none; font-family: inherit; background: rgba(0,0,0,0.2); color: #fff; font-size: 14px;
+      transition: 0.3s;
     }
-    .view-input input::placeholder { color: rgba(255,255,255,0.4); }
-    .view-input input:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+    .view-input input::placeholder { color: rgba(255,255,255,0.3); }
+    .view-input input:focus { border-color: rgba(212,175,55,0.5); background: rgba(0,0,0,0.4); }
     
     @media (max-width: 900px) {
-      .inbox-layout { flex-direction: column; height: auto; }
+      .inbox-layout { flex-direction: column; height: auto; gap: 24px; }
       .inbox-list { flex: none; height: 350px; }
       .inbox-view { height: 600px; }
     }
