@@ -115,7 +115,11 @@
               <div style="color:rgba(255,255,255,0.9);font-weight:600;font-size:16px;margin-bottom:8px">@${member.username || 'user'}</div>
               <div style="color:rgba(255,255,255,0.8);font-size:14px;">Age: ${member.age} Yrs · ${member.gender} · ${member.occupation || 'N/A'} · Status: ${statusText}</div>
             </div>
-            <div>${member.id===loggedInId ? '<button class="btn btn-gold" onclick="openEditModal()">Edit My Profile</button>' : ''}</div>
+            <div>
+              ${member.id===loggedInId 
+                ? '<button class="btn btn-gold" onclick="openEditModal()">Edit My Profile</button>' 
+                : `<button class="btn btn-gold" onclick="promptSendInvite('${member.id}')">Connect Relationship</button>`}
+            </div>
           </div>
         </div>
       `;
@@ -218,6 +222,24 @@
       closeEditModal();
       renderProfile();
       showToast('Profile Saved', 'Your personal details have been updated.', 'ok');
+    }
+
+    function promptSendInvite(toUserId) {
+      const relation = prompt("What is your relationship to this person?\n(Enter: brother, sister, spouse, parent, or child)");
+      if (!relation) return;
+      
+      const validRelations = ['brother', 'sister', 'spouse', 'parent', 'child'];
+      if (!validRelations.includes(relation.toLowerCase())) {
+        alert("Invalid relationship type. Please try again.");
+        return;
+      }
+      
+      const res = sendInvite(loggedInId, toUserId, relation.toLowerCase());
+      if (res && res.success) {
+        showToast('Invite Sent', res.message, 'ok');
+      } else {
+        alert(res ? res.message : "Failed to send invite.");
+      }
     }
   </script>
 </body>
