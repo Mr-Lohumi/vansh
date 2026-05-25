@@ -230,24 +230,25 @@
             box-shadow: 0 15px 35px rgba(44, 37, 32, 0.08); position: relative; overflow: hidden; padding-bottom: 24px;
         }
         .wp-profile-card::after {
-            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            content: ''; position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px;
             border: 1px solid rgba(197, 160, 89, 0.4); border-radius: 12px; pointer-events: none; z-index: 1;
         }
-        .wp-card-ornament { position: absolute; width: 16px; height: 16px; border: 1.5px solid #c5a059; z-index: 2; opacity: 0.8; }
-        .wp-ornament-tl { top: 14px; left: 14px; border-right: none; border-bottom: none; border-top-left-radius: 4px; }
-        .wp-ornament-tr { top: 14px; right: 14px; border-left: none; border-bottom: none; border-top-right-radius: 4px; }
-        .wp-ornament-bl { bottom: 14px; left: 14px; border-right: none; border-top: none; border-bottom-left-radius: 4px; }
-        .wp-ornament-br { bottom: 14px; right: 14px; border-left: none; border-top: none; border-bottom-right-radius: 4px; }
+        .wp-card-ornament { position: absolute; width: 24px; height: 24px; border: 2px solid #c5a059; z-index: 2; opacity: 0.8; }
+        .wp-ornament-tl { top: 18px; left: 18px; border-right: none; border-bottom: none; border-top-left-radius: 6px; }
+        .wp-ornament-tr { top: 18px; right: 18px; border-left: none; border-bottom: none; border-top-right-radius: 6px; }
+        .wp-ornament-bl { bottom: 18px; left: 18px; border-right: none; border-top: none; border-bottom-left-radius: 6px; }
+        .wp-ornament-br { bottom: 18px; right: 18px; border-left: none; border-top: none; border-bottom-right-radius: 6px; }
         .wp-card-header {
-            background: linear-gradient(135deg, #581825, #3f1019); height: 140px; position: relative;
-            display: flex; justify-content: center; background-image: radial-gradient(rgba(255,255,255,0.05) 1.5px, transparent 0); background-size: 15px 15px;
+            background: radial-gradient(rgba(255,255,255,0.06) 2px, transparent 0), linear-gradient(135deg, #581825, #3f1019);
+            background-size: 16px 16px, auto;
+            height: 180px; position: relative; display: flex; justify-content: center;
         }
         .wp-avatar-container {
-            position: absolute; bottom: -50px; width: 106px; height: 106px; border-radius: 50%; padding: 4px;
-            background: linear-gradient(180deg, #c5a059, #eaddcb); box-shadow: 0 6px 16px rgba(0,0,0,0.2); z-index: 3;
+            position: absolute; bottom: -70px; width: 150px; height: 150px; border-radius: 50%; padding: 5px;
+            background: linear-gradient(180deg, #c5a059, #eaddcb); box-shadow: 0 8px 24px rgba(0,0,0,0.25); z-index: 3;
         }
-        .wp-avatar-img { width: 100%; height: 100%; border-radius: 50%; border: 3px solid #fdfcf9; background-color: #fdfcf9; }
-        .wp-details-box { position: relative; z-index: 2; margin-top: 60px; padding: 0 24px; text-align: center; }
+        .wp-avatar-img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #fdfcf9; background-color: #fdfcf9; }
+        .wp-details-box { position: relative; z-index: 2; margin-top: 85px; padding: 0 24px; text-align: center; }
         
         .wp-status-card {
             background: linear-gradient(180deg, #f9f6f0, #f4f1ea); border: 1px solid #d4c297;
