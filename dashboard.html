@@ -126,9 +126,14 @@
               </div>
               <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; border-top: 1px solid var(--border-light); padding-top: 16px;">
                 <div style="display: flex; gap: 20px; padding-left: 8px;">
-                  <button style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; font-size: 13px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--royal-red)'" onmouseout="this.style.color='var(--text-secondary)'"><span style="font-size: 18px;">📸</span> Photo / Video</button>
-                  <button style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; font-size: 13px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--royal-red)'" onmouseout="this.style.color='var(--text-secondary)'"><span style="font-size: 18px;">📅</span> Family Event</button>
-                  <button style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; font-size: 13px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--royal-red)'" onmouseout="this.style.color='var(--text-secondary)'"><span style="font-size: 18px;">📜</span> Milestone</button>
+                  <input type="file" id="postImageUpload" accept="image/*" style="display:none;" onchange="handlePostImageUpload(event)">
+                  <button onclick="document.getElementById('postImageUpload').click()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; font-size: 13px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--royal-red)'" onmouseout="this.style.color='var(--text-secondary)'"><span style="font-size: 18px;">📸</span> Photo / Video</button>
+                  <button onclick="addFamilyEvent()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; font-size: 13px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--royal-red)'" onmouseout="this.style.color='var(--text-secondary)'"><span style="font-size: 18px;">📅</span> Family Event</button>
+                  <button onclick="addMilestone()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; font-size: 13px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--royal-red)'" onmouseout="this.style.color='var(--text-secondary)'"><span style="font-size: 18px;">📜</span> Milestone</button>
+                  <div id="postImagePreviewContainer" style="display:none; align-items:center; gap:8px; margin-left:auto; background:var(--bg-hover); padding:4px 8px; border-radius:12px; font-size:11px; color:var(--text); font-weight:600">
+                    <span id="postImagePreviewName">Image attached</span>
+                    <button onclick="removePostImage()" style="background:none;border:none;color:var(--red);cursor:pointer;font-weight:bold;font-size:12px">✕</button>
+                  </div>
                 </div>
                 <button class="btn btn-gold btn-sm" style="padding: 10px 24px; font-size: 13px;" onclick="publishPost()">Publish</button>
               </div>
@@ -288,11 +293,46 @@
 
     renderFeed();
 
+    let currentPostImage = null;
+    
+    function handlePostImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        currentPostImage = e.target.result;
+        document.getElementById('postImagePreviewContainer').style.display = 'flex';
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    function removePostImage() {
+      currentPostImage = null;
+      document.getElementById('postImageUpload').value = '';
+      document.getElementById('postImagePreviewContainer').style.display = 'none';
+    }
+    
+    function addFamilyEvent() {
+      const eventName = prompt("Enter the name of the Family Event (e.g. Annual Gathering):");
+      if (eventName) {
+        const input = document.getElementById('postInput');
+        input.value = `📅 [Event: ${eventName}] ` + input.value;
+      }
+    }
+    
+    function addMilestone() {
+      const milestone = prompt("What milestone are you celebrating? (e.g. Birth, Graduation, New House):");
+      if (milestone) {
+        const input = document.getElementById('postInput');
+        input.value = `🎉 Celebrating a Milestone: ${milestone}! ` + input.value;
+      }
+    }
+
     function publishPost() {
       const input = document.getElementById('postInput');
       if (!input) return;
       const content = input.value.trim();
-      if (!content) return;
+      if (!content && !currentPostImage) return;
       
       const newPost = {
         id: Date.now(),
@@ -300,13 +340,14 @@
         time: 'Just now',
         avatarUrl: avaStyle || `background-color:var(--bg-hover)`,
         content: content,
-        image: null
+        image: currentPostImage
       };
       
       feedPosts.unshift(newPost);
       localStorage.setItem('vansh_feed', JSON.stringify(feedPosts));
       
       input.value = '';
+      removePostImage();
       renderFeed();
       
       const toast = document.querySelector('.toast-container');
