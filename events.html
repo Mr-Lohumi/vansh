@@ -229,11 +229,52 @@
         localStorage.setItem(EVENTS_KEY, JSON.stringify(data));
       } else {
         data = JSON.parse(data);
+        // Backfill IDs for old events
+        let changed = false;
+        data.forEach(e => {
+          if (!e.id) {
+            e.id = 'ev_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+            changed = true;
+          }
+        });
+        if (changed) {
+          localStorage.setItem(EVENTS_KEY, JSON.stringify(data));
+        }
       }
       
       // Sort chronologically
       data.sort((a,b) => new Date(a.dateStr) - new Date(b.dateStr));
       return data;
+    }
+
+    function toggleRsvp(id, btnElement) {
+      let events = loadEvents();
+      let ev = events.find(e => e.id === id);
+      if (ev) {
+        ev.rsvped = !ev.rsvped;
+        localStorage.setItem(EVENTS_KEY, JSON.stringify(events));
+        
+        if (ev.rsvped) {
+          btnElement.innerText = "RSVP'd ✓";
+          btnElement.style.background = 'rgba(212,175,55,0.2)';
+          btnElement.style.color = '#fff';
+        } else {
+          btnElement.innerText = "RSVP";
+          btnElement.style.background = 'transparent';
+          btnElement.style.color = '#ffe89c';
+        }
+      }
+    }
+
+    function shareEvent(title, dateStr, location, btnElement) {
+      const shareText = `Join us for ${title} on ${dateStr} at ${location}!`;
+      navigator.clipboard.writeText(shareText).then(() => {
+        const originalText = btnElement.innerText;
+        btnElement.innerText = "Copied!";
+        setTimeout(() => { btnElement.innerText = originalText; }, 2000);
+      }).catch(err => {
+        alert("Could not copy to clipboard. Details: " + shareText);
+      });
     }
 
     function renderEvents() {
@@ -265,6 +306,9 @@
         }
         
         const coverHtml = ev.imgUrl ? `<div class="event-cover" style="background-image:url('${ev.imgUrl}')"></div>` : '';
+        
+        const rsvpText = ev.rsvped ? "RSVP'd ✓" : "RSVP";
+        const rsvpStyle = ev.rsvped ? "background: rgba(212,175,55,0.2); color: #fff;" : "";
 
         return `
           <div class="event-card">
@@ -283,8 +327,8 @@
               <div class="event-desc">${ev.desc}</div>
               <div class="event-actions">
                 <div style="display:flex; gap: 12px">
-                  <button class="btn-outline-gold" onclick="alert('RSVP sent to the host.')">RSVP</button>
-                  <button class="btn-outline-gold" onclick="alert('Event added to calendar.')">Share</button>
+                  <button class="btn-outline-gold" style="${rsvpStyle}" onclick="toggleRsvp('${ev.id}', this)">${rsvpText}</button>
+                  <button class="btn-outline-gold" onclick="shareEvent('${ev.title.replace(/'/g, "\\'")}', '${ev.dateStr}', '${ev.location.replace(/'/g, "\\'")}', this)">Share</button>
                 </div>
                 <button class="btn-danger" onclick="cancelEvent('${ev.id}')">Cancel Event</button>
               </div>
@@ -306,9 +350,13 @@
     }
 
     function cancelEvent(id) {
+      if(!id || id === 'undefined') {
+         alert("Cannot delete this legacy event directly. Please refresh the page to assign it an ID and try again.");
+         return;
+      }
       if(!confirm("Are you sure you want to cancel and delete this event?")) return;
       let events = loadEvents();
-      events = events.filter(e => e.id !== id);
+      events = events.filter(e => String(e.id) !== String(id));
       localStorage.setItem(EVENTS_KEY, JSON.stringify(events));
       renderEvents();
     }
