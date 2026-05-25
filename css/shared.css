@@ -25,10 +25,10 @@
   --royal-red-dim: rgba(171, 35, 48, 0.1);
   --royal-red-glow: rgba(171, 35, 48, 0.2);
 
-  --gold: #ab2330; /* Re-mapped default accent to Royal Red to affect all active states */
-  --gold-dim: rgba(171, 35, 48, 0.1);
-  --gold-border: rgba(171, 35, 48, 0.3);
-  --gold-glow: rgba(171, 35, 48, 0.15);
+  --gold: #d4af37; /* Shimmering Champagne Gold */
+  --gold-dim: rgba(212, 175, 55, 0.1);
+  --gold-border: rgba(212, 175, 55, 0.4);
+  --gold-glow: rgba(212, 175, 55, 0.25);
   
   --shiny-gold: #d4af37;
   --shiny-gold-grad: linear-gradient(135deg, #c5a017, #f9df8a, #c5a017);
