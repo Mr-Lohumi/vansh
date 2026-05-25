@@ -80,8 +80,9 @@ function authenticateUser(loginKey, password) {
     const fullName = `${fName} ${lName}`.toLowerCase().trim();
     const firstOnly = fName.toLowerCase();
     const mobileNo = m.mobile ? m.mobile.toString().trim() : "";
+    const email = m.email ? m.email.toString().toLowerCase().trim() : "";
     
-    return fullName === cleanKey || firstOnly === cleanKey || mobileNo === cleanKey;
+    return fullName === cleanKey || firstOnly === cleanKey || mobileNo === cleanKey || email === cleanKey;
   });
 
   if (!matched) {
@@ -102,13 +103,13 @@ function authenticateUser(loginKey, password) {
 /**
  * Registers a brand new family member and logs them in
  */
-function registerUser(firstName, lastName, mobile, password, details = {}) {
+function registerUser(firstName, lastName, email, password, details = {}) {
   const members = getActiveDatabase();
   
-  const cleanMobile = mobile ? mobile.toString().trim() : "";
-  // Check if mobile already exists
-  if (cleanMobile && members.some(m => m.mobile && m.mobile.toString().trim() === cleanMobile)) {
-    return { success: false, message: "A member with this mobile number is already registered." };
+  const cleanEmail = email ? email.toString().toLowerCase().trim() : "";
+  // Check if email already exists
+  if (cleanEmail && members.some(m => m.email && m.email.toString().toLowerCase().trim() === cleanEmail)) {
+    return { success: false, message: "A member with this email is already registered." };
   }
 
   // Calculate next ID defensively
@@ -123,7 +124,7 @@ function registerUser(firstName, lastName, mobile, password, details = {}) {
     id: nextId,
     firstName: firstName.trim(),
     lastName: lastName.trim(),
-    mobile: mobile.trim(),
+    email: cleanEmail,
     password: password,
     gender: details.gender || "M",
     age: parseInt(details.age) || 25,
