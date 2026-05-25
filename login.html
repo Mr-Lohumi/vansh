@@ -343,24 +343,22 @@
       const caste = document.getElementById('regCaste').value;
       const native = document.getElementById('regNative').value;
 
-      // Trigger OTP, then register
-      triggerOTPScreen(email, () => {
-        const res = registerUser(first, last, email, pass, {
-          gender: gender,
-          age: age,
-          gotra: gotra,
-          caste: caste,
-          nativePlace: native,
-          imageUrl: base64AvatarData
-        });
-
-        if (res.success) {
-          alert('Welcome! Your profile has been registered in the family dynasty and verified.');
-          window.location.href = 'dashboard.html';
-        } else {
-          alert(res.message);
-        }
+      // Register directly without OTP
+      const res = registerUser(first, last, email, pass, {
+        gender: gender,
+        age: age,
+        gotra: gotra,
+        caste: caste,
+        nativePlace: native,
+        imageUrl: base64AvatarData
       });
+
+      if (res.success) {
+        alert('Welcome! Your profile has been registered in the family dynasty.');
+        window.location.href = 'dashboard.html';
+      } else {
+        alert(res.message);
+      }
     });
 
 
