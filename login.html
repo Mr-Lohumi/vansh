@@ -345,7 +345,7 @@
 
       // Trigger OTP, then register
       triggerOTPScreen(email, () => {
-        const res = registerUser(first, last, "", pass, {
+        const res = registerUser(first, last, email, pass, {
           gender: gender,
           age: age,
           gotra: gotra,
