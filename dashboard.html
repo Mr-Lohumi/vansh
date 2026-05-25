@@ -277,7 +277,7 @@
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
-      alert('Family tree dataset exported successfully! Save this file and copy its contents into your "shared-data.js" under "DEFAULT_FAMILY" to make it the default tree for all production users.');
+      alert('Family tree dataset exported successfully! Save this file as your secure backup. If you are setting up a fresh device or deploying the code to GitHub, you can import this JSON file back using the \\'Import Backup\\' button to restore all your production data.');
     }
 
     function importVanshData(event) {

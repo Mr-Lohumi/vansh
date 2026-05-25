@@ -4,34 +4,12 @@
 
 const FAMILY_DATA_KEY = 'vansh_family_data_v2';
 
-const DEFAULT_FAMILY = [
-  // ── Generation 0 ──
-  { id:"P1", firstName:"Rajesh", lastName:"Sharma", gender:"M", age:75, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:[], spouse:"P14", nativePlace:"Uttarakhand", verified:true, gen:0, bio:"The patriarch of the family.", education:"B.A.", occupation:"Retired Govt Officer", imageUrl: "https://images.unsplash.com/photo-1544168190-79c15427004f?w=400&q=80" },
-  { id:"P14", firstName:"Savitri", lastName:"Sharma", gender:"F", age:73, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:[], spouse:"P1", nativePlace:"Uttarakhand", verified:true, gen:0, deceased:true, bio:"The matriarch, fond memories.", education:"High School", occupation:"Homemaker", imageUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&q=80" },
-  { id:"P12", firstName:"Ram", lastName:"Prasad", gender:"M", age:76, caste:"Brahmin", subCaste:"Pandit", gotra:"Vashishta", parents:[], spouse:"P13", nativePlace:"Delhi", verified:true, gen:0, bio:"Maternal grandfather.", education:"M.Com", occupation:"Businessman", imageUrl: "https://images.unsplash.com/photo-1558222218-b7b54eede3f3?w=400&q=80" },
-  { id:"P13", firstName:"Kamla", lastName:"Devi", gender:"F", age:72, caste:"Brahmin", subCaste:"Pandit", gotra:"Gautam", parents:[], spouse:"P12", nativePlace:"Delhi", verified:true, gen:0, bio:"Maternal grandmother.", education:"B.A.", occupation:"Homemaker", imageUrl: "https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?w=400&q=80" },
-
-  // ── Generation 1 ──
-  { id:"P2", firstName:"Vikram", lastName:"Sharma", gender:"M", age:55, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P1","P14"], spouse:"P9", nativePlace:"Uttarakhand", verified:true, gen:1, bio:"Eldest son.", education:"M.Sc", occupation:"Bank Manager", imageUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=80" },
-  { id:"P9", firstName:"Meena", lastName:"Sharma", gender:"F", age:52, caste:"Brahmin", subCaste:"Garhwali", gotra:"Bharadwaj", parents:[], spouse:"P2", nativePlace:"Uttarakhand", verified:true, gen:1, bio:"Wife of Vikram.", education:"B.Ed", occupation:"Teacher", imageUrl: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80" },
-  { id:"P3", firstName:"Anand", lastName:"Sharma", gender:"M", age:50, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P1","P14"], spouse:"P4", nativePlace:"Uttarakhand", verified:true, gen:1, bio:"Current family lead.", education:"B.Tech", occupation:"Software Engineer", imageUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80" },
-  { id:"P4", firstName:"Sunita", lastName:"Sharma", gender:"F", age:48, caste:"Brahmin", subCaste:"Maternal", gotra:"Vashishta", parents:["P12","P13"], spouse:"P3", nativePlace:"Delhi", verified:true, gen:1, bio:"Wife of Anand.", education:"M.A.", occupation:"Professor", imageUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80" },
-
-  // ── Generation 2 ──
-  { id:"P10", firstName:"Arjun", lastName:"Sharma", gender:"M", age:28, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P2","P9"], spouse:null, nativePlace:"Uttarakhand", verified:true, gen:2, bio:"Son of Vikram.", education:"MBA", occupation:"Consultant", imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80" },
-  { id:"P11", firstName:"Kavita", lastName:"Sharma", gender:"F", age:24, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P2","P9"], spouse:null, nativePlace:"Uttarakhand", verified:true, gen:2, bio:"Daughter of Vikram.", education:"B.Arch", occupation:"Architect", imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80" },
-  { id:"P5", firstName:"Priya", lastName:"Sharma", gender:"F", age:25, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P3","P4"], spouse:"P6", nativePlace:"Uttarakhand", verified:true, gen:2, bio:"Daughter of Anand.", education:"MBBS", occupation:"Doctor", imageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80" },
-  { id:"P6", firstName:"Deepak", lastName:"Verma", gender:"M", age:28, caste:"Khatri", subCaste:"Verma", gotra:"Bharadwaj", parents:[], spouse:"P5", nativePlace:"Punjab", verified:true, gen:2, bio:"Husband of Priya.", education:"MD", occupation:"Doctor", imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" },
-  { id:"P7", firstName:"Rahul", lastName:"Sharma", gender:"M", age:22, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P3","P4"], spouse:null, nativePlace:"Uttarakhand", verified:true, gen:2, bio:"Twin son of Anand.", education:"B.Tech", occupation:"Student", imageUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&q=80" },
-  { id:"P8", firstName:"Aman", lastName:"Sharma", gender:"M", age:22, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P3","P4"], spouse:null, nativePlace:"Uttarakhand", verified:true, gen:2, bio:"Twin son of Anand.", education:"B.Tech", occupation:"Student", imageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80" },
-];
-
 function loadFamilyData() {
   try {
     const saved = localStorage.getItem(FAMILY_DATA_KEY);
     if (saved) return JSON.parse(saved);
   } catch(e) {}
-  return JSON.parse(JSON.stringify(DEFAULT_FAMILY));
+  return [];
 }
 function saveFamilyData(members) {
   try { localStorage.setItem(FAMILY_DATA_KEY, JSON.stringify(members)); } catch(e) {}

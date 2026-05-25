@@ -99,7 +99,6 @@
           <input type="password" id="loginPassword" class="form-input" placeholder="Enter password (default: vansh2025)" required>
         </div>
         <button type="submit" class="btn-gold" style="margin-top: 12px;">Request Authentication Code</button>
-        <button type="button" class="demo-link" onclick="handleDemoAccess()">⚡ Try Instant Demo Access (Anand)</button>
       </form>
 
       <!-- Form 2: SIGN UP -->
@@ -374,20 +373,7 @@
       });
     });
 
-    // Demo shortcut (Bypasses OTP for convenience)
-    function handleDemoAccess() {
-      const res = authenticateUser('9876543210', 'vansh2025');
-      if (res.success) {
-        window.location.href = 'dashboard.html';
-      } else {
-        const res2 = authenticateUser('Anand Sharma', 'vansh2025');
-        if (res2.success) {
-          window.location.href = 'dashboard.html';
-        } else {
-          alert('Demo user not found. Please register a new user using the Sign Up tab!');
-        }
-      }
-    }
+
   </script>
 </body>
 </html>

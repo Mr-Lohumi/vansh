@@ -46,37 +46,18 @@ function isLoggedIn() {
  * Loads current database directly from localStorage safely (with self-healing auto-repair)
  */
 function getActiveDatabase() {
-  const seed = [
-    { id:"P1", firstName:"Rajesh", lastName:"Sharma", gender:"M", age:75, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:[], spouse:"P14", nativePlace:"Uttarakhand", verified:true, gen:0, mobile:"9999999999", password:"vansh2025" },
-    { id:"P14", firstName:"Savitri", lastName:"Sharma", gender:"F", age:73, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:[], spouse:"P1", nativePlace:"Uttarakhand", verified:true, gen:0, deceased:true, mobile:"", password:"" },
-    { id:"P12", firstName:"Ram", lastName:"Prasad", gender:"M", age:76, caste:"Brahmin", subCaste:"Pandit", gotra:"Vashishta", parents:[], spouse:"P13", nativePlace:"Delhi", verified:true, gen:0, mobile:"", password:"" },
-    { id:"P13", firstName:"Kamla", lastName:"Devi", gender:"F", age:72, caste:"Brahmin", subCaste:"Pandit", gotra:"Gautam", parents:[], spouse:"P12", nativePlace:"Delhi", verified:true, gen:0, mobile:"", password:"" },
-    { id:"P2", firstName:"Vikram", lastName:"Sharma", gender:"M", age:55, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P1","P14"], spouse:"P9", nativePlace:"Uttarakhand", verified:true, gen:1, mobile:"8888888888", password:"vansh2025" },
-    { id:"P9", firstName:"Meena", lastName:"Sharma", gender:"F", age:52, caste:"Brahmin", subCaste:"Garhwali", gotra:"Bharadwaj", parents:[], spouse:"P2", nativePlace:"Uttarakhand", verified:true, gen:1, mobile:"", password:"" },
-    { id:"P3", firstName:"Anand", lastName:"Sharma", gender:"M", age:50, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P1","P14"], spouse:"P4", nativePlace:"Uttarakhand", verified:true, gen:1, mobile:"9876543210", password:"vansh2025" },
-    { id:"P4", firstName:"Sunita", lastName:"Sharma", gender:"F", age:48, caste:"Brahmin", subCaste:"Maternal", gotra:"Vashishta", parents:["P12","P13"], spouse:"P3", nativePlace:"Delhi", verified:true, gen:1, mobile:"", password:"" },
-    { id:"P10", firstName:"Arjun", lastName:"Sharma", gender:"M", age:28, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P2","P9"], spouse:null, nativePlace:"Uttarakhand", verified:true, gen:2, mobile:"", password:"" },
-    { id:"P11", firstName:"Kavita", lastName:"Sharma", gender:"F", age:24, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P2","P9"], spouse:null, nativePlace:"Uttarakhand", verified:true, gen:2, mobile:"", password:"" },
-    { id:"P5", firstName:"Priya", lastName:"Sharma", gender:"F", age:25, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P3","P4"], spouse:"P6", nativePlace:"Uttarakhand", verified:true, gen:2, mobile:"", password:"" },
-    { id:"P6", firstName:"Deepak", lastName:"Verma", gender:"M", age:28, caste:"Khatri", subCaste:"Verma", gotra:"Bharadwaj", parents:[], spouse:"P5", nativePlace:"Punjab", verified:true, gen:2, mobile:"", password:"" },
-    { id:"P7", firstName:"Rahul", lastName:"Sharma", gender:"M", age:22, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P3","P4"], spouse:null, nativePlace:"Uttarakhand", verified:true, gen:2, mobile:"", password:"" },
-    { id:"P8", firstName:"Aman", lastName:"Sharma", gender:"M", age:22, caste:"Brahmin", subCaste:"Lohumi", gotra:"Kashyap", parents:["P3","P4"], spouse:null, nativePlace:"Uttarakhand", verified:true, gen:2, mobile:"", password:"" }
-  ];
-
   try {
     const saved = localStorage.getItem(DATABASE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      // Auto-repair if array is empty or corrupt
-      if (Array.isArray(parsed) && parsed.length > 0 && parsed.some(m => m.id === 'P3')) {
+      if (Array.isArray(parsed)) {
         return parsed;
       }
     }
   } catch(e) {}
   
-  // Save seed to repair local state
-  localStorage.setItem(DATABASE_KEY, JSON.stringify(seed));
-  return seed;
+  // Return empty array for production (no demo data)
+  return [];
 }
 
 /**
