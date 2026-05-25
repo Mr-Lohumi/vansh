@@ -3,35 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vansh (वंश) — Heritage Museum</title>
+  <title>Vansh (वंश) — Royal Heritage Museum</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=5">
+  <link rel="stylesheet" href="css/shared.css?v=6">
   <style>
-    .museum-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 32px;
+    /* Premium Indian Wedding Theme */
+    body {
+      background-color: #2b060d;
+      background-image: 
+        radial-gradient(circle at top right, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.15) 0%, transparent 40%);
+      color: #fdfaf0;
     }
+    .main-area { background: transparent; }
+
+    .museum-header-card { 
+      padding: 50px 40px; 
+      background: linear-gradient(135deg, rgba(74, 14, 27, 0.95), rgba(43, 6, 13, 0.95));
+      border: 2px solid var(--gold); 
+      border-radius: 12px; 
+      margin-bottom: 40px; 
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 0 30px rgba(212,175,55,0.1); 
+      position: relative;
+      overflow: hidden;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    
+    .museum-header-card::before {
+      content: ''; position: absolute; top: -50px; left: -50px; width: 150px; height: 150px;
+      background: radial-gradient(circle, transparent 30%, var(--gold) 31%, var(--gold) 33%, transparent 34%, transparent 45%, var(--gold) 46%, var(--gold) 48%, transparent 49%);
+      opacity: 0.2; transform: rotate(45deg);
+    }
+
+    .museum-header-text h1 { 
+      font-size: 38px; font-weight: 800; font-family: 'Cinzel', serif; color: var(--gold); 
+      margin-bottom: 12px; text-transform: uppercase; letter-spacing: 4px;
+      text-shadow: 0 4px 15px rgba(212,175,55,0.4);
+    }
+    .museum-header-text p { font-size: 16px; color: #ffe89c; letter-spacing: 1px; max-width: 600px; line-height: 1.5; }
+
+    .btn-royal {
+      background: linear-gradient(135deg, #d4af37, #aa8620); color: #fff; border: none;
+      font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      padding: 14px 28px; border-radius: 8px; cursor: pointer; transition: 0.3s;
+      box-shadow: 0 4px 15px rgba(212,175,55,0.3); z-index: 2; position: relative;
+    }
+    .btn-royal:hover { background: linear-gradient(135deg, #ebd17a, #c49d29); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,175,55,0.5); }
+
+    .museum-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 32px; }
     
     .museum-item {
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
-      overflow: hidden; box-shadow: var(--shadow-card); transition: transform 0.4s;
+      background: linear-gradient(to bottom, #ffffff, #fdfaf0);
+      border: 2px solid var(--gold); border-radius: 8px;
+      overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: transform 0.4s;
     }
-    .museum-item:hover { transform: scale(1.02); border-color: var(--gold); }
+    .museum-item:hover { transform: scale(1.03); box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3); }
     
-    .museum-img {
-      width: 100%; height: 240px; background-size: cover; background-position: center;
-      border-bottom: 2px solid var(--gold); position: relative;
-    }
+    .museum-img { width: 100%; height: 260px; background-size: cover; background-position: center; border-bottom: 2px solid var(--gold); position: relative; }
     
     .museum-tag {
-      position: absolute; top: 16px; right: 16px; background: rgba(0,0,0,0.6); color: var(--gold);
-      padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(4px);
+      position: absolute; top: 16px; right: 16px; background: rgba(0,0,0,0.7); color: var(--gold);
+      padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; backdrop-filter: blur(4px);
+      border: 1px solid rgba(212,175,55,0.3);
     }
     
-    .museum-content { padding: 24px; }
-    .museum-title { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-    .museum-year { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 16px; }
-    .museum-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
-    
+    .museum-content { padding: 24px; text-align: center; }
+    .museum-title { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 800; color: #3a0815; margin-bottom: 8px; }
+    .museum-year { font-size: 14px; font-weight: 700; color: #aa8620; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+    .museum-desc { font-size: 14px; color: #555; line-height: 1.6; font-weight: 500; }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: linear-gradient(135deg, rgba(74, 14, 27, 0.98), rgba(43, 6, 13, 0.98));
+      border: 2px solid var(--gold); border-radius: 12px; width: 100%; max-width: 500px;
+      padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); position: relative;
+    }
+    .modal-title { font-family: 'Cinzel', serif; font-size: 24px; color: var(--gold); margin-bottom: 24px; text-transform: uppercase; letter-spacing: 2px; text-align: center;}
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; color: #ffe89c; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .form-input, .form-select {
+      width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(212,175,55,0.4);
+      color: #fff; padding: 12px 16px; border-radius: 6px; font-family: 'Inter', sans-serif;
+    }
+    .form-input:focus, .form-select:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+    .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #ffe89c; font-size: 24px; cursor: pointer; }
+    .modal-close:hover { color: #fff; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 16px; margin-top: 32px; }
   </style>
 </head>
 <body>
@@ -41,52 +103,62 @@
       <header class="topbar" id="topbar"></header>
       <div class="page-content">
         
-        <div class="section-header anim" style="display:flex; justify-content:space-between; align-items:center">
-          <div>Heritage Museum</div>
-          <button class="btn btn-primary" onclick="alert('Uploading artifacts requires Patriarch verification.')">Upload Artifact</button>
+        <div class="museum-header-card anim">
+          <div class="museum-header-text">
+            <h1>Royal Heritage Museum</h1>
+            <p>Welcome to the digital archive of your dynasty. Upload and preserve your sacred artifacts, historical documents, and royal portraits for all future generations.</p>
+          </div>
+          <button class="btn-royal" onclick="openUploadModal()">+ Add Artifact</button>
         </div>
         
-        <div class="anim anim-delay-1" style="margin-bottom: 40px; max-width: 700px; color: var(--text-secondary)">
-          Welcome to the digital archive of the Vansh network. Here, verified historical documents, photographs, and artifacts are preserved for future generations.
+        <div class="museum-grid anim anim-delay-1" id="museumGrid">
+          <!-- Dynamic Content -->
         </div>
         
-        <div class="museum-grid anim anim-delay-2">
-          
-          <div class="museum-item">
-            <div class="museum-img" style="background-image:url('https://images.unsplash.com/photo-1549420084-5f564f1c97a8?q=80&w=600&auto=format&fit=crop')">
-              <div class="museum-tag">Photograph</div>
-            </div>
-            <div class="museum-content">
-              <div class="museum-title">The First Homestead</div>
-              <div class="museum-year">Circa 1950</div>
-              <div class="museum-desc">The original family home built by Rajesh Sharma in Uttarakhand. This structure served as the gathering place for the first generation.</div>
-            </div>
-          </div>
-          
-          <div class="museum-item">
-            <div class="museum-img" style="background-image:url('https://images.unsplash.com/photo-1579724128912-70b9ebef5a2e?q=80&w=600&auto=format&fit=crop')">
-              <div class="museum-tag">Document</div>
-            </div>
-            <div class="museum-content">
-              <div class="museum-title">Ancestral Land Deed</div>
-              <div class="museum-year">1971</div>
-              <div class="museum-desc">The original handwritten property deed registered during the alliance of Rajesh and Savitri, officially establishing the family estate.</div>
-            </div>
-          </div>
-          
-          <div class="museum-item">
-            <div class="museum-img" style="background-image:url('https://images.unsplash.com/photo-1517409241517-814981881774?q=80&w=600&auto=format&fit=crop')">
-              <div class="museum-tag">Artifact</div>
-            </div>
-            <div class="museum-content">
-              <div class="museum-title">Savitri's Gold Bangles</div>
-              <div class="museum-year">Passed down since 1940</div>
-              <div class="museum-desc">Traditional gold bangles worn by Savitri on her wedding day. They are now considered a sacred family heirloom, passed to the eldest daughter-in-law.</div>
-            </div>
-          </div>
+      </div>
+    </div>
+  </div>
 
-        </div>
-        
+  <!-- Upload Modal -->
+  <div class="modal-overlay" id="uploadModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeUploadModal()">✕</button>
+      <div class="modal-title">Deposit Artifact</div>
+      
+      <div class="form-group">
+        <label class="form-label">Artifact Title</label>
+        <input type="text" id="artTitle" class="form-input" placeholder="e.g. Ancestral Sword">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Type</label>
+        <select id="artType" class="form-select">
+          <option value="Artifact">Artifact</option>
+          <option value="Document">Document</option>
+          <option value="Photograph">Photograph</option>
+          <option value="Heirloom">Heirloom</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Year / Era</label>
+        <input type="text" id="artYear" class="form-input" placeholder="e.g. Circa 1950">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Image URL</label>
+        <input type="text" id="artUrl" class="form-input" placeholder="https://...">
+        <div style="font-size:11px; color:rgba(255,255,255,0.5); margin-top:6px;">Paste an image link. (Direct uploads coming in Premium version)</div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea id="artDesc" class="form-input" rows="3" placeholder="Describe the historical significance..."></textarea>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn" style="background:transparent; color:#ffe89c; border:1px solid rgba(212,175,55,0.4)" onclick="closeUploadModal()">Cancel</button>
+        <button class="btn-royal" onclick="saveArtifact()">Preserve in Museum</button>
       </div>
     </div>
   </div>
@@ -97,6 +169,93 @@
   <script>
     if (!requireAuth()) throw '';
     initNav('museum');
+
+    const MUSEUM_KEY = 'vansh_museum_db';
+
+    function loadMuseum() {
+      let data = localStorage.getItem(MUSEUM_KEY);
+      if (!data) {
+        // Seed initial data if empty
+        data = [
+          {
+            title: "The First Homestead",
+            type: "Photograph",
+            year: "Circa 1950",
+            imgUrl: "https://images.unsplash.com/photo-1549420084-5f564f1c97a8?q=80&w=600&auto=format&fit=crop",
+            desc: "The original family home built in the native village. This structure served as the gathering place for the first generation."
+          },
+          {
+            title: "Ancestral Land Deed",
+            type: "Document",
+            year: "1971",
+            imgUrl: "https://images.unsplash.com/photo-1579724128912-70b9ebef5a2e?q=80&w=600&auto=format&fit=crop",
+            desc: "The original handwritten property deed registered during the early days, officially establishing the family estate."
+          }
+        ];
+        localStorage.setItem(MUSEUM_KEY, JSON.stringify(data));
+      } else {
+        data = JSON.parse(data);
+      }
+      return data;
+    }
+
+    function renderMuseum() {
+      const artifacts = loadMuseum();
+      const grid = document.getElementById('museumGrid');
+      
+      if(artifacts.length === 0) {
+        grid.innerHTML = '<div style="color:#ffe89c; padding:20px;">The museum is currently empty. Upload your first artifact to begin the archive.</div>';
+        return;
+      }
+
+      grid.innerHTML = artifacts.map(art => `
+        <div class="museum-item">
+          <div class="museum-img" style="background-image:url('${art.imgUrl || 'https://images.unsplash.com/photo-1505664194779-8beaceb93744?q=80&w=600&auto=format&fit=crop'}')">
+            <div class="museum-tag">${art.type}</div>
+          </div>
+          <div class="museum-content">
+            <div class="museum-title">${art.title}</div>
+            <div class="museum-year">${art.year}</div>
+            <div class="museum-desc">${art.desc}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openUploadModal() {
+      document.getElementById('uploadModal').classList.add('active');
+    }
+    
+    function closeUploadModal() {
+      document.getElementById('uploadModal').classList.remove('active');
+      // clear fields
+      document.getElementById('artTitle').value = '';
+      document.getElementById('artYear').value = '';
+      document.getElementById('artUrl').value = '';
+      document.getElementById('artDesc').value = '';
+    }
+
+    function saveArtifact() {
+      const title = document.getElementById('artTitle').value.trim();
+      if(!title) return alert("Title is required");
+
+      const newArt = {
+        title: title,
+        type: document.getElementById('artType').value,
+        year: document.getElementById('artYear').value.trim() || 'Unknown',
+        imgUrl: document.getElementById('artUrl').value.trim(),
+        desc: document.getElementById('artDesc').value.trim() || 'No description provided.'
+      };
+
+      const artifacts = loadMuseum();
+      artifacts.unshift(newArt); // add to top
+      localStorage.setItem(MUSEUM_KEY, JSON.stringify(artifacts));
+      
+      closeUploadModal();
+      renderMuseum();
+    }
+
+    renderMuseum();
   </script>
 </body>
 </html>
