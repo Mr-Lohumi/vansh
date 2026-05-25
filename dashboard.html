@@ -225,9 +225,15 @@
     const userId = auth ? auth.userId : 'P3';
     const authMember = getMemberById(userId);
     
+    if (!authMember) {
+      alert('Your session is invalid or your profile data is missing. Please log in again.');
+      logout();
+      throw new Error('Invalid authMember');
+    }
+
     // User Widget - Properly Centered
-    const avaStyle = authMember?.imageUrl ? `background-image:url('${authMember.imageUrl}')` : getAvatarStyle(authMember);
-    const avaTxt = authMember?.imageUrl ? '' : getInitials(authMember);
+    const avaStyle = authMember.imageUrl ? `background-image:url('${authMember.imageUrl}')` : getAvatarStyle(authMember);
+    const avaTxt = authMember.imageUrl ? '' : getInitials(authMember);
     
     document.getElementById('userWidget').innerHTML = `
       <div class="wp-header-bg"></div>

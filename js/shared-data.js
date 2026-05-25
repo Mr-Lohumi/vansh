@@ -91,7 +91,7 @@ function getSmartIndianRelation(allMembers, activeNodeId, targetNodeId) {
 
   const parents  = id => (M.get(id)?.parents || []).filter(p => M.has(p));
   const spouse   = id => { const m = M.get(id); if (m?.spouse && M.has(m.spouse)) return m.spouse; for (const [k,v] of M) { if (v.spouse === id) return k; } return null; };
-  const children = id => allMembers.filter(m => m.parents.includes(id)).map(m => m.id);
+  const children = id => allMembers.filter(m => m.parents && m.parents.includes(id)).map(m => m.id);
   const siblings = id => { const s = new Set(); for (const p of parents(id)) children(p).forEach(c => { if (c !== id) s.add(c); }); return [...s]; };
 
   const A = activeNodeId, B = targetNodeId;
