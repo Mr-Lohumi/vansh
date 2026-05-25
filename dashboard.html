@@ -226,92 +226,80 @@
     document.getElementById('userWidget').innerHTML = `
       <style>
         .wp-profile-card {
-            background: linear-gradient(135deg, #581825, #3f1019); width: 100%; border-radius: 16px; border: 1px solid #c5a059;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); position: relative; overflow: hidden; padding-bottom: 20px;
-            background-image: radial-gradient(rgba(255,255,255,0.06) 2px, transparent 0), linear-gradient(135deg, #581825, #3f1019);
-            background-size: 16px 16px, auto; color: #fdfcf9;
+            background-color: #ffffff; width: 100%; border-radius: 12px; border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); position: relative; overflow: hidden; padding-bottom: 20px;
+            font-family: 'Inter', sans-serif;
         }
-        .wp-profile-card::after {
-            content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
-            border: 1px solid rgba(197, 160, 89, 0.5); border-radius: 10px; pointer-events: none; z-index: 1;
+        .wp-cover-photo {
+            height: 100px; width: 100%;
+            background: linear-gradient(135deg, #581825, #8a2538);
+            background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 0), linear-gradient(135deg, #581825, #8a2538);
+            background-size: 10px 10px, auto;
         }
-        .wp-card-ornament { position: absolute; width: 16px; height: 16px; border: 1.5px solid #c5a059; z-index: 2; opacity: 1; }
-        .wp-ornament-tl { top: 12px; left: 12px; border-right: none; border-bottom: none; border-top-left-radius: 4px; }
-        .wp-ornament-tr { top: 12px; right: 12px; border-left: none; border-bottom: none; border-top-right-radius: 4px; }
-        .wp-ornament-bl { bottom: 12px; left: 12px; border-right: none; border-top: none; border-bottom-left-radius: 4px; }
-        .wp-ornament-br { bottom: 12px; right: 12px; border-left: none; border-top: none; border-bottom-right-radius: 4px; }
-        
         .wp-avatar-container {
-            margin: 30px auto 16px; width: 100px; height: 100px; border-radius: 50%; padding: 3px;
-            background: linear-gradient(180deg, #c5a059, #dfba78); box-shadow: 0 6px 20px rgba(0,0,0,0.4); position: relative; z-index: 3;
+            margin-top: -45px; margin-left: 20px; width: 90px; height: 90px; border-radius: 50%;
+            background: #ffffff; padding: 3px; position: relative; z-index: 3;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         }
-        .wp-avatar-img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #581825; background-color: #fdfcf9; }
-        .wp-details-box { position: relative; z-index: 2; padding: 0 20px; text-align: center; }
+        .wp-avatar-img { width: 100%; height: 100%; border-radius: 50%; border: 1px solid #e0e0e0; background-color: #f0f2f5; }
+        
+        .wp-details-box { position: relative; z-index: 2; padding: 0 20px; margin-top: 10px; }
         
         .wp-status-card {
-            background: rgba(0,0,0,0.2); border: 1px solid rgba(197, 160, 89, 0.3);
-            border-radius: 6px; padding: 12px; margin: 16px 0;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); position: relative;
+            background: #f0f2f5; border-radius: 8px; padding: 12px; margin: 16px 0;
+            text-align: center;
         }
-        .wp-info-list { text-align: left; margin-top: 16px; font-family: 'Inter', sans-serif; font-size: 13px; position: relative; z-index: 2;}
-        .wp-info-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed rgba(197, 160, 89, 0.3); align-items: center; }
-        .wp-info-item:last-child { border-bottom: none; }
-        .wp-info-label { color: #dfba78; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-        .wp-info-value { font-weight: 700; text-align: right; color: #fff;}
+        .wp-info-list { text-align: left; margin-top: 16px; font-size: 14px; color: #65676b; }
+        .wp-info-item { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+        .wp-info-icon { width: 20px; text-align: center; font-size: 16px; color: #8a2538; }
+        .wp-info-value { font-weight: 500; color: #050505; }
       </style>
 
       <div class="wp-profile-card">
-        <div class="wp-card-ornament wp-ornament-tl"></div>
-        <div class="wp-card-ornament wp-ornament-tr"></div>
-        <div class="wp-card-ornament wp-ornament-bl"></div>
-        <div class="wp-card-ornament wp-ornament-br"></div>
+        <div class="wp-cover-photo"></div>
         
         <div class="wp-avatar-container">
-          <div class="wp-avatar-img" style="${avaStyle}; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; color:#581825; background-size: cover; background-position: center;">${avaTxt}</div>
+          <div class="wp-avatar-img" style="${avaStyle}; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700; color:#581825; background-size: cover; background-position: center;">${avaTxt}</div>
         </div>
         
         <div class="wp-details-box">
-          <h2 style="font-family:'Cinzel',serif;font-size:20px;font-weight:800;color:#fff; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase;">${getFullName(authMember)}</h2>
-          <div style="font-size:13px; font-weight:500; color:#dfba78; margin-bottom:8px; font-family:'Inter',sans-serif;">@${authMember.username || 'user'}</div>
-          <div style="font-size:14px; font-weight:500; color:#eaddcb; margin-bottom:12px; font-family:'Inter',sans-serif;">
+          <h2 style="font-size:20px;font-weight:700;color:#050505; margin-bottom: 2px;">${getFullName(authMember)}</h2>
+          <div style="font-size:14px; font-weight:400; color:#65676b; margin-bottom:12px;">@${authMember.username || 'user'}</div>
+          
+          <div style="font-size:14px; font-weight:500; color:#050505; margin-bottom:16px;">
             ${getCasteLine(authMember)} · ${authMember.gotra} Gotra
           </div>
           
           <div class="wp-status-card">
-            <div style="font-size:11px; font-weight:700; font-family:'Cinzel',serif; letter-spacing:2px; color:#dfba78; margin-bottom:6px; text-transform: uppercase;">
-              ${authMember.age} YRS <span style="margin:0 6px; color:#c5a059">•</span> ${authMember.gender === 'M' ? 'MALE' : 'FEMALE'}
-            </div>
-            <div style="font-family:'Inter',sans-serif; font-size:15px; font-weight:700; color:#fff; margin-bottom:10px;">
+            <div style="font-size:15px; font-weight:600; color:#050505; margin-bottom:4px;">
               ${authMember.occupation || 'Network Member'}
             </div>
-            <div style="font-family:'Cinzel',serif; color:#fdfcf9; font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:2px; display:flex; align-items:center; justify-content:center; gap:8px;">
-              <span style="color:#c5a059; font-size:12px;">~</span>
-              ${authMember.spouse ? 'MARRIED' : 'SINGLE'}
-              <span style="color:#c5a059; font-size:12px;">~</span>
+            <div style="font-size:13px; color:#65676b;">
+              ${authMember.age} yrs • ${authMember.gender === 'M' ? 'Male' : 'Female'} • <span style="color:#8a2538; font-weight:600;">${authMember.spouse ? 'Married' : 'Single'}</span>
             </div>
           </div>
           
           <div class="wp-info-list">
-            ${authMember.education ? `<div class="wp-info-item"><div class="wp-info-label"><span style="font-size:16px;">🎓</span> Education:</div><div class="wp-info-value">${authMember.education}</div></div>` : ''}
-            ${authMember.company ? `<div class="wp-info-item"><div class="wp-info-label"><span style="font-size:16px;">🎖️</span> Org:</div><div class="wp-info-value">${authMember.company}</div></div>` : ''}
-            ${authMember.manglik ? `<div class="wp-info-item"><div class="wp-info-label"><span style="font-size:16px;">♍</span> Manglik:</div><div class="wp-info-value" style="color:#fdfcf9">${authMember.manglik}</div></div>` : ''}
-            ${authMember.diet ? `<div class="wp-info-item"><div class="wp-info-label"><span style="font-size:16px;">🍃</span> Diet:</div><div class="wp-info-value">${authMember.diet}</div></div>` : ''}
+            ${authMember.education ? `<div class="wp-info-item"><div class="wp-info-icon">🎓</div><div class="wp-info-value">${authMember.education}</div></div>` : ''}
+            ${authMember.company ? `<div class="wp-info-item"><div class="wp-info-icon">💼</div><div class="wp-info-value">${authMember.company}</div></div>` : ''}
+            ${authMember.manglik ? `<div class="wp-info-item"><div class="wp-info-icon">✨</div><div class="wp-info-value" style="color:#8a2538">${authMember.manglik}</div></div>` : ''}
+            ${authMember.diet ? `<div class="wp-info-item"><div class="wp-info-icon">🍽️</div><div class="wp-info-value">${authMember.diet}</div></div>` : ''}
           </div>
           
-          ${authMember.bio ? `<div style="margin-top: 16px; font-style: italic; font-family: 'Playfair Display', serif; color: #dfba78; line-height: 1.4; font-size: 13px;">"${authMember.bio}"</div>` : ''}
+          ${authMember.bio ? `<div style="margin-top: 16px; color: #050505; line-height: 1.4; font-size: 14px; text-align: center; padding: 12px; background: #f0f2f5; border-radius: 8px;">${authMember.bio}</div>` : ''}
           
-          <div style="display:flex; justify-content:space-between; width:100%; border-top:1px solid rgba(197, 160, 89, 0.3); padding-top:16px; margin-top:16px">
-            <div style="text-align:center; flex:1; border-right:1px solid rgba(197, 160, 89, 0.3)">
-              <div style="font-size:20px; font-weight:700; font-family:'Cinzel',serif; color:#fff">${myNetworkCount}</div>
-              <div style="font-size:10px; color:#dfba78; text-transform:uppercase; letter-spacing:1px; font-weight:600">Network</div>
+          <div style="display:flex; justify-content:space-between; width:100%; border-top:1px solid #e0e0e0; padding-top:16px; margin-top:20px">
+            <div style="text-align:center; flex:1; border-right:1px solid #e0e0e0">
+              <div style="font-size:18px; font-weight:700; color:#050505">${myNetworkCount}</div>
+              <div style="font-size:12px; color:#65676b; font-weight:500">Network</div>
             </div>
             <div style="text-align:center; flex:1">
-              <div style="font-size:20px; font-weight:700; font-family:'Cinzel',serif; color:#fff">${verifiedPercentFinal}%</div>
-              <div style="font-size:10px; color:#dfba78; text-transform:uppercase; letter-spacing:1px; font-weight:600">Verified</div>
+              <div style="font-size:18px; font-weight:700; color:#050505">${verifiedPercentFinal}%</div>
+              <div style="font-size:12px; color:#65676b; font-weight:500">Verified</div>
             </div>
           </div>
           
-          <a href="profile.html?id=${authMember.id}" class="btn" style="width:100%; margin-top:20px; background:linear-gradient(90deg, #c5a059, #dfba78); border:none; color:#581825; font-family:'Cinzel',serif; font-weight:700; letter-spacing:1px; font-size:12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);">Edit Profile</a>
+          <a href="profile.html?id=${authMember.id}" class="btn" style="width:100%; margin-top:20px; background:#e4e6eb; border:none; color:#050505; font-weight:600; font-size:14px; border-radius: 6px; padding: 8px;">Edit Profile</a>
         </div>
       </div>
     `;
