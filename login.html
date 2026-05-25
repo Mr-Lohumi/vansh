@@ -89,16 +89,16 @@
 
       <!-- Form 1: SIGN IN -->
       <form id="signInForm">
-        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px; line-height: 1.5;">Enter either your registered **Gmail/Email** or **Mobile Number** to access your family dashboard.</p>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px; line-height: 1.5;">Enter your registered **Email Address** to access your family dashboard.</p>
         <div class="form-group">
-          <label class="form-label">Gmail or Mobile Number</label>
-          <input type="text" id="loginKey" class="form-input" placeholder="e.g. anand@gmail.com or 9876543210" required>
+          <label class="form-label">Email Address</label>
+          <input type="email" id="loginKey" class="form-input" placeholder="e.g. anand@email.com" required>
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
           <input type="password" id="loginPassword" class="form-input" placeholder="Enter password (default: vansh2025)" required>
         </div>
-        <button type="submit" class="btn-gold" style="margin-top: 12px;">Request Authentication Code</button>
+        <button type="submit" class="btn-gold" style="margin-top: 12px;">Sign In</button>
       </form>
 
       <!-- Form 2: SIGN UP -->
@@ -125,13 +125,8 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Gmail Address</label>
-          <input type="email" id="regEmail" class="form-input" placeholder="e.g. priya@gmail.com" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Mobile Number</label>
-          <input type="tel" id="regMobile" class="form-input" placeholder="e.g. 9876543210" required>
+          <label class="form-label">Email Address</label>
+          <input type="email" id="regEmail" class="form-input" placeholder="e.g. priya@email.com" required>
         </div>
 
         <div class="form-group">
@@ -324,13 +319,11 @@
       const loginKey = document.getElementById('loginKey').value;
       const pass = document.getElementById('loginPassword').value;
       
-      // Pre-validate locally before sending OTP
+      // Pre-validate locally
       const res = authenticateUser(loginKey, pass);
       if (res.success) {
-        // Trigger simulated OTP screen, then log in
-        triggerOTPScreen(loginKey, () => {
-          window.location.href = 'dashboard.html';
-        });
+        // Skip OTP and log in directly
+        window.location.href = 'dashboard.html';
       } else {
         alert(res.message);
       }
@@ -342,7 +335,6 @@
       const first = document.getElementById('regFirst').value;
       const last = document.getElementById('regLast').value;
       const email = document.getElementById('regEmail').value;
-      const mob = document.getElementById('regMobile').value;
       const pass = document.getElementById('regPassword').value;
       
       const gender = document.getElementById('regGender').value;
@@ -351,9 +343,9 @@
       const caste = document.getElementById('regCaste').value;
       const native = document.getElementById('regNative').value;
 
-      // Trigger simulated OTP, then register
-      triggerOTPScreen(email || mob, () => {
-        const res = registerUser(first, last, mob, pass, {
+      // Trigger OTP, then register
+      triggerOTPScreen(email, () => {
+        const res = registerUser(first, last, "", pass, {
           gender: gender,
           age: age,
           gotra: gotra,
