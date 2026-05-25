@@ -27,7 +27,7 @@
     .stories-container::-webkit-scrollbar { display: none; }
     .story-card { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0; transition: transform 0.2s; width: 72px; }
     .story-card:hover { transform: scale(1.02); }
-    .story-ring { width: 64px; height: 64px; border-radius: 50%; padding: 2px; background: #1877f2; }
+    .story-ring { width: 64px; height: 64px; border-radius: 50%; padding: 2px; background: linear-gradient(135deg, #c5a059, #581825); }
     .story-img { width: 100%; height: 100%; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid #ffffff; background-color: #f0f2f5; }
     .story-name { font-size: 12px; font-weight: 500; color: #050505; max-width: 72px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; font-family: 'Inter', sans-serif;}
     
@@ -377,15 +377,15 @@
       if (!container) return;
       
       let html = `
-        <div class="story-card">
-          <div class="story-ring" style="background: #e0e0e0;"><div class="story-img" style="display:flex; align-items:center; justify-content:center; color: #1877f2; font-size: 28px; font-weight: 300;">+</div></div>
+        <div class="story-card" onclick="promptAddStory()">
+          <div class="story-ring" style="background: #e0e0e0;"><div class="story-img" style="display:flex; align-items:center; justify-content:center; color: #581825; font-size: 28px; font-weight: 300;">+</div></div>
           <div class="story-name">Add Story</div>
         </div>
       `;
       
       mockStories.forEach(story => {
         html += `
-          <div class="story-card" onclick="alert('Viewing ${story.name}...')">
+          <div class="story-card" onclick="viewStory('${story.name}', '${story.img}')">
             <div class="story-ring"><div class="story-img" style="background-image:url('${story.img}')"></div></div>
             <div class="story-name">${story.name}</div>
           </div>
@@ -394,6 +394,30 @@
       container.innerHTML = html;
     }
     renderStories();
+
+    function promptAddStory() {
+      const name = prompt("Enter a brief title for your story:");
+      if (!name) return;
+      const img = prompt("Enter an image URL for the story (leave blank for random):") || "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&q=80";
+      
+      mockStories.unshift({
+        id: Date.now(),
+        name: name,
+        img: img,
+        type: "user"
+      });
+      renderStories();
+    }
+
+    function viewStory(name, imgUrl) {
+      document.getElementById('storyViewerName').innerText = name;
+      document.getElementById('storyViewerImage').style.backgroundImage = `url('${imgUrl}')`;
+      document.getElementById('storyViewer').style.display = 'flex';
+    }
+
+    function closeStory() {
+      document.getElementById('storyViewer').style.display = 'none';
+    }
 
     function toggleRespect(postId) {
       const post = feedPosts.find(p => p.id === postId);
@@ -539,5 +563,15 @@
       reader.readAsText(file);
     }
   </script>
+
+  <!-- Story Viewer Modal -->
+  <div id="storyViewer" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:9999; flex-direction:column; align-items:center; justify-content:center;">
+    <button onclick="closeStory()" style="position:absolute; top:20px; right:20px; background:none; border:none; color:#fff; font-size:40px; cursor:pointer;">&times;</button>
+    <div style="width:100%; max-width:500px; position: relative;">
+      <div style="position: absolute; top: 16px; left: 16px; color:#fff; font-size:18px; font-weight:600; text-shadow: 0 2px 4px rgba(0,0,0,0.5); z-index: 10;">${document.getElementById('storyViewerName')?.innerText || 'Story'}</div>
+      <div id="storyViewerName" style="display:none;"></div>
+      <div style="width:100%; aspect-ratio: 9/16; border-radius:16px; background-size:cover; background-position:center; box-shadow:0 10px 40px rgba(0,0,0,0.5);" id="storyViewerImage"></div>
+    </div>
+  </div>
 </body>
 </html>
