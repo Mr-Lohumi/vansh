@@ -59,15 +59,69 @@
           <div class="form-group"><label class="form-label">Age</label><input type="number" id="editAge" class="form-input" required></div>
           <div class="form-group"><label class="form-label">Gotra</label><input type="text" id="editGotra" class="form-input" required></div>
         </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Height</label>
+            <input type="text" id="editHeight" class="form-input" placeholder="e.g. 5'10&quot;">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Current City</label>
+            <input type="text" id="editLocation" class="form-input" placeholder="e.g. Delhi, India">
+          </div>
+        </div>
+        
         <div class="form-group">
           <label class="form-label">Profile Picture</label>
           <input type="file" id="editAvatar" class="form-input" accept="image/*">
         </div>
+        
         <div class="form-row">
-          <div class="form-group"><label class="form-label">Education</label><input type="text" id="editEdu" class="form-input"></div>
-          <div class="form-group"><label class="form-label">Occupation</label><input type="text" id="editOcc" class="form-input"></div>
+          <div class="form-group"><label class="form-label">Education</label><input type="text" id="editEdu" class="form-input" placeholder="e.g. B.Tech CS"></div>
+          <div class="form-group"><label class="form-label">Occupation Title</label><input type="text" id="editOcc" class="form-input" placeholder="e.g. Software Engineer"></div>
         </div>
-        <div class="form-group"><label class="form-label">Biography</label><input type="text" id="editBio" class="form-input"></div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Employment Sector</label>
+            <select id="editSector" class="form-input" style="height:42px;">
+              <option value="">Select Sector</option>
+              <option value="Government">Government Job</option>
+              <option value="Private">Private Corporate</option>
+              <option value="Business">Business / Entrepreneur</option>
+              <option value="Professional">Independent Professional</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Company / Organization</label>
+            <input type="text" id="editCompany" class="form-input" placeholder="e.g. Google, Govt of India">
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Dietary Preference</label>
+            <select id="editDiet" class="form-input" style="height:42px;">
+              <option value="">Select Diet</option>
+              <option value="Vegetarian">Vegetarian</option>
+              <option value="Non-Vegetarian">Non-Vegetarian</option>
+              <option value="Eggetarian">Eggetarian</option>
+              <option value="Vegan">Vegan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Manglik Status</label>
+            <select id="editManglik" class="form-input" style="height:42px;">
+              <option value="">Select Status</option>
+              <option value="Non-Manglik">Non-Manglik</option>
+              <option value="Manglik">Manglik</option>
+              <option value="Anshik Manglik">Anshik Manglik</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="form-label">Biography</label><input type="text" id="editBio" class="form-input" placeholder="A short bio..."></div>
       </form>
       <div class="modal-footer">
         <button class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
@@ -162,8 +216,24 @@
             <div class="info-val">${member.education || 'Not Provided'}</div>
           </div>
           <div class="info-box">
-            <div class="info-label">Occupation</div>
-            <div class="info-val">${member.occupation || 'Not Provided'}</div>
+            <div class="info-label">Occupation & Sector</div>
+            <div class="info-val">${member.occupation || 'Not Provided'}${member.sector ? ' (' + member.sector + ')' : ''}</div>
+          </div>
+          <div class="info-box">
+            <div class="info-label">Organization</div>
+            <div class="info-val">${member.company || 'Not Provided'}</div>
+          </div>
+          <div class="info-box">
+            <div class="info-label">Current City</div>
+            <div class="info-val">${member.location || 'Not Provided'}</div>
+          </div>
+          <div class="info-box">
+            <div class="info-label">Height</div>
+            <div class="info-val">${member.height || 'Not Provided'}</div>
+          </div>
+          <div class="info-box">
+            <div class="info-label">Manglik / Diet</div>
+            <div class="info-val">${member.manglik || 'Not Provided'} · ${member.diet || 'Not Provided'}</div>
           </div>
         </div>
         
@@ -183,8 +253,14 @@
       document.getElementById('editLn').value = member.lastName;
       document.getElementById('editAge').value = member.age;
       document.getElementById('editGotra').value = member.gotra;
+      document.getElementById('editHeight').value = member.height || '';
+      document.getElementById('editLocation').value = member.location || '';
       document.getElementById('editEdu').value = member.education || '';
       document.getElementById('editOcc').value = member.occupation || '';
+      document.getElementById('editSector').value = member.sector || '';
+      document.getElementById('editCompany').value = member.company || '';
+      document.getElementById('editDiet').value = member.diet || '';
+      document.getElementById('editManglik').value = member.manglik || '';
       document.getElementById('editBio').value = member.bio || '';
       document.getElementById('editAvatar').value = ''; // Reset file input
       base64EditAvatarData = ""; // Reset base64 data
@@ -212,10 +288,16 @@
         lastName: document.getElementById('editLn').value,
         age: parseInt(document.getElementById('editAge').value),
         gotra: document.getElementById('editGotra').value,
-        imageUrl: base64EditAvatarData || member.imageUrl,
+        height: document.getElementById('editHeight').value,
+        location: document.getElementById('editLocation').value,
         education: document.getElementById('editEdu').value,
         occupation: document.getElementById('editOcc').value,
-        bio: document.getElementById('editBio').value
+        sector: document.getElementById('editSector').value,
+        company: document.getElementById('editCompany').value,
+        diet: document.getElementById('editDiet').value,
+        manglik: document.getElementById('editManglik').value,
+        bio: document.getElementById('editBio').value,
+        imageUrl: base64EditAvatarData || member.imageUrl
       };
       updateFamilyMember(id, updates);
       member = getMemberById(id);
