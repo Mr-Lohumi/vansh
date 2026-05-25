@@ -58,30 +58,30 @@
     }
 
     .museum-frame {
-      background: #fff; padding: 24px; border: 12px solid #1a1a1a;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15), inset 0 0 10px rgba(0,0,0,0.2);
-      border-radius: 2px; position: relative; z-index: 1; width: 100%; transition: transform 0.5s ease;
+      background: var(--bg-card); padding: 12px; border: 2px solid var(--royal-red);
+      box-shadow: 0 10px 30px rgba(171, 35, 48, 0.15);
+      border-radius: var(--radius); position: relative; z-index: 1; width: 100%; transition: transform 0.5s ease;
     }
-    .museum-frame::after { content: ''; position: absolute; inset: 0; border: 1px solid #333; pointer-events: none; }
-    .museum-frame:hover { transform: scale(1.02); box-shadow: 0 30px 60px rgba(0,0,0,0.25); }
+    .museum-frame::after { content: ''; position: absolute; inset: 4px; border: 1px dashed var(--royal-red); pointer-events: none; border-radius: calc(var(--radius) - 4px); opacity: 0.5; }
+    .museum-frame:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(171, 35, 48, 0.25); }
     
     .museum-img { 
       width: 100%; height: 320px; background-size: cover; background-position: center; 
-      box-shadow: inset 0 0 30px rgba(0,0,0,0.5); position: relative;
+      border-radius: calc(var(--radius) - 6px); position: relative;
     }
     
     .museum-plaque {
-      background: #fcfbf8; border: 1px solid #e8e3d5; border-left: 4px solid var(--royal-red);
-      padding: 24px; width: 85%; margin: 24px auto 0; box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-      position: relative; z-index: 2; text-align: center; border-radius: 2px;
+      background: var(--bg-card); border: 1px solid var(--border); border-top: 4px solid var(--royal-red);
+      padding: 24px; width: 90%; margin: -30px auto 0; box-shadow: var(--shadow-card);
+      position: relative; z-index: 2; text-align: center; border-radius: var(--radius);
     }
-    .museum-plaque::before { content: '•'; position: absolute; top: 6px; left: 6px; color: #d4c8b8; font-size: 14px; line-height:1; }
-    .museum-plaque::after { content: '•'; position: absolute; top: 6px; right: 6px; color: #d4c8b8; font-size: 14px; line-height:1; }
+    .museum-plaque::before { display: none; }
+    .museum-plaque::after { display: none; }
 
-    .museum-tag { display: inline-block; color: var(--royal-red); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
-    .museum-title { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 800; color: #1a1a1a; margin-bottom: 6px; }
-    .museum-year { font-size: 13px; font-weight: 700; color: #888; margin-bottom: 12px; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
-    .museum-desc { font-size: 14px; color: #444; line-height: 1.6; font-style: italic; font-family: 'Georgia', serif; }
+    .museum-tag { display: inline-block; color: var(--royal-red-dark); background: var(--royal-red-dim); padding: 6px 14px; border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; border: 1px solid var(--royal-red); }
+    .museum-title { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 800; color: var(--royal-red); margin-bottom: 6px; }
+    .museum-year { font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 12px; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+    .museum-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
 
     /* Modal Styles */
     .modal-overlay {
