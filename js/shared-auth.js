@@ -75,11 +75,14 @@ function getActiveDatabase() {
  */
 function authenticateUser(loginKey, password) {
   const members = getActiveDatabase();
+  if (!loginKey) return { success: false, message: "Please enter your name or mobile number." };
   const cleanKey = loginKey.trim().toLowerCase();
   
   const matched = members.find(m => {
-    const fullName = `${m.firstName} ${m.lastName}`.toLowerCase();
-    const firstOnly = m.firstName.toLowerCase();
+    const fName = m.firstName ? m.firstName.toString().trim() : "";
+    const lName = m.lastName ? m.lastName.toString().trim() : "";
+    const fullName = `${fName} ${lName}`.toLowerCase().trim();
+    const firstOnly = fName.toLowerCase();
     const mobileNo = m.mobile ? m.mobile.toString().trim() : "";
     
     return fullName === cleanKey || firstOnly === cleanKey || mobileNo === cleanKey;
@@ -90,9 +93,10 @@ function authenticateUser(loginKey, password) {
   }
 
   // Support default password for old seed profiles
-  const correctPassword = matched.password || "vansh2025";
-  if (password === correctPassword) {
-    login(matched.id, `${matched.firstName} ${matched.lastName}`);
+  const correctPassword = matched.password ? matched.password.toString() : "vansh2025";
+  const inputPassword = password ? password.toString() : "";
+  if (inputPassword === correctPassword) {
+    login(matched.id, `${matched.firstName || "Member"} ${matched.lastName || ""}`);
     return { success: true, member: matched };
   } else {
     return { success: false, message: "Incorrect password. Please try again." };
@@ -105,15 +109,17 @@ function authenticateUser(loginKey, password) {
 function registerUser(firstName, lastName, mobile, password, details = {}) {
   const members = getActiveDatabase();
   
+  const cleanMobile = mobile ? mobile.toString().trim() : "";
   // Check if mobile already exists
-  if (mobile && members.some(m => m.mobile && m.mobile.toString().trim() === mobile.trim())) {
+  if (cleanMobile && members.some(m => m.mobile && m.mobile.toString().trim() === cleanMobile)) {
     return { success: false, message: "A member with this mobile number is already registered." };
   }
 
-  // Calculate next ID
+  // Calculate next ID defensively
   const maxId = members.reduce((max, m) => {
-    const n = parseInt(m.id.replace('P', ''));
-    return n > max ? n : max;
+    if (!m.id) return max;
+    const n = parseInt(m.id.toString().replace('P', ''));
+    return !isNaN(n) && n > max ? n : max;
   }, 0);
   const nextId = 'P' + (maxId + 1);
 
