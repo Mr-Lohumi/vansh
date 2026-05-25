@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vansh (वंश) — Premium Feed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=7">
+  <style>
+    .dashboard-layout { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+    .feed-column { flex: 1 1 550px; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+    .profile-column { flex: 1 1 320px; max-width: 360px; position: sticky; top: 96px; display: flex; flex-direction: column; gap: 24px; }
+    
+    @media (max-width: 1100px) {
+      .dashboard-layout { flex-direction: column-reverse; }
+      .profile-column { width: 100%; max-width: 100%; position: static; }
+    }
+    
+    /* Live Ticker */
+    .ticker-wrapper { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 24px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); overflow: hidden; white-space: nowrap; }
+    .ticker-lbl { font-family: 'Cinzel', serif; font-weight: 700; color: var(--gold); font-size: 14px; flex-shrink: 0; border-right: 1px solid var(--border-light); padding-right: 16px; }
+    .ticker-track { display: flex; gap: 40px; animation: ticker 25s linear infinite; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    
+    /* Stories / Announcements */
+    .stories-container { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
+    .stories-container::-webkit-scrollbar { display: none; }
+    .story-card { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0; transition: transform 0.2s; }
+    .story-card:hover { transform: scale(1.05); }
+    .story-ring { width: 72px; height: 72px; border-radius: 50%; padding: 3px; background: linear-gradient(135deg, var(--gold), #f9d976); box-shadow: 0 4px 12px var(--gold-glow); }
+    .story-img { width: 100%; height: 100%; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid var(--bg); }
+    .story-name { font-size: 11px; font-weight: 600; color: var(--text); text-transform: uppercase; letter-spacing: 1px; }
+    
+    /* Quick Actions Grid */
+    .qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .qa-btn {
+      background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 16px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+      transition: all 0.3s; cursor: pointer; box-shadow: var(--shadow-sm);
+    }
+    .qa-btn:hover { background: var(--bg-card); border-color: var(--gold); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+    .qa-icon { font-size: 24px; }
+    .qa-lbl { font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-family: 'Inter', sans-serif; }
+    
+    /* Enhanced Post Styling */
+    .post-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow-card); transition: box-shadow 0.3s; }
+    .post-card:hover { box-shadow: var(--shadow-hover); }
+    .post-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+    .post-avatar { width: 52px; height: 52px; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid var(--gold-border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .post-author { font-size: 18px; font-weight: 700; color: var(--text); font-family: 'Cinzel', serif; letter-spacing: 1px; }
+    .post-time { font-size: 12px; font-weight: 600; color: var(--gold); margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
+    .post-content { font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 24px; }
+    .post-image { width: 100%; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--gold-border); }
+    .post-actions { display: flex; gap: 24px; border-top: 1px solid var(--border-light); padding-top: 20px; }
+    .post-action { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: color 0.2s; font-family: 'Cinzel', serif; letter-spacing: 1px;}
+    .post-action:hover { color: var(--gold); }
+    .post-action svg { width: 20px; height: 20px; }
+    
+    /* Widget Profile Centering Fix */
+    .widget-profile { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px 24px; text-align: center; box-shadow: var(--shadow-card); position: relative; overflow: hidden; }
+    .wp-header-bg { position: absolute; top: 0; left: 0; right: 0; height: 100px; background: linear-gradient(135deg, #fcfaf7, #faecec); border-bottom: 1px solid var(--border-light); }
+    .wp-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+    .wp-avatar { width: 110px; height: 110px; border-radius: 50%; background-size: cover; background-position: center; border: 4px solid var(--bg-card); box-shadow: 0 0 0 2px var(--gold); margin-bottom: 16px; }
+    
+    /* History Widget */
+    .history-widget { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); }
+    .hw-img { height: 140px; background-image: url('https://images.unsplash.com/photo-1579724128912-70b9ebef5a2e?q=80&w=600'); background-size: cover; background-position: center; border-bottom: 2px solid var(--gold); position: relative; }
+    .hw-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; align-items: flex-end; padding: 16px; }
+    .hw-title { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: #fff; }
+    .hw-body { padding: 20px; font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main-area">
+      <header class="topbar" id="topbar"></header>
+      <div class="page-content">
+        
+        <div class="dashboard-layout">
+          
+          <!-- LEFT: The Feed -->
+          <div class="feed-column">
+            
+            <div class="section-header anim anim-delay-1" style="margin-bottom: 8px;">Royal Announcements</div>
+            <div class="stories-container anim anim-delay-1">
+              <div class="story-card" onclick="alert('Viewing Alliance Story...')">
+                <div class="story-ring"><div class="story-img" style="background-image:url('https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=400&q=80')"></div></div>
+                <div class="story-name">Priya & Deepak</div>
+              </div>
+              <div class="story-card" onclick="alert('Viewing Trust Milestone...')">
+                <div class="story-ring"><div class="story-img" style="background-image:url('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&q=80')"></div></div>
+                <div class="story-name">Legacy Trust</div>
+              </div>
+              <div class="story-card" onclick="alert('Viewing Event Reminder...')">
+                <div class="story-ring"><div class="story-img" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=80')"></div></div>
+                <div class="story-name">Anniversary</div>
+              </div>
+              <div class="story-card" style="opacity: 0.6">
+                <div class="story-ring" style="background: var(--border-light); box-shadow: none;"><div class="story-img" style="background: var(--bg-elevated); display:flex; align-items:center; justify-content:center; color: var(--gold); font-size: 24px;">+</div></div>
+                <div class="story-name">New Story</div>
+              </div>
+            </div>
+            
+            <div style="display: flex; gap: 12px; margin-bottom: 24px; overflow-x: auto; scrollbar-width: none;" class="anim anim-delay-2">
+              <button class="btn btn-outline" style="flex-shrink: 0; background: var(--bg-card); border-color: var(--border-light);" onclick="alert('Opening Alliance Engine...')">
+                👑 Request Alliance
+              </button>
+              <button class="btn btn-outline" style="flex-shrink: 0; background: var(--bg-card); border-color: var(--border-light);" onclick="alert('Opening Estate Details...')">
+                🏛️ View Estate
+              </button>
+              <button class="btn btn-outline" style="flex-shrink: 0; background: var(--bg-card); border-color: var(--border-light);" onclick="window.location.href='events.html'">
+                💍 RSVP Events
+              </button>
+              <button class="btn btn-outline" style="flex-shrink: 0; background: var(--bg-card); border-color: var(--border-light);" onclick="alert('Opening Registration Form...')">
+                ➕ Register Birth
+              </button>
+            </div>
+
+            <!-- Create Post Box -->
+            <div class="post-card anim anim-delay-2" style="margin-bottom: 24px; padding: 20px;">
+              <div style="display: flex; gap: 16px; align-items: center;">
+                <div class="post-avatar" id="createPostAvatar" style="width: 44px; height: 44px; border-width: 1px; flex-shrink: 0; display:flex; align-items:center; justify-content:center; font-weight:bold; color:var(--gold); font-size:16px;"></div>
+                <input type="text" placeholder="Share a royal announcement, upload a photo, or RSVP an event..." style="flex: 1; border: 1px solid var(--border-light); background: var(--bg); padding: 14px 20px; border-radius: 30px; font-family: inherit; font-size: 14px; outline: none; color: var(--text);">
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; border-top: 1px solid var(--border-light); padding-top: 16px;">
+                <div style="display: flex; gap: 20px; padding-left: 8px;">
+                  <button style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; font-size: 13px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--royal-red)'" onmouseout="this.style.color='var(--text-secondary)'"><span style="font-size: 18px;">📸</span> Photo / Video</button>
+                  <button style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; font-size: 13px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--royal-red)'" onmouseout="this.style.color='var(--text-secondary)'"><span style="font-size: 18px;">📅</span> Family Event</button>
+                  <button style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 600; font-size: 13px; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--royal-red)'" onmouseout="this.style.color='var(--text-secondary)'"><span style="font-size: 18px;">📜</span> Milestone</button>
+                </div>
+                <button class="btn btn-gold btn-sm" style="padding: 10px 24px; font-size: 13px;" onclick="alert('Announcement published to the Family Dynasty network!')">Publish</button>
+              </div>
+            </div>
+
+            <!-- Posts -->
+            <div class="post-card anim anim-delay-3">
+              <div class="post-header">
+                <div class="post-avatar" style="background-image:url('https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80')"></div>
+                <div>
+                  <div class="post-author">Anand Sharma</div>
+                  <div class="post-time">2 hours ago · Public</div>
+                </div>
+              </div>
+              <div class="post-content">
+                Proud to announce the official verification of our dynasty on the Vansh platform. The entire family tree has been mapped with 100% gotra compliance. We welcome all matches for our eligible singles.
+              </div>
+              <img src="https://images.unsplash.com/photo-1510520434124-5bc7e642b61d?w=800&q=80" alt="Family Event" class="post-image">
+              <div class="post-actions">
+                <div class="post-action"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg> Respect (24)</div>
+                <div class="post-action"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> Counsel (5)</div>
+              </div>
+            </div>
+            
+            <div class="post-card anim anim-delay-4">
+              <div class="post-header">
+                <div class="post-avatar" style="background-image:url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80')"></div>
+                <div>
+                  <div class="post-author">Priya Sharma</div>
+                  <div class="post-time">Yesterday · Verified Match</div>
+                </div>
+              </div>
+              <div class="post-content">
+                Deepak and I have officially completed our alliance verification! Kashyap and Bharadwaj gotras successfully cross-referenced without conflicts. Looking forward to the ceremonies! 🎉💍
+              </div>
+              <div class="post-actions">
+                <div class="post-action"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg> Bless (112)</div>
+              </div>
+            </div>
+
+          </div>
+          
+          <!-- RIGHT: Profile & History Widget -->
+          <div class="profile-column anim anim-delay-3">
+            <div class="widget-profile" id="userWidget">
+              <!-- Injected via JS -->
+            </div>
+            
+            <div class="history-widget">
+              <div class="hw-img">
+                <div class="hw-overlay">
+                  <div class="hw-title">This Day in History</div>
+                </div>
+              </div>
+              <div class="hw-body">
+                <b>1971: The First Alliance</b><br>
+                Rajesh Sharma and Savitri officially registered their marriage in Uttarakhand, sparking the first major expansion of the modern lineage tree.
+              </div>
+            </div>
+
+            <!-- Database Control Center -->
+            <div class="post-card" style="margin-top: 24px; padding: 24px; border: 1px dashed var(--gold); background: linear-gradient(135deg, rgba(212,175,55,0.03), rgba(255,255,255,0.01));">
+              <h3 style="font-family:'Cinzel',serif; font-size:16px; font-weight:700; color:var(--gold); margin-bottom:12px; display:flex; align-items:center; gap:8px;">⚙️ Production Data Center</h3>
+              <p style="font-size:12px; color:var(--text-secondary); line-height:1.5; margin-bottom:16px;">
+                Download your customized family tree dataset to make it the default seed for your GitHub Pages production build, or restore a backup.
+              </p>
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <button class="btn btn-gold btn-sm" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:700;" onclick="exportVanshData()">
+                  📥 Export Current Tree (JSON)
+                </button>
+                <label class="btn btn-outline btn-sm" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; background:var(--bg-card); border-color:var(--border-light); font-weight:600; font-size:13px; padding:10px; border-radius:var(--radius); text-align:center;">
+                  📤 Import Tree Backup
+                  <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importVanshData(event)">
+                </label>
+              </div>
+            </div>
+            
+          </div>
+          
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="js/shared-auth.js"></script>
+  <script src="js/shared-data.js"></script>
+  <script src="js/shared-nav.js"></script>
+  <script>
+    if (!requireAuth()) throw '';
+    initNav('dashboard');
+    
+    const auth = getAuthData();
+    const userId = auth ? auth.userId : 'P3';
+    const authMember = getMemberById(userId);
+    
+    // User Widget - Properly Centered
+    const avaStyle = authMember?.imageUrl ? `background-image:url('${authMember.imageUrl}')` : getAvatarStyle(authMember);
+    const avaTxt = authMember?.imageUrl ? '' : getInitials(authMember);
+    
+    document.getElementById('userWidget').innerHTML = `
+      <div class="wp-header-bg"></div>
+      <div class="wp-content">
+        <div class="wp-avatar" style="${avaStyle}; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:700; color:var(--gold)">${avaTxt}</div>
+        
+        <h2 style="font-family:'Cinzel',serif;font-size:22px;font-weight:700;margin-bottom:8px;color:var(--text)">${getFullName(authMember)}</h2>
+        <div style="font-size:14px; color:var(--text-secondary); margin-bottom:16px;">${getCasteLine(authMember)} · ${authMember.gotra} Gotra</div>
+        
+        <div style="text-align:center; margin-bottom:24px; padding: 16px; background:var(--bg); border-radius:8px; width:100%; border:1px solid var(--border-light)">
+          <div style="font-size:12px; font-weight:600; font-family:'Cinzel',serif; letter-spacing:2px; color:var(--text-muted); margin-bottom:4px">
+            ${authMember.age} YRS · ${authMember.gender === 'M' ? 'MALE' : 'FEMALE'}
+          </div>
+          <div style="font-size:15px; font-weight:700; color:var(--text); margin-bottom:4px">
+            ${authMember.occupation || 'Network Member'}
+          </div>
+          <div style="font-size:12px; color:var(--gold); font-weight:700; text-transform:uppercase; letter-spacing:2px">
+            ${authMember.spouse ? 'Married' : 'Single'}
+          </div>
+        </div>
+        
+        <div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid var(--border-light); padding-bottom:20px; margin-bottom:20px">
+          <div style="text-align:center; flex:1; border-right:1px solid var(--border-light)">
+            <div style="font-size:24px; font-weight:700; font-family:'Cinzel',serif; color:var(--text)">${familyMembers.length}</div>
+            <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:600">Network</div>
+          </div>
+          <div style="text-align:center; flex:1">
+            <div style="font-size:24px; font-weight:700; font-family:'Cinzel',serif; color:var(--text)">100%</div>
+            <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:600">Verified</div>
+          </div>
+        </div>
+        
+        <a href="profile.html?id=${authMember.id}" class="btn btn-gold" style="width:100%">Edit My Profile</a>
+      </div>
+    `;
+
+    // Populate Create Post Avatar
+    document.getElementById('createPostAvatar').setAttribute('style', `width: 44px; height: 44px; border-radius: 50%; border-width: 1px; flex-shrink: 0; display:flex; align-items:center; justify-content:center; font-weight:bold; color:var(--gold); font-size:16px; background-color: var(--bg-elevated); ${avaStyle}; background-size: cover; background-position: center; border: 2px solid var(--gold-border);`);
+    if(avaTxt) document.getElementById('createPostAvatar').innerText = avaTxt;
+
+    // Production Data Center Handlers
+    function exportVanshData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(familyMembers, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "vansh_production_family.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      alert('Family tree dataset exported successfully! Save this file and copy its contents into your "shared-data.js" under "DEFAULT_FAMILY" to make it the default tree for all production users.');
+    }
+
+    function importVanshData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (Array.isArray(imported) && imported.length > 0 && imported[0].id) {
+            saveFamilyData(imported);
+            alert('Family tree backup loaded successfully! Reloading the page...');
+            window.location.reload();
+          } else {
+            alert('Invalid backup file format. Please upload a valid Vansh JSON backup.');
+          }
+        } catch(err) {
+          alert('Error parsing JSON backup file.');
+        }
+      };
+      reader.readAsText(file);
+    }
+  </script>
+</body>
+</html>

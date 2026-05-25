@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vansh (वंश) — Matchmaking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <style>
+    .match-header { padding: 40px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 32px; text-align: center; box-shadow: var(--shadow-card); }
+    .match-header h1 { font-size: 32px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+    
+    .filter-panel { background: var(--bg-elevated); padding: 24px; border-radius: var(--radius); border: 1px solid var(--border-light); margin-bottom: 32px; display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; }
+    .filter-panel .form-group { margin-bottom: 0; flex: 1; min-width: 150px; }
+    
+    .grid-matches { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+    .match-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; transition: all 0.3s; position: relative; overflow: hidden; box-shadow: var(--shadow-card); }
+    .match-card:hover { border-color: var(--gold); transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+    .match-bar { position: absolute; top: 0; left: 0; height: 4px; background: var(--gold); }
+    .match-bar.ok { background: var(--green); }
+    .match-bar.bad { background: var(--red); }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main-area">
+      <header class="topbar" id="topbar"></header>
+      <div class="page-content">
+        
+        <div class="match-header anim">
+          <h1>Network Matchmaking</h1>
+          <p class="text-muted">Dynamic gotra-verified matchmaking securing your dynasty.</p>
+        </div>
+        
+        <div class="filter-panel anim anim-delay-1">
+          <div class="form-group">
+            <label class="form-label">Match For</label>
+            <select id="matchForSelect" class="form-select"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Min Age</label>
+            <input type="number" id="minAge" class="form-input" value="20">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Max Age</label>
+            <input type="number" id="maxAge" class="form-input" value="30">
+          </div>
+          <button class="btn btn-gold" onclick="runEngine()">Find Alliances</button>
+        </div>
+        
+        <div class="section-header anim anim-delay-2" id="resultsTitle">Potential Alliances</div>
+        <div class="grid-matches anim anim-delay-2 mb-4" id="matchesContainer"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="js/shared-auth.js"></script>
+  <script src="js/shared-data.js"></script>
+  <script src="js/shared-nav.js"></script>
+  <script>
+    if (!requireAuth()) throw '';
+    initNav('matchmaking');
+    
+    const singles = familyMembers.filter(m => !m.spouse && m.age >= 18);
+    const select = document.getElementById('matchForSelect');
+    
+    if (singles.length === 0) {
+      select.innerHTML = '<option value="">No eligible singles in family</option>';
+    } else {
+      singles.forEach(s => {
+        select.innerHTML += `<option value="${s.id}">${getFullName(s)} (${s.age}, ${s.gender}, ${s.gotra})</option>`;
+      });
+      if(singles.find(s=>s.id==='P7')) select.value = 'P7';
+    }
+    
+    function runEngine() {
+      const targetId = document.getElementById('matchForSelect').value;
+      const target = getMemberById(targetId);
+      if(!target) return;
+      
+      const minAge = parseInt(document.getElementById('minAge').value) || 18;
+      const maxAge = parseInt(document.getElementById('maxAge').value) || 100;
+      const oppositeGender = target.gender === 'M' ? 'F' : 'M';
+      
+      document.getElementById('resultsTitle').innerHTML = `Potential Alliances for: <span class="text-gold">${getFullName(target)}</span>`;
+      const container = document.getElementById('matchesContainer');
+      
+      let html = '';
+      
+      MATCHMAKING_DB.forEach(candidate => {
+        if(candidate.gender !== oppositeGender) return;
+        if(candidate.age < minAge || candidate.age > maxAge) return;
+        
+        const isConflict = candidate.gotra === target.gotra;
+        const barClass = isConflict ? 'bad' : 'ok';
+        const tagHTML = isConflict ? '<span class="tag tag-red">Conflict</span>' : '<span class="tag tag-green">Verified</span>';
+        
+        html += `
+          <div class="match-card">
+            <div class="match-bar ${barClass}" style="width: 100%"></div>
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex gap-4 items-center">
+                <div class="pc-avatar" style="width:50px;height:50px;background-image:url('${candidate.imageUrl}')"></div>
+                <div>
+                  <div class="font-brand text-text" style="font-size:18px;font-weight:700">${candidate.firstName} ${candidate.lastName}</div>
+                  <div class="text-xs text-muted uppercase mt-1">${candidate.age} Yrs · ${candidate.nativePlace}</div>
+                </div>
+              </div>
+              ${tagHTML}
+            </div>
+            <div class="flex gap-2 mb-4">
+              <span class="tag tag-gold">${candidate.gotra} Gotra</span>
+              <span class="tag tag-muted">${candidate.caste}</span>
+            </div>
+            <div class="text-sm text-secondary mb-4">Education: ${candidate.education}</div>
+            ${isConflict ? `<div class="text-xs text-red mb-4">⚠ Same gotra exogamy conflict.</div>` : ''}
+            <button class="btn ${isConflict ? 'btn-danger' : 'btn-outline'} w-full" style="width:100%" onclick="showToast('Premium Feature','Full candidate profile viewing will be available in the upcoming Premium tier.','info')">View Profile (Premium)</button>
+          </div>
+        `;
+      });
+      
+      if(html === '') html = '<div class="text-muted">No candidates found matching the criteria.</div>';
+      container.innerHTML = html;
+    }
+    
+    runEngine();
+  </script>
+</body>
+</html>

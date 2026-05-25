@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vansh (वंश) — Directory</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=5">
+  <style>
+    .search-bar {
+      display: flex; gap: 16px; margin-bottom: 32px; background: var(--bg-card); padding: 16px;
+      border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    }
+    .search-input {
+      flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius);
+      font-family: inherit; font-size: 15px; outline: none; background: var(--bg);
+    }
+    .search-input:focus { border-color: var(--gold); }
+    
+    .directory-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;
+    }
+    
+    .dir-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px; text-align: center; transition: 0.3s; position: relative; overflow: hidden;
+    }
+    .dir-card:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: var(--shadow-card); }
+    
+    .dir-ava {
+      width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 16px;
+      background-size: cover; background-position: center; border: 2px solid var(--border);
+    }
+    .dir-name { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .dir-role { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    
+    .dir-meta { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--text-secondary); text-align: left; background: var(--bg); padding: 12px; border-radius: 8px;}
+    .dir-meta div { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+    .dir-meta div:last-child { border: none; padding-bottom: 0; }
+    
+    .btn-contact { margin-top: 16px; width: 100%; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main-area">
+      <header class="topbar" id="topbar"></header>
+      <div class="page-content">
+        
+        <div class="section-header anim">Global Directory</div>
+        
+        <div class="search-bar anim anim-delay-1">
+          <input type="text" id="searchInput" class="search-input" placeholder="Search members by name, profession, or city...">
+          <button class="btn btn-primary" onclick="renderDirectory()">Search</button>
+        </div>
+        
+        <div class="directory-grid anim anim-delay-2" id="dirGrid">
+          <!-- JS Injected -->
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <script src="js/shared-auth.js"></script>
+  <script src="js/shared-data.js"></script>
+  <script src="js/shared-nav.js"></script>
+  <script>
+    if (!requireAuth()) throw '';
+    initNav('directory');
+    
+    const dirGrid = document.getElementById('dirGrid');
+    const searchInput = document.getElementById('searchInput');
+    
+    function renderDirectory() {
+      const q = searchInput.value.toLowerCase();
+      const filtered = familyMembers.filter(m => {
+        const text = `${m.name} ${m.lastName || 'Sharma'} ${m.occupation || ''} Gen ${m.gen}`.toLowerCase();
+        return text.includes(q);
+      });
+      
+      if(filtered.length === 0) {
+        dirGrid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color: var(--text-muted)">No members found matching "${q}".</div>`;
+        return;
+      }
+      
+      dirGrid.innerHTML = filtered.map(m => {
+        const initial = m.name.charAt(0);
+        const avaHtml = m.imageUrl 
+          ? `<div class="dir-ava" style="background-image:url('${m.imageUrl}')"></div>`
+          : `<div class="dir-ava" style="display:flex;align-items:center;justify-content:center;font-size:32px;font-family:Cinzel,serif;background:var(--bg-elevated);color:var(--gold);border-color:var(--gold)">${initial}</div>`;
+          
+        return `
+          <div class="dir-card">
+            ${avaHtml}
+            <div class="dir-name">${m.name} ${m.lastName || 'Sharma'}</div>
+            <div class="dir-role">${m.occupation || 'Member'}</div>
+            
+            <div class="dir-meta">
+              <div><span>Generation:</span> <b>${m.gen}</b></div>
+              <div><span>Status:</span> <b>${m.spouse ? 'Married' : 'Single'}</b></div>
+              <div><span>Age:</span> <b>${m.age || 'N/A'}</b></div>
+            </div>
+            
+            <button class="btn btn-outline btn-contact" onclick="window.location.href='inbox.html?to=${m.id}'">Message</button>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    searchInput.addEventListener('keyup', (e) => {
+      if(e.key === 'Enter') renderDirectory();
+      else if (searchInput.value === '') renderDirectory(); // live clear
+    });
+    
+    renderDirectory();
+  </script>
+</body>
+</html>

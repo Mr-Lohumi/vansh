@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vansh (वंश) — DNA Timeline</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=4">
+  <style>
+    /* DNA Specific Styles */
+    .dna-page {
+      background: var(--text); /* Very dark background for cinematic feel */
+      min-height: 100vh;
+      color: var(--bg);
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    .dna-header { text-align: center; padding: 80px 20px; position: relative; z-index: 10; }
+    .dna-header h1 { font-family: 'Cinzel', serif; font-size: 48px; color: var(--gold); margin-bottom: 16px; text-shadow: 0 0 20px var(--gold-glow); }
+    .dna-header p { color: rgba(255,255,255,0.7); font-size: 18px; max-width: 600px; margin: 0 auto; }
+    
+    .dna-container {
+      position: relative; max-width: 1000px; margin: 0 auto; padding: 40px 0 120px;
+    }
+    
+    /* The Central DNA Helix */
+    .dna-helix {
+      position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 120px; z-index: 0;
+    }
+    /* Creating a sine wave effect via SVG */
+    .dna-svg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+    .dna-strand-1 { stroke: var(--gold); stroke-width: 4; fill: none; opacity: 0.8; stroke-dasharray: 10 5; animation: flow 20s linear infinite; }
+    .dna-strand-2 { stroke: var(--text-muted); stroke-width: 4; fill: none; opacity: 0.4; stroke-dasharray: 10 5; animation: flowReverse 20s linear infinite; }
+    
+    @keyframes flow { to { stroke-dashoffset: -1000; } }
+    @keyframes flowReverse { to { stroke-dashoffset: 1000; } }
+    
+    /* Advanced Animations */
+    .dna-item {
+      position: relative; z-index: 2; width: 50%; padding: 40px; margin-bottom: 40px;
+      opacity: 0; transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; align-items: center;
+    }
+    .dna-item.left { left: 0; justify-content: flex-end; padding-right: 120px; text-align: right; transform: translateX(-100px) scale(0.9); }
+    .dna-item.right { left: 50%; justify-content: flex-start; padding-left: 120px; text-align: left; transform: translateX(100px) scale(0.9); }
+    
+    .dna-item.visible { opacity: 1; transform: translateX(0) scale(1); }
+    
+    /* Connecting rung */
+    .dna-rung {
+      position: absolute; top: 50%; width: 0px; height: 2px; background: var(--gold);
+      box-shadow: 0 0 10px var(--gold); z-index: -1; transition: width 1s ease 0.4s;
+    }
+    .dna-item.visible.left .dna-rung { width: 60px; right: 60px; transform: translateY(-50%); }
+    .dna-item.visible.right .dna-rung { width: 60px; left: 60px; transform: translateY(-50%); }
+    
+    /* Content Card */
+    .dna-content {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+      padding: 32px; border-radius: var(--radius); width: 100%; max-width: 400px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3); transition: transform 0.4s, background 0.4s;
+    }
+    .dna-content:hover { transform: scale(1.05); border-color: var(--gold); background: rgba(59, 9, 24, 0.5); /* Deep ruby hover */ }
+    
+    .dna-date { font-family: 'Cinzel', serif; font-size: 24px; color: var(--gold); font-weight: 700; margin-bottom: 8px; }
+    .dna-title { font-size: 20px; font-weight: 600; color: #fff; margin-bottom: 12px; }
+    .dna-desc { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 20px; line-height: 1.6; }
+    
+    .dna-avatars { display: flex; gap: 12px; }
+    .dna-item.left .dna-avatars { justify-content: flex-end; }
+    .dna-item.right .dna-avatars { justify-content: flex-start; }
+    
+    .dna-ava {
+      width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold);
+      background-size: cover; background-position: center; box-shadow: 0 0 15px rgba(212, 154, 55, 0.3);
+    }
+    
+    /* Return Button */
+    .back-btn { position: fixed; top: 30px; left: 40px; z-index: 100; background: rgba(255,255,255,0.1); color: #fff; padding: 10px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); text-decoration: none; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(5px); transition: 0.3s; }
+    .back-btn:hover { background: var(--gold); border-color: var(--gold); }
+    
+    /* SVG Scroll Engine */
+    .dna-svg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+    .dna-strand-1 { stroke: var(--gold); stroke-width: 4; fill: none; stroke-dasharray: 10000; stroke-dashoffset: 10000; }
+    .dna-strand-2 { stroke: var(--text-muted); stroke-width: 4; fill: none; stroke-dasharray: 10000; stroke-dashoffset: 10000; opacity: 0.5; }
+  </style>
+</head>
+<body class="dna-page" style="background:#1a040b;"> <!-- Deep Ruby Dark background -->
+  <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
+  
+  <div class="dna-header">
+    <h1>The Lineage Helix</h1>
+    <p>Scroll down to explore the dynamic progression of your family's DNA and history over time.</p>
+  </div>
+  
+  <div class="dna-container" id="dnaContainer">
+    <div class="dna-helix">
+      <svg class="dna-svg" preserveAspectRatio="none" id="helixSvg"></svg>
+    </div>
+    <div id="dnaItems"></div>
+  </div>
+
+  <script src="js/shared-auth.js"></script>
+  <script src="js/shared-data.js"></script>
+  <script>
+    if (!requireAuth()) throw '';
+    
+    const p1 = getMemberById('P1');
+    const p3 = getMemberById('P3');
+    const p4 = getMemberById('P4');
+    const p6 = getMemberById('P6');
+    const p5 = getMemberById('P5');
+    
+    const events = [
+      { date: '1949', title: 'Rajesh Sharma Born', desc: 'Born in a small village in Uttarakhand, Rajesh represents the foundation of the current documented lineage. His early struggles and eventual move to the city laid the groundwork for the family\'s future success and expansion.', members: [p1] },
+      { date: '1971', title: 'Rajesh & Savitri Alliance', desc: 'A traditional marriage registered in Uttarakhand, initiating the first major branch expansion of the lineage. Savitri brought strength and unity to the growing household.', members: [p1, getMemberById('P14')] },
+      { date: '1974', title: 'Anand Sharma Born', desc: 'Second child of Rajesh and Savitri. Anand pursued higher education in engineering, representing the family\'s transition into the modern digital era and laying the foundation for Generation 1.', members: [p3] },
+      { date: '2000', title: 'Anand & Sunita Alliance', desc: 'A grand marriage ceremony held in Delhi. This alliance combined two strong, academically inclined bloodlines, significantly expanding the network\'s professional footprint.', members: [p3, p4] },
+      { date: '2023', title: 'Priya & Deepak Alliance', desc: 'A modern celebration held with 100% gotra exogamy compliance. This union bridged the Sharma and Verma networks, securing the next generation of the dynasty.', members: [p5, p6] },
+      { date: '2026', title: 'Vansh Platform Initiation', desc: 'The entire lineage was successfully digitized. The ancestral history, previously kept in physical records, is now verified and recorded dynamically on the Premium Network for all future descendants.', members: [] }
+    ];
+    
+    const container = document.getElementById('dnaItems');
+    let html = '';
+    
+    events.forEach((e, i) => {
+      const side = i % 2 === 0 ? 'left' : 'right';
+      const avaHtml = e.members.map(m => `<div class="dna-ava" style="background-image:url('${m ? m.imageUrl : ''}')"></div>`).join('');
+      
+      html += `
+        <div class="dna-item ${side}">
+          <div class="dna-rung"></div>
+          <div class="dna-content">
+            <div class="dna-date">${e.date}</div>
+            <div class="dna-title">${e.title}</div>
+            <div class="dna-desc">${e.desc}</div>
+            ${avaHtml ? `<div class="dna-avatars">${avaHtml}</div>` : ''}
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+    
+    // Intersection Observer for items sliding in
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.4 });
+    
+    document.querySelectorAll('.dna-item').forEach(item => observer.observe(item));
+    
+    // Setup SVG Helix
+    const svg = document.getElementById('helixSvg');
+    let path1, path2;
+    
+    function initHelix() {
+      const h = document.getElementById('dnaContainer').offsetHeight;
+      svg.setAttribute('viewBox', `0 0 120 ${h}`);
+      
+      let d1 = `M 60 0 `;
+      let d2 = `M 60 0 `;
+      const frequency = 400; 
+      
+      for(let y = 0; y <= h; y += 10) {
+        const x1 = 60 + Math.sin(y / frequency * Math.PI * 2) * 50;
+        const x2 = 60 + Math.sin((y / frequency * Math.PI * 2) + Math.PI) * 50; 
+        d1 += `L ${x1} ${y} `;
+        d2 += `L ${x2} ${y} `;
+      }
+      
+      svg.innerHTML = `
+        <path id="p1" class="dna-strand-1" d="${d1}" />
+        <path id="p2" class="dna-strand-2" d="${d2}" />
+      `;
+      
+      path1 = document.getElementById('p1');
+      path2 = document.getElementById('p2');
+      
+      const len1 = path1.getTotalLength();
+      path1.style.strokeDasharray = len1;
+      path1.style.strokeDashoffset = len1;
+      
+      const len2 = path2.getTotalLength();
+      path2.style.strokeDasharray = len2;
+      path2.style.strokeDashoffset = len2;
+    }
+    
+    window.addEventListener('load', () => {
+      initHelix();
+      window.addEventListener('scroll', updateHelixScroll);
+      updateHelixScroll(); // initial trigger
+    });
+    
+    window.addEventListener('resize', () => {
+      initHelix();
+      updateHelixScroll();
+    });
+    
+    // Scroll-linked drawing animation
+    function updateHelixScroll() {
+      if(!path1 || !path2) return;
+      const scrollPos = window.scrollY;
+      const docHeight = document.body.scrollHeight - window.innerHeight;
+      // Calculate scroll percentage (with a slight boost so it finishes drawing before very bottom)
+      const scrollPercent = Math.min(scrollPos / (docHeight * 0.9), 1); 
+      
+      const len1 = path1.getTotalLength();
+      path1.style.strokeDashoffset = len1 - (len1 * scrollPercent);
+      
+      const len2 = path2.getTotalLength();
+      path2.style.strokeDashoffset = len2 - (len2 * scrollPercent);
+    }
+  </script>
+</body>
+</html>

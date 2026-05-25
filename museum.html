@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vansh (वंश) — Heritage Museum</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=5">
+  <style>
+    .museum-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 32px;
+    }
+    
+    .museum-item {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; box-shadow: var(--shadow-card); transition: transform 0.4s;
+    }
+    .museum-item:hover { transform: scale(1.02); border-color: var(--gold); }
+    
+    .museum-img {
+      width: 100%; height: 240px; background-size: cover; background-position: center;
+      border-bottom: 2px solid var(--gold); position: relative;
+    }
+    
+    .museum-tag {
+      position: absolute; top: 16px; right: 16px; background: rgba(0,0,0,0.6); color: var(--gold);
+      padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(4px);
+    }
+    
+    .museum-content { padding: 24px; }
+    .museum-title { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .museum-year { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 16px; }
+    .museum-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+    
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main-area">
+      <header class="topbar" id="topbar"></header>
+      <div class="page-content">
+        
+        <div class="section-header anim" style="display:flex; justify-content:space-between; align-items:center">
+          <div>Heritage Museum</div>
+          <button class="btn btn-primary" onclick="alert('Uploading artifacts requires Patriarch verification.')">Upload Artifact</button>
+        </div>
+        
+        <div class="anim anim-delay-1" style="margin-bottom: 40px; max-width: 700px; color: var(--text-secondary)">
+          Welcome to the digital archive of the Vansh network. Here, verified historical documents, photographs, and artifacts are preserved for future generations.
+        </div>
+        
+        <div class="museum-grid anim anim-delay-2">
+          
+          <div class="museum-item">
+            <div class="museum-img" style="background-image:url('https://images.unsplash.com/photo-1549420084-5f564f1c97a8?q=80&w=600&auto=format&fit=crop')">
+              <div class="museum-tag">Photograph</div>
+            </div>
+            <div class="museum-content">
+              <div class="museum-title">The First Homestead</div>
+              <div class="museum-year">Circa 1950</div>
+              <div class="museum-desc">The original family home built by Rajesh Sharma in Uttarakhand. This structure served as the gathering place for the first generation.</div>
+            </div>
+          </div>
+          
+          <div class="museum-item">
+            <div class="museum-img" style="background-image:url('https://images.unsplash.com/photo-1579724128912-70b9ebef5a2e?q=80&w=600&auto=format&fit=crop')">
+              <div class="museum-tag">Document</div>
+            </div>
+            <div class="museum-content">
+              <div class="museum-title">Ancestral Land Deed</div>
+              <div class="museum-year">1971</div>
+              <div class="museum-desc">The original handwritten property deed registered during the alliance of Rajesh and Savitri, officially establishing the family estate.</div>
+            </div>
+          </div>
+          
+          <div class="museum-item">
+            <div class="museum-img" style="background-image:url('https://images.unsplash.com/photo-1517409241517-814981881774?q=80&w=600&auto=format&fit=crop')">
+              <div class="museum-tag">Artifact</div>
+            </div>
+            <div class="museum-content">
+              <div class="museum-title">Savitri's Gold Bangles</div>
+              <div class="museum-year">Passed down since 1940</div>
+              <div class="museum-desc">Traditional gold bangles worn by Savitri on her wedding day. They are now considered a sacred family heirloom, passed to the eldest daughter-in-law.</div>
+            </div>
+          </div>
+
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <script src="js/shared-auth.js"></script>
+  <script src="js/shared-data.js"></script>
+  <script src="js/shared-nav.js"></script>
+  <script>
+    if (!requireAuth()) throw '';
+    initNav('museum');
+  </script>
+</body>
+</html>

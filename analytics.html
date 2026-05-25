@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vansh (वंश) — Analytics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=5">
+  <style>
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 32px; box-shadow: var(--shadow-card); position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .stat-value { font-family: 'Cinzel', serif; font-size: 48px; color: var(--gold); font-weight: 700; line-height: 1; margin-bottom: 8px; }
+    .stat-label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--text-secondary); }
+    
+    .bar-chart { margin-top: 24px; }
+    .bar-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+    .bar-label { width: 100px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+    .bar-track { flex: 1; height: 12px; background: var(--bg-hover); border-radius: 6px; overflow: hidden; position: relative; }
+    .bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--gold); border-radius: 6px; }
+    .bar-value { width: 40px; text-align: right; font-size: 13px; font-weight: 700; color: var(--text); }
+    
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 24px; }
+    .dashboard-grid-large { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+    @media (max-width: 900px) {
+      .dashboard-grid-large { grid-template-columns: 1fr; }
+    }
+    
+    /* Decoration */
+    .bg-icon { position: absolute; right: -20px; bottom: -20px; font-size: 120px; opacity: 0.03; font-family: 'Cinzel', serif; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main-area">
+      <header class="topbar" id="topbar"></header>
+      <div class="page-content">
+        
+        <div class="section-header anim">Network Analytics</div>
+        
+        <div class="dashboard-grid anim anim-delay-1">
+          <div class="stat-card">
+            <div class="bg-icon">N</div>
+            <div>
+              <div class="stat-value" id="valTotal">0</div>
+              <div class="stat-label">Total Verified Members</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="bg-icon">G</div>
+            <div>
+              <div class="stat-value" id="valGens">0</div>
+              <div class="stat-label">Generations Mapped</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="bg-icon">M</div>
+            <div>
+              <div class="stat-value" id="valMarriages">0</div>
+              <div class="stat-label">Registered Marriages</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dashboard-grid-large anim anim-delay-2">
+          
+          <div class="stat-card">
+            <div class="section-header" style="margin-bottom: 24px; border:none; padding:0">Top Professions</div>
+            <div class="bar-chart" id="profChart">
+              <!-- JS injected -->
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="section-header" style="margin-bottom: 24px; border:none; padding:0">Gender Ratio</div>
+            <div style="display: flex; gap: 16px; align-items: flex-end; justify-content: center; height: 150px; padding-bottom: 20px;">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <div style="width: 60px; height: 100px; background: var(--bg-hover); border-radius: 8px 8px 0 0; position: relative; overflow: hidden;">
+                  <div id="barM" style="position: absolute; bottom: 0; left: 0; right: 0; background: var(--gold); height: 50%;"></div>
+                </div>
+                <div class="text-sm font-bold text-secondary">Male (<span id="txtM">50</span>%)</div>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <div style="width: 60px; height: 100px; background: var(--bg-hover); border-radius: 8px 8px 0 0; position: relative; overflow: hidden;">
+                  <div id="barF" style="position: absolute; bottom: 0; left: 0; right: 0; background: var(--gold); height: 50%;"></div>
+                </div>
+                <div class="text-sm font-bold text-secondary">Female (<span id="txtF">50</span>%)</div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <script src="js/shared-auth.js"></script>
+  <script src="js/shared-data.js"></script>
+  <script src="js/shared-nav.js"></script>
+  <script>
+    if (!requireAuth()) throw '';
+    initNav('analytics');
+    
+    // Compute Stats
+    document.getElementById('valTotal').innerText = familyMembers.length;
+    
+    const gens = [...new Set(familyMembers.map(m => m.gen))];
+    document.getElementById('valGens').innerText = gens.length;
+    
+    const married = familyMembers.filter(m => m.spouse).length / 2;
+    document.getElementById('valMarriages').innerText = Math.floor(married);
+    
+    // Gender Ratio
+    const males = familyMembers.filter(m => m.gender === 'M').length;
+    const females = familyMembers.filter(m => m.gender === 'F').length;
+    const total = males + females;
+    const pM = Math.round((males / total) * 100);
+    const pF = Math.round((females / total) * 100);
+    
+    document.getElementById('barM').style.height = pM + '%';
+    document.getElementById('txtM').innerText = pM;
+    document.getElementById('barF').style.height = pF + '%';
+    document.getElementById('txtF').innerText = pF;
+    
+    // Professions
+    const profs = {};
+    familyMembers.forEach(m => {
+      if (m.occupation) {
+        profs[m.occupation] = (profs[m.occupation] || 0) + 1;
+      }
+    });
+    
+    const sortedProfs = Object.keys(profs).map(k => ({ name: k, count: profs[k] })).sort((a,b) => b.count - a.count).slice(0, 5);
+    const maxCount = sortedProfs.length > 0 ? sortedProfs[0].count : 1;
+    
+    const chartContainer = document.getElementById('profChart');
+    chartContainer.innerHTML = sortedProfs.map(p => `
+      <div class="bar-row">
+        <div class="bar-label">${p.name}</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width: ${(p.count / maxCount) * 100}%"></div>
+        </div>
+        <div class="bar-value">${p.count}</div>
+      </div>
+    `).join('');
+    
+  </script>
+</body>
+</html>

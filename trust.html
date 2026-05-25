@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vansh (वंश) — Family Trust & Philanthropy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=6">
+  <style>
+    .trust-hero {
+      background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated));
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 48px;
+      text-align: center; margin-bottom: 32px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+    }
+    .trust-title { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 700; color: var(--gold); margin-bottom: 12px; }
+    .trust-sub { font-size: 15px; color: var(--text-secondary); max-width: 600px; margin: 0 auto 32px; line-height: 1.6; }
+    
+    .goal-card { background: var(--bg-card); padding: 32px; border-radius: var(--radius); border: 1px solid var(--border); max-width: 500px; margin: 0 auto; box-shadow: var(--shadow-card); }
+    .goal-top { display: flex; justify-content: space-between; margin-bottom: 16px; font-family: 'Cinzel', serif; font-weight: 700; }
+    .goal-bar { height: 16px; background: var(--bg-hover); border-radius: 8px; overflow: hidden; margin-bottom: 16px; position: relative;}
+    .goal-fill { background: var(--gold); height: 100%; border-radius: 8px; position: absolute; left: 0; top: 0;}
+    .goal-btm { font-size: 12px; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+    
+    .impact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; margin-top: 40px;}
+    .impact-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; text-align: center; transition: 0.3s; }
+    .impact-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--gold); }
+    .ic-icon { font-size: 40px; margin-bottom: 16px; }
+    .ic-title { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .ic-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; }
+    .ic-amt { font-size: 20px; font-weight: 700; color: var(--gold); font-family: 'Inter', sans-serif;}
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main-area">
+      <header class="topbar" id="topbar"></header>
+      <div class="page-content">
+        
+        <div class="trust-hero anim">
+          <div class="trust-title">The Sharma Legacy Trust</div>
+          <div class="trust-sub">Established in 2015 to honor the vision of Rajesh Sharma. Dedicated to educational scholarships, community development, and heritage preservation.</div>
+          
+          <div class="goal-card">
+            <div class="goal-top">
+              <span>Annual Education Fund</span>
+              <span style="color: var(--gold)">₹8.5L / ₹10L</span>
+            </div>
+            <div class="goal-bar">
+              <div class="goal-fill" style="width: 85%"></div>
+            </div>
+            <div class="goal-btm">85% Funded for 2026</div>
+            <button class="btn btn-gold btn-sm w-full mt-4" onclick="alert('Secure payment gateway initiated.')">Contribute to Trust</button>
+          </div>
+        </div>
+        
+        <div class="section-header anim anim-delay-1">Impact Areas</div>
+        
+        <div class="impact-grid anim anim-delay-2">
+          
+          <div class="impact-card">
+            <div class="ic-icon">🎓</div>
+            <div class="ic-title">Vidyalaya Scholarships</div>
+            <div class="ic-desc">Funding higher education for underprivileged students in our ancestral village of Uttarakhand.</div>
+            <div class="ic-amt">12 Students Funded</div>
+          </div>
+          
+          <div class="impact-card">
+            <div class="ic-icon">🏥</div>
+            <div class="ic-title">Medical Relief Camp</div>
+            <div class="ic-desc">Annual free medical consultation camps held in rural districts, sponsored by MediCare Clinics.</div>
+            <div class="ic-amt">500+ Patients Served</div>
+          </div>
+          
+          <div class="impact-card">
+            <div class="ic-icon">🏛️</div>
+            <div class="ic-title">Temple Restoration</div>
+            <div class="ic-desc">Contributing to the preservation and structural maintenance of our Gotra's ancestral deity temple.</div>
+            <div class="ic-amt">₹5L Donated</div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <script src="js/shared-auth.js"></script>
+  <script src="js/shared-data.js"></script>
+  <script src="js/shared-nav.js"></script>
+  <script>
+    if (!requireAuth()) throw '';
+    initNav('trust');
+  </script>
+</body>
+</html>

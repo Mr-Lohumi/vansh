@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vansh (वंश) — Family Dynasty</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=6">
+  <style>
+    .tree-toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 24px; background: var(--bg-elevated);
+      border: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; border-bottom: none;
+    }
+    .perspective-group { display: flex; align-items: center; gap: 12px; }
+    
+    .tree-wrapper {
+      background: linear-gradient(135deg, #ffffff, #fdf6df); border: 1px solid var(--border);
+      border-radius: 0 0 var(--radius) var(--radius);
+      padding: 80px 40px; overflow-x: auto; position: relative;
+      min-height: 600px; text-align: center; box-shadow: inset 0 0 40px rgba(212,175,55,0.1);
+    }
+    #treeCanvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 1; }
+    
+    .rel-panel { margin-top: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; display: none; box-shadow: var(--shadow-card); }
+    .rel-panel.active { display: block; animation: fadeUp 0.3s ease; }
+    .rel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 24px; }
+    
+    .form-row { display: flex; gap: 16px; margin-bottom: 16px; }
+    .form-row > div { flex: 1; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main-area">
+      <header class="topbar" id="topbar"></header>
+      <div class="page-content">
+        
+        <div class="tree-toolbar anim">
+          <div class="perspective-group">
+            <span class="text-xs font-bold text-muted uppercase tracking-widest" style="letter-spacing:1px">Perspective:</span>
+            <select class="form-select" id="perspectiveSelect" style="width:240px;padding:8px 12px;margin:0"></select>
+          </div>
+          <button class="btn btn-gold" onclick="openAddModal()">+ Add Member</button>
+        </div>
+        
+        <div class="tree-wrapper anim anim-delay-1" id="treeContainer">
+          <canvas id="treeCanvas"></canvas>
+          <div id="dynamicTreeNodes"></div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Member Modal -->
+  <div class="modal-overlay" id="addModalOverlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">Register Member</div>
+        <button class="modal-close" onclick="closeAddModal()">✕</button>
+      </div>
+      <form id="addForm" class="modal-body">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">First Name</label><input type="text" id="addFn" class="form-input" required></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input type="text" id="addLn" class="form-input" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Gender</label>
+            <select id="addGen" class="form-select"><option value="M">Male</option><option value="F">Female</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Age</label><input type="number" id="addAge" class="form-input" required></div>
+        </div>
+        <div class="form-group"><label class="form-label">Gotra</label><input type="text" id="addGotra" class="form-input" required></div>
+        <div class="form-group">
+          <label class="form-label">Parent (Optional)</label>
+          <select id="addParent" class="form-select"><option value="">None</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Spouse (Optional)</label>
+          <select id="addSpouse" class="form-select"><option value="">None</option></select>
+        </div>
+      </form>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeAddModal()">Cancel</button>
+        <button class="btn btn-gold" onclick="submitAddMember()">Add Member</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/shared-auth.js"></script>
+  <script src="js/shared-data.js"></script>
+  <script src="js/shared-nav.js"></script>
+  <script src="js/shared-tree.js"></script>
+  <script>
+    if (!requireAuth()) throw '';
+    initNav('tree');
+    const params = new URLSearchParams(location.search);
+    let currentPOV = params.get('id') || getAuthData()?.userId || 'P3';
+    
+    const pSelect = document.getElementById('perspectiveSelect');
+    
+    function populateDropdowns() {
+      pSelect.innerHTML = '';
+      const parentSelect = document.getElementById('addParent');
+      const spouseSelect = document.getElementById('addSpouse');
+      parentSelect.innerHTML = '<option value="">None</option>';
+      spouseSelect.innerHTML = '<option value="">None</option>';
+      
+      familyMembers.forEach(m => {
+        pSelect.innerHTML += `<option value="${m.id}" ${m.id === currentPOV ? 'selected' : ''}>${getFullName(m)}</option>`;
+        parentSelect.innerHTML += `<option value="${m.id}">${getFullName(m)}</option>`;
+        if (!m.spouse) spouseSelect.innerHTML += `<option value="${m.id}">${getFullName(m)}</option>`;
+      });
+    }
+    populateDropdowns();
+    
+    pSelect.addEventListener('change', (e) => {
+      currentPOV = e.target.value;
+      renderTreeToContainer('dynamicTreeNodes', 'treeCanvas', currentPOV, 'handleNodeClick');
+    });
+    
+    function handleNodeClick(id) {
+      currentPOV = id;
+      pSelect.value = id;
+      renderTreeToContainer('dynamicTreeNodes', 'treeCanvas', currentPOV, 'handleNodeClick');
+    }
+    
+    window.addEventListener('resize', () => {
+      drawTreeConnections('dynamicTreeNodes', 'treeCanvas', getBloodlineNetwork(currentPOV));
+    });
+    
+    // Initial Render
+    renderTreeToContainer('dynamicTreeNodes', 'treeCanvas', currentPOV, 'handleNodeClick');
+    
+    function openAddModal() { document.getElementById('addModalOverlay').classList.add('active'); }
+    function closeAddModal() { document.getElementById('addModalOverlay').classList.remove('active'); document.getElementById('addForm').reset(); }
+    
+    function submitAddMember() {
+      const fn = document.getElementById('addFn').value;
+      const ln = document.getElementById('addLn').value;
+      if(!fn || !ln) return alert('Name required');
+      
+      const p = document.getElementById('addParent').value;
+      const s = document.getElementById('addSpouse').value;
+      
+      addFamilyMember({
+        firstName: fn, lastName: ln,
+        gender: document.getElementById('addGen').value,
+        age: parseInt(document.getElementById('addAge').value),
+        gotra: document.getElementById('addGotra').value,
+        caste: 'Brahmin', nativePlace: 'Delhi',
+        parents: p ? [p] : [],
+        spouse: s ? s : null,
+        imageUrl: `https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=80` // Mock image for testing new additions
+      });
+      
+      closeAddModal();
+      showToast('Member Added', `${fn} ${ln} joined the network.`, 'ok');
+      
+      populateDropdowns();
+      renderDynamicTree();
+    }
+  </script>
+</body>
+</html>

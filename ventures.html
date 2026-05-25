@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vansh (वंश) — Family Ventures</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=6">
+  <style>
+    .ventures-header {
+      background: var(--bg-card); padding: 40px; border-radius: var(--radius);
+      border: 1px solid var(--border); margin-bottom: 32px; box-shadow: var(--shadow-sm);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .ventures-title { font-family: 'Cinzel', serif; font-size: 28px; font-weight: 700; color: var(--text); }
+    .ventures-sub { font-size: 14px; color: var(--text-secondary); margin-top: 8px; max-width: 500px; line-height: 1.6; }
+    
+    .venture-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px;
+    }
+    
+    .venture-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px; transition: transform 0.3s; position: relative; overflow: hidden;
+    }
+    .venture-card:hover { transform: translateY(-4px); border-color: var(--gold); box-shadow: var(--shadow-card); }
+    
+    .vc-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+    .vc-logo { width: 48px; height: 48px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-weight: 700; color: var(--gold); font-size: 20px; }
+    .vc-name { font-size: 18px; font-weight: 700; color: var(--text); }
+    .vc-industry { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+    
+    .vc-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; }
+    
+    .vc-owner { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg); border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-light); }
+    .vc-owner-ava { width: 32px; height: 32px; border-radius: 50%; background-size: cover; background-position: center; border: 1px solid var(--gold); }
+    
+    .vc-actions { display: flex; gap: 12px; }
+    .vc-actions button { flex: 1; }
+    
+    .stat-row { display: flex; justify-content: space-between; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-light); }
+    .stat-item { text-align: center; }
+    .stat-val { font-size: 18px; font-weight: 700; color: var(--text); font-family: 'Cinzel', serif; }
+    .stat-lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main-area">
+      <header class="topbar" id="topbar"></header>
+      <div class="page-content">
+        
+        <div class="ventures-header anim">
+          <div>
+            <div class="ventures-title">Family Ventures</div>
+            <div class="ventures-sub">The global business network of the Vansh lineage. Explore companies, startups, and investments owned by your relatives. Support the family economy.</div>
+          </div>
+          <button class="btn btn-gold btn-lg" onclick="alert('Verification required to list a new venture.')">+ List Business</button>
+        </div>
+        
+        <div class="venture-grid anim anim-delay-1" id="vg">
+          
+          <div class="venture-card">
+            <div class="vc-header">
+              <div class="vc-logo">T</div>
+              <div>
+                <div class="vc-name">TechCorp India</div>
+                <div class="vc-industry">Software Services</div>
+              </div>
+            </div>
+            <div class="vc-desc">A leading B2B software consultancy firm specializing in cloud infrastructure and enterprise modernizations.</div>
+            
+            <div class="stat-row">
+              <div class="stat-item"><div class="stat-val">2012</div><div class="stat-lbl">Founded</div></div>
+              <div class="stat-item"><div class="stat-val">₹40Cr</div><div class="stat-lbl">Revenue</div></div>
+              <div class="stat-item"><div class="stat-val">120+</div><div class="stat-lbl">Employees</div></div>
+            </div>
+            
+            <div class="vc-owner">
+              <div class="vc-owner-ava" id="avaT1"></div>
+              <div>
+                <div style="font-size: 13px; font-weight: 700; color: var(--text)">Anand Sharma</div>
+                <div style="font-size: 11px; color: var(--gold); font-weight: 600">Founder & CEO</div>
+              </div>
+            </div>
+            
+            <div class="vc-actions">
+              <button class="btn btn-outline btn-sm">Contact</button>
+              <button class="btn btn-primary btn-sm">View Roles</button>
+            </div>
+          </div>
+          
+          <div class="venture-card">
+            <div class="vc-header">
+              <div class="vc-logo" style="color: var(--teal)">H</div>
+              <div>
+                <div class="vc-name">Heritage Exports</div>
+                <div class="vc-industry">Textile Trade</div>
+              </div>
+            </div>
+            <div class="vc-desc">Exporting premium Indian textiles and handlooms to European markets. established to promote traditional weaves.</div>
+            
+            <div class="stat-row">
+              <div class="stat-item"><div class="stat-val">1995</div><div class="stat-lbl">Founded</div></div>
+              <div class="stat-item"><div class="stat-val">₹15Cr</div><div class="stat-lbl">Revenue</div></div>
+              <div class="stat-item"><div class="stat-val">45</div><div class="stat-lbl">Employees</div></div>
+            </div>
+            
+            <div class="vc-owner">
+              <div class="vc-owner-ava" id="avaT2"></div>
+              <div>
+                <div style="font-size: 13px; font-weight: 700; color: var(--text)">Vikram Sharma</div>
+                <div style="font-size: 11px; color: var(--gold); font-weight: 600">Managing Director</div>
+              </div>
+            </div>
+            
+            <div class="vc-actions">
+              <button class="btn btn-outline btn-sm">Contact</button>
+              <button class="btn btn-primary btn-sm">View Roles</button>
+            </div>
+          </div>
+          
+          <div class="venture-card">
+            <div class="vc-header">
+              <div class="vc-logo" style="color: var(--blue)">M</div>
+              <div>
+                <div class="vc-name">MediCare Clinics</div>
+                <div class="vc-industry">Healthcare</div>
+              </div>
+            </div>
+            <div class="vc-desc">A chain of specialized pediatric and general physician clinics located across the NCR region.</div>
+            
+            <div class="stat-row">
+              <div class="stat-item"><div class="stat-val">2023</div><div class="stat-lbl">Founded</div></div>
+              <div class="stat-item"><div class="stat-val">3</div><div class="stat-lbl">Locations</div></div>
+              <div class="stat-item"><div class="stat-val">12</div><div class="stat-lbl">Doctors</div></div>
+            </div>
+            
+            <div class="vc-owner">
+              <div class="vc-owner-ava" id="avaT3"></div>
+              <div>
+                <div style="font-size: 13px; font-weight: 700; color: var(--text)">Priya Sharma</div>
+                <div style="font-size: 11px; color: var(--gold); font-weight: 600">Head Physician</div>
+              </div>
+            </div>
+            
+            <div class="vc-actions">
+              <button class="btn btn-outline btn-sm">Book Consult</button>
+              <button class="btn btn-ghost btn-sm" style="flex:0.5">Family Discount</button>
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <script src="js/shared-auth.js"></script>
+  <script src="js/shared-data.js"></script>
+  <script src="js/shared-nav.js"></script>
+  <script>
+    if (!requireAuth()) throw '';
+    initNav('ventures');
+    
+    const p3 = getMemberById('P3'); if (p3?.imageUrl) document.getElementById('avaT1').style.backgroundImage = `url('${p3.imageUrl}')`;
+    const p2 = getMemberById('P2'); if (p2?.imageUrl) document.getElementById('avaT2').style.backgroundImage = `url('${p2.imageUrl}')`;
+    const p5 = getMemberById('P5'); if (p5?.imageUrl) document.getElementById('avaT3').style.backgroundImage = `url('${p5.imageUrl}')`;
+  </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vansh (वंश) — Authentication</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --royal-red: #AB2330;
+      --royal-red-dark: #821721;
+      --gold: #d4af37;
+      --gold-light: #f9df8a;
+      --gold-glow: rgba(212, 175, 55, 0.4);
+      --bg: #f5f6f8; --bg-card: #ffffff; --border: #e8e8e8;
+      --text: #111111; --text-muted: #888888;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; overflow: hidden; }
+    h1, h2, .brand { font-family: 'Cinzel', serif; }
+    
+    .split-left { flex: 1.2; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle at center, var(--royal-red) 0%, var(--royal-red-dark) 100%); position: relative; border-right: 1px solid var(--border); color: #fff;}
+    .split-right { flex: 1; display: flex; justify-content: center; align-items: center; }
+
+    .brand-content { text-align: center; z-index: 10; }
+    .brand { font-size: 80px; font-weight: 800; letter-spacing: 2px; margin-bottom: 16px; color: #fff; }
+    .brand span { color: var(--gold); }
+    .brand-sub { font-size: 20px; color: var(--gold-light); font-weight: 600; letter-spacing: 4px; text-transform: uppercase; font-family: 'Inter', sans-serif; }
+    
+    .motif { position: absolute; width: 600px; height: 600px; opacity: 0.1; color: var(--gold); animation: spin 60s linear infinite;}
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    .login-card { background: var(--bg-card); padding: 48px; border-radius: 24px; border: 1px solid var(--border); width: 100%; max-width: 440px; box-shadow: 0 20px 60px rgba(0,0,0,0.05); }
+    
+    .login-header h2 { font-size: 32px; font-weight: 700; margin-bottom: 12px; color: var(--royal-red-dark); }
+    .login-header p { color: var(--text-muted); font-size: 14px; margin-bottom: 32px; }
+
+    .form-group { margin-bottom: 24px; }
+    .form-label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 8px; }
+    .form-input { width: 100%; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-family: inherit; font-size: 15px; transition: all 0.3s ease; }
+    .form-input:focus { outline: none; border-color: var(--royal-red); box-shadow: 0 0 0 3px rgba(171, 35, 48, 0.1); }
+    
+    .btn-gold { width: 100%; padding: 18px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: all 0.3s ease; display: inline-block; text-align: center; background: linear-gradient(135deg, #c5a017, #f9df8a, #c5a017); color: var(--royal-red-dark); border: none; font-family: 'Cinzel', serif; letter-spacing: 1px; box-shadow: 0 4px 14px var(--gold-glow); }
+    .btn-gold:hover { box-shadow: 0 10px 30px var(--gold-glow); transform: translateY(-2px); filter: brightness(1.1); }
+    
+    .demo-link { display: block; text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 14px; cursor: pointer; border: none; background: none; font-family: inherit; width: 100%; text-decoration: underline; }
+    .demo-link:hover { color: var(--royal-red); }
+
+    @media (max-width: 900px) { .split-left { display: none; } .login-card { margin: 20px; } }
+  </style>
+</head>
+<body>
+
+  <div class="split-left">
+    <svg class="motif" viewBox="0 0 100 100" fill="currentColor">
+      <path d="M50 0 C60 30 90 40 100 50 C90 60 60 70 50 100 C40 70 10 60 0 50 C10 40 40 30 50 0 Z M50 15 C55 35 75 45 85 50 C75 55 55 65 50 85 C45 65 25 55 15 50 C25 45 45 35 50 15 Z" />
+    </svg>
+    <div class="brand-content">
+      <div class="brand">Vansh<span>.</span></div>
+      <div class="brand-sub">Family Dynasty</div>
+    </div>
+  </div>
+
+  <div class="split-right">
+    <div class="login-card">
+      <div class="login-header">
+        <h2>Welcome Back</h2>
+        <p>Sign in to manage your lineage and connect with your family network.</p>
+      </div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label">Member Name</label>
+          <input type="text" class="form-input" value="Anand Sharma" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" value="vansh2025" required>
+        </div>
+        <button type="submit" class="btn-gold">Sign In</button>
+      </form>
+      <button type="button" class="demo-link" onclick="handleDemo()">Try Demo Access (Anand)</button>
+    </div>
+  </div>
+
+  <script src="js/shared-auth.js"></script>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nameInput = e.target.querySelector('input[type="text"]').value.trim();
+      
+      // Attempt to load current active family data
+      let members = [];
+      try {
+        const saved = localStorage.getItem('vansh_family_data_v2');
+        if (saved) members = JSON.parse(saved);
+      } catch(err) {}
+      
+      if (!members || members.length === 0) {
+        // Safe fallback if local storage is blank
+        login('P3', 'Anand Sharma');
+        window.location.href = 'dashboard.html';
+        return;
+      }
+      
+      // Try to find the member by Full Name or First Name
+      const matched = members.find(m => 
+        `${m.firstName} ${m.lastName}`.toLowerCase() === nameInput.toLowerCase() || 
+        m.firstName.toLowerCase() === nameInput.toLowerCase()
+      );
+      
+      if (matched) {
+        login(matched.id, `${matched.firstName} ${matched.lastName}`);
+        window.location.href = 'dashboard.html';
+      } else {
+        alert(`"${nameInput}" not found in current family tree registry. Please enter a valid family member's name.`);
+      }
+    });
+
+    function handleDemo() {
+      // Load current active data to see if P3 still exists
+      let members = [];
+      try {
+        const saved = localStorage.getItem('vansh_family_data_v2');
+        if (saved) members = JSON.parse(saved);
+      } catch(err) {}
+      
+      const p3 = members.find(m => m.id === 'P3');
+      if (p3) {
+        login('P3', `${p3.firstName} ${p3.lastName}`);
+      } else if (members.length > 0) {
+        // Fallback to first member if P3 was deleted/renamed
+        login(members[0].id, `${members[0].firstName} ${members[0].lastName}`);
+      } else {
+        login('P3', 'Anand Sharma');
+      }
+      window.location.href = 'dashboard.html';
+    }
+  </script>
+</body>
+</html>

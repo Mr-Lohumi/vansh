@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vansh (वंश) — Member Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=3">
+  <style>
+    .hero-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 40px; margin-bottom: 32px; display: flex; align-items: center; gap: 32px;
+      box-shadow: var(--shadow-card);
+    }
+    .hero-avatar { width: 120px; height: 120px; font-size: 32px; border: 4px solid var(--bg-card); box-shadow: 0 0 0 2px var(--gold); border-radius: 50%; }
+    .hero-name { font-size: 32px; font-weight: 700; font-family: 'Cinzel', serif; display: flex; align-items: center; gap: 12px; margin-bottom: 6px; color: var(--text); }
+    .hero-meta { font-size: 14px; color: var(--text-muted); font-weight: 500;}
+    .hero-bio { font-size: 15px; color: var(--text-secondary); margin-top: 16px; line-height: 1.6; max-width: 700px; }
+    
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+    .info-box { background: var(--bg-elevated); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 24px; }
+    .info-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
+    .info-val { font-size: 16px; font-weight: 600; font-family: 'Cinzel', serif; color: var(--text); }
+    
+    .rel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-top: 24px; }
+    .form-row { display: flex; gap: 16px; margin-bottom: 16px; }
+    .form-row > div { flex: 1; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main-area">
+      <header class="topbar" id="topbar"></header>
+      <div class="page-content">
+        
+        <div id="profileContent" class="anim"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div class="modal-overlay" id="editModalOverlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">Edit Personal Details</div>
+        <button class="modal-close" onclick="closeEditModal()">✕</button>
+      </div>
+      <form id="editForm" class="modal-body">
+        <input type="hidden" id="editId">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">First Name</label><input type="text" id="editFn" class="form-input" required></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input type="text" id="editLn" class="form-input" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Age</label><input type="number" id="editAge" class="form-input" required></div>
+          <div class="form-group"><label class="form-label">Gotra</label><input type="text" id="editGotra" class="form-input" required></div>
+        </div>
+        <div class="form-group"><label class="form-label">Profile Image URL (Optional)</label><input type="url" id="editImg" class="form-input" placeholder="https://example.com/image.jpg"></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Education</label><input type="text" id="editEdu" class="form-input"></div>
+          <div class="form-group"><label class="form-label">Occupation</label><input type="text" id="editOcc" class="form-input"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Biography</label><input type="text" id="editBio" class="form-input"></div>
+      </form>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+        <button class="btn btn-gold" onclick="submitEditProfile()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/shared-auth.js"></script>
+  <script src="js/shared-data.js"></script>
+  <script src="js/shared-nav.js"></script>
+  <script src="js/shared-tree.js"></script>
+  <script>
+    if (!requireAuth()) throw '';
+    initNav('profile');
+    
+    const params = new URLSearchParams(location.search);
+    const loggedInId = getAuthData().userId;
+    const memberId = params.get('id') || loggedInId;
+    let member = getMemberById(memberId);
+    
+    function renderProfile() {
+      if (!member) {
+        document.getElementById('profileContent').innerHTML = '<div style="text-align:center;padding:60px">Member not found.</div>';
+        return;
+      }
+      const relToViewer = getSmartIndianRelation(familyMembers, loggedInId, member.id);
+      
+      const verifiedIcon = member.verified ? '<span class="text-green" style="font-size:20px; border-radius:50%; background:var(--green-dim); width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center;">✓</span>' : '';
+      const badgeHTML = relToViewer ? `<div class="pc-badge ${relToViewer.badge}" style="position:static;display:inline-block">${relToViewer.latin}</div>` : '';
+      
+      let statusText = 'Single';
+      if (member.spouse) {
+        const spouse = getMemberById(member.spouse);
+        statusText = spouse ? `Married to ${spouse.firstName}` : 'Married';
+      }
+      
+      const heroHTML = `
+        <div class="card mb-4" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-card);">
+          <div style="height:120px;background:linear-gradient(135deg, var(--gold-dim), var(--bg-card));"></div>
+          <div style="padding:0 32px 32px;display:flex;align-items:flex-end;gap:24px;margin-top:-50px">
+            <div class="pc-avatar" style="width:100px;height:100px;border:4px solid var(--bg-card);${getAvatarStyle(member)}">${member.imageUrl?'':getInitials(member)}</div>
+            <div style="flex:1">
+              <h1 style="font-size:28px;font-weight:800;color:var(--text);font-family:'Cinzel',serif">${getFullName(member)} ${member.verified?'<span class="text-gold" style="font-size:24px">✓</span>':''}</h1>
+              <div class="text-secondary mt-1">Age: ${member.age} Yrs · ${member.gender} · ${member.occupation || 'N/A'} · Status: ${statusText}</div>
+            </div>
+            <div>${member.id===loggedInId ? '<button class="btn btn-gold" onclick="openEditModal()">Edit My Profile</button>' : ''}</div>
+          </div>
+        </div>
+      `;
+      
+      let relsHTML = `
+        <div class="card mt-4">
+          <div class="card-header">
+            <div class="section-header" style="margin:0">Network Embedded Map</div>
+            <a href="tree.html?id=${member.id}" class="btn btn-outline btn-sm">Full Screen Map</a>
+          </div>
+          <div class="card-body" style="padding:40px; overflow-x:auto; background:var(--bg); border-top:1px solid var(--border); position:relative; min-height:400px;" id="profileTreeWrapper">
+            <canvas id="profileTreeCanvas" style="position:absolute;top:0;left:0;pointer-events:none;z-index:1;"></canvas>
+            <div id="profileTreeNodes" style="position:relative;z-index:2;"></div>
+          </div>
+        </div>
+      `;
+      
+      const canEdit = member.id === loggedInId;
+      const editBtnHTML = canEdit ? `<button class="btn btn-outline btn-sm" onclick="openEditModal()">Edit Profile</button>` : '';
+      
+      document.getElementById('profileContent').innerHTML = `
+        <div class="flex justify-between items-start mb-4">
+          <div class="section-header">Verified Profile</div>
+          ${editBtnHTML}
+        </div>
+        
+        ${heroHTML}
+        
+        <div class="grid-2">
+          <div class="info-box">
+            <div class="info-label">Caste Background</div>
+            <div class="info-val">${getCasteLine(member)}</div>
+          </div>
+          <div class="info-box">
+            <div class="info-label">Gotra Ancestry</div>
+            <div class="info-val text-gold">${member.gotra}</div>
+          </div>
+          <div class="info-box">
+            <div class="info-label">Education</div>
+            <div class="info-val">${member.education || 'Not Provided'}</div>
+          </div>
+          <div class="info-box">
+            <div class="info-label">Occupation</div>
+            <div class="info-val">${member.occupation || 'Not Provided'}</div>
+          </div>
+        </div>
+        
+        ${relsHTML}
+      `;
+      
+      setTimeout(() => {
+        renderTreeToContainer('profileTreeNodes', 'profileTreeCanvas', member.id);
+      }, 100);
+    }
+    
+    renderProfile();
+    
+    function openEditModal() {
+      document.getElementById('editId').value = member.id;
+      document.getElementById('editFn').value = member.firstName;
+      document.getElementById('editLn').value = member.lastName;
+      document.getElementById('editAge').value = member.age;
+      document.getElementById('editGotra').value = member.gotra;
+      document.getElementById('editImg').value = member.imageUrl || '';
+      document.getElementById('editEdu').value = member.education || '';
+      document.getElementById('editOcc').value = member.occupation || '';
+      document.getElementById('editBio').value = member.bio || '';
+      document.getElementById('editModalOverlay').classList.add('active');
+    }
+    
+    function closeEditModal() { document.getElementById('editModalOverlay').classList.remove('active'); }
+    
+    function submitEditProfile() {
+      const id = document.getElementById('editId').value;
+      const updates = {
+        firstName: document.getElementById('editFn').value,
+        lastName: document.getElementById('editLn').value,
+        age: parseInt(document.getElementById('editAge').value),
+        gotra: document.getElementById('editGotra').value,
+        imageUrl: document.getElementById('editImg').value,
+        education: document.getElementById('editEdu').value,
+        occupation: document.getElementById('editOcc').value,
+        bio: document.getElementById('editBio').value
+      };
+      updateFamilyMember(id, updates);
+      member = getMemberById(id);
+      closeEditModal();
+      renderProfile();
+      showToast('Profile Saved', 'Your personal details have been updated.', 'ok');
+    }
+  </script>
+</body>
+</html>

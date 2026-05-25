@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vansh (वंश) — Royal Events</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=5">
+  <style>
+    .event-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      display: flex; overflow: hidden; margin-bottom: 24px; box-shadow: var(--shadow-card);
+      transition: 0.3s;
+    }
+    .event-card:hover { transform: translateY(-3px); border-color: var(--gold); }
+    
+    .event-date-box {
+      background: var(--gold); color: #fff; width: 140px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 24px; text-align: center;
+    }
+    .event-month { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+    .event-day { font-family: 'Cinzel', serif; font-size: 48px; font-weight: 700; line-height: 1; margin: 4px 0; }
+    .event-year { font-size: 16px; font-weight: 600; opacity: 0.9; }
+    
+    .event-details { padding: 32px; flex: 1; display: flex; flex-direction: column; justify-content: center;}
+    .event-title { font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .event-meta { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; display: flex; gap: 16px; font-weight: 500; }
+    .event-meta span { display: flex; align-items: center; gap: 4px; }
+    
+    .event-desc { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+    
+    .event-actions { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 24px; margin-top: auto;}
+    
+    .event-avatars { display: flex; margin-left: 10px; }
+    .evt-ava { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--bg-card); background-size: cover; background-position: center; margin-left: -10px; }
+    
+    @media (max-width: 768px) {
+      .event-card { flex-direction: column; }
+      .event-date-box { width: 100%; padding: 16px; flex-direction: row; gap: 12px; }
+      .event-day { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main-area">
+      <header class="topbar" id="topbar"></header>
+      <div class="page-content">
+        
+        <div class="section-header anim" style="display:flex; justify-content:space-between; align-items:center">
+          <div>Royal Events</div>
+          <button class="btn btn-primary" onclick="alert('Only verified Patriarchs can create network events.')">Create Event</button>
+        </div>
+        
+        <div class="anim anim-delay-1" style="max-width: 800px;">
+          
+          <div class="event-card">
+            <div class="event-date-box">
+              <div class="event-month">November</div>
+              <div class="event-day">14</div>
+              <div class="event-year">2026</div>
+            </div>
+            <div class="event-details">
+              <div class="event-title">Deepak & Priya 1st Anniversary</div>
+              <div class="event-meta">
+                <span>📍 Taj Palace, New Delhi</span>
+                <span>🕒 7:00 PM IST</span>
+              </div>
+              <div class="event-desc">
+                The Sharma and Verma families cordially invite you to celebrate the first wedding anniversary of Deepak and Priya. Join the network for an evening of celebration, dining, and family bonding.
+              </div>
+              <div class="event-actions">
+                <div style="display:flex; align-items:center; gap: 12px">
+                  <span class="text-sm font-bold text-secondary">42 Attending</span>
+                  <div class="event-avatars" id="avaAttending">
+                    <!-- JS injected -->
+                  </div>
+                </div>
+                <div style="display:flex; gap: 12px">
+                  <button class="btn btn-outline" onclick="alert('RSVP Declined')">Decline</button>
+                  <button class="btn btn-primary" onclick="alert('RSVP Accepted! Added to your calendar.')">RSVP Yes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="event-card" style="opacity: 0.7">
+            <div class="event-date-box" style="background: var(--text-muted)">
+              <div class="event-month">January</div>
+              <div class="event-day">05</div>
+              <div class="event-year">2027</div>
+            </div>
+            <div class="event-details">
+              <div class="event-title">Annual Patriarch Council</div>
+              <div class="event-meta">
+                <span>📍 Sharma Ancestral Estate, Uttarakhand</span>
+                <span>🕒 10:00 AM IST</span>
+              </div>
+              <div class="event-desc">
+                The yearly gathering of the eldest members of the lineage network to discuss estate management, upcoming alliances, and network expansion. Attendance by invitation only.
+              </div>
+              <div class="event-actions">
+                <div style="display:flex; align-items:center; gap: 12px">
+                  <span class="text-sm font-bold text-secondary">5 Attending</span>
+                </div>
+                <button class="btn btn-outline" disabled>Invite Only</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <script src="js/shared-auth.js"></script>
+  <script src="js/shared-data.js"></script>
+  <script src="js/shared-nav.js"></script>
+  <script>
+    if (!requireAuth()) throw '';
+    initNav('events');
+    
+    // Inject avatars for attending
+    const attendingAvaContainer = document.getElementById('avaAttending');
+    const attendees = [getMemberById('P1'), getMemberById('P3'), getMemberById('P4'), getMemberById('P11')];
+    
+    attendingAvaContainer.innerHTML = attendees.map(m => {
+      if(!m) return '';
+      return `<div class="evt-ava" style="background-image:url('${m.imageUrl}')"></div>`;
+    }).join('') + `<div class="evt-ava" style="display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;background:var(--bg-elevated);color:var(--text-secondary)">+38</div>`;
+    
+  </script>
+</body>
+</html>
