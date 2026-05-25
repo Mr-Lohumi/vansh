@@ -417,10 +417,32 @@
       document.getElementById('addStoryModal').style.display = 'flex';
     }
 
+    let currentStoryImage = null;
+
+    function handleStoryImageUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          currentStoryImage = e.target.result;
+          document.getElementById('storyImagePreview').style.backgroundImage = `url(${currentStoryImage})`;
+          document.getElementById('storyImagePreview').style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function removeStoryImage() {
+      currentStoryImage = null;
+      document.getElementById('storyImagePreview').style.backgroundImage = 'none';
+      document.getElementById('storyImagePreview').style.display = 'none';
+      if(document.getElementById('storyImageUpload')) document.getElementById('storyImageUpload').value = '';
+    }
+
     function closeAddStoryModal() {
       document.getElementById('addStoryModal').style.display = 'none';
       document.getElementById('newStoryTitle').value = '';
-      if(document.getElementById('newStoryImage')) document.getElementById('newStoryImage').value = '';
+      removeStoryImage();
     }
 
     function submitNewStory() {
@@ -430,7 +452,7 @@
         return;
       }
       
-      let img = document.getElementById('newStoryImage') ? document.getElementById('newStoryImage').value.trim() : '';
+      let img = currentStoryImage;
       if (!img) {
         const images = [
           "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&q=80",
@@ -620,7 +642,17 @@
     <div style="background:#fff; width:90%; max-width:400px; border-radius:12px; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,0.3); position:relative;">
       <h3 style="margin-top:0; margin-bottom:16px; font-family:'Inter', sans-serif; color:#050505;">Create Story</h3>
       <input type="text" id="newStoryTitle" placeholder="Enter story text or title..." style="width:100%; padding:12px; border:1px solid #e0e0e0; border-radius:8px; font-family:'Inter', sans-serif; margin-bottom:12px; outline:none; font-size:14px;">
-      <input type="text" id="newStoryImage" placeholder="Image URL (optional)" style="width:100%; padding:12px; border:1px solid #e0e0e0; border-radius:8px; font-family:'Inter', sans-serif; margin-bottom:20px; outline:none; font-size:14px;">
+      
+      <div style="margin-bottom:20px;">
+        <input type="file" id="storyImageUpload" accept="image/*" style="display:none;" onchange="handleStoryImageUpload(event)">
+        <div id="storyImagePreview" style="display:none; width:100%; height:120px; border-radius:8px; background-size:cover; background-position:center; margin-bottom:8px; position:relative; border: 1px solid #e0e0e0;">
+           <button onclick="removeStoryImage()" style="position:absolute; top:4px; right:4px; background:rgba(0,0,0,0.5); color:#fff; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px;">&times;</button>
+        </div>
+        <button onclick="document.getElementById('storyImageUpload').click()" style="width:100%; padding:12px; border:1px dashed #c0c0c0; border-radius:8px; background:#fafafa; color:#65676b; font-family:'Inter', sans-serif; cursor:pointer; font-weight:600; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <span style="font-size:18px;">📸</span> Upload Picture
+        </button>
+      </div>
+
       <div style="display:flex; justify-content:flex-end; gap:12px;">
         <button onclick="closeAddStoryModal()" style="padding:10px 20px; background:#f0f2f5; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-family:'Inter', sans-serif;">Cancel</button>
         <button onclick="submitNewStory()" style="padding:10px 20px; background:#1877f2; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-family:'Inter', sans-serif;">Share to Story</button>
