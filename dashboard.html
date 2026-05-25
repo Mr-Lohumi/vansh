@@ -284,7 +284,7 @@
           ${post.image ? `<img src="${post.image}" alt="Post Media" class="post-image">` : ''}
           <div class="post-actions">
             <div class="post-action" onclick="toggleRespect(${post.id})" style="${post.hasRespected ? 'color:var(--gold)' : ''}; cursor:pointer"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg> Respect ${post.respects ? '(' + post.respects + ')' : ''}</div>
-            <div class="post-action" onclick="addCounsel(${post.id})" style="cursor:pointer"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> Counsel ${post.comments && post.comments.length ? '(' + post.comments.length + ')' : ''}</div>
+            <div class="post-action" onclick="toggleCommentBox(${post.id})" style="cursor:pointer"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> Counsel ${post.comments && post.comments.length ? '(' + post.comments.length + ')' : ''}</div>
           </div>
           ${post.comments && post.comments.length ? `
             <div style="margin-top: 12px; border-top: 1px solid var(--border-light); padding-top: 12px;">
@@ -296,6 +296,12 @@
               `).join('')}
             </div>
           ` : ''}
+          <div id="commentBox-${post.id}" style="display:none; margin-top: 12px; border-top: 1px solid var(--border-light); padding-top: 12px;">
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="commentInput-${post.id}" placeholder="Write a comment..." style="flex:1; padding:10px 16px; border-radius:30px; border:1px solid var(--border-light); background:var(--bg); font-size:13px; outline:none; color:var(--text)" onkeypress="if(event.key==='Enter') submitComment(${post.id})">
+              <button class="btn btn-gold btn-sm" onclick="submitComment(${post.id})">Post</button>
+            </div>
+          </div>
         </div>
       `).join('');
       document.getElementById('feedContainer').innerHTML = feedHtml;
@@ -319,15 +325,30 @@
       }
     }
 
-    function addCounsel(postId) {
+    function toggleCommentBox(postId) {
+      const box = document.getElementById(`commentBox-${postId}`);
+      if (box) {
+        box.style.display = box.style.display === 'none' ? 'block' : 'none';
+        if (box.style.display === 'block') {
+          document.getElementById(`commentInput-${postId}`).focus();
+        }
+      }
+    }
+
+    function submitComment(postId) {
       const post = feedPosts.find(p => p.id === postId);
-      if (post) {
-        const text = prompt("Offer your counsel or comment:");
-        if (text && text.trim()) {
+      const input = document.getElementById(`commentInput-${postId}`);
+      if (post && input) {
+        const text = input.value.trim();
+        if (text) {
           if (!post.comments) post.comments = [];
-          post.comments.push({ author: getFullName(authMember), text: text.trim() });
+          post.comments.push({ author: getFullName(authMember), text: text });
           localStorage.setItem('vansh_feed', JSON.stringify(feedPosts));
           renderFeed();
+          // Box will be closed on re-render, we can re-open it if we want, or leave it closed.
+          // Let's leave it open so they can see their comment.
+          const newBox = document.getElementById(`commentBox-${postId}`);
+          if (newBox) newBox.style.display = 'block';
         }
       }
     }
