@@ -25,7 +25,7 @@
     /* Navigation */
     nav { position: fixed; top: 0; width: 100%; padding: 24px 60px; display: flex; justify-content: space-between; align-items: center; background: rgba(17, 17, 17, 0.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); z-index: 100; border-bottom: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.5s ease;}
     .brand { font-size: 32px; font-weight: 800; letter-spacing: 3px; color: #fff; display: flex; align-items: center; gap: 12px; }
-    .brand span { color: var(--gold); }
+    .brand span { color: var(--royal-red); }
     .brand-sub { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--gold-light); margin-left: 12px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; opacity: 0.9;}
     
     .btn { padding: 14px 36px; border-radius: 4px; font-weight: 700; font-size: 15px; text-transform: uppercase; letter-spacing: 2px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: inline-flex; align-items: center; cursor: pointer; border: none;}
@@ -58,7 +58,7 @@
     /* Real Floating Images Visuals (Network Connection) */
     .hero-visual { flex: 1; position: relative; height: 700px; display: flex; align-items: center; justify-content: center; z-index: 5; animation: reveal 2s ease-out 0.8s forwards; opacity: 0; }
     
-    .tree-node { position: absolute; border-radius: 50%; background-size: cover; background-position: center; border: 3px solid var(--gold); box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.5); animation: float 6s ease-in-out infinite alternate; }
+    .tree-node { position: absolute; border-radius: 50%; background-size: cover; background-position: center; border: 3px solid var(--royal-red); box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.5); animation: float 6s ease-in-out infinite alternate; }
     .tree-node::after { content: ''; position: absolute; inset: -10px; border-radius: 50%; border: 1px solid rgba(249, 223, 138, 0.4); animation: spin 20s linear infinite; }
     .tree-node::before { content: ''; position: absolute; inset: -18px; border-radius: 50%; border: 1px dashed rgba(212, 175, 55, 0.6); animation: spinReverse 30s linear infinite; }
     
@@ -86,11 +86,11 @@
     /* Features / Image Cards */
     .features { padding: 120px 5%; max-width: 1400px; margin: 0 auto; }
     .section-title { text-align: center; font-size: 56px; margin-bottom: 80px; color: var(--royal-red-dark); font-weight: 900;}
-    .section-title span { color: var(--gold); }
+    .section-title span { color: var(--royal-red); }
     
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; }
     .feature-card { background: #fff; border-radius: 8px; border: 1px solid rgba(171, 35, 48, 0.1); transition: all 0.5s; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.04); display: flex; flex-direction: column; position: relative; }
-    .feature-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--gold), #f9df8a); transform: scaleX(0); transform-origin: left; transition: transform 0.5s ease; z-index: 10; }
+    .feature-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--royal-red), #f9df8a); transform: scaleX(0); transform-origin: left; transition: transform 0.5s ease; z-index: 10; }
     .feature-card:hover::before { transform: scaleX(1); }
     .feature-card:hover { transform: translateY(-12px); box-shadow: 0 24px 60px rgba(171, 35, 48, 0.15); border-color: rgba(171, 35, 48, 0.3); }
     

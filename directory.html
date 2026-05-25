@@ -15,7 +15,7 @@
       flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius);
       font-family: inherit; font-size: 15px; outline: none; background: var(--bg);
     }
-    .search-input:focus { border-color: var(--gold); }
+    .search-input:focus { border-color: var(--royal-red); }
     
     .directory-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;
@@ -25,7 +25,7 @@
       background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
       padding: 24px; text-align: center; transition: 0.3s; position: relative; overflow: hidden;
     }
-    .dir-card:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: var(--shadow-card); }
+    .dir-card:hover { transform: translateY(-5px); border-color: var(--royal-red); box-shadow: var(--shadow-card); }
     
     .dir-ava {
       width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 16px;
@@ -89,7 +89,7 @@
         const initial = m.name.charAt(0);
         const avaHtml = m.imageUrl 
           ? `<div class="dir-ava" style="background-image:url('${m.imageUrl}')"></div>`
-          : `<div class="dir-ava" style="display:flex;align-items:center;justify-content:center;font-size:32px;font-family:Cinzel,serif;background:var(--bg-elevated);color:var(--gold);border-color:var(--gold)">${initial}</div>`;
+          : `<div class="dir-ava" style="display:flex;align-items:center;justify-content:center;font-size:32px;font-family:Cinzel,serif;background:var(--bg-elevated);color:var(--royal-red);border-color:var(--royal-red)">${initial}</div>`;
           
         return `
           <div class="dir-card">

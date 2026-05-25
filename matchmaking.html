@@ -8,26 +8,14 @@
   <link rel="stylesheet" href="css/shared.css">
   <style>
     /* Premium Indian Wedding Theme */
-    body {
-      background-color: #2b060d; /* Deep rich maroon */
-      background-image: 
-        radial-gradient(circle at top right, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.15) 0%, transparent 40%);
-      color: #fdfaf0;
-    }
-    
-    .main-area {
-      background: transparent;
-    }
-
     .match-header { 
       padding: 50px 40px; 
-      background: linear-gradient(135deg, rgba(74, 14, 27, 0.95), rgba(43, 6, 13, 0.95));
-      border: 2px solid var(--gold); 
+      background: var(--bg-card);
+      border: 1px solid var(--border); 
       border-radius: 12px; 
       margin-bottom: 40px; 
       text-align: center; 
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 0 30px rgba(212,175,55,0.1); 
+      box-shadow: var(--shadow-card); 
       position: relative;
       overflow: hidden;
     }
@@ -35,73 +23,72 @@
     /* Decorative mandala corner */
     .match-header::before {
       content: ''; position: absolute; top: -50px; left: -50px; width: 150px; height: 150px;
-      background: radial-gradient(circle, transparent 30%, var(--gold) 31%, var(--gold) 33%, transparent 34%, transparent 45%, var(--gold) 46%, var(--gold) 48%, transparent 49%);
-      opacity: 0.2; transform: rotate(45deg);
+      background: radial-gradient(circle, transparent 30%, var(--royal-red-dim) 31%, var(--royal-red-dim) 33%, transparent 34%, transparent 45%, var(--royal-red-dim) 46%, var(--royal-red-dim) 48%, transparent 49%);
+      opacity: 0.5; transform: rotate(45deg);
     }
     .match-header::after {
       content: ''; position: absolute; bottom: -50px; right: -50px; width: 150px; height: 150px;
-      background: radial-gradient(circle, transparent 30%, var(--gold) 31%, var(--gold) 33%, transparent 34%, transparent 45%, var(--gold) 46%, var(--gold) 48%, transparent 49%);
-      opacity: 0.2; transform: rotate(45deg);
+      background: radial-gradient(circle, transparent 30%, var(--royal-red-dim) 31%, var(--royal-red-dim) 33%, transparent 34%, transparent 45%, var(--royal-red-dim) 46%, var(--royal-red-dim) 48%, transparent 49%);
+      opacity: 0.5; transform: rotate(45deg);
     }
 
     .match-header h1 { 
       font-size: 38px; 
       font-weight: 800; 
-      color: var(--gold); 
+      color: var(--royal-red); 
       margin-bottom: 16px; 
       text-transform: uppercase;
       letter-spacing: 4px;
-      text-shadow: 0 4px 15px rgba(212,175,55,0.4);
     }
     
     .match-header p {
       font-size: 16px;
-      color: #ffe89c;
+      color: var(--text-secondary);
       letter-spacing: 1px;
     }
     
     .filter-panel { 
-      background: rgba(255, 255, 255, 0.03); 
-      backdrop-filter: blur(10px);
+      background: var(--bg-card); 
       padding: 30px; 
       border-radius: 12px; 
-      border: 1px solid rgba(212, 175, 55, 0.3); 
+      border: 1px solid var(--border); 
       margin-bottom: 40px; 
       display: flex; 
       gap: 20px; 
       align-items: flex-end; 
       flex-wrap: wrap; 
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      box-shadow: var(--shadow-sm);
     }
     
-    .filter-panel .form-label { color: #ffe89c; font-weight: 600; letter-spacing: 1px; font-family: 'Cinzel', serif; }
+    .filter-panel .form-label { color: var(--text-muted); font-weight: 600; letter-spacing: 1px; font-family: 'Cinzel', serif; }
     .filter-panel .form-input, .filter-panel .form-select {
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(212,175,55,0.4);
-      color: #fff;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text);
     }
     .filter-panel .form-input:focus, .filter-panel .form-select:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 10px rgba(212,175,55,0.2);
+      border-color: var(--royal-red);
+      box-shadow: 0 0 10px var(--royal-red-glow);
     }
     .filter-panel .form-group { margin-bottom: 0; flex: 1; min-width: 180px; }
     
     .grid-matches { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 30px; }
     
     .match-card { 
-      background: linear-gradient(to bottom, #ffffff, #fdfaf0);
-      border: 2px solid var(--gold); 
+      background: var(--bg-card);
+      border: 1px solid var(--border); 
       border-radius: 8px; 
       padding: 30px 24px; 
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
       position: relative; 
       overflow: hidden; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+      box-shadow: var(--shadow-card); 
     }
     
     .match-card:hover { 
       transform: translateY(-10px) scale(1.02); 
-      box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2); 
+      box-shadow: var(--shadow-hover);
+      border-color: var(--royal-red);
     }
     
     .match-bar { position: absolute; top: 0; left: 0; height: 6px; background: var(--gold); }
@@ -112,11 +99,11 @@
       font-family: 'Cinzel', serif;
       font-size: 22px;
       font-weight: 800;
-      color: #3a0815;
+      color: var(--text);
     }
     
     .mc-meta {
-      color: #666;
+      color: var(--text-secondary);
       font-weight: 600;
       font-size: 13px;
       letter-spacing: 1px;
@@ -129,9 +116,9 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      background: rgba(212,175,55,0.1);
-      color: #9a7b1b;
-      border: 1px solid rgba(212,175,55,0.3);
+      background: var(--royal-red-dim);
+      color: var(--royal-red-dark);
+      border: 1px solid var(--royal-red);
     }
     
     .mc-tag-conflict {
@@ -141,7 +128,7 @@
     }
 
     .btn-royal {
-      background: linear-gradient(135deg, #d4af37, #aa8620);
+      background: var(--royal-red);
       color: #fff;
       border: none;
       font-family: 'Cinzel', serif;
@@ -149,11 +136,11 @@
       letter-spacing: 1px;
       text-transform: uppercase;
       transition: 0.3s;
-      box-shadow: 0 4px 15px rgba(212,175,55,0.3);
+      box-shadow: var(--shadow-sm);
     }
     .btn-royal:hover {
-      background: linear-gradient(135deg, #ebd17a, #c49d29);
-      box-shadow: 0 6px 20px rgba(212,175,55,0.5);
+      background: var(--royal-red-dark);
+      box-shadow: var(--shadow-hover);
       transform: translateY(-2px);
     }
   </style>
@@ -232,7 +219,7 @@
       const container = document.getElementById('matchesContainer');
       
       if(!target) {
-        container.innerHTML = '<div style="color:#ffe89c">No profile selected for matchmaking.</div>';
+        container.innerHTML = '<div style="color:var(--text-muted)">No profile selected for matchmaking.</div>';
         return;
       }
       
@@ -240,7 +227,7 @@
       const maxAge = parseInt(document.getElementById('maxAge').value) || 100;
       const oppositeGender = target.gender === 'M' ? 'F' : 'M';
       
-      document.getElementById('resultsTitle').innerHTML = `Verified Alliances for: <span style="color:#fff">${getFullName(target)}</span>`;
+      document.getElementById('resultsTitle').innerHTML = `Verified Alliances for: <span style="color:var(--royal-red)">${getFullName(target)}</span>`;
       
       let html = '';
       

@@ -8,22 +8,13 @@
   <link rel="stylesheet" href="css/shared.css?v=6">
   <style>
     /* Premium Indian Wedding Theme */
-    body {
-      background-color: #2b060d;
-      background-image: 
-        radial-gradient(circle at top right, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.15) 0%, transparent 40%);
-      color: #fdfaf0;
-    }
-    .main-area { background: transparent; }
-
     .museum-header-card { 
       padding: 50px 40px; 
-      background: linear-gradient(135deg, rgba(74, 14, 27, 0.95), rgba(43, 6, 13, 0.95));
-      border: 2px solid var(--gold); 
+      background: var(--bg-card);
+      border: 1px solid var(--border); 
       border-radius: 12px; 
       margin-bottom: 40px; 
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 0 30px rgba(212,175,55,0.1); 
+      box-shadow: var(--shadow-card); 
       position: relative;
       overflow: hidden;
       display: flex; justify-content: space-between; align-items: center;
@@ -31,84 +22,83 @@
     
     .museum-header-card::before {
       content: ''; position: absolute; top: -50px; left: -50px; width: 150px; height: 150px;
-      background: radial-gradient(circle, transparent 30%, var(--gold) 31%, var(--gold) 33%, transparent 34%, transparent 45%, var(--gold) 46%, var(--gold) 48%, transparent 49%);
-      opacity: 0.2; transform: rotate(45deg);
+      background: radial-gradient(circle, transparent 30%, var(--royal-red-dim) 31%, var(--royal-red-dim) 33%, transparent 34%, transparent 45%, var(--royal-red-dim) 46%, var(--royal-red-dim) 48%, transparent 49%);
+      opacity: 0.5; transform: rotate(45deg);
     }
 
     .museum-header-text h1 { 
-      font-size: 38px; font-weight: 800; font-family: 'Cinzel', serif; color: var(--gold); 
+      font-size: 38px; font-weight: 800; font-family: 'Cinzel', serif; color: var(--royal-red); 
       margin-bottom: 12px; text-transform: uppercase; letter-spacing: 4px;
-      text-shadow: 0 4px 15px rgba(212,175,55,0.4);
     }
-    .museum-header-text p { font-size: 16px; color: #ffe89c; letter-spacing: 1px; max-width: 600px; line-height: 1.5; }
+    .museum-header-text p { font-size: 16px; color: var(--text-secondary); letter-spacing: 1px; max-width: 600px; line-height: 1.5; }
 
     .btn-royal {
-      background: linear-gradient(135deg, #d4af37, #aa8620); color: #fff; border: none;
+      background: var(--royal-red); color: #fff; border: none;
       font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
       padding: 14px 28px; border-radius: 8px; cursor: pointer; transition: 0.3s;
-      box-shadow: 0 4px 15px rgba(212,175,55,0.3); z-index: 2; position: relative;
+      box-shadow: var(--shadow-sm); z-index: 2; position: relative;
     }
-    .btn-royal:hover { background: linear-gradient(135deg, #ebd17a, #c49d29); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,175,55,0.5); }
+    .btn-royal:hover { background: var(--royal-red-dark); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
 
     .event-card {
-      background: linear-gradient(to right, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
-      border: 1px solid rgba(212,175,55,0.3); border-radius: 12px;
-      display: flex; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      backdrop-filter: blur(10px); transition: 0.3s;
+      background: var(--bg-card);
+      border: 1px solid var(--border); border-radius: 12px;
+      display: flex; overflow: hidden; margin-bottom: 24px; box-shadow: var(--shadow-card);
+      transition: 0.3s;
     }
-    .event-card:hover { transform: translateY(-3px); border-color: var(--gold); box-shadow: 0 15px 40px rgba(212,175,55,0.2); }
+    .event-card:hover { transform: translateY(-3px); border-color: var(--royal-red); box-shadow: var(--shadow-hover); }
     
-    .event-cover { width: 200px; background-size: cover; background-position: center; border-right: 2px solid #2b060d; }
+    .event-cover { width: 200px; background-size: cover; background-position: center; border-right: 1px solid var(--border); }
 
     .event-date-box {
-      background: linear-gradient(135deg, var(--gold), #aa8620); color: #2b060d; width: 150px; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; padding: 24px; text-align: center; border-right: 2px solid #2b060d;
+      background: var(--royal-red-dim); color: var(--royal-red); width: 150px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 24px; text-align: center; border-right: 1px solid var(--border);
     }
     .event-month { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
     .event-day { font-family: 'Cinzel', serif; font-size: 54px; font-weight: 800; line-height: 1; margin: 4px 0; }
     .event-year { font-size: 16px; font-weight: 700; opacity: 0.9; }
     
     .event-details { padding: 32px; flex: 1; display: flex; flex-direction: column; justify-content: center;}
-    .event-title { font-family: 'Cinzel', serif; font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 10px; letter-spacing: 1px;}
-    .event-meta { font-size: 14px; color: #ffe89c; margin-bottom: 16px; display: flex; gap: 20px; font-weight: 600; }
+    .event-title { font-family: 'Cinzel', serif; font-size: 26px; font-weight: 800; color: var(--text); margin-bottom: 10px; letter-spacing: 1px;}
+    .event-meta { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; display: flex; gap: 20px; font-weight: 600; }
     .event-meta span { display: flex; align-items: center; gap: 6px; }
     
-    .event-desc { font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 24px; }
+    .event-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px; }
     
-    .event-actions { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(212,175,55,0.2); padding-top: 24px; margin-top: auto;}
+    .event-actions { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-light); padding-top: 24px; margin-top: auto;}
     
-    .btn-outline-gold { background: transparent; color: #ffe89c; border: 1px solid var(--gold); padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.3s; }
-    .btn-outline-gold:hover { background: rgba(212,175,55,0.1); color: #fff; }
-    .btn-danger { background: rgba(220,53,69,0.1); color: #dc3545; border: 1px solid #dc3545; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+    .btn-outline-gold { background: transparent; color: var(--royal-red); border: 1px solid var(--royal-red); padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+    .btn-outline-gold:hover { background: var(--royal-red-dim); color: var(--royal-red-dark); }
+    .btn-danger { background: rgba(220,53,69,0.05); color: #dc3545; border: 1px solid #dc3545; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.3s; }
     .btn-danger:hover { background: #dc3545; color: #fff; }
 
     /* Modal Styles */
     .modal-overlay {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8);
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5);
       backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center;
     }
     .modal-overlay.active { display: flex; }
     .modal-box {
-      background: linear-gradient(135deg, rgba(74, 14, 27, 0.98), rgba(43, 6, 13, 0.98));
-      border: 2px solid var(--gold); border-radius: 12px; width: 100%; max-width: 500px;
-      padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); position: relative; max-height: 90vh; overflow-y: auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 500px;
+      padding: 32px; box-shadow: var(--shadow-hover); position: relative; max-height: 90vh; overflow-y: auto;
     }
-    .modal-title { font-family: 'Cinzel', serif; font-size: 24px; color: var(--gold); margin-bottom: 24px; text-transform: uppercase; letter-spacing: 2px; text-align: center;}
+    .modal-title { font-family: 'Cinzel', serif; font-size: 24px; color: var(--royal-red); margin-bottom: 24px; text-transform: uppercase; letter-spacing: 2px; text-align: center;}
     .form-group { margin-bottom: 20px; }
-    .form-label { display: block; color: #ffe89c; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .form-label { display: block; color: var(--text-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
     .form-input {
-      width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(212,175,55,0.4);
-      color: #fff; padding: 12px 16px; border-radius: 6px; font-family: 'Inter', sans-serif;
+      width: 100%; background: var(--bg-elevated); border: 1px solid var(--border);
+      color: var(--text); padding: 12px 16px; border-radius: 6px; font-family: 'Inter', sans-serif;
     }
-    .form-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 10px rgba(212,175,55,0.2); }
-    .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #ffe89c; font-size: 24px; cursor: pointer; }
-    .modal-close:hover { color: #fff; }
+    .form-input:focus { outline: none; border-color: var(--royal-red); box-shadow: 0 0 10px var(--royal-red-glow); }
+    .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
+    .modal-close:hover { color: var(--text); }
     .modal-footer { display: flex; justify-content: flex-end; gap: 16px; margin-top: 32px; }
 
     @media (max-width: 768px) {
       .event-card { flex-direction: column; }
-      .event-cover { width: 100%; height: 200px; border-right: none; border-bottom: 2px solid #2b060d; }
-      .event-date-box { width: 100%; padding: 16px; flex-direction: row; gap: 12px; border-right: none; border-bottom: 2px solid #2b060d; }
+      .event-cover { width: 100%; height: 200px; border-right: none; border-bottom: 1px solid var(--border); }
+      .event-date-box { width: 100%; padding: 16px; flex-direction: row; gap: 12px; border-right: none; border-bottom: 1px solid var(--border); }
       .event-day { font-size: 32px; }
       .event-meta { flex-direction: column; gap: 8px; }
     }
@@ -256,12 +246,12 @@
         
         if (ev.rsvped) {
           btnElement.innerText = "RSVP'd ✓";
-          btnElement.style.background = 'rgba(212,175,55,0.2)';
-          btnElement.style.color = '#fff';
+          btnElement.style.background = 'var(--royal-red-dim)';
+          btnElement.style.color = 'var(--royal-red-dark)';
         } else {
           btnElement.innerText = "RSVP";
           btnElement.style.background = 'transparent';
-          btnElement.style.color = '#ffe89c';
+          btnElement.style.color = 'var(--royal-red)';
         }
       }
     }
@@ -282,7 +272,7 @@
       const container = document.getElementById('eventsList');
       
       if(events.length === 0) {
-        container.innerHTML = '<div style="color:#ffe89c; padding:20px;">No upcoming events. Host a gathering to unite your family!</div>';
+        container.innerHTML = '<div style="color:var(--text-muted); padding:20px;">No upcoming events. Host a gathering to unite your family!</div>';
         return;
       }
 
@@ -308,7 +298,7 @@
         const coverHtml = ev.imgUrl ? `<div class="event-cover" style="background-image:url('${ev.imgUrl}')"></div>` : '';
         
         const rsvpText = ev.rsvped ? "RSVP'd ✓" : "RSVP";
-        const rsvpStyle = ev.rsvped ? "background: rgba(212,175,55,0.2); color: #fff;" : "";
+        const rsvpStyle = ev.rsvped ? "background: var(--royal-red-dim); color: var(--royal-red-dark);" : "";
 
         return `
           <div class="event-card">
