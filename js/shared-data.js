@@ -8,7 +8,28 @@ function loadFamilyData() {
   try {
     const saved = localStorage.getItem(FAMILY_DATA_KEY);
     if (saved) {
-      const parsed = JSON.parse(saved);
+      let parsed = JSON.parse(saved);
+      
+      // MIGRATION: Purge demo data (P1, P2, P4, P5, etc) to go "Live"
+      // Check if it looks like the old demo database
+      if (parsed.some(m => m.id === 'P1' && m.firstName === 'Anand')) {
+        let auth = null;
+        try { auth = JSON.parse(localStorage.getItem('rootd_auth')); } catch(e) {}
+        const userId = auth ? auth.userId : null;
+        
+        if (userId) {
+          // Keep ONLY the logged in user, and detach them from demo parents/spouse
+          parsed = parsed.filter(m => m.id === userId);
+          if (parsed.length > 0) {
+            parsed[0].parents = [];
+            parsed[0].spouse = null;
+          }
+        } else {
+          parsed = [];
+        }
+        localStorage.setItem(FAMILY_DATA_KEY, JSON.stringify(parsed));
+      }
+
       // Backfill missing usernames
       let changed = false;
       parsed.forEach(m => {
@@ -24,10 +45,6 @@ function loadFamilyData() {
           changed = true;
         }
       });
-      if (changed) {
-        // We defer saving back so it doesn't infinite loop, it will just get saved next time something edits.
-        // Actually it's safe to just update the array in memory, saveFamilyData can be called later.
-      }
       return parsed;
     }
   } catch(e) {}
