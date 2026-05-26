@@ -62,10 +62,10 @@
     /* Enhanced Post Styling - Clean Flat Theme */
     .post-card { 
       background: var(--bg-card);
-      border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); 
-      color: var(--text); position: relative; overflow: hidden; font-family: 'Inter', sans-serif; transition: box-shadow 0.3s;
+      border: 1px solid rgba(212, 175, 55, 0.3); border-radius: var(--radius-lg); padding: 24px; box-shadow: 0 4px 20px rgba(107, 21, 34, 0.03), 0 0 0 1px rgba(107, 21, 34, 0.02) inset; 
+      color: var(--text); position: relative; overflow: hidden; font-family: 'Inter', sans-serif; transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
     }
-    .post-card:hover { box-shadow: var(--shadow-card); }
+    .post-card:hover { box-shadow: 0 8px 30px rgba(107, 21, 34, 0.06), 0 0 0 1px rgba(212, 175, 55, 0.1) inset; border-color: rgba(212, 175, 55, 0.6); transform: translateY(-2px); }
     .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
     .post-avatar { width: 48px; height: 48px; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid var(--gold-border); background-color: var(--bg-elevated); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
     .post-author { font-size: 16px; font-weight: 700; color: var(--text); font-family: 'Cinzel', serif; letter-spacing: 0.5px; }
