@@ -68,7 +68,10 @@ const INVITES_DATA_KEY = 'vansh_invites_v1';
 function loadInvites() {
   try {
     const saved = localStorage.getItem(INVITES_DATA_KEY);
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) return parsed;
+    }
   } catch(e) {}
   return [];
 }
