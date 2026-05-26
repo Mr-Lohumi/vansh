@@ -188,11 +188,19 @@ function getBloodlineNetwork(currentPOV) {
     }
   }
   
+  let minTempGen = Math.min(...network.map(m => m._tempGen !== undefined ? m._tempGen : Infinity));
+  if (minTempGen === Infinity) minTempGen = 10;
+  
   network.forEach(m => {
-    if (m._tempGen !== undefined) m.gen = m._tempGen;
+    if (m._tempGen !== undefined) m.gen = m._tempGen - minTempGen + 1;
   });
   
   return network;
+}
+
+function toRoman(num) {
+  const roman = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+  return roman[num] || num;
 }
 
 function renderTreeToContainer(containerId, canvasId, currentPOV, onNodeClickName) {
@@ -201,7 +209,7 @@ function renderTreeToContainer(containerId, canvasId, currentPOV, onNodeClickNam
   
   container.style.display = 'inline-flex';
   container.style.flexDirection = 'column';
-  container.style.gap = '70px';
+  container.style.gap = '40px';
   container.style.alignItems = 'center';
   container.style.margin = '0 auto';
   
@@ -220,7 +228,7 @@ function renderTreeToContainer(containerId, canvasId, currentPOV, onNodeClickNam
     if(genMembers.length === 0) continue;
     
     let processed = new Set();
-    let rowHTML = `<div class="tree-row" id="row-gen${g}"><div class="gl">Generation ${g}</div>`;
+    let rowHTML = `<div class="tree-row" id="row-gen${g}"><div class="gl">Generation ${toRoman(g)}</div>`;
     
     genMembers.forEach(m => {
       if (processed.has(m.id)) return;
