@@ -448,7 +448,8 @@
       }
     }
 
-    loadFeed();
+    // Refresh member profile pics from cloud, then load feed with fresh data
+    refreshMembersFromCloud().then(() => loadFeed());
 
     // ── Stories ──
     let mockStories = [];

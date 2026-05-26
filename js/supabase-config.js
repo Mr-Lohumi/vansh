@@ -108,6 +108,63 @@ async function cloudAuthenticateUser(loginKey, password) {
 }
 
 /* ──────────────────────────────────────────────────────────────
+   Refresh local family member data (esp. imageUrl) from Supabase.
+   Call on page load in tree/dashboard so profile pics stay in sync
+   even when another user updates their photo on a different device.
+   ────────────────────────────────────────────────────────────── */
+async function refreshMembersFromCloud() {
+  if (!window.supabaseClient) return;
+  try {
+    const db = JSON.parse(localStorage.getItem('vansh_family_data_v2') || '[]');
+    if (!db.length) return;
+    const ids = db.map(m => m.id);
+
+    const { data, error } = await window.supabaseClient
+      .from('vansh_members')
+      .select('id, first_name, last_name, image_url, occupation, verified, age, gender')
+      .in('id', ids);
+
+    if (error || !data || !data.length) return;
+
+    let changed = false;
+    data.forEach(row => {
+      const local = db.find(m => m.id === row.id);
+      if (!local) return;
+      // Update imageUrl if cloud has one and local doesn't (or cloud is newer)
+      if (row.image_url && row.image_url !== local.imageUrl) {
+        local.imageUrl = row.image_url;
+        changed = true;
+      }
+      // Also sync name updates
+      if (row.first_name && row.first_name !== local.firstName) {
+        local.firstName = row.first_name;
+        changed = true;
+      }
+      if (row.last_name && row.last_name !== local.lastName) {
+        local.lastName = row.last_name;
+        changed = true;
+      }
+    });
+
+    if (changed) {
+      localStorage.setItem('vansh_family_data_v2', JSON.stringify(db));
+      // Also update the live familyMembers array if it's loaded
+      if (window.familyMembers && Array.isArray(window.familyMembers)) {
+        data.forEach(row => {
+          const live = window.familyMembers.find(m => m.id === row.id);
+          if (live && row.image_url) live.imageUrl = row.image_url;
+          if (live && row.first_name) live.firstName = row.first_name;
+          if (live && row.last_name) live.lastName = row.last_name;
+        });
+      }
+      console.log('[Vansh] Member profiles refreshed from cloud.');
+    }
+  } catch(err) {
+    console.warn('[Vansh] refreshMembersFromCloud error:', err);
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
    Search ALL Vansh members from Supabase cloud (cross-device)
    Returns array of member objects (mapped to local shape).
    ────────────────────────────────────────────────────────────── */

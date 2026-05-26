@@ -446,9 +446,14 @@
       };
       updateFamilyMember(id, updates);
       member = getMemberById(id);
+      // Immediately push updated profile (including photo) to Supabase cloud
+      // so all connected users see the new photo in their family tree
+      if (typeof syncMemberToCloud === 'function') {
+        syncMemberToCloud(member);
+      }
       closeEditModal();
       renderProfile();
-      showToast('Profile Saved', 'Your personal details have been updated.', 'ok');
+      showToast('Profile Saved', 'Your personal details have been updated and synced to dynasty cloud.', 'ok');
     }
 
     function promptSendInvite(toUserId) {

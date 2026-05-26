@@ -502,7 +502,11 @@
       drawTreeConnections('dynamicTreeNodes', 'treeCanvas', getBloodlineNetwork(currentPOV));
     });
 
+    // Initial render — then refresh photos from cloud and re-render for up-to-date profile pics
     renderTreeToContainer('dynamicTreeNodes', 'treeCanvas', currentPOV, 'handleNodeClick');
+    refreshMembersFromCloud().then(() => {
+      renderTreeToContainer('dynamicTreeNodes', 'treeCanvas', currentPOV, 'handleNodeClick');
+    });
 
     // ── Modal open/close ──
     function openAddModal() {
