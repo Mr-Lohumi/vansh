@@ -9,7 +9,7 @@ function renderProfileCardHTML(member, relation, opts = {}) {
   const dec = member.deceased ? 'deceased' : '';
   const chk = member.verified ? '<span class="pc-check">✓</span>' : '';
   
-  const headStyle = isHead ? 'box-shadow: 0 0 0 2px var(--gold), 0 16px 40px rgba(212,175,55,0.2); border-color: var(--gold);' : '';
+  const headStyle = isHead ? 'box-shadow: 0 0 0 2px var(--gold), 0 16px 40px rgba(212,175,55,0.3); border-color: var(--gold); background: linear-gradient(to bottom, #ffffff, #fdfaf0);' : '';
   const crownHTML = isHead ? `
     <div style="position: absolute; top: -6px; left: 24px; width: 22px; height: 22px; z-index: 10; transform: rotate(-15deg); pointer-events: none;">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%; filter: drop-shadow(0 2px 4px rgba(212,175,55,0.8));">
