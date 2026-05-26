@@ -381,24 +381,25 @@
         return;
       }
       container.innerHTML = posts.map((post, idx) => {
-        let author = getMemberById(post.user_id);
-        if (!author) {
-          author = { firstName: 'Unknown', lastName: 'Member', imageUrl: '' };
-        }
+        // Prefer embedded author info saved at post time (works across devices)
+        // Fall back to local lookup for own posts
+        const localAuthor = getMemberById(post.user_id);
+        const displayName = post.author_name || (localAuthor ? getFullName(localAuthor) : 'Unknown Member');
+        const displayAvatar = post.author_avatar || (localAuthor ? localAuthor.imageUrl : '');
+        const localInitials = localAuthor ? getInitials(localAuthor) : (displayName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2));
+        const localStyle = localAuthor ? getAvatarStyle(localAuthor) : 'background: linear-gradient(135deg, #6B1522, #AB2330); color: #fff;';
         
-        const avatarStyle = getAvatarStyle(author);
-        const initials = getInitials(author);
-        const hasImg = !!author.imageUrl;
-        const avatarInline = hasImg ? `background-image:url('${author.imageUrl}'); background-size:cover; background-position:center;` : avatarStyle;
+        const hasImg = !!displayAvatar;
+        const avatarInline = hasImg ? `background-image:url('${displayAvatar}'); background-size:cover; background-position:center; color:transparent;` : localStyle;
         const dateStr = timeAgo(new Date(post.created_at).getTime());
         
         return `
         <div class="post-card anim" style="animation-delay:${idx * 0.05}s;">
           <div class="post-inner">
             <div class="post-hd">
-              <div class="post-ava" style="${avatarInline} cursor:pointer;" onclick="window.location.href='profile.html?id=${post.user_id}'">${hasImg ? '' : initials}</div>
+              <div class="post-ava" style="${avatarInline} cursor:pointer;" onclick="window.location.href='profile.html?id=${post.user_id}'">${hasImg ? '' : localInitials}</div>
               <div style="flex:1; min-width:0;">
-                <div class="post-author" style="cursor:pointer;" onclick="window.location.href='profile.html?id=${post.user_id}'">${getFullName(author)}</div>
+                <div class="post-author" style="cursor:pointer;" onclick="window.location.href='profile.html?id=${post.user_id}'">${displayName}</div>
                 <div class="post-meta">${dateStr}</div>
               </div>
               <button class="post-more" onclick="this.nextElementSibling.classList.toggle('active')">···</button>
@@ -432,7 +433,11 @@
       const auth = getAuthData();
       if (!auth) return;
       
-      const success = await createPost(auth.userId, text, currentPostImage);
+      // Embed author name + avatar into post so all viewers can display them
+      const authorName = getFullName(authMember);
+      const authorAvatar = authMember.imageUrl || '';
+      
+      const success = await createPost(auth.userId, text, currentPostImage, authorName, authorAvatar);
       if (success) {
         input.value = '';
         removePostImage();
