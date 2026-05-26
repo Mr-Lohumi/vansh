@@ -94,12 +94,12 @@
 
     /* ── PROFILE WIDGET ── */
     .profile-widget { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: 0 2px 12px rgba(107,21,34,0.04); }
-    .pw-cover { height: 96px; background: linear-gradient(135deg, #420A12 0%, #6B1522 50%, #AB2330 100%); position: relative; }
+    .pw-cover { height: 120px; background: linear-gradient(135deg, #420A12 0%, #6B1522 50%, #AB2330 100%); position: relative; }
     .pw-cover::after { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4A843' fill-opacity='0.08'%3E%3Ccircle cx='30' cy='30' r='15'/%3E%3Ccircle cx='30' cy='30' r='25'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
-    .pw-ava-wrap { display: flex; justify-content: center; margin-top: -48px; position: relative; z-index: 2; margin-bottom: 12px; }
-    .pw-ava { width: 96px; height: 96px; border-radius: 24px; border: 3px solid var(--bg-card); box-shadow: 0 4px 16px rgba(107,21,34,0.2); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; color: var(--royal-red); background-color: var(--bg-elevated); }
+    .pw-ava-wrap { display: flex; justify-content: center; margin-top: -60px; position: relative; z-index: 2; margin-bottom: 12px; }
+    .pw-ava { width: 120px; height: 120px; border-radius: 28px; border: 4px solid var(--bg-card); box-shadow: 0 8px 24px rgba(107,21,34,0.25); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 700; color: var(--royal-red); background-color: var(--bg-elevated); }
     .pw-body { padding: 0 20px 20px; text-align: center; }
-    .pw-name { font-family: 'Cinzel', serif; font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .pw-name { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
     .pw-handle { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
     .pw-lineage { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
     .pw-badge { display: inline-block; background: rgba(107,21,34,0.06); color: var(--royal-red); border: 1px solid rgba(107,21,34,0.15); border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; font-family: 'Cinzel', serif; letter-spacing: 0.5px; }
@@ -117,23 +117,14 @@
     .pw-edit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107,21,34,0.3); }
 
     /* ── QUICK LINKS WIDGET ── */
-    .quick-widget { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: 0 2px 12px rgba(107,21,34,0.04); }
-    .qw-title { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-    .quick-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .ql-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 8px; border-radius: 14px; background: var(--bg-elevated); border: 1px solid var(--border-light); cursor: pointer; transition: all 0.25s; text-decoration: none; }
-    .ql-btn:hover { background: rgba(107,21,34,0.04); border-color: rgba(107,21,34,0.2); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(107,21,34,0.08); }
-    .ql-icon { font-size: 22px; }
-    .ql-label { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
-
-    /* ── DATA CENTER WIDGET ── */
-    .data-widget { background: linear-gradient(135deg, rgba(66,10,18,0.03) 0%, rgba(203,163,101,0.03) 100%); border: 1px dashed rgba(107,21,34,0.25); border-radius: 20px; padding: 20px; }
-    .dw-title { font-family: 'Cinzel', serif; font-size: 13px; color: var(--royal-red); font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-    .dw-sub { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px; }
-    .dw-btns { display: flex; flex-direction: column; gap: 8px; }
-    .dw-btn { padding: 10px 16px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .dw-btn.primary { background: linear-gradient(135deg, #A88143, #D4A843); color: var(--royal-red-dark); border: none; }
-    .dw-btn.secondary { background: var(--bg-card); color: var(--text); border: 1px solid var(--border); }
-    .dw-btn:hover { transform: translateY(-1px); }
+    .quick-widget { background: linear-gradient(145deg, #1A1A1A, #2A1114); border: 1px solid rgba(212,175,55,0.2); border-radius: 20px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; overflow: hidden; }
+    .quick-widget::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+    .qw-title { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    .quick-links { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .ql-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px 10px; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: all 0.3s; text-decoration: none; backdrop-filter: blur(5px); }
+    .ql-btn:hover { background: rgba(212,175,55,0.1); border-color: rgba(212,175,55,0.3); transform: translateY(-4px); box-shadow: 0 8px 20px rgba(212,175,55,0.15); }
+    .ql-icon { font-size: 26px; }
+    .ql-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px; text-align: center; }
   </style>
 </head>
 <body style="display:none;">
@@ -219,19 +210,6 @@
                 <a href="matchmaking.html" class="ql-btn"><span class="ql-icon">👑</span><span class="ql-label">Alliances</span></a>
                 <a href="trust.html" class="ql-btn"><span class="ql-icon">🏛️</span><span class="ql-label">Estate</span></a>
                 <a href="events.html" class="ql-btn"><span class="ql-icon">💍</span><span class="ql-label">Events</span></a>
-              </div>
-            </div>
-
-            <!-- Data Center -->
-            <div class="data-widget">
-              <div class="dw-title">⚙️ Data Center</div>
-              <div class="dw-sub">Export your family tree or restore from a backup JSON file.</div>
-              <div class="dw-btns">
-                <button class="dw-btn primary" onclick="exportVanshData()">📥 Export Tree (JSON)</button>
-                <label class="dw-btn secondary" style="cursor:pointer;">
-                  📤 Import Backup
-                  <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importVanshData(event)">
-                </label>
               </div>
             </div>
 
