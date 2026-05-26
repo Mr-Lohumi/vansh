@@ -9,22 +9,39 @@
   <style>
     /* ── TOOLBAR ── */
     .tree-toolbar {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 20px 28px; background: var(--bg-card);
-      border: 1px solid var(--border); border-radius: 20px 20px 0 0;
-      border-bottom: none; gap: 16px; flex-wrap: wrap;
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+      padding: 22px 48px; border: 1px solid var(--gold-dark); border-radius: 20px 20px 0 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.95)); position: relative;
     }
-    .toolbar-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-    .perspective-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; white-space: nowrap; }
+    .tree-toolbar::before, .tree-toolbar::after {
+      content: ''; position: absolute; left: 0; right: 0; height: 8px;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='8' viewBox='0 0 40 8'><path d='M0 4 Q5 0 10 4 T20 4 T30 4 T40 4' stroke='%23d4af37' stroke-width='0.7' fill='none' opacity='0.85'/><circle cx='10' cy='4' r='0.9' fill='%23f4d772'/><circle cx='20' cy='4' r='0.9' fill='%23f4d772'/><circle cx='30' cy='4' r='0.9' fill='%23f4d772'/></svg>");
+      background-repeat: repeat-x; background-size: 40px 8px;
+    }
+    .tree-toolbar::before { top: 4px; }
+    .tree-toolbar::after  { bottom: 4px; }
+
+    .toolbar-left { display: flex; align-items: center; gap: 18px; }
+    .perspective-label { font-family: 'Cinzel', serif; font-weight: 600; font-size: 15px; letter-spacing: 0.22em; color: var(--gold-bright); text-shadow: 0 1px 2px rgba(0,0,0,0.6); }
+    
+    .add-member {
+      position: relative; display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px;
+      font-family: 'Cinzel', serif; font-weight: 600; font-size: 15px; letter-spacing: 0.18em;
+      color: var(--gold-bright); background: linear-gradient(180deg, rgba(180, 40, 50, 0.5), rgba(92, 20, 24, 0.85)), radial-gradient(ellipse at 30% 30%, rgba(255, 200, 200, 0.25), transparent 60%);
+      border: 2px solid var(--gold); border-radius: 14px; cursor: pointer;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.65);
+      box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.25), inset 0 -2px 6px rgba(0,0,0,0.45), 0 0 0 1px var(--gold-dark), 0 6px 20px rgba(0,0,0,0.5), 0 0 24px rgba(228, 60, 80, 0.25);
+    }
 
     /* ── TREE WRAPPER ── */
     .tree-wrapper {
-      background: linear-gradient(135deg, #ffffff, var(--bg-elevated));
-      border: 1px solid var(--border); border-radius: 0 0 20px 20px;
-      padding: 60px 40px; overflow: auto; position: relative;
-      min-height: 620px; box-shadow: inset 0 0 40px rgba(212,175,55,0.05);
+      background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(200, 145, 60, 0.35) 0%, transparent 55%), radial-gradient(ellipse 60% 80% at 15% 30%, rgba(60, 10, 14, 0.6) 0%, transparent 60%), linear-gradient(135deg, var(--maroon-dark) 0%, var(--maroon) 50%, var(--maroon-deepest) 100%);
+      border: 1px solid var(--gold-dark); border-top: none; border-radius: 0 0 20px 20px;
+      padding: 60px 40px; overflow: hidden; position: relative;
+      min-height: 620px; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
     }
-    #treeCanvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 1; }
+    
+    .bg-arches { position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: 0.6; width: 100%; height: 100%; }
 
     /* ── PREMIUM MODAL ── */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; display: none; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
@@ -109,19 +126,47 @@
         <!-- Toolbar -->
         <div class="tree-toolbar anim">
           <div class="toolbar-left">
-            <span class="perspective-label">👁 Perspective:</span>
-            <select class="form-select" id="perspectiveSelect" style="width:220px; padding:9px 12px; margin:0; font-size:13px;"></select>
+            <svg class="eye-icon" style="width:22px; height:22px; color:var(--gold-bright); filter:drop-shadow(0 0 4px rgba(212, 175, 55, 0.5));" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+            <span class="perspective-label">PERSPECTIVE:</span>
+            <select class="form-select" id="perspectiveSelect" style="background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25)); border:1px solid var(--gold-dark); border-radius:8px; padding:10px 18px; color:var(--cream-light); font-family:'Cormorant Garamond', serif; font-size:18px; font-weight:500; min-width:300px; box-shadow:inset 0 1px 0 rgba(212,175,55,0.18), inset 0 -1px 0 rgba(0,0,0,0.4); outline:none;"></select>
           </div>
-          <button onclick="openAddModal()" style="padding:10px 22px; background:linear-gradient(135deg, var(--royal-red-dark), #AB2330); color:#fff; border:none; border-radius:12px; font-family:'Cinzel',serif; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:all 0.25s; box-shadow:0 4px 14px rgba(107,21,34,0.25);" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 8px 24px rgba(107,21,34,0.35)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 14px rgba(107,21,34,0.25)'">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-            Add Member
+          <button class="add-member" onclick="openAddModal()">
+            <span class="plus">+</span><span>ADD MEMBER</span>
           </button>
         </div>
 
         <!-- Tree canvas -->
-        <div class="tree-wrapper anim anim-delay-1" id="treeContainer">
-          <canvas id="treeCanvas"></canvas>
-          <div id="dynamicTreeNodes"></div>
+        <div class="tree-wrapper anim anim-delay-1" id="treeContainer" style="overflow: auto;">
+          <svg class="bg-arches" viewBox="0 0 1600 1000" preserveAspectRatio="xMaxYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="filigree" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse"><g stroke="#d4af37" stroke-width="0.6" fill="none" opacity="0.9"><path d="M25 4 Q35 14 25 24 Q15 14 25 4 Z"/><path d="M25 26 Q35 36 25 46 Q15 36 25 26 Z"/><path d="M4 25 Q14 15 24 25 Q14 35 4 25 Z"/><path d="M26 25 Q36 15 46 25 Q36 35 26 25 Z"/><circle cx="25" cy="25" r="3"/><circle cx="25" cy="25" r="1" fill="#f4d772"/></g><g stroke="#a07418" stroke-width="0.3" fill="none" opacity="0.6"><path d="M0 0 Q12 12 25 0 M0 50 Q12 38 25 50 M50 0 Q38 12 50 25 M0 25 Q12 38 0 50"/></g></pattern>
+              <pattern id="filigreeDense" x="0" y="0" width="35" height="35" patternUnits="userSpaceOnUse"><g stroke="#c39530" stroke-width="0.4" fill="none" opacity="0.85"><path d="M17 3 Q24 10 17 17 Q10 10 17 3 Z"/><path d="M17 18 Q24 25 17 32 Q10 25 17 18 Z"/><path d="M3 17 Q10 10 17 17 Q10 24 3 17 Z"/><path d="M18 17 Q25 10 32 17 Q25 24 18 17 Z"/><circle cx="17" cy="17" r="0.8" fill="#f4d772"/></g></pattern>
+              <linearGradient id="archGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#f4d772" stop-opacity="1"/><stop offset="60%" stop-color="#d4af37" stop-opacity="0.75"/><stop offset="100%" stop-color="#8b6914" stop-opacity="0.45"/></linearGradient>
+              <linearGradient id="archFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#c89a3a" stop-opacity="0.55"/><stop offset="100%" stop-color="#7a5612" stop-opacity="0.25"/></linearGradient>
+            </defs>
+            <rect x="700" y="100" width="900" height="900" fill="url(#archFill)" opacity="0.35"/>
+            <g stroke="url(#archGrad)" stroke-width="1.6" fill="url(#filigree)" opacity="0.95"><path d="M 850 1000 L 850 520 Q 850 240 1200 215 Q 1550 240 1550 520 L 1550 1000 Z"/></g>
+            <g stroke="url(#archGrad)" stroke-width="1.4" fill="url(#filigreeDense)" opacity="0.9"><path d="M 950 1000 L 950 580 Q 950 340 1200 320 Q 1450 340 1450 580 L 1450 1000 Z"/></g>
+            <g stroke="url(#archGrad)" stroke-width="1.2" fill="url(#filigree)" opacity="0.85"><path d="M 1060 1000 L 1060 640 Q 1060 430 1200 415 Q 1340 430 1340 640 L 1340 1000 Z"/></g>
+            <g stroke="#d4af37" stroke-width="1.4" fill="none" opacity="0.7"><path d="M 850 1000 L 850 520 Q 850 240 1200 215 Q 1550 240 1550 520 L 1550 1000"/><path d="M 950 1000 L 950 580 Q 950 340 1200 320 Q 1450 340 1450 580 L 1450 1000"/><path d="M 1060 1000 L 1060 640 Q 1060 430 1200 415 Q 1340 430 1340 640 L 1340 1000"/></g>
+            <g transform="translate(720 920)" opacity="0.55" stroke="#d4af37" stroke-width="1.2" fill="none"><circle r="55"/> <circle r="85"/> <circle r="20"/><g><path d="M0 -105 Q22 -65 0 -55 Q-22 -65 0 -105 Z" fill="rgba(212,175,55,0.15)"/><path d="M0 -105 Q22 -65 0 -55 Q-22 -65 0 -105 Z" fill="rgba(212,175,55,0.15)" transform="rotate(45)"/><path d="M0 -105 Q22 -65 0 -55 Q-22 -65 0 -105 Z" fill="rgba(212,175,55,0.15)" transform="rotate(90)"/><path d="M0 -105 Q22 -65 0 -55 Q-22 -65 0 -105 Z" fill="rgba(212,175,55,0.15)" transform="rotate(135)"/><path d="M0 -105 Q22 -65 0 -55 Q-22 -65 0 -105 Z" fill="rgba(212,175,55,0.15)" transform="rotate(180)"/><path d="M0 -105 Q22 -65 0 -55 Q-22 -65 0 -105 Z" fill="rgba(212,175,55,0.15)" transform="rotate(225)"/><path d="M0 -105 Q22 -65 0 -55 Q-22 -65 0 -105 Z" fill="rgba(212,175,55,0.15)" transform="rotate(270)"/><path d="M0 -105 Q22 -65 0 -55 Q-22 -65 0 -105 Z" fill="rgba(212,175,55,0.15)" transform="rotate(315)"/></g></g>
+          </svg>
+
+          <svg class="connections" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="royalNeonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur1" />
+                <feGaussianBlur stdDeviation="8" result="blur2" />
+                <feMerge><feMergeNode in="blur2" /><feMergeNode in="blur1" /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
+              <linearGradient id="liquidGoldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffd700" /><stop offset="50%" stop-color="#d4af37" /><stop offset="100%" stop-color="#b89047" />
+              </linearGradient>
+            </defs>
+            <g id="conn-group"></g>
+          </svg>
+
+          <div id="dynamicTreeNodes" style="position:relative; z-index:2; min-width:max-content; min-height:max-content; display:inline-block; padding-bottom:80px;"></div>
         </div>
 
       </div>

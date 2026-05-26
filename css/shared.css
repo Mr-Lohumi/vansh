@@ -182,50 +182,60 @@ img { max-width: 100%; display: block; }
 .card-body { padding: 24px; }
 .card-footer { padding: 20px 24px; border-top: 1px solid var(--border-light); background: var(--bg-elevated); }
 
-/* ── PROFILE CARD (Tree Node) ── */
-.profile-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border); border-radius: 16px;
-  padding: 14px 16px; width: 230px; display: flex; align-items: flex-start; gap: 12px;
-  box-shadow: 0 4px 16px rgba(107,21,34,0.06); position: relative; transition: all .35s cubic-bezier(.16,1,.3,1); cursor: pointer;
-  overflow: hidden;
-}
-.profile-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-dim)); opacity: 0.8;
-}
-.profile-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(107,21,34,0.12), 0 0 0 1px rgba(212,175,55,0.2); border-color: rgba(212,175,55,0.35); }
-.profile-card.active { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), 0 12px 30px var(--gold-glow); }
-.profile-card.active::before { opacity: 1; }
-.profile-card.ghost { opacity: .4; border-style: dashed; pointer-events: none; }
-.profile-card.deceased { opacity: .7; filter: grayscale(80%); }
-.profile-card.deceased::after { content: '✝'; position: absolute; top: 12px; left: 12px; font-size: 14px; color: var(--text-muted); }
+/* ── BLOODLINE TREE LAYOUT ── */
+.tree-row { display: flex; position: relative; z-index: 2; width: fit-content; margin: 0 auto; gap: 80px; }
 
-/* ── TREE LAYOUT (Shared between tree.html & profile.html) ── */
-.tree-row { display: flex; align-items: center; gap: 50px; position: relative; z-index: 2; width: fit-content; margin: 0 auto; }
-.gl { position: absolute; left: 0px; top: -40px; font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 3px; font-family: 'Cinzel', serif; white-space: nowrap; }
+/* ── CONNECTIONS (SVG) ── */
+.connections { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+.line-shadow-base { stroke: #000000; stroke-width: 6; fill: none; opacity: 0.6; }
+.glow-line-core { stroke: url(#liquidGoldGradient); stroke-width: 3; fill: none; filter: url(#royalNeonGlow); }
+.glow-pulse-overlay { stroke: #ffffff; stroke-width: 3.5; fill: none; opacity: 0.75; filter: drop-shadow(0 0 4px var(--gold-bright)); stroke-dasharray: 80 200; animation: liquidFlow 2.5s linear infinite; }
+.gold-joint-orb { fill: #ffffff; stroke: var(--gold-bright); stroke-width: 1.5; filter: drop-shadow(0 0 8px var(--gold-bright)); }
 
-.pc-avatar {
-  width: 46px; height: 46px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 17px; font-weight: 700; flex-shrink: 0;
-  border: 2px solid rgba(212,175,55,0.4); overflow: hidden;
-  background-size: cover; background-position: center; background-color: var(--bg-elevated); color: var(--gold);
-  box-shadow: 0 2px 8px rgba(212,175,55,0.1);
-}
-.pc-details { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
-.pc-name-row { display: flex; align-items: center; gap: 6px; }
-.pc-name { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Cinzel', serif; color: var(--text); letter-spacing: 0.5px; }
-.pc-check { color: var(--gold); font-size: 14px; flex-shrink: 0; }
-.pc-rel { font-size: 12px; color: var(--gold); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-.pc-meta { margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
-.pc-meta-line { font-size: 11px; color: var(--text-secondary); }
-.pc-meta-line b { color: var(--text-muted); font-weight: 500; }
+/* ── PATRIARCH CARD ── */
+.patriarch { position: relative; width: 480px; padding: 4px; border-radius: 22px; background: linear-gradient(135deg, #f0c75a 0%, #d4af37 25%, #8b6914 50%, #d4af37 75%, #f4d772 100%); box-shadow: 0 0 0 1px var(--gold-deepest), 0 14px 38px rgba(0,0,0,0.6), 0 0 40px rgba(212, 175, 55, 0.2); cursor: pointer; }
+.patriarch::before { content: ''; position: absolute; inset: 4px; border-radius: 19px; border: 1.5px solid rgba(139, 105, 20, 0.6); pointer-events: none; z-index: 3; }
+.patriarch-inner { position: relative; display: flex; gap: 18px; padding: 22px 28px 22px 22px; background: radial-gradient(ellipse at top left, #fbf3dd 0%, #f5e6c0 80%); border-radius: 18px; overflow: hidden; }
+.patriarch-arch-bg { position: absolute; left: 12px; top: 35px; width: 130px; height: 165px; opacity: 0.95; pointer-events: none; }
+.crown { position: absolute; top: -32px; left: 28px; width: 80px; height: 60px; z-index: 5; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
+.uf-avatar { position: relative; width: 100px; height: 100px; flex-shrink: 0; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fdf6e0 0%, #f5e6c0 70%, #e8d49a 100%); display: flex; align-items: center; justify-content: center; border: 3px solid var(--gold); box-shadow: inset 0 0 0 1px var(--gold-bright), inset 0 0 12px rgba(139, 105, 20, 0.25), 0 0 0 2px var(--gold-deepest), 0 4px 10px rgba(0,0,0,0.25); z-index: 4; align-self: flex-start; background-size: cover; background-position: center; }
+.uf-avatar::after { content: ''; position: absolute; inset: 4px; border-radius: 50%; border: 1px dashed rgba(139, 105, 20, 0.35); }
+.uf-avatar .initials { font-family: 'Cinzel', serif; font-weight: 700; font-size: 32px; color: var(--maroon); letter-spacing: 0.05em; text-shadow: 0 1px 0 rgba(255,255,255,0.6); }
+.patriarch-info { flex: 1; color: var(--cream-text); z-index: 2; }
+.patriarch-info .name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 24px; color: #2a0608; letter-spacing: 0.02em; margin-bottom: 4px; }
+.patriarch-info .role { font-family: 'Cinzel', serif; font-weight: 600; font-size: 14px; letter-spacing: 0.2em; color: #b08820; margin-bottom: 14px; }
+.patriarch-info .meta { font-size: 16px; font-weight: 500; line-height: 1.65; color: #5a3018; }
 
-.pc-view-btn { position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--bg-elevated); color: var(--gold); border: 1px solid var(--border-light); opacity: 0; transition: all 0.2s; }
-.profile-card:hover .pc-view-btn { opacity: 1; transform: scale(1); }
+/* ── CHILD CARD ── */
+.child-card { position: relative; width: 430px; padding: 4px; border-radius: 22px; background: linear-gradient(135deg, #f0c75a 0%, #d4af37 30%, #8b6914 55%, #d4af37 80%, #f4d772 100%); box-shadow: 0 12px 32px rgba(0,0,0,0.55); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }
+.child-card.jeweled { box-shadow: 0 12px 32px rgba(0,0,0,0.55), 0 0 25px rgba(228, 60, 80, 0.4); animation: structuralPulse 4s infinite alternate; }
+.child-card:hover { transform: translateY(-4px); }
+.child-card::before { content: ''; position: absolute; inset: 4px; border-radius: 19px; border: 1.5px solid rgba(139, 105, 20, 0.55); pointer-events: none; z-index: 3; }
+.child-inner { position: relative; display: flex; gap: 16px; padding: 22px 24px; background: linear-gradient(135deg, #6e1a1f 0%, #5c1418 60%, #4a0e12 100%); border-radius: 18px; overflow: hidden; z-index: 2; }
+.child-inner::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 0%, rgba(212, 175, 55, 0.08), transparent 60%); pointer-events: none; }
+.jeweled .gems { position: absolute; inset: 4px; border-radius: 19px; pointer-events: none; z-index: 4; overflow: hidden; }
+.gem { position: absolute; width: 8px; height: 8px; border-radius: 50%; box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), inset 0 -1px 1px rgba(0,0,0,0.4), 0 0 4px rgba(0,0,0,0.5); }
+.gem.ruby { background: radial-gradient(circle at 30% 30%, #ff5c6c, #c41e3a 70%, #6a0a14 100%); }
+.gem.emerald { background: radial-gradient(circle at 30% 30%, #6fdcc8, #2a9d8f 70%, #0c4a40 100%); }
+
+.photo-frame { position: relative; width: 92px; height: 92px; flex-shrink: 0; align-self: flex-start; }
+.photo-frame .photo-clip { width: 100%; height: 100%; clip-path: polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%); background: linear-gradient(135deg, #f4d772, #d4af37 50%, #8b6914); padding: 4px; }
+.photo-frame .photo-inner { width: 100%; height: 100%; clip-path: polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%); background: #2a0608; display: flex; align-items: center; justify-content: center; overflow: hidden; background-size: cover; background-position: center; }
+.photo-frame .photo-inner svg { width: 100%; height: 100%; }
+
+.child-info { flex: 1; }
+.child-name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 22px; color: var(--gold-bright); letter-spacing: 0.02em; text-shadow: 0 1px 3px rgba(0,0,0,0.55); margin-bottom: 2px; display: flex; align-items: center; gap: 8px; }
+.child-name .check { color: var(--emerald-bright); font-size: 18px; }
+.child-role { font-family: 'Cinzel', serif; font-weight: 600; font-size: 13px; letter-spacing: 0.22em; color: #d4a880; margin-bottom: 14px; }
+.child-meta { display: flex; gap: 14px; }
+.child-icons { display: flex; flex-direction: column; gap: 12px; padding-top: 4px; }
+.child-icon { width: 24px; height: 24px; color: var(--gold-bright); opacity: 0.85; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)); }
+.child-fields { font-size: 16px; font-weight: 500; line-height: 1.7; color: #f0d8b0; }
+
+.pc-view-btn { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); color: var(--gold); border: 1px solid var(--gold-dark); opacity: 0; transition: all 0.2s; z-index: 10; }
+.child-card:hover .pc-view-btn, .patriarch:hover .pc-view-btn { opacity: 1; transform: scale(1); }
 .pc-view-btn:hover { background: var(--gold); color: #fff; border-color: var(--gold); }
-.pc-view-btn svg { width: 14px; height: 14px; }
+.pc-view-btn svg { width: 16px; height: 16px; }
 
 /* Badge variants (lighter adaptations) */
 .badge-patriarch { color: var(--gold); border-color: var(--gold); }

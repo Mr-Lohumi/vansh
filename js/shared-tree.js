@@ -1,63 +1,102 @@
 // Shared Tree Drawing Engine for Vansh
 
 function renderProfileCardHTML(member, relation, opts = {}) {
-  const { isGhost = false, isActive = false, isHead = false } = opts;
+  const { isGhost = false, isActive = false, isHead = false, onNodeClickName = null } = opts;
   const full = getFullName(member);
   const ini = getInitials(member);
-  const ghost = isGhost ? 'ghost' : '';
-  const active = isActive ? 'active' : '';
-  const dec = member.deceased ? 'deceased' : '';
-  const chk = member.verified ? '<span class="pc-check">✓</span>' : '';
-  
-  const headStyle = isHead ? 'box-shadow: 0 0 0 2px var(--gold), 0 16px 40px rgba(212,175,55,0.3); border-color: var(--gold); background: linear-gradient(to bottom, #ffffff, #fdfaf0);' : '';
-  const crownHTML = isHead ? `
-    <div style="position: absolute; top: -6px; left: 24px; width: 22px; height: 22px; z-index: 10; transform: rotate(-15deg); pointer-events: none;">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%; filter: drop-shadow(0 2px 4px rgba(212,175,55,0.8));">
-        <path d="M2 19h20v-2H2v2zm2-4l2-8 4 4 4-6 4 6 4-4 2 8H4z" fill="url(#goldGradient)" stroke="#b89327" stroke-width="0.8" stroke-linejoin="round"/>
-        <defs>
-          <linearGradient id="goldGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#ffe89c"/>
-            <stop offset="50%" stop-color="#f5cf5d"/>
-            <stop offset="100%" stop-color="#c99e28"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>` : '';
-  
-  const relString = relation ? relation.english : (isActive ? 'Patriarch / Self' : 'Relative');
+  const chk = member.verified ? '<span class="check">✓</span>' : '';
+  const relString = relation ? relation.english : (isActive ? 'Self' : 'Relative');
   
   let statusText = 'Single';
   if (member.spouse) {
     const spouse = getMemberById(member.spouse);
     statusText = spouse ? `Married to ${spouse.firstName}` : 'Married';
   }
-  
   const occupation = member.occupation || 'N/A';
+  
+  const onclickHtml = onNodeClickName ? `onclick="${onNodeClickName}('${member.id}')"` : '';
+  const avatarStyle = member.imageUrl ? `background-image: url('${member.imageUrl}')` : '';
+  
+  const viewBtn = `
+    <button class="pc-view-btn" onclick="openProfileModal('${member.id}'); event.stopPropagation();" title="View Profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+    </button>
+  `;
 
-  return `<div class="profile-card ${ghost} ${active} ${dec}" id="pc-${member.id}" data-id="${member.id}" style="${headStyle}">
-    ${crownHTML}
-    <div class="pc-avatar" style="${getAvatarStyle(member)}">${member.imageUrl ? '' : ini}</div>
-    <div class="pc-details" style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
-      <div class="pc-name-row" style="display:flex; align-items:center; gap:4px;"><span class="pc-name" style="font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:'Cinzel',serif; color:var(--text);">${full}</span>${chk}</div>
-      <div class="pc-rel" style="font-size:10px; color:var(--gold); font-weight:600; text-transform:uppercase; letter-spacing:1px;">${relString}</div>
-      <div class="pc-meta" style="margin-top:4px; display:flex; flex-direction:column; gap:1px;">
-        <span class="pc-meta-line" style="font-size:10px; color:var(--text-secondary);"><b>Age:</b> ${member.age} Yrs · ${member.gender}</span>
-        <span class="pc-meta-line" style="font-size:10px; color:var(--text-secondary);"><b>Occ:</b> ${occupation}</span>
-        <span class="pc-meta-line" style="font-size:10px; color:var(--text-secondary);"><b>Status:</b> ${statusText}</span>
+  if (isHead) {
+    return `
+      <div class="patriarch" id="pc-${member.id}" data-id="${member.id}" ${onclickHtml}>
+        <div class="patriarch-inner">
+          <svg class="patriarch-arch-bg" viewBox="0 0 130 165" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="archFilig" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse"><g stroke="#a07418" stroke-width="0.35" fill="none" opacity="0.85"><path d="M5 1 Q8 4 5 7 Q2 4 5 1 Z"/><path d="M1 5 Q4 2 7 5 Q4 8 1 5 Z"/></g></pattern>
+              <pattern id="archFilig2" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse"><g stroke="#8b6914" stroke-width="0.4" fill="none" opacity="0.7"><path d="M7 2 Q11 6 7 10 Q3 6 7 2 Z"/></g></pattern>
+            </defs>
+            <path d="M 6 165 L 6 65 Q 6 12 65 6 Q 124 12 124 65 L 124 165 Z" fill="url(#archFilig)" stroke="#8b6914" stroke-width="1.1" opacity="0.95"/>
+            <path d="M 22 165 L 22 75 Q 22 26 65 22 Q 108 26 108 75 L 108 165 Z" fill="url(#archFilig2)" stroke="#8b6914" stroke-width="0.9" opacity="0.85"/>
+            <path d="M 38 165 L 38 85 Q 38 42 65 38 Q 92 42 92 85 L 92 165 Z" fill="none" stroke="#8b6914" stroke-width="0.7" opacity="0.75"/>
+            <circle cx="65" cy="22" r="2.5" fill="#8b6914" opacity="0.8"/>
+          </svg>
+          <svg class="crown" viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="crownGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#fbe28a"/><stop offset="50%" stop-color="#d4af37"/><stop offset="100%" stop-color="#8b6914"/></linearGradient>
+              <linearGradient id="crownBand" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#f4d772"/><stop offset="100%" stop-color="#a07418"/></linearGradient>
+            </defs>
+            <path d="M6 44 L74 44 L70 58 L10 58 Z" fill="url(#crownBand)" stroke="#5a4209" stroke-width="0.8"/>
+            <path d="M10 50 L70 50" stroke="#5a4209" stroke-width="0.6" opacity="0.7"/>
+            <path d="M6 44 L14 16 L24 36 L40 6 L56 36 L66 16 L74 44 Z" fill="url(#crownGrad)" stroke="#5a4209" stroke-width="0.8" stroke-linejoin="round"/>
+            <circle cx="14" cy="18" r="3.2" fill="#c41e3a" stroke="#5a0a14" stroke-width="0.4"/>
+            <circle cx="40" cy="8" r="3.8" fill="#2a9d8f" stroke="#0c4a40" stroke-width="0.4"/>
+            <circle cx="66" cy="18" r="3.2" fill="#c41e3a" stroke="#5a0a14" stroke-width="0.4"/>
+          </svg>
+          <div class="uf-avatar" style="${avatarStyle}">${member.imageUrl ? '' : '<span class="initials">' + ini + '</span>'}</div>
+          <div class="patriarch-info">
+            <div class="name">${full}</div>
+            <div class="role">${relString}</div>
+            <div class="meta">Age: ${member.age} Yrs &middot; ${member.gender}<br>Occ: ${occupation}<br>Status: ${statusText}</div>
+          </div>
+          ${viewBtn}
+        </div>
+      </div>
+    `;
+  }
+
+  const jeweled = isActive ? 'jeweled' : '';
+  const gemsHtml = isActive ? `<div class="gems" id="gems-${member.id}"></div>` : '';
+  const fallbackSvg = member.imageUrl ? '' : `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#2a1410"/><path d="M10 100 L10 80 Q25 65 50 65 Q75 65 90 80 L90 100 Z" fill="#1a1a2e"/><ellipse cx="50" cy="42" rx="18" ry="22" fill="#d4a574"/><text x="50" y="47" font-size="16" fill="#fff" text-anchor="middle" font-family="Cinzel">${ini}</text></svg>`;
+
+  return `
+    <div class="child-card ${jeweled}" id="pc-${member.id}" data-id="${member.id}" ${onclickHtml}>
+      <div class="child-inner">
+        ${gemsHtml}
+        <div class="photo-frame">
+          <div class="photo-clip">
+            <div class="photo-inner" style="${avatarStyle}">
+              ${fallbackSvg}
+            </div>
+          </div>
+        </div>
+        <div class="child-info">
+          <div class="child-name">${full} ${chk}</div>
+          <div class="child-role">${relString}</div>
+          <div class="child-meta">
+            <div class="child-icons">
+              ${isActive ? '<svg class="child-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 8c.6 0 1 .4 1 1v1c0 .6-.4 1-1 1h-1.2a6 6 0 01-.6 1.5l.9.9c.4.4.4 1 0 1.4l-.7.7c-.4.4-1 .4-1.4 0l-.9-.9a6 6 0 01-1.5.6V16c0 .6-.4 1-1 1h-1c-.6 0-1-.4-1-1v-1.2a6 6 0 01-1.5-.6l-.9.9c-.4.4-1 .4-1.4 0l-.7-.7c-.4-.4-.4-1 0-1.4l.9-.9A6 6 0 016.2 11H5c-.6 0-1-.4-1-1V9c0-.6.4-1 1-1h1.2c.1-.5.3-1 .6-1.5l-.9-.9c-.4-.4-.4-1 0-1.4l.7-.7c.4-.4 1-.4 1.4 0l.9.9c.5-.3 1-.5 1.5-.6V3c0-.6.4-1 1-1h1c.6 0 1 .4 1 1v1.2c.5.1 1 .3 1.5.6l.9-.9c.4-.4 1-.4 1.4 0l.7.7c.4.4.4 1 0 1.4l-.9.9c.3.5.5 1 .6 1.5H19zM11 12a2 2 0 100-4 2 2 0 000 4z"/></svg>' : '<svg class="child-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="15" r="6"/><path d="M9 9 L12 4 L15 9" fill="currentColor"/></svg>'}
+            </div>
+            <div class="child-fields">Age: ${member.age} Yrs &middot; ${member.gender}<br>Occ: ${occupation}<br>Status: ${statusText}</div>
+          </div>
+        </div>
+        ${viewBtn}
       </div>
     </div>
-  </div>`;
+  `;
 }
 
 function buildNodeHTML(m, currentPOV, onNodeClickName, isHead = false) {
   if (!m) return '';
   const rel = getSmartIndianRelation(familyMembers, currentPOV, m.id);
   const isActive = m.id === currentPOV;
-  let html = renderProfileCardHTML(m, rel, { isActive, isHead });
-  if (onNodeClickName) {
-    html = html.replace('class="profile-card', `onclick="${onNodeClickName}('${m.id}')" style="cursor:pointer" class="profile-card`);
-  }
-  return html;
+  return renderProfileCardHTML(m, rel, { isActive, isHead, onNodeClickName });
 }
 
 function buildMarriageHTML(m1, m2, currentPOV, onNodeClickName, isHead = false) {
@@ -209,24 +248,45 @@ function renderTreeToContainer(containerId, canvasId, currentPOV, onNodeClickNam
   
   container.innerHTML = html;
   
-  // Wait for DOM to render then draw connections
-  setTimeout(() => drawTreeConnections(containerId, canvasId, visibleMembers), 150);
+  // Wait for DOM to render then draw connections and place gems
+  setTimeout(() => {
+    drawTreeConnections(containerId, canvasId, visibleMembers);
+    placeGemsForActiveNode(currentPOV);
+  }, 150);
+}
+
+function placeGemsForActiveNode(currentPOV) {
+  const container = document.getElementById(`gems-${currentPOV}`);
+  if (!container) return;
+  container.innerHTML = '';
+  const rect = container.getBoundingClientRect();
+  const W = rect.width, H = rect.height, r = 10, spacing = 14;
+  if (W === 0 || H === 0) return;
+  const points = [];
+  for (let x = r; x <= W - r; x += spacing) points.push([x, r]);
+  for (let y = r + spacing; y <= H - r; y += spacing) points.push([W - r, y]);
+  for (let x = W - r - spacing; x >= r; x -= spacing) points.push([x, H - r]);
+  for (let y = H - r - spacing; y >= r + spacing; y -= spacing) points.push([r, y]);
+  points.forEach((p, i) => {
+    const g = document.createElement('div');
+    g.className = 'gem ' + (i % 3 === 0 ? 'emerald' : 'ruby');
+    g.style.left = (p[0] - 4) + 'px'; g.style.top = (p[1] - 4) + 'px';
+    container.appendChild(g);
+  });
 }
 
 function drawTreeConnections(containerId, canvasId, visibleMembers) {
   const containerWrapper = document.getElementById(containerId).parentElement;
-  const container = document.getElementById(containerId);
-  const canvas = document.getElementById(canvasId);
-  const ctx = canvas.getContext('2d');
+  const svgGroup = document.getElementById('conn-group');
+  const svgCanvas = document.querySelector('.connections');
+  if (!svgGroup || !svgCanvas || !containerWrapper) return;
   
-  // Ensure canvas dimensions match the scrollable area perfectly
-  canvas.width = containerWrapper.scrollWidth;
-  canvas.height = containerWrapper.scrollHeight;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
+  // Ensure SVG covers scrollable area
+  svgCanvas.style.width = containerWrapper.scrollWidth + 'px';
+  svgCanvas.style.height = containerWrapper.scrollHeight + 'px';
   
-  const R = 14; // Corner rounding radius
+  let pathString = '';
+  let orbsString = '';
   
   function getCenter(id, anchor='top') {
     const el = document.getElementById(`pc-${id}`);
@@ -246,91 +306,44 @@ function drawTreeConnections(containerId, canvasId, visibleMembers) {
     if(!c1 || !c2) return null;
     return { x: (c1.x + c2.x)/2, y: c1.y };
   }
-  
-  // Draw a multi-point path with rounded corners using arcTo
-  function tracePath(points) {
-    if (points.length < 2) return;
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length - 1; i++) {
-      ctx.arcTo(points[i].x, points[i].y, points[i+1].x, points[i+1].y, R);
-    }
-    ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
-    ctx.stroke();
-  }
-  
-  // Draw a gradient-filled circle at a point
-  function drawDot(x, y, radius, isMain) {
-    const g = ctx.createRadialGradient(x, y, 0, x, y, radius);
-    if (isMain) {
-      g.addColorStop(0, '#ffe89c');
-      g.addColorStop(0.5, '#d4af37');
-      g.addColorStop(1, '#8B2232');
-    } else {
-      g.addColorStop(0, '#ffe89c');
-      g.addColorStop(0.65, '#d4af37');
-      g.addColorStop(1, '#b8942a');
-    }
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  
-  function drawForkLine(startX, startY, targets) {
+
+  function appendForkPath(startX, startY, targets) {
     if(!targets || targets.length === 0) return;
     const targetCenters = targets.map(id => getCenter(id, 'top')).filter(c=>c);
     if(targetCenters.length === 0) return;
     
-    const midY = startY + 50; // The horizontal spine
-    const bottomY = Math.max(...targetCenters.map(t => t.y));
-    
-    // Build the individual paths (parent → spine → child) for each child
-    const paths = targetCenters.map(t => [
-      { x: startX, y: startY },
-      { x: startX, y: midY },
-      { x: t.x, y: midY },
-      { x: t.x, y: t.y }
-    ]);
-    
-    // --- PASS 1: OUTER GLOW (wide, very subtle) ---
-    ctx.strokeStyle = 'rgba(212, 175, 55, 0.07)';
-    ctx.lineWidth = 18;
-    paths.forEach(p => tracePath(p));
-    
-    // --- PASS 2: INNER GLOW (medium, slightly brighter) ---
-    ctx.strokeStyle = 'rgba(212, 175, 55, 0.12)';
-    ctx.lineWidth = 10;
-    paths.forEach(p => tracePath(p));
-    
-    // --- PASS 3: MAIN GRADIENT LINE ---
-    const grad = ctx.createLinearGradient(0, startY, 0, bottomY);
-    grad.addColorStop(0, '#d4af37');
-    grad.addColorStop(0.45, '#8B2232');
-    grad.addColorStop(0.55, '#8B2232');
-    grad.addColorStop(1, '#d4af37');
-    ctx.strokeStyle = grad;
-    ctx.lineWidth = 3;
-    paths.forEach(p => tracePath(p));
-    
-    // --- PASS 4: JUNCTION DOTS ---
-    // Main fork point (where parent line meets the spine)
-    drawDot(startX, midY, 5, true);
-    
-    // Child junction dots (where spine meets each child drop)
+    const midY = startY + 50; 
+    const radius = 18;
+
     targetCenters.forEach(t => {
-      // Only draw if child is not directly below parent (avoid overlapping the main dot)
-      if (Math.abs(t.x - startX) > 10) {
-        drawDot(t.x, midY, 4, false);
+      // Calculate curve directions
+      const dx = t.x - startX;
+      
+      // If directly below, just draw a straight line
+      if (Math.abs(dx) < 5) {
+        pathString += ` M ${startX} ${startY} L ${t.x} ${t.y} `;
+        return;
       }
+      
+      // Right curve or left curve
+      const rDir = dx > 0 ? radius : -radius;
+      
+      pathString += ` M ${startX} ${startY} L ${startX} ${midY - radius} `;
+      pathString += ` Q ${startX} ${midY} ${startX + rDir} ${midY} `;
+      pathString += ` L ${t.x - rDir} ${midY} `;
+      pathString += ` Q ${t.x} ${midY} ${t.x} ${midY + radius} `;
+      pathString += ` L ${t.x} ${t.y} `;
+      
+      // Add orbs at junctions
+      orbsString += `<circle cx="${startX}" cy="${midY - radius}" r="4" class="gold-joint-orb" />`;
+      orbsString += `<circle cx="${t.x}" cy="${midY}" r="4" class="gold-joint-orb" />`;
     });
   }
-  
+
   // Group children by their parents
   const parentGroups = {};
   visibleMembers.forEach(m => {
-    if(!document.getElementById(`pc-${m.id}`)) return; // Skip if not rendered
-    
+    if(!document.getElementById(`pc-${m.id}`)) return;
     if(m.parents && m.parents.length > 0) {
       const visibleParents = m.parents.filter(pid => document.getElementById(`pc-${pid}`));
       if(visibleParents.length > 0) {
@@ -341,18 +354,25 @@ function drawTreeConnections(containerId, canvasId, visibleMembers) {
     }
   });
   
-  // Draw forks
+  // Build forks
   Object.keys(parentGroups).forEach(key => {
     const pIds = key.split('+');
     const children = parentGroups[key];
     
     let startPt = null;
     if(pIds.length === 2) {
-      startPt = getPairCenterBottom(pIds[0], pIds[1]); // Draw from marriage line center
+      startPt = getPairCenterBottom(pIds[0], pIds[1]);
     } else if(pIds.length === 1) {
-      startPt = getCenter(pIds[0], 'bottom'); // Draw from single parent bottom
+      startPt = getCenter(pIds[0], 'bottom');
     }
     
-    if(startPt) drawForkLine(startPt.x, startPt.y, children);
+    if(startPt) appendForkPath(startPt.x, startPt.y, children);
   });
+  
+  svgGroup.innerHTML = `
+    <path d="${pathString}" class="line-shadow-base" />
+    <path d="${pathString}" class="glow-line-core" />
+    <path d="${pathString}" class="glow-pulse-overlay" />
+    ${orbsString}
+  `;
 }
