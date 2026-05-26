@@ -115,75 +115,101 @@
     if (!requireAuth()) throw '';
     initNav('inbox');
 
-    const INBOX_KEY = 'vansh_inbox_db';
     let currentThreadId = null;
+    let allThreads = [];
 
     function formatTime(date) {
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
-    function loadInbox() {
-      let data = localStorage.getItem(INBOX_KEY);
-      if (!data) {
-        // Seed Data
-        data = [
-          {
-            id: 'thread_1',
-            contactName: 'Meera Verma',
-            contactAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150&auto=format&fit=crop',
-            verified: true,
-            isAlliance: true,
-            messages: [
-              {
-                sender: 'them',
-                time: '10:42 AM',
-                text: 'Namaste. I am writing to you through the Vansh secure network regarding a potential alliance for my son, Rohan Verma.',
-                hasAllianceCard: true
-              },
-              {
-                sender: 'me',
-                time: '11:15 AM',
-                text: 'Namaste Meera ji. Thank you for reaching out via the network. We will review the biodata and consult with the family elders this evening.'
-              }
-            ]
-          },
-          {
-            id: 'thread_2',
-            contactName: 'Anand Sharma',
-            contactAvatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&auto=format&fit=crop',
-            verified: true,
-            isAlliance: false,
-            messages: [
-              {
-                sender: 'them',
-                time: 'Yesterday',
-                text: 'Are you attending the Patriarch council next week in Uttarakhand?'
-              }
-            ]
+    async function loadInbox() {
+      const auth = getAuthData();
+      if (!auth) return;
+      
+      const messages = await fetchUserMessages(auth.userId);
+      
+      // Group by user
+      const threadMap = {};
+      
+      for (const msg of messages) {
+        const otherId = msg.from_user_id === auth.userId ? msg.to_user_id : msg.from_user_id;
+        
+        if (!threadMap[otherId]) {
+          // Fetch user details
+          let contact = getMemberById(otherId);
+          if (!contact && typeof getCloudMemberById === 'function') {
+            contact = await getCloudMemberById(otherId);
           }
-        ];
-        localStorage.setItem(INBOX_KEY, JSON.stringify(data));
-      } else {
-        data = JSON.parse(data);
+          threadMap[otherId] = {
+            id: otherId,
+            contactName: contact ? getFullName(contact) : 'Unknown User',
+            contactAvatar: contact?.imageUrl || '',
+            verified: contact?.verified || false,
+            isAlliance: false,
+            messages: []
+          };
+        }
+        
+        const isMe = msg.from_user_id === auth.userId;
+        threadMap[otherId].messages.push({
+          sender: isMe ? 'me' : 'them',
+          time: formatTime(new Date(msg.created_at)),
+          text: msg.content,
+          hasAllianceCard: msg.has_alliance_card
+        });
+        
+        if (msg.has_alliance_card) {
+          threadMap[otherId].isAlliance = true;
+        }
       }
-      return data;
+      
+      allThreads = Object.values(threadMap);
+      
+      // Check URL param ?to=
+      const urlParams = new URLSearchParams(window.location.search);
+      const toId = urlParams.get('to');
+      if (toId && !threadMap[toId]) {
+         let contact = getMemberById(toId);
+         if (!contact && typeof getCloudMemberById === 'function') {
+           contact = await getCloudMemberById(toId);
+         }
+         if (contact) {
+           allThreads.unshift({
+             id: toId,
+             contactName: getFullName(contact),
+             contactAvatar: contact.imageUrl || '',
+             verified: contact.verified || false,
+             isAlliance: false,
+             messages: []
+           });
+         }
+      }
+      
+      renderThreads();
+      if (toId) openThread(toId);
+      else if (allThreads.length > 0) openThread(allThreads[0].id);
     }
 
     function renderThreads() {
-      const threads = loadInbox();
       const container = document.getElementById('threadsContainer');
+      if (allThreads.length === 0) {
+        container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px;">No messages yet.</div>';
+        return;
+      }
       
-      container.innerHTML = threads.map(t => {
+      container.innerHTML = allThreads.map(t => {
         const lastMsg = t.messages[t.messages.length - 1];
         const isActive = t.id === currentThreadId ? 'active' : '';
         const badge = t.isAlliance ? `<div class="msg-badge">Alliance Request</div>` : '';
         
+        const avatar = t.contactAvatar ? `<div class="msg-ava" style="background-image:url('${t.contactAvatar}')"></div>` : `<div class="msg-ava" style="background:var(--bg-hover);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--gold);font-family:Cinzel,serif;border:1px solid var(--gold);">${t.contactName[0]}</div>`;
+        
         return `
           <div class="msg-item ${isActive}" onclick="openThread('${t.id}')">
-            <div class="msg-ava" style="background-image:url('${t.contactAvatar}')"></div>
+            ${avatar}
             <div class="msg-details">
               <div class="msg-name">${t.contactName} <span class="msg-time">${lastMsg ? lastMsg.time : ''}</span></div>
-              <div class="msg-preview">${lastMsg ? lastMsg.text : 'No messages'}</div>
+              <div class="msg-preview">${lastMsg ? lastMsg.text : 'Say hi!'}</div>
               ${badge}
             </div>
           </div>
@@ -195,8 +221,7 @@
       currentThreadId = threadId;
       renderThreads(); // update active class
       
-      const threads = loadInbox();
-      const thread = threads.find(t => t.id === threadId);
+      const thread = allThreads.find(t => t.id === threadId);
       const container = document.getElementById('activeChatView');
       
       if (!thread) return;
@@ -212,8 +237,7 @@
             <div class="alliance-card">
               <div style="font-family:'Cinzel', serif; font-weight: 800; color: var(--royal-red); margin-bottom: 8px; font-size:16px;">Official Alliance Proposal</div>
               <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
-                <b>Subject:</b> Rohan Verma (Gen 3)<br>
-                <b>Gotra Match:</b> <span style="color: var(--green)">100% Exogamy Verified</span>
+                <b>Match:</b> <span style="color: var(--green)">Exogamy Verified</span>
               </div>
               <button class="btn-royal" onclick="alert('Viewing Secure Biodata in Premium version...')">View Royal Biodata</button>
             </div>
@@ -229,11 +253,13 @@
         `;
       }).join('');
 
+      const avatar = thread.contactAvatar ? `<div class="msg-ava" style="background-image:url('${thread.contactAvatar}')"></div>` : `<div class="msg-ava" style="background:var(--bg-hover);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--gold);font-family:Cinzel,serif;border:1px solid var(--gold);">${thread.contactName[0]}</div>`;
+
       container.innerHTML = `
         <div class="view-header">
-          <div class="msg-ava" style="background-image:url('${thread.contactAvatar}')"></div>
+          ${avatar}
           <div>
-            <div style="font-weight: 800; color: var(--text); font-size: 18px;">${thread.contactName}</div>
+            <div style="font-weight: 800; color: var(--text); font-size: 18px; cursor:pointer;" onclick="window.location.href='profile.html?id=${thread.id}'">${thread.contactName}</div>
             ${verifiedBadge}
           </div>
         </div>
@@ -258,23 +284,28 @@
       }
     }
 
-    function sendReply() {
+    async function sendReply() {
       const input = document.getElementById('chatInput');
       const text = input.value.trim();
       if (!text || !currentThreadId) return;
       
-      const threads = loadInbox();
-      const thread = threads.find(t => t.id === currentThreadId);
+      const auth = getAuthData();
+      if (!auth) return;
       
+      // Optimistic update
+      const thread = allThreads.find(t => t.id === currentThreadId);
       thread.messages.push({
         sender: 'me',
         time: formatTime(new Date()),
-        text: text
+        text: text,
+        hasAllianceCard: false
       });
+      openThread(currentThreadId);
       
-      localStorage.setItem(INBOX_KEY, JSON.stringify(threads));
+      input.value = '';
       
-      openThread(currentThreadId); // re-render chat
+      // Save to Supabase
+      await sendMessage(auth.userId, currentThreadId, text);
     }
 
     function scrollToBottom() {
@@ -285,12 +316,7 @@
     }
 
     // Initialize
-    const allThreads = loadInbox();
-    if(allThreads.length > 0) {
-      openThread(allThreads[0].id);
-    } else {
-      renderThreads();
-    }
+    loadInbox();
   </script>
 </body>
 </html>

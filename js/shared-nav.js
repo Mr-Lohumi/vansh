@@ -117,29 +117,39 @@ async function initNav(pageName) {
     if (invites.length === 0) {
       invitesHtml = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;">No pending requests</div>';
     } else {
+      const relMap = {
+        'papa': 'Father', 'mummy': 'Mother', 'parent': 'Parent',
+        'beta': 'Son', 'beti': 'Daughter', 'child': 'Child',
+        'bhai': 'Brother', 'behen': 'Sister', 'brother': 'Brother', 'sister': 'Sister',
+        'pati': 'Husband', 'patni': 'Wife', 'spouse': 'Spouse',
+        'dada': 'Grandfather', 'dadi': 'Grandmother',
+        'nana': 'Maternal Grandfather', 'nani': 'Maternal Grandmother',
+        'chacha': 'Uncle (Paternal)', 'bua': 'Aunt (Paternal)',
+        'mama': 'Uncle (Maternal)', 'masi': 'Aunt (Maternal)'
+      };
+      
       for (const inv of invites) {
         // Find sender locally, or attempt cloud search
         let name = 'Someone';
         let fromM = getMemberById(inv.fromUserId);
         
-        if (!fromM && typeof searchMembersCloud === 'function') {
-           const cloudMembers = await searchMembersCloud(''); 
-           fromM = cloudMembers.find(m => m.id === inv.fromUserId);
+        if (!fromM && typeof getCloudMemberById === 'function') {
+           fromM = await getCloudMemberById(inv.fromUserId);
         }
         
         if (fromM) name = getFullName(fromM);
         
-        const relCap = inv.relationType.charAt(0).toUpperCase() + inv.relationType.slice(1);
+        const englishRel = relMap[inv.relationType] || (inv.relationType.charAt(0).toUpperCase() + inv.relationType.slice(1));
         const safeInv = JSON.stringify(inv).replace(/"/g, '&quot;');
         
         invitesHtml += `
           <div style="padding: 16px; border-bottom: 1px solid var(--border-light);">
-            <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Relationship Request</div>
-            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">${name} wants to add you as their <strong>${relCap}</strong>.</div>
-            <div style="display: flex; gap: 8px;">
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;"><strong>${name}</strong> invited you to connect as a <strong>${englishRel}</strong>.</div>
+            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
               <button class="btn btn-gold btn-sm" style="flex:1" onclick="handleInviteAction(${safeInv}, 'accepted')">Accept</button>
               <button class="btn btn-outline btn-sm" style="flex:1" onclick="handleInviteAction(${safeInv}, 'rejected')">Reject</button>
             </div>
+            <button class="btn btn-outline btn-sm" style="width: 100%; border-color: transparent; color: var(--gold)" onclick="openProfilePreviewModal('${inv.fromUserId}')">View Profile</button>
           </div>
         `;
       }
@@ -225,6 +235,40 @@ async function initNav(pageName) {
     style.innerHTML = '.toast-container.show { transform: translateY(0) !important; }';
     document.head.appendChild(style);
   }
+
+  window.openProfilePreviewModal = async function(userId) {
+    let m = getMemberById(userId);
+    if (!m && typeof getCloudMemberById === 'function') {
+      m = await getCloudMemberById(userId);
+    }
+    if (!m) return alert("Could not fetch profile.");
+    
+    // Build Modal
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.id = 'previewModalOverlay';
+    modal.style.display = 'flex';
+    
+    const avatar = m.imageUrl ? `<div style="width: 80px; height: 80px; border-radius: 50%; background: url('${m.imageUrl}') center/cover; margin: 0 auto 16px; border: 2px solid var(--gold);"></div>` 
+                              : `<div style="width: 80px; height: 80px; border-radius: 50%; background: var(--bg-hover); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-family: Cinzel, serif; color: var(--gold); border: 2px solid var(--gold);">${(m.firstName[0]||'')+(m.lastName[0]||'')}</div>`;
+                              
+    modal.innerHTML = `
+      <div class="modal-box" style="text-align: center; max-width: 320px;">
+        <button class="modal-close" onclick="document.getElementById('previewModalOverlay').remove()">×</button>
+        ${avatar}
+        <div style="font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: var(--royal-red); margin-bottom: 4px;">${m.firstName} ${m.lastName}</div>
+        <div style="font-size: 12px; color: var(--gold); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;">${m.caste} • ${m.gotra}</div>
+        
+        <div style="background: var(--bg-hover); padding: 12px; border-radius: 8px; text-align: left; margin-bottom: 16px;">
+          <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;"><b>Age:</b> ${m.age || 'N/A'} Yrs</div>
+          <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;"><b>Gender:</b> ${m.gender === 'M' ? 'Male' : 'Female'}</div>
+          <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;"><b>Occupation:</b> ${m.occupation || 'N/A'}</div>
+          <div style="font-size: 12px; color: var(--text-secondary);"><b>Location:</b> ${m.nativePlace || 'N/A'}</div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  };
 
   // Universal Search Logic
   const searchInput = document.getElementById('universalSearchInput');

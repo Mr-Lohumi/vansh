@@ -218,3 +218,61 @@ async function getCloudMemberById(userId) {
     return null;
   }
 }
+
+// --- SOCIAL POSTS API ---
+async function fetchUserPosts(userId) {
+  if (!window.supabaseClient) return [];
+  try {
+    const { data, error } = await window.supabaseClient
+      .from('vansh_posts')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+    if (error) return [];
+    return data || [];
+  } catch (err) { return []; }
+}
+
+async function createPost(userId, content) {
+  if (!window.supabaseClient) return false;
+  try {
+    const { error } = await window.supabaseClient
+      .from('vansh_posts')
+      .insert({
+        id: 'POST_' + Date.now().toString(36) + Math.random().toString(36).substring(2,6),
+        user_id: userId,
+        content: content
+      });
+    return !error;
+  } catch (err) { return false; }
+}
+
+// --- MESSAGING API ---
+async function fetchUserMessages(userId) {
+  if (!window.supabaseClient) return [];
+  try {
+    const { data, error } = await window.supabaseClient
+      .from('vansh_messages')
+      .select('*')
+      .or(`from_user_id.eq.${userId},to_user_id.eq.${userId}`)
+      .order('created_at', { ascending: true });
+    if (error) return [];
+    return data || [];
+  } catch (err) { return []; }
+}
+
+async function sendMessage(fromId, toId, content, hasAllianceCard = false) {
+  if (!window.supabaseClient) return false;
+  try {
+    const { error } = await window.supabaseClient
+      .from('vansh_messages')
+      .insert({
+        id: 'MSG_' + Date.now().toString(36) + Math.random().toString(36).substring(2,6),
+        from_user_id: fromId,
+        to_user_id: toId,
+        content: content,
+        has_alliance_card: hasAllianceCard
+      });
+    return !error;
+  } catch (err) { return false; }
+}

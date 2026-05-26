@@ -195,7 +195,7 @@
     const memberId = params.get('id') || loggedInId;
     let member = getMemberById(memberId);
     
-    function renderProfile() {
+    async function renderProfile() {
       if (!member) {
         document.getElementById('profileContent').innerHTML = '<div style="text-align:center;padding:60px">Member not found.</div>';
         return;
@@ -210,26 +210,40 @@
         const spouse = getMemberById(member.spouse);
         statusText = spouse ? `Married to ${spouse.firstName}` : 'Married';
       }
+
+      // Check if already connected
+      let isConnected = false;
+      let me = getMemberById(loggedInId);
+      if (me && me.parents && me.parents.includes(member.id)) isConnected = true;
+      if (me && me.spouse === member.id) isConnected = true;
+      if (member.parents && member.parents.includes(loggedInId)) isConnected = true;
+      
+      // Determine what buttons to show
+      let actionButtons = '';
+      if (member.id === loggedInId) {
+        actionButtons = '<button class="btn" style="background:var(--royal-red);color:#fff;border:none;" onclick="openEditModal()">Edit My Profile</button>';
+      } else {
+        let connectBtn = isConnected ? 
+          `<button class="btn btn-outline" style="border-color:var(--text-muted);color:var(--text-muted);" onclick="if(confirm('Are you sure you want to sever this connection?')) { removeRelationshipLocally('${member.id}'); window.location.reload(); }">Sever Connection</button>` 
+          : `<button class="btn" style="background:var(--royal-red);color:#fff;border:none;" onclick="promptSendInvite('${member.id}')">Connect Relationship</button>`;
+        
+        let msgBtn = `<button class="btn btn-gold" onclick="window.location.href='inbox.html?to=${member.id}'">Message</button>`;
+        actionButtons = `<div style="display:flex;gap:12px;">${connectBtn}${msgBtn}</div>`;
+      }
       
       const heroHTML = `
         <div class="card mb-4" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-card);position:relative;">
-          <!-- decorative top bar -->
           <div style="height:40px; border-bottom:1px solid var(--border-light); background:var(--bg-elevated);"></div>
-          
-          <!-- decorative corner -->
           <div style="position:absolute; top: -50px; left: -50px; width: 150px; height: 150px; background: radial-gradient(circle, transparent 30%, var(--royal-red-dim) 31%, var(--royal-red-dim) 33%, transparent 34%, transparent 45%, var(--royal-red-dim) 46%, var(--royal-red-dim) 48%, transparent 49%); opacity: 0.5; transform: rotate(45deg); pointer-events:none;"></div>
-          
           <div style="padding:0 24px 24px;display:flex;align-items:center;gap:24px;">
             <div class="pc-avatar" style="width:90px;height:90px;font-size:28px;border:4px solid var(--bg-card);box-shadow:0 0 0 2px var(--royal-red);z-index:2;${getAvatarStyle(member)}">${member.imageUrl?'':getInitials(member)}</div>
             <div style="flex:1; z-index:2;">
-              <h1 style="font-size:24px;font-weight:700;color:var(--royal-red);font-family:'Cinzel',serif;margin-bottom:4px;display:flex;align-items:center;gap:12px;text-transform:uppercase;letter-spacing:1px;">${getFullName(member)} ${member.verified?'<span class="text-green" style="font-size:20px">✓</span>':''}</h1>
-              <div style="color:var(--text-secondary);font-weight:600;font-size:14px;margin-bottom:6px">@${member.username || 'user'}</div>
+              <h1 style="font-size:24px;font-weight:700;color:var(--royal-red);font-family:'Cinzel',serif;margin-bottom:4px;display:flex;align-items:center;gap:12px;text-transform:uppercase;letter-spacing:1px;">${getFullName(member)} ${verifiedIcon}</h1>
+              <div style="color:var(--text-secondary);font-weight:600;font-size:14px;margin-bottom:6px">@${member.username || 'user'} ${badgeHTML}</div>
               <div style="color:var(--text-muted);font-size:13px;font-weight:600;">Age: ${member.age} Yrs · ${member.gender} · ${member.occupation || 'N/A'} · Status: ${statusText}</div>
             </div>
             <div style="z-index:2;">
-              ${member.id===loggedInId 
-                ? '<button class="btn" style="background:var(--royal-red);color:#fff;border:none;" onclick="openEditModal()">Edit My Profile</button>' 
-                : `<button class="btn" style="background:var(--royal-red);color:#fff;border:none;" onclick="promptSendInvite('${member.id}')">Connect Relationship</button>`}
+              ${actionButtons}
             </div>
           </div>
         </div>
@@ -250,6 +264,23 @@
       
       const canEdit = member.id === loggedInId;
       const editBtnHTML = canEdit ? `<button class="btn btn-outline btn-sm" onclick="openEditModal()">Edit Profile</button>` : '';
+
+      // Prepare Timeline / Feed
+      let feedHTML = '';
+      if (canEdit) {
+        feedHTML += `
+          <div class="card mb-4">
+            <div style="padding:16px;">
+              <textarea id="postContent" placeholder="Share a royal dispatch or family update..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-family:inherit;min-height:80px;resize:vertical;"></textarea>
+              <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+                <button class="btn btn-gold" onclick="submitPost()">Publish Dispatch</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      
+      feedHTML += `<div id="postsContainer" style="display:flex;flex-direction:column;gap:16px;">Loading dispatches...</div>`;
       
       document.getElementById('profileContent').innerHTML = `
         <div class="flex justify-between items-start mb-4">
@@ -259,50 +290,104 @@
         
         ${heroHTML}
         
-        <div class="grid-2">
-          <div class="info-box">
-            <div class="info-label">Caste Background</div>
-            <div class="info-val">${getCasteLine(member)}</div>
+        <div style="display:grid; grid-template-columns: 1fr 340px; gap: 24px;">
+          <!-- Left Column: Feed -->
+          <div>
+            <div class="section-header" style="margin-bottom:16px;">Royal Timeline</div>
+            ${feedHTML}
+            ${relsHTML}
           </div>
-          <div class="info-box">
-            <div class="info-label">Gotra Ancestry</div>
-            <div class="info-val text-royal-red" style="color:var(--royal-red)">${member.gotra}</div>
-          </div>
-          <div class="info-box">
-            <div class="info-label">Education</div>
-            <div class="info-val">${member.education || 'Not Provided'}</div>
-          </div>
-          <div class="info-box">
-            <div class="info-label">Occupation & Sector</div>
-            <div class="info-val">${member.occupation || 'Not Provided'}${member.sector ? ' (' + member.sector + ')' : ''}</div>
-          </div>
-          <div class="info-box">
-            <div class="info-label">Organization</div>
-            <div class="info-val">${member.company || 'Not Provided'}</div>
-          </div>
-          <div class="info-box">
-            <div class="info-label">Current City</div>
-            <div class="info-val">${member.location || 'Not Provided'}</div>
-          </div>
-          <div class="info-box">
-            <div class="info-label">Height</div>
-            <div class="info-val">${member.height || 'Not Provided'}</div>
-          </div>
-          <div class="info-box">
-            <div class="info-label">Manglik / Diet</div>
-            <div class="info-val">${member.manglik || 'Not Provided'} · ${member.diet || 'Not Provided'}</div>
+          
+          <!-- Right Column: Info -->
+          <div>
+            <div class="card" style="padding:20px;display:flex;flex-direction:column;gap:16px;">
+              <div>
+                <div class="info-label">Caste Background</div>
+                <div class="info-val">${getCasteLine(member)}</div>
+              </div>
+              <hr style="border-color:var(--border-light)">
+              <div>
+                <div class="info-label">Gotra Ancestry</div>
+                <div class="info-val text-royal-red" style="color:var(--royal-red)">${member.gotra}</div>
+              </div>
+              <hr style="border-color:var(--border-light)">
+              <div>
+                <div class="info-label">Education</div>
+                <div class="info-val">${member.education || 'Not Provided'}</div>
+              </div>
+              <hr style="border-color:var(--border-light)">
+              <div>
+                <div class="info-label">Occupation & Sector</div>
+                <div class="info-val">${member.occupation || 'Not Provided'}${member.sector ? ' (' + member.sector + ')' : ''}</div>
+              </div>
+              <hr style="border-color:var(--border-light)">
+              <div>
+                <div class="info-label">Organization</div>
+                <div class="info-val">${member.company || 'Not Provided'}</div>
+              </div>
+              <hr style="border-color:var(--border-light)">
+              <div>
+                <div class="info-label">Current City</div>
+                <div class="info-val">${member.location || 'Not Provided'}</div>
+              </div>
+              <hr style="border-color:var(--border-light)">
+              <div>
+                <div class="info-label">Manglik / Diet</div>
+                <div class="info-val">${member.manglik || 'Not Provided'} · ${member.diet || 'Not Provided'}</div>
+              </div>
+            </div>
           </div>
         </div>
-        
-        ${relsHTML}
       `;
-      
+
       setTimeout(() => {
         renderTreeToContainer('profileTreeNodes', 'profileTreeCanvas', member.id);
       }, 100);
+
+      loadPosts();
     }
     
-    renderProfile();
+    async function loadPosts() {
+      if (typeof fetchUserPosts !== 'function') return;
+      const posts = await fetchUserPosts(member.id);
+      const container = document.getElementById('postsContainer');
+      if (!container) return;
+      
+      if (posts.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:13px;padding:24px;">No timeline updates yet.</div>';
+        return;
+      }
+      
+      container.innerHTML = posts.map(p => {
+        const dateStr = new Date(p.created_at).toLocaleString();
+        return `
+          <div class="card">
+            <div style="padding:16px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border);${getAvatarStyle(member)}"></div>
+              <div>
+                <div style="font-weight:700;font-family:'Cinzel',serif;color:var(--royal-red)">${getFullName(member)}</div>
+                <div style="font-size:11px;color:var(--text-muted)">${dateStr}</div>
+              </div>
+            </div>
+            <div style="padding:16px;font-size:14px;line-height:1.6;color:var(--text);white-space:pre-wrap;">${p.content}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function submitPost() {
+      const content = document.getElementById('postContent').value.trim();
+      if (!content) return;
+      
+      const success = await createPost(member.id, content);
+      if (success) {
+        document.getElementById('postContent').value = '';
+        loadPosts();
+        showToast('Success', 'Dispatch published to your timeline.', 'ok');
+      } else {
+        alert('Failed to publish post.');
+      }
+    }
     
     function openEditModal() {
       document.getElementById('editId').value = member.id;
@@ -380,6 +465,8 @@
         alert(res ? res.message : "Failed to send invite.");
       }
     }
+    
+    renderProfile();
   </script>
 </body>
 </html>

@@ -288,6 +288,37 @@ async function processCloudInvite(invite, action) {
   return true;
 }
 
+// Remove a relationship edge locally
+function removeRelationshipLocally(targetId) {
+  const authData = getAuthData();
+  if (!authData || !authData.userId) return false;
+  
+  const me = getMemberById(authData.userId);
+  const target = getMemberById(targetId);
+  if (!me || !target) return false;
+
+  // Remove from parents
+  if (me.parents && me.parents.includes(target.id)) {
+    me.parents = me.parents.filter(id => id !== target.id);
+  }
+  if (target.parents && target.parents.includes(me.id)) {
+    target.parents = target.parents.filter(id => id !== me.id);
+  }
+  
+  // Remove from spouse
+  if (me.spouse === target.id) me.spouse = null;
+  if (target.spouse === me.id) target.spouse = null;
+  
+  saveFamilyData(familyMembers);
+  
+  if (typeof syncMemberToCloud === 'function') {
+    syncMemberToCloud(me);
+    syncMemberToCloud(target);
+  }
+  
+  return true;
+}
+
 // Check and apply any accepted invites sent by the current user
 async function syncOutboundInvites() {
   const auth = getAuthData();
