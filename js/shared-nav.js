@@ -162,15 +162,15 @@ async function initNav(pageName) {
         <button class="topbar-hamburger" onclick="toggleSidebar()">${NAV_ICONS.hamburger}</button>
         <div class="topbar-breadcrumb">Vansh / <b>${title}</b></div>
 
-        <div style="display:flex; gap:8px; align-items:center; flex-shrink:0;">
-          <button onclick="openInviteExternalModal()" title="Invite Family" style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:linear-gradient(135deg,var(--royal-red-dark),#AB2330);color:#fff;border:none;border-radius:10px;font-family:'Cinzel',serif;font-weight:700;font-size:11px;letter-spacing:0.5px;cursor:pointer;transition:all 0.25s;box-shadow:0 3px 10px rgba(107,21,34,0.25);" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 18px rgba(107,21,34,0.35)'" onmouseout="this.style.transform='';this.style.boxShadow='0 3px 10px rgba(107,21,34,0.25)'">
-            💌 Invite
+        <div style="display:flex; gap:10px; align-items:center; flex-shrink:0;">
+          <button onclick="openInviteExternalModal()" title="Invite Family" style="display:flex;align-items:center;gap:6px;padding:8px 20px;background:linear-gradient(135deg,var(--royal-red-dark),var(--royal-red));color:#fff;border:none;border-radius:30px;font-family:'Cinzel',serif;font-weight:700;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all 0.3s;box-shadow:0 4px 14px rgba(107,21,34,0.25);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 22px rgba(107,21,34,0.35)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 14px rgba(107,21,34,0.25)'">
+            INVITE
           </button>
-          <button onclick="window.location.href='matchmaking.html'" title="Request Alliance" style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--bg-elevated);color:var(--text-secondary);border:1px solid var(--border);border-radius:10px;font-family:'Cinzel',serif;font-weight:700;font-size:11px;letter-spacing:0.5px;cursor:pointer;transition:all 0.25s;" onmouseover="this.style.background='rgba(107,21,34,0.05)';this.style.borderColor='rgba(107,21,34,0.25)';this.style.color='var(--royal-red-dark)'" onmouseout="this.style.background='var(--bg-elevated)';this.style.borderColor='var(--border)';this.style.color='var(--text-secondary)'">
-            👑 Alliance
+          <button onclick="window.location.href='matchmaking.html'" title="Request Alliance" style="display:flex;align-items:center;gap:6px;padding:8px 20px;background:transparent;color:var(--text-secondary);border:1px solid rgba(107,21,34,0.15);border-radius:30px;font-family:'Cinzel',serif;font-weight:700;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.background='rgba(107,21,34,0.04)';this.style.borderColor='var(--royal-red)';this.style.color='var(--royal-red-dark)'" onmouseout="this.style.background='transparent';this.style.borderColor='rgba(107,21,34,0.15)';this.style.color='var(--text-secondary)'">
+            ALLIANCE
           </button>
-          <button onclick="window.location.href='trust.html'" title="View Estate" style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--bg-elevated);color:var(--text-secondary);border:1px solid var(--border);border-radius:10px;font-family:'Cinzel',serif;font-weight:700;font-size:11px;letter-spacing:0.5px;cursor:pointer;transition:all 0.25s;" onmouseover="this.style.background='rgba(107,21,34,0.05)';this.style.borderColor='rgba(107,21,34,0.25)';this.style.color='var(--royal-red-dark)'" onmouseout="this.style.background='var(--bg-elevated)';this.style.borderColor='var(--border)';this.style.color='var(--text-secondary)'">
-            🏛️ Estate
+          <button onclick="window.location.href='trust.html'" title="View Estate" style="display:flex;align-items:center;gap:6px;padding:8px 20px;background:transparent;color:var(--text-secondary);border:1px solid rgba(107,21,34,0.15);border-radius:30px;font-family:'Cinzel',serif;font-weight:700;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.background='rgba(107,21,34,0.04)';this.style.borderColor='var(--royal-red)';this.style.color='var(--royal-red-dark)'" onmouseout="this.style.background='transparent';this.style.borderColor='rgba(107,21,34,0.15)';this.style.color='var(--text-secondary)'">
+            ESTATE
           </button>
         </div>
       </div>
