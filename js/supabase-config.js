@@ -233,6 +233,19 @@ async function fetchUserPosts(userId) {
   } catch (err) { return []; }
 }
 
+async function fetchNetworkPosts(userIds) {
+  if (!window.supabaseClient || !userIds || userIds.length === 0) return [];
+  try {
+    const { data, error } = await window.supabaseClient
+      .from('vansh_posts')
+      .select('*')
+      .in('user_id', userIds)
+      .order('created_at', { ascending: false });
+    if (error) return [];
+    return data || [];
+  } catch (err) { return []; }
+}
+
 async function createPost(userId, content) {
   if (!window.supabaseClient) return false;
   try {

@@ -341,13 +341,6 @@
       cpa.textContent = avaTxt;
     }
 
-    // ── Feed ──
-    let feedPosts = [];
-    try {
-      const s = localStorage.getItem('vansh_feed_v2');
-      if (s) { const p = JSON.parse(s); if (Array.isArray(p)) feedPosts = p; }
-    } catch(e) {}
-
     function timeAgo(ts) {
       if (!ts) return 'Just now';
       const diff = Date.now() - ts;
@@ -357,9 +350,24 @@
       return Math.floor(diff/86400000) + ' days ago';
     }
 
-    function renderFeed() {
+    async function loadFeed() {
+      const auth = getAuthData();
+      if (!auth) return;
+
+      const network = getBloodlineNetwork(auth.userId);
+      const networkIds = network.map(m => m.id);
+      
+      let posts = [];
+      if (typeof fetchNetworkPosts === 'function') {
+        posts = await fetchNetworkPosts(networkIds);
+      }
+      
+      renderFeed(posts);
+    }
+
+    function renderFeed(posts) {
       const container = document.getElementById('feedContainer');
-      if (!feedPosts.length) {
+      if (!posts || !posts.length) {
         container.innerHTML = `
           <div class="empty-feed">
             <div class="ef-icon">📣</div>
@@ -368,58 +376,69 @@
           </div>`;
         return;
       }
-      container.innerHTML = feedPosts.map((post, idx) => {
-        const avatarStyle = post.avatarStyle || `background-color: var(--bg-elevated)`;
-        const initials = post.initials || '';
-        const hasImg = post.avatarUrl && !post.avatarUrl.startsWith('background');
-        const avatarInline = hasImg ? `background-image:url('${post.avatarUrl}'); background-size:cover; background-position:center;` : avatarStyle;
-
+      container.innerHTML = posts.map((post, idx) => {
+        let author = getMemberById(post.user_id);
+        if (!author) {
+          author = { firstName: 'Unknown', lastName: 'Member', imageUrl: '' };
+        }
+        
+        const avatarStyle = getAvatarStyle(author);
+        const initials = getInitials(author);
+        const hasImg = !!author.imageUrl;
+        const avatarInline = hasImg ? `background-image:url('${author.imageUrl}'); background-size:cover; background-position:center;` : avatarStyle;
+        const dateStr = timeAgo(new Date(post.created_at).getTime());
+        
         return `
         <div class="post-card anim" style="animation-delay:${idx * 0.05}s;">
           <div class="post-inner">
             <div class="post-hd">
               <div class="post-ava" style="${avatarInline}">${hasImg ? '' : initials}</div>
-              <div style="flex:1; min-width:0;">
-                <div class="post-author">${post.authorName || 'Anonymous'}</div>
-                <div class="post-meta">${timeAgo(post.timestamp)} · <span style="color:var(--royal-red); font-weight:600;">Public</span></div>
+              <div style="flex:1; min-width:0;" onclick="window.location.href='profile.html?id=${post.user_id}'" style="cursor:pointer">
+                <div class="post-author" style="cursor:pointer;">${getFullName(author)}</div>
+                <div class="post-meta">${dateStr} · <span style="color:var(--royal-red); font-weight:600;">Dynasty Visible</span></div>
               </div>
               <button class="post-more" onclick="this.nextElementSibling.classList.toggle('active')">···</button>
             </div>
-            <div class="post-body">${post.content || ''}</div>
+            <div class="post-body" style="white-space:pre-wrap;">${post.content || ''}</div>
           </div>
-          ${post.image ? `<img src="${post.image}" alt="Post image" class="post-img">` : ''}
+          ${post.image_url ? `<img src="${post.image_url}" alt="Post image" class="post-img">` : ''}
           <div class="post-reactions">
-            <button class="reaction-pill ${post.hasRespected ? 'liked' : ''}" onclick="toggleRespect(${post.id})">
-              <svg fill="${post.hasRespected ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
-              Respect${post.respects ? ' · ' + post.respects : ''}
+            <button class="reaction-pill" onclick="alert('Respect functionality coming soon!')">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
+              Respect
             </button>
-            <button class="reaction-pill" onclick="toggleComments(${post.id})">
+            <button class="reaction-pill" onclick="alert('Comments coming soon!')">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-              ${post.comments && post.comments.length ? 'Comments · ' + post.comments.length : 'Comment'}
+              Comment
             </button>
-            <button class="reaction-pill" onclick="sharePost(${post.id})" style="margin-left:auto;">
+            <button class="reaction-pill" style="margin-left:auto;">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
               Share
             </button>
           </div>
-          <div class="comment-area" id="commentArea-${post.id}">
-            ${(post.comments || []).map(c => `
-              <div class="comment-row">
-                <div class="comment-bubble">
-                  <div class="comment-author">${c.author}</div>
-                  <div class="comment-text">${c.text}</div>
-                </div>
-              </div>
-            `).join('')}
-            <div class="comment-input-row">
-              <input class="comment-input" id="commentInput-${post.id}" placeholder="Write a comment..." onkeypress="if(event.key==='Enter') submitComment(${post.id})">
-              <button class="comment-send" onclick="submitComment(${post.id})">Send</button>
-            </div>
-          </div>
         </div>`;
       }).join('');
     }
-    renderFeed();
+    
+    async function publishPost() {
+      const input = document.getElementById('postInput');
+      const text = input.value.trim();
+      if (!text) return;
+      
+      const auth = getAuthData();
+      if (!auth) return;
+      
+      const success = await createPost(auth.userId, text);
+      if (success) {
+        input.value = '';
+        showToast('Success', 'Royal announcement published to dynasty!', 'ok');
+        loadFeed();
+      } else {
+        alert("Failed to publish post.");
+      }
+    }
+
+    loadFeed();
 
     // ── Stories ──
     let mockStories = [];
