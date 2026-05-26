@@ -3,95 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vansh (वंश) — Premium Feed</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=7">
+  <title>Vansh (वंश) — Dynasty Feed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=8">
   <style>
-    /* Dynamic Dashboard Layout */
-    .dashboard-layout { display: flex; gap: 48px; justify-content: space-between; align-items: flex-start; max-width: 1000px; margin: 0 auto; }
-    .feed-column { flex: 1 1 550px; min-width: 0; max-width: 600px; display: flex; flex-direction: column; gap: 20px; }
-    .profile-column { flex: 0 0 340px; position: sticky; top: 96px; display: flex; flex-direction: column; gap: 24px; }
-    
-    @media (max-width: 1100px) {
-      .dashboard-layout { flex-direction: column-reverse; gap: 24px; }
-      .profile-column { width: 100%; max-width: 100%; position: static; }
+    /* ── DASHBOARD LAYOUT ── */
+    .dashboard-layout { display: flex; gap: 32px; align-items: flex-start; max-width: 1060px; margin: 0 auto; }
+    .feed-column { flex: 1 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+    .profile-column { flex: 0 0 320px; position: sticky; top: 88px; display: flex; flex-direction: column; gap: 16px; }
+    @media (max-width: 1080px) { .dashboard-layout { flex-direction: column; } .profile-column { width: 100%; max-width: 100%; position: static; } }
+
+    /* ── STORIES STRIP ── */
+    .stories-wrap { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+    .stories-wrap::-webkit-scrollbar { display: none; }
+    .story-pill {
+      flex-shrink: 0; width: 96px; height: 156px; border-radius: 16px; position: relative;
+      overflow: hidden; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;
+      border: 2px solid transparent; background: var(--bg-elevated);
     }
-    
-    /* Live Ticker */
-    .ticker-wrapper { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 24px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); overflow: hidden; white-space: nowrap; }
-    .ticker-lbl { font-family: 'Cinzel', serif; font-weight: 700; color: var(--royal-red); font-size: 14px; flex-shrink: 0; border-right: 1px solid var(--border-light); padding-right: 16px; }
-    .ticker-track { display: flex; gap: 40px; animation: ticker 25s linear infinite; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
-    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-    
-    /* Stories / Announcements */
-    .stories-container { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
-    .stories-container::-webkit-scrollbar { display: none; }
-    .story-card { 
-      width: 112px; height: 180px; border-radius: var(--radius); overflow: hidden; position: relative; 
-      cursor: pointer; flex-shrink: 0; transition: transform 0.3s, box-shadow 0.3s; 
-      box-shadow: var(--shadow-sm); border: 1px solid var(--border-light);
-      background: var(--bg-card);
+    .story-pill:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(107,21,34,0.15); border-color: var(--gold); }
+    .story-pill .sp-bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+    .story-pill .sp-grad { position: absolute; inset: 0; background: linear-gradient(to top, rgba(66,10,18,0.88) 0%, transparent 55%); }
+    .story-pill .sp-name { position: absolute; bottom: 10px; left: 0; right: 0; text-align: center; font-size: 10px; font-weight: 700; color: #fff; letter-spacing: 0.5px; text-transform: uppercase; padding: 0 6px; }
+    .story-pill .sp-avatar { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--gold); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--royal-red-dark); }
+    .add-story-pill { background: linear-gradient(160deg, var(--bg-card) 0%, var(--bg-elevated) 100%); border: 2px dashed var(--gold-border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+    .add-story-pill .asp-circle { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--royal-red-dark), #AB2330); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; font-weight: 300; box-shadow: 0 4px 12px rgba(107,21,34,0.3); }
+    .add-story-pill .asp-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+    .add-story-pill:hover { border-color: var(--royal-red); background: rgba(107,21,34,0.03); }
+
+    /* ── CREATE POST BOX ── */
+    .compose-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: 0 2px 12px rgba(107,21,34,0.04); }
+    .compose-top { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
+    .compose-ava { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; background-size: cover; background-position: center; border: 2px solid var(--gold-border); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: var(--royal-red); background-color: var(--bg-elevated); }
+    .compose-input { flex: 1; background: var(--bg-elevated); border: 1.5px solid transparent; border-radius: 30px; padding: 12px 20px; font-family: inherit; font-size: 14px; color: var(--text); outline: none; transition: all 0.25s; cursor: pointer; }
+    .compose-input:focus { background: #fff; border-color: var(--gold-border); box-shadow: 0 0 0 3px var(--gold-dim); cursor: text; }
+    .compose-input::placeholder { color: var(--text-muted); }
+    .compose-divider { height: 1px; background: var(--border-light); margin-bottom: 14px; }
+    .compose-actions { display: flex; gap: 4px; align-items: center; }
+    .compose-btn { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; color: var(--text-secondary); background: none; border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .compose-btn:hover { background: var(--bg-elevated); color: var(--royal-red); }
+    .compose-btn span { font-size: 16px; }
+    .compose-post-btn { margin-left: auto; padding: 10px 24px; background: linear-gradient(135deg, var(--royal-red-dark), #AB2330); color: #fff; border: none; border-radius: 10px; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; gap: 8px; }
+    .compose-post-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107,21,34,0.3); }
+
+    /* ── FEED SECTION LABEL ── */
+    .feed-label { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; }
+    .feed-label::after { content: ''; flex: 1; height: 1px; background: var(--border-light); }
+
+    /* ── POST CARD ── */
+    .post-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
+      overflow: hidden; box-shadow: 0 2px 12px rgba(107,21,34,0.04);
+      transition: box-shadow 0.3s, border-color 0.3s, transform 0.25s;
     }
-    .story-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--gold-border); }
-    .story-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 0.4s ease; opacity: 0.9; }
-    .story-card:hover .story-bg { transform: scale(1.05); opacity: 1; }
-    .story-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(66, 10, 18, 0.9) 0%, rgba(0,0,0,0) 60%); }
-    .story-avatar { position: absolute; top: 12px; left: 12px; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--gold); background-size: cover; background-position: center; z-index: 2; background-color: var(--bg-elevated); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-    .story-name { position: absolute; bottom: 12px; left: 12px; right: 12px; font-size: 11px; font-weight: 600; color: #fff; font-family: 'Inter', sans-serif; z-index: 2; text-shadow: 0 1px 4px rgba(0,0,0,0.8); text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
-    
-    /* Add Story Card styling */
-    .add-story-card { background: var(--bg-card); display: flex; flex-direction: column; }
-    .add-story-img { height: 110px; background-size: cover; background-position: center; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; color: var(--royal-red); }
-    .add-story-bottom { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 16px; background: var(--bg-card); }
-    .add-story-btn { position: absolute; top: -18px; width: 36px; height: 36px; border-radius: 50%; background: var(--royal-red-dark); border: 3px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; font-weight: 500; box-shadow: 0 4px 12px rgba(107, 21, 34, 0.4); transition: transform 0.2s; outline: 2px solid var(--gold); outline-offset: -1px; }
-    .add-story-card:hover .add-story-btn { transform: scale(1.1); }
-    .add-story-text { font-size: 11px; font-weight: 600; color: #581825; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
-    
-    /* Quick Actions Grid */
-    .qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .qa-btn {
-      background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--border); border-radius: var(--radius); padding: 16px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-      transition: all 0.3s; cursor: pointer; box-shadow: var(--shadow-sm);
-    }
-    .qa-btn:hover { background: var(--bg-card); border-color: var(--royal-red); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
-    .qa-icon { font-size: 24px; }
-    .qa-lbl { font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-family: 'Inter', sans-serif; }
-    
-    /* Enhanced Post Styling - Clean Flat Theme */
-    .post-card { 
-      background: var(--bg-card);
-      border: 1px solid rgba(212, 175, 55, 0.3); border-radius: var(--radius-lg); padding: 24px; box-shadow: 0 4px 20px rgba(107, 21, 34, 0.03), 0 0 0 1px rgba(107, 21, 34, 0.02) inset; 
-      color: var(--text); position: relative; overflow: hidden; font-family: 'Inter', sans-serif; transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
-    }
-    .post-card:hover { box-shadow: 0 8px 30px rgba(107, 21, 34, 0.06), 0 0 0 1px rgba(212, 175, 55, 0.1) inset; border-color: rgba(212, 175, 55, 0.6); transform: translateY(-2px); }
-    .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-    .post-avatar { width: 48px; height: 48px; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid var(--gold-border); background-color: var(--bg-elevated); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .post-author { font-size: 16px; font-weight: 700; color: var(--text); font-family: 'Cinzel', serif; letter-spacing: 0.5px; }
-    .post-time { font-size: 12px; font-weight: 500; color: var(--text-muted); margin-top: 4px; }
-    .post-content { font-size: 15px; color: var(--text); line-height: 1.6; margin-bottom: 20px; }
-    .post-image { width: 100%; border-radius: var(--radius); margin-bottom: 20px; border: 1px solid var(--border-light); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.02); }
-    .post-actions { display: flex; gap: 24px; border-top: 1px solid var(--border-light); padding-top: 16px; }
-    .post-action { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; padding: 8px 16px; border-radius: 30px; font-family: 'Inter', sans-serif; border: 1px solid transparent; }
-    .post-action:hover { background: var(--bg-hover); color: var(--gold); border-color: var(--gold-border); }
-    .post-action svg { width: 18px; height: 18px; }
-    
-    /* Widget Profile Centering Fix */
-    .widget-profile { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px 24px; text-align: center; box-shadow: var(--shadow-card); position: relative; overflow: hidden; }
-    .wp-header-bg { position: absolute; top: 0; left: 0; right: 0; height: 100px; background: linear-gradient(135deg, #64121a, #AB2330); border-bottom: 2px solid var(--royal-red); }
-    .wp-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
-    .wp-avatar { width: 110px; height: 110px; border-radius: 50%; background-size: cover; background-position: center; border: 4px solid var(--bg-card); box-shadow: 0 0 0 2px var(--royal-red); margin-bottom: 16px; }
-    
-    /* History Widget */
-    .history-widget { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); }
-    .hw-img { height: 140px; background-image: url('https://images.unsplash.com/photo-1579724128912-70b9ebef5a2e?q=80&w=600'); background-size: cover; background-position: center; border-bottom: 2px solid var(--royal-red); position: relative; }
-    .hw-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; align-items: flex-end; padding: 16px; }
-    .hw-title { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: #fff; }
-    .hw-body { padding: 20px; font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+    .post-card:hover { box-shadow: 0 8px 28px rgba(107,21,34,0.09); border-color: var(--gold-border); transform: translateY(-2px); }
+    .post-inner { padding: 20px 24px; }
+    .post-hd { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .post-ava { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--gold-border); background-size: cover; background-position: center; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: var(--royal-red); background-color: var(--bg-elevated); }
+    .post-author { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 700; color: var(--text); }
+    .post-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .post-more { margin-left: auto; background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: background 0.2s; line-height: 1; }
+    .post-more:hover { background: var(--bg-elevated); color: var(--text); }
+    .post-body { font-size: 14px; line-height: 1.7; color: var(--text); margin-bottom: 0; }
+    .post-img { width: 100%; max-height: 360px; object-fit: cover; display: block; border-top: 1px solid var(--border-light); margin-top: 14px; }
+    .post-reactions { display: flex; align-items: center; gap: 6px; padding: 12px 24px; border-top: 1px solid var(--border-light); }
+    .reaction-pill { display: flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 30px; font-size: 13px; font-weight: 600; color: var(--text-secondary); background: none; border: 1px solid transparent; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .reaction-pill:hover { background: var(--bg-elevated); color: var(--royal-red); border-color: rgba(107,21,34,0.15); }
+    .reaction-pill.liked { color: var(--royal-red); background: var(--royal-red-dim); border-color: rgba(107,21,34,0.2); }
+    .reaction-pill svg { width: 16px; height: 16px; }
+    .comment-divider { flex: 1; }
+    .comment-area { padding: 12px 20px; border-top: 1px solid var(--border-light); background: var(--bg-elevated); display: none; }
+    .comment-area.open { display: block; }
+    .comment-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+    .comment-bubble { flex: 1; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 14px; padding: 10px 14px; }
+    .comment-author { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .comment-text { font-size: 13px; color: var(--text-secondary); }
+    .comment-input-row { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
+    .comment-input { flex: 1; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 20px; padding: 9px 16px; font-family: inherit; font-size: 13px; outline: none; color: var(--text); }
+    .comment-input:focus { border-color: var(--gold-border); }
+    .comment-send { background: var(--royal-red-dark); color: #fff; border: none; border-radius: 10px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Cinzel', serif; }
+
+    /* ── EMPTY FEED ── */
+    .empty-feed { text-align: center; padding: 48px 32px; background: var(--bg-card); border: 1px dashed var(--border); border-radius: 20px; }
+    .empty-feed .ef-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-feed .ef-title { font-family: 'Cinzel', serif; font-size: 18px; color: var(--text); margin-bottom: 8px; }
+    .empty-feed .ef-sub { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── PROFILE WIDGET ── */
+    .profile-widget { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: 0 2px 12px rgba(107,21,34,0.04); }
+    .pw-cover { height: 72px; background: linear-gradient(135deg, #420A12 0%, #6B1522 50%, #AB2330 100%); position: relative; }
+    .pw-cover::after { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4A843' fill-opacity='0.08'%3E%3Ccircle cx='30' cy='30' r='15'/%3E%3Ccircle cx='30' cy='30' r='25'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+    .pw-ava-wrap { display: flex; justify-content: center; margin-top: -36px; position: relative; z-index: 2; margin-bottom: 12px; }
+    .pw-ava { width: 72px; height: 72px; border-radius: 50%; border: 3px solid var(--bg-card); box-shadow: 0 4px 16px rgba(107,21,34,0.2); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: var(--royal-red); background-color: var(--bg-elevated); }
+    .pw-body { padding: 0 20px 20px; text-align: center; }
+    .pw-name { font-family: 'Cinzel', serif; font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .pw-handle { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+    .pw-lineage { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
+    .pw-badge { display: inline-block; background: rgba(107,21,34,0.06); color: var(--royal-red); border: 1px solid rgba(107,21,34,0.15); border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; font-family: 'Cinzel', serif; letter-spacing: 0.5px; }
+    .pw-stats { display: flex; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); margin: 14px 0; }
+    .pw-stat { flex: 1; padding: 12px 8px; text-align: center; }
+    .pw-stat:not(:last-child) { border-right: 1px solid var(--border-light); }
+    .pw-stat-num { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: var(--text); }
+    .pw-stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+    .pw-info-list { text-align: left; margin-bottom: 16px; }
+    .pw-info-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px dashed var(--border-light); font-size: 12px; }
+    .pw-info-row:last-child { border-bottom: none; }
+    .pw-info-icon { font-size: 14px; width: 18px; text-align: center; }
+    .pw-info-val { color: var(--text); font-weight: 500; }
+    .pw-edit-btn { width: 100%; padding: 11px; background: linear-gradient(135deg, var(--royal-red-dark), #AB2330); color: #fff; border: none; border-radius: 12px; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+    .pw-edit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107,21,34,0.3); }
+
+    /* ── QUICK LINKS WIDGET ── */
+    .quick-widget { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: 0 2px 12px rgba(107,21,34,0.04); }
+    .qw-title { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .quick-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .ql-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 8px; border-radius: 14px; background: var(--bg-elevated); border: 1px solid var(--border-light); cursor: pointer; transition: all 0.25s; text-decoration: none; }
+    .ql-btn:hover { background: rgba(107,21,34,0.04); border-color: rgba(107,21,34,0.2); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(107,21,34,0.08); }
+    .ql-icon { font-size: 22px; }
+    .ql-label { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+
+    /* ── DATA CENTER WIDGET ── */
+    .data-widget { background: linear-gradient(135deg, rgba(66,10,18,0.03) 0%, rgba(203,163,101,0.03) 100%); border: 1px dashed rgba(107,21,34,0.25); border-radius: 20px; padding: 20px; }
+    .dw-title { font-family: 'Cinzel', serif; font-size: 13px; color: var(--royal-red); font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .dw-sub { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px; }
+    .dw-btns { display: flex; flex-direction: column; gap: 8px; }
+    .dw-btn { padding: 10px 16px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .dw-btn.primary { background: linear-gradient(135deg, #A88143, #D4A843); color: var(--royal-red-dark); border: none; }
+    .dw-btn.secondary { background: var(--bg-card); color: var(--text); border: 1px solid var(--border); }
+    .dw-btn:hover { transform: translateY(-1px); }
   </style>
 </head>
-<body style="display: none;">
+<body style="display:none;">
   <script>
     if (!localStorage.getItem('rootd_auth')) {
       window.location.href = 'login.html';
@@ -99,91 +141,116 @@
     }
     document.body.style.display = '';
   </script>
+
   <div class="app-layout">
     <aside class="sidebar" id="sidebar"></aside>
     <div class="main-area">
       <header class="topbar" id="topbar"></header>
       <div class="page-content">
-        
         <div class="dashboard-layout">
-          
-          <!-- LEFT: The Feed -->
+
+          <!-- ══ LEFT: FEED ══ -->
           <div class="feed-column">
-            
-            <div class="section-header anim anim-delay-1" style="font-size: 11px; font-family: 'Inter', sans-serif; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 3px; display: flex; align-items: center; gap: 12px; border: none; padding: 0;">
-              <span style="font-size: 14px;">📣</span> ANNOUNCEMENTS
-              <div style="flex: 1; height: 1px; background: linear-gradient(90deg, var(--gold-border), transparent);"></div>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" style="opacity: 0.5"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
-            </div>
-            <div class="stories-container anim anim-delay-1" id="storiesContainer">
-              <!-- Rendered via JS -->
+
+            <!-- Stories -->
+            <div>
+              <div class="feed-label" style="margin-bottom:12px;">📸 Stories</div>
+              <div class="stories-wrap" id="storiesContainer"></div>
             </div>
 
-            <!-- Create Post Box -->
-            <div class="card anim anim-delay-2" style="border-radius: 24px; padding: 24px;">
-              <div style="display: flex; gap: 16px; align-items: center;">
-                <div class="post-avatar" id="createPostAvatar" style="width: 48px; height: 48px; display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--gold); font-size:18px; border: 2px solid var(--border-light); box-shadow: var(--shadow-sm)"></div>
-                <input type="text" id="postInput" placeholder="What's on your mind?" style="flex: 1; border: 1px solid transparent; background: var(--bg-elevated); padding: 14px 20px; border-radius: 30px; font-family: inherit; font-size: 15px; outline: none; color: var(--text); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition: all 0.3s;" onfocus="this.style.borderColor='var(--gold-border)'; this.style.boxShadow='0 0 0 4px var(--gold-dim)'" onblur="this.style.borderColor='transparent'; this.style.boxShadow='inset 0 2px 4px rgba(0,0,0,0.02)'" onkeypress="if(event.key==='Enter') publishPost()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" style="position: absolute; right: 48px; pointer-events: none; opacity: 0.5"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+            <!-- Compose Box -->
+            <div class="compose-box anim anim-delay-1">
+              <div class="compose-top">
+                <div class="compose-ava" id="createPostAvatar"></div>
+                <input type="text" id="postInput" class="compose-input" placeholder="Share a royal announcement with your dynasty...">
               </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; border-top: 1px solid var(--border-light); padding-top: 16px;">
-                <div style="display: flex; gap: 16px; padding-left: 8px;">
-                  <input type="file" id="postImageUpload" accept="image/*" style="display:none;" onchange="handlePostImageUpload(event)">
-                  <button onclick="document.getElementById('postImageUpload').click()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 500; font-size: 13px; cursor: pointer; padding: 6px 12px; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.background='var(--bg-hover)'; this.style.color='var(--gold)'" onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'"><span style="font-size: 18px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));">📸</span> Photo / Video</button>
-                  <button onclick="addFamilyEvent()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 500; font-size: 13px; cursor: pointer; padding: 6px 12px; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.background='var(--bg-hover)'; this.style.color='var(--gold)'" onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'"><span style="font-size: 18px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));">📅</span> Event</button>
-                  <button onclick="addMilestone()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 500; font-size: 13px; cursor: pointer; padding: 6px 12px; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.background='var(--bg-hover)'; this.style.color='var(--gold)'" onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'"><span style="font-size: 18px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));">📜</span> Milestone</button>
-                  <div id="postImagePreviewContainer" style="display:none; align-items:center; gap:8px; margin-left:auto; background:var(--bg-elevated); padding:6px 12px; border-radius:20px; font-size:12px; color:var(--text); font-weight:500; border: 1px solid var(--border-light)">
-                    <span id="postImagePreviewName">Attached</span>
-                    <button onclick="removePostImage()" style="background:none;border:none;color:var(--royal-red);cursor:pointer;font-weight:bold;font-size:12px">✕</button>
-                  </div>
-                </div>
-                <button class="btn btn-royal" style="padding: 10px 24px; border-radius: 30px; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px;" onclick="publishPost()">Post <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-              </div>
-            </div>
-            
-            <!-- Posts Container -->
-            <div id="feedContainer"></div>
-          </div>
-          
-          <!-- RIGHT: Profile & History Widget -->
-          <div class="profile-column anim anim-delay-3">
-            <div class="widget-profile" id="userWidget">
-              <!-- Injected via JS -->
-            </div>
-            
-            <div class="history-widget">
-              <div class="hw-img">
-                <div class="hw-overlay">
-                  <div class="hw-title">This Day in History</div>
-                </div>
-              </div>
-              <div class="hw-body">
-                <b>1971: The First Alliance</b><br>
-                Rajesh Sharma and Savitri officially registered their marriage in Uttarakhand, sparking the first major expansion of the modern lineage tree.
-              </div>
-            </div>
-
-            <!-- Database Control Center -->
-            <div class="post-card" style="margin-top: 24px; padding: 24px; border: 1px dashed var(--royal-red); background: linear-gradient(135deg, rgba(212,175,55,0.03), rgba(255,255,255,0.01));">
-              <h3 style="font-family:'Cinzel',serif; font-size:16px; font-weight:700; color:var(--royal-red); margin-bottom:12px; display:flex; align-items:center; gap:8px;">⚙️ Production Data Center</h3>
-              <p style="font-size:12px; color:var(--text-secondary); line-height:1.5; margin-bottom:16px;">
-                Download your customized family tree dataset to make it the default seed for your GitHub Pages production build, or restore a backup.
-              </p>
-              <div style="display:flex; flex-direction:column; gap:10px;">
-                <button class="btn btn-gold btn-sm" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:700;" onclick="exportVanshData()">
-                  📥 Export Current Tree (JSON)
+              <div class="compose-divider"></div>
+              <div class="compose-actions">
+                <input type="file" id="postImageUpload" accept="image/*" style="display:none;" onchange="handlePostImageUpload(event)">
+                <button class="compose-btn" onclick="document.getElementById('postImageUpload').click()">
+                  <span>📸</span> Photo
                 </button>
-                <label class="btn btn-outline btn-sm" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; background:var(--bg-card); border-color:var(--border-light); font-weight:600; font-size:13px; padding:10px; border-radius:var(--radius); text-align:center;">
-                  📤 Import Tree Backup
+                <button class="compose-btn" onclick="addFamilyEvent()">
+                  <span>📅</span> Event
+                </button>
+                <button class="compose-btn" onclick="addMilestone()">
+                  <span>🎉</span> Milestone
+                </button>
+                <div id="postImagePreviewContainer" style="display:none; align-items:center; gap:6px; background:var(--bg-elevated); padding:5px 12px; border-radius:20px; font-size:12px; color:var(--text-muted); border:1px solid var(--border-light);">
+                  📎 <span id="postImagePreviewName">Image attached</span>
+                  <button onclick="removePostImage()" style="background:none;border:none;color:var(--royal-red);cursor:pointer;font-weight:bold;">✕</button>
+                </div>
+                <button class="compose-post-btn" onclick="publishPost()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  Post
+                </button>
+              </div>
+            </div>
+
+            <!-- Feed Section Label -->
+            <div class="feed-label anim anim-delay-2">📣 Dynasty Feed</div>
+
+            <!-- Posts -->
+            <div id="feedContainer"></div>
+
+          </div>
+
+          <!-- ══ RIGHT: WIDGETS ══ -->
+          <div class="profile-column anim anim-delay-2">
+
+            <!-- Profile Widget -->
+            <div class="profile-widget" id="userWidget"></div>
+
+            <!-- Quick Links -->
+            <div class="quick-widget">
+              <div class="qw-title">⚡ Quick Access</div>
+              <div class="quick-links">
+                <a href="tree.html" class="ql-btn"><span class="ql-icon">🌳</span><span class="ql-label">Family Tree</span></a>
+                <a href="matchmaking.html" class="ql-btn"><span class="ql-icon">👑</span><span class="ql-label">Alliances</span></a>
+                <a href="trust.html" class="ql-btn"><span class="ql-icon">🏛️</span><span class="ql-label">Estate</span></a>
+                <a href="events.html" class="ql-btn"><span class="ql-icon">💍</span><span class="ql-label">Events</span></a>
+              </div>
+            </div>
+
+            <!-- Data Center -->
+            <div class="data-widget">
+              <div class="dw-title">⚙️ Data Center</div>
+              <div class="dw-sub">Export your family tree or restore from a backup JSON file.</div>
+              <div class="dw-btns">
+                <button class="dw-btn primary" onclick="exportVanshData()">📥 Export Tree (JSON)</button>
+                <label class="dw-btn secondary" style="cursor:pointer;">
+                  📤 Import Backup
                   <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importVanshData(event)">
                 </label>
               </div>
             </div>
-            
-          </div>
-          
-        </div>
 
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Story Viewer -->
+  <div id="storyViewer" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:9999; align-items:center; justify-content:center; flex-direction:column;">
+    <button onclick="closeStory()" style="position:absolute; top:20px; right:24px; background:rgba(255,255,255,0.1); border:none; color:#fff; font-size:28px; cursor:pointer; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;">×</button>
+    <div id="storyViewerName" style="color:#fff; font-family:'Cinzel',serif; font-size:18px; margin-bottom:16px; font-weight:700;"></div>
+    <div id="storyViewerImage" style="width:360px; max-width:90vw; aspect-ratio:9/16; border-radius:20px; background-size:cover; background-position:center; box-shadow:0 20px 60px rgba(0,0,0,0.6);"></div>
+  </div>
+
+  <!-- Add Story Modal -->
+  <div id="addStoryModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9998; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+    <div style="background:var(--bg-card); width:90%; max-width:420px; border-radius:20px; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,0.2); border:1px solid var(--border);">
+      <h3 style="font-family:'Cinzel',serif; font-size:18px; color:var(--text); margin-bottom:20px;">Create Story</h3>
+      <input type="text" id="newStoryTitle" placeholder="Story title or caption..." style="width:100%; padding:12px 16px; border:1.5px solid var(--border); border-radius:12px; font-family:inherit; font-size:14px; outline:none; color:var(--text); background:var(--bg-elevated); margin-bottom:16px;">
+      <input type="file" id="storyImageUpload" accept="image/*" style="display:none;" onchange="handleStoryImageUpload(event)">
+      <div id="storyImagePreview" style="display:none; width:100%; height:140px; border-radius:12px; background-size:cover; background-position:center; margin-bottom:12px; position:relative; border:1px solid var(--border);">
+        <button onclick="removeStoryImage()" style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.5); color:#fff; border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; font-size:16px; line-height:1; display:flex; align-items:center; justify-content:center;">×</button>
+      </div>
+      <button onclick="document.getElementById('storyImageUpload').click()" style="width:100%; padding:12px; border:1.5px dashed var(--border); border-radius:12px; background:var(--bg-elevated); color:var(--text-muted); font-family:inherit; cursor:pointer; font-weight:600; margin-bottom:20px;">📸 Upload Photo</button>
+      <div style="display:flex; gap:12px; justify-content:flex-end;">
+        <button onclick="closeAddStoryModal()" style="padding:10px 20px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:10px; cursor:pointer; font-family:inherit; font-weight:600; color:var(--text);">Cancel</button>
+        <button onclick="submitNewStory()" style="padding:10px 24px; background:linear-gradient(135deg, var(--royal-red-dark), #AB2330); color:#fff; border:none; border-radius:10px; cursor:pointer; font-family:'Cinzel',serif; font-weight:700; font-size:13px;">Share Story</button>
       </div>
     </div>
   </div>
@@ -194,471 +261,338 @@
   <script>
     if (!requireAuth()) throw '';
     initNav('dashboard');
-    
+
     const auth = getAuthData();
-    const userId = auth ? auth.userId : 'P3';
+    const userId = auth ? auth.userId : null;
     const authMember = getMemberById(userId);
-    
+
     if (!authMember) {
-      alert('Your session is invalid or your profile data is missing. Please log in again.');
+      alert('Session invalid. Please log in again.');
       logout();
-      throw new Error('Invalid authMember');
+      throw new Error('No authMember');
     }
 
-    // Calculate Dynamic Network Stats
-    let myNetworkCount = 0;
-    let myVerifiedCount = 0;
+    // ── Avatar styles ──
+    const avaStyle = authMember.imageUrl ? `background-image:url('${authMember.imageUrl}'); background-size:cover; background-position:center;` : getAvatarStyle(authMember);
+    const avaTxt   = authMember.imageUrl ? '' : getInitials(authMember);
+
+    // ── Network stats ──
+    let netCount = 0, verCount = 0;
     familyMembers.forEach(m => {
       if (m.id === authMember.id) return;
       const rel = getSmartIndianRelation(familyMembers, authMember.id, m.id);
-      if (rel) {
-        myNetworkCount++;
-        if (m.verified) myVerifiedCount++;
-      }
+      if (rel) { netCount++; if (m.verified) verCount++; }
     });
-    // Add 1 for the user themselves
-    myNetworkCount += 1;
-    myVerifiedCount += (authMember.verified ? 1 : 0);
-    const verifiedPercentFinal = myNetworkCount > 0 ? Math.round((myVerifiedCount / myNetworkCount) * 100) : 0;
+    netCount += 1;
+    verCount += (authMember.verified ? 1 : 0);
+    const verPct = netCount > 0 ? Math.round((verCount / netCount) * 100) : 0;
 
-    // User Widget - Properly Centered
-    const avaStyle = authMember.imageUrl ? `background-image:url('${authMember.imageUrl}')` : getAvatarStyle(authMember);
-    const avaTxt = authMember.imageUrl ? '' : getInitials(authMember);
-    
+    // ── Render Profile Widget ──
     document.getElementById('userWidget').innerHTML = `
-      <style>
-        .wp-profile-card {
-            background-color: var(--bg-card); width: 100%; border-radius: var(--radius-lg); 
-            border: 1px solid rgba(212, 175, 55, 0.5); 
-            box-shadow: 0 8px 30px rgba(107, 21, 34, 0.1), 0 0 0 1px rgba(107, 21, 34, 0.05) inset; 
-            position: relative; overflow: hidden; padding-bottom: 12px;
-            font-family: 'Inter', sans-serif; transition: box-shadow 0.3s;
-        }
-        .wp-profile-card:hover { box-shadow: 0 12px 40px rgba(107, 21, 34, 0.15), 0 0 0 1px rgba(212, 175, 55, 0.2) inset; }
-        .wp-cover-photo {
-            height: 60px; width: 100%;
-            background: linear-gradient(180deg, rgba(66, 10, 18, 0.4), var(--royal-red-dark)), url('images/royal_pattern.png');
-            background-size: cover; background-position: center;
-        }
-        .wp-avatar-container {
-            margin-top: -32px; display: flex; justify-content: center; width: 100%;
-            position: relative; z-index: 3;
-        }
-        .wp-avatar-img { 
-            width: 64px; height: 64px; border-radius: 50%; 
-            border: 3px solid var(--gold); box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.2); 
-            background-color: var(--bg-elevated); 
-        }
-        
-        .wp-details-box { position: relative; z-index: 2; padding: 0 16px; margin-top: 8px; text-align: center; }
-        
-        .wp-status-card {
-            background: var(--bg-elevated); border-radius: var(--radius-sm); padding: 8px; margin: 8px 0;
-            border: 1px solid var(--border-light); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .wp-info-list { text-align: left; margin-top: 8px; font-size: 11px; color: var(--text-secondary); }
-        .wp-info-item { display: flex; align-items: center; gap: 6px; padding: 4px 0; border-bottom: 1px dashed var(--border-light); }
-        .wp-info-item:last-child { border-bottom: none; }
-        .wp-info-icon { width: 14px; text-align: center; font-size: 12px; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.05)); }
-        .wp-info-value { font-weight: 500; color: var(--text); }
-      </style>
-
-      <div class="wp-profile-card">
-        <div class="wp-cover-photo"></div>
-        
-        <div class="wp-avatar-container">
-          <div class="wp-avatar-img" style="${avaStyle}; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700; color:var(--royal-red); background-size: cover; background-position: center;">${avaTxt}</div>
+      <div class="pw-cover"></div>
+      <div class="pw-ava-wrap">
+        <div class="pw-ava" style="${avaStyle}">${avaTxt}</div>
+      </div>
+      <div class="pw-body">
+        <div class="pw-name">${getFullName(authMember)}</div>
+        <div class="pw-handle">@${authMember.username || 'user'}</div>
+        <div class="pw-lineage">
+          <span class="pw-badge">${authMember.caste || 'Brahmin'}</span>
+          <span style="color:var(--text-muted)">•</span>
+          <span class="pw-badge">${authMember.gotra || 'Kashyap'} Gotra</span>
         </div>
-        
-        <div class="wp-details-box">
-          <h2 style="font-size:16px;font-weight:700;color:var(--text); margin-bottom: 0px; font-family: 'Cinzel', serif; letter-spacing: 0.5px;">${getFullName(authMember)}</h2>
-          <div style="font-size:11px; font-weight:400; color:var(--text-muted); margin-bottom:4px;">@${authMember.username || 'user'}</div>
-          
-          <div style="font-size:11px; font-weight:500; color:var(--text-secondary); margin-bottom:8px;">
-            ${getCasteLine(authMember)} <span style="color:var(--gold)">•</span> ${authMember.gotra} Gotra
+        <div class="pw-stats">
+          <div class="pw-stat">
+            <div class="pw-stat-num">${netCount}</div>
+            <div class="pw-stat-label">Network</div>
           </div>
-          
-          <div class="wp-status-card">
-            <div style="font-size:12px; font-weight:700; color:var(--royal-red-dark); margin-bottom:2px; font-family: 'Cinzel', serif; letter-spacing: 0.5px;">
-              ${authMember.occupation || 'Network Member'}
-            </div>
-            <div style="font-size:11px; color:var(--text-secondary); font-weight: 500;">
-              ${authMember.age} yrs <span style="color:var(--gold)">•</span> ${authMember.gender === 'M' ? 'Male' : 'Female'} <span style="color:var(--gold)">•</span> <span style="color:var(--royal-red); font-weight:700;">${authMember.spouse ? 'Married' : 'Single'}</span>
-            </div>
+          <div class="pw-stat">
+            <div class="pw-stat-num">${verPct}%</div>
+            <div class="pw-stat-label">Verified</div>
           </div>
-          
-          <div class="wp-info-list">
-            ${authMember.education ? `<div class="wp-info-item"><div class="wp-info-icon">🎓</div><div class="wp-info-value">${authMember.education}</div></div>` : ''}
-            ${authMember.company ? `<div class="wp-info-item"><div class="wp-info-icon">💼</div><div class="wp-info-value">${authMember.company}</div></div>` : ''}
-            ${authMember.manglik ? `<div class="wp-info-item"><div class="wp-info-icon">✨</div><div class="wp-info-value" style="color:var(--royal-red)">${authMember.manglik}</div></div>` : ''}
-            ${authMember.diet ? `<div class="wp-info-item"><div class="wp-info-icon">🍽️</div><div class="wp-info-value">${authMember.diet}</div></div>` : ''}
+          <div class="pw-stat">
+            <div class="pw-stat-num">${authMember.age || '—'}</div>
+            <div class="pw-stat-label">Age</div>
           </div>
-          
-          ${authMember.bio ? `<div style="margin-top: 8px; color: var(--gold); font-style: italic; font-family: 'Cinzel', serif; line-height: 1.3; font-size: 11px; text-align: center; padding: 8px; background: var(--bg-elevated); border: 1px solid var(--border-light); border-radius: var(--radius-sm);">"${authMember.bio}"</div>` : ''}
-          
-          <div style="display:flex; justify-content:space-between; width:100%; border-top:1px solid var(--border-light); padding-top:12px; margin-top:12px">
-            <div style="text-align:center; flex:1; border-right:1px solid var(--border-light)">
-              <div style="font-size:14px; font-weight:700; color:var(--text); font-family: 'Cinzel', serif; display: flex; align-items: center; justify-content: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> ${myNetworkCount}</div>
-              <div style="font-size:9px; color:var(--text-secondary); font-weight:700; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;">Network</div>
-            </div>
-            <div style="text-align:center; flex:1">
-              <div style="font-size:14px; font-weight:700; color:var(--text); font-family: 'Cinzel', serif; display: flex; align-items: center; justify-content: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> ${verifiedPercentFinal}%</div>
-              <div style="font-size:9px; color:var(--text-secondary); font-weight:700; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;">Verified</div>
-            </div>
-          </div>
-          
-          <a href="profile.html?id=${authMember.id}" class="btn btn-royal" style="width:100%; margin-top:12px; border-radius: 30px; justify-content: center; padding: 8px 16px; font-size: 13px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit Profile</a>
         </div>
+        <div class="pw-info-list">
+          ${authMember.occupation ? `<div class="pw-info-row"><span class="pw-info-icon">💼</span><span class="pw-info-val">${authMember.occupation}</span></div>` : ''}
+          ${authMember.education ? `<div class="pw-info-row"><span class="pw-info-icon">🎓</span><span class="pw-info-val">${authMember.education}</span></div>` : ''}
+          ${authMember.nativePlace ? `<div class="pw-info-row"><span class="pw-info-icon">📍</span><span class="pw-info-val">${authMember.nativePlace}</span></div>` : ''}
+          <div class="pw-info-row"><span class="pw-info-icon">${authMember.gender === 'F' ? '👩' : '👨'}</span><span class="pw-info-val">${authMember.gender === 'F' ? 'Female' : 'Male'} · ${authMember.spouse ? '<span style="color:var(--royal-red)">Married</span>' : 'Single'}</span></div>
+        </div>
+        <a href="profile.html?id=${authMember.id}" class="pw-edit-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit Profile
+        </a>
       </div>
     `;
 
-    // Populate Create Post Avatar
-    document.getElementById('createPostAvatar').setAttribute('style', `width: 44px; height: 44px; border-radius: 50%; border-width: 1px; flex-shrink: 0; display:flex; align-items:center; justify-content:center; font-weight:bold; color:var(--royal-red); font-size:16px; background-color: var(--bg-elevated); ${avaStyle}; background-size: cover; background-position: center; border: 2px solid var(--gold-border);`);
-    if(avaTxt) document.getElementById('createPostAvatar').innerText = avaTxt;
-    if(avaTxt) document.getElementById('createPostAvatar').innerText = avaTxt;
-
-    // --- Feed Logic ---
-    let feedPosts = [];
-    try {
-      const savedFeed = localStorage.getItem('vansh_feed_v2');
-      if (savedFeed) {
-        const parsed = JSON.parse(savedFeed);
-        if (Array.isArray(parsed)) feedPosts = parsed;
-      }
-    } catch(e) {}
-
-    function renderFeed() {
-      if (!feedPosts || feedPosts.length === 0) {
-        document.getElementById('feedContainer').innerHTML = `<div style="text-align:center; padding: 40px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; color: #65676b; font-size: 14px; margin-top: 20px;">No royal announcements yet. Be the first to share an update with the family!</div>`;
-        return;
-      }
-      const feedHtml = feedPosts.map((post, idx) => `
-        <div class="post-card anim" style="animation-delay: ${0.06 * (idx + 1)}s">
-          <div class="post-header">
-            <div class="post-avatar" style="${post.avatarUrl && post.avatarUrl.includes('url') ? post.avatarUrl : (post.avatarUrl ? `background-image:url('${post.avatarUrl}')` : '')}"></div>
-            <div>
-              <div class="post-author">${post.authorName}</div>
-              <div class="post-time">${post.time} · Public</div>
-            </div>
-          </div>
-          <div class="post-content">${post.content}</div>
-          ${post.image ? `<img src="${post.image}" alt="Post Media" class="post-image">` : ''}
-          <div class="post-actions">
-            <div class="post-action" onclick="toggleRespect(${post.id})" style="${post.hasRespected ? 'color:var(--royal-red)' : ''}; cursor:pointer"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg> Respect ${post.respects ? '(' + post.respects + ')' : ''}</div>
-            <div class="post-action" onclick="toggleCommentBox(${post.id})" style="cursor:pointer"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> Counsel ${post.comments && post.comments.length ? '(' + post.comments.length + ')' : ''}</div>
-          </div>
-          ${post.comments && post.comments.length ? `
-            <div style="margin-top: 12px; border-top: 1px solid #e0e0e0; padding-top: 12px;">
-              ${post.comments.map(c => `
-                <div style="display:flex; gap:8px; margin-bottom:8px; font-size:14px; align-items: flex-start;">
-                  <div style="background: #f0f2f5; padding: 8px 12px; border-radius: 12px;">
-                    <div style="font-weight:600; color:#050505; margin-bottom: 2px;">${c.author}</div>
-                    <div style="color:#050505; line-height: 1.4;">${c.text}</div>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          ` : ''}
-          <div id="commentBox-${post.id}" style="display:none; margin-top: 12px; border-top: 1px solid #e0e0e0; padding-top: 12px;">
-            <div style="display: flex; gap: 8px; align-items: center;">
-              <input type="text" id="commentInput-${post.id}" placeholder="Write a comment..." style="flex:1; padding:10px 16px; border-radius:20px; border:none; background:#f0f2f5; font-size:14px; outline:none; color:#050505; font-family: 'Inter', sans-serif;" onkeypress="if(event.key==='Enter') submitComment(${post.id})">
-              <button class="btn" style="padding: 8px 16px; font-size: 14px; background:transparent; border:none; color:#1877f2; font-family:'Inter',sans-serif; font-weight:600; cursor: pointer;" onclick="submitComment(${post.id})">Post</button>
-            </div>
-          </div>
-        </div>
-      `).join('');
-      document.getElementById('feedContainer').innerHTML = feedHtml;
+    // ── Set compose avatar ──
+    const cpa = document.getElementById('createPostAvatar');
+    if (authMember.imageUrl) {
+      cpa.style.backgroundImage = `url('${authMember.imageUrl}')`;
+      cpa.style.backgroundSize = 'cover';
+    } else {
+      Object.assign(cpa.style, { background: getAvatarStyle(authMember).replace('background:', '') });
+      cpa.textContent = avaTxt;
     }
 
-    renderFeed();
-
-    // Dynamic Stories Rendering
-    let mockStories = [];
+    // ── Feed ──
+    let feedPosts = [];
     try {
-      const savedStories = localStorage.getItem('vansh_stories_v1');
-      if (savedStories) {
-        const parsed = JSON.parse(savedStories);
-        if (Array.isArray(parsed)) mockStories = parsed;
-      }
+      const s = localStorage.getItem('vansh_feed_v2');
+      if (s) { const p = JSON.parse(s); if (Array.isArray(p)) feedPosts = p; }
     } catch(e) {}
 
-    function renderStories() {
-      const container = document.getElementById('storiesContainer');
-      if (!container) return;
-      
-      const storyAvaStyle = authMember.imageUrl ? `background-image:url('${authMember.imageUrl}')` : getAvatarStyle(authMember);
-      const storyAvaTxt = authMember.imageUrl ? '' : getInitials(authMember);
+    function timeAgo(ts) {
+      if (!ts) return 'Just now';
+      const diff = Date.now() - ts;
+      if (diff < 60000) return 'Just now';
+      if (diff < 3600000) return Math.floor(diff/60000) + ' min ago';
+      if (diff < 86400000) return Math.floor(diff/3600000) + ' hr ago';
+      return Math.floor(diff/86400000) + ' days ago';
+    }
 
-      let html = `
-        <div class="story-card add-story-card" onclick="openAddStoryModal()">
-          <div class="add-story-img" style="${storyAvaStyle}">${storyAvaTxt}</div>
-          <div class="add-story-bottom">
-            <div class="add-story-btn">+</div>
-            <div class="add-story-text">Create Story</div>
+    function renderFeed() {
+      const container = document.getElementById('feedContainer');
+      if (!feedPosts.length) {
+        container.innerHTML = `
+          <div class="empty-feed">
+            <div class="ef-icon">📣</div>
+            <div class="ef-title">No Royal Announcements Yet</div>
+            <div class="ef-sub">Be the first to share a milestone, event, or update with your dynasty network!</div>
+          </div>`;
+        return;
+      }
+      container.innerHTML = feedPosts.map((post, idx) => {
+        const avatarStyle = post.avatarStyle || `background-color: var(--bg-elevated)`;
+        const initials = post.initials || '';
+        const hasImg = post.avatarUrl && !post.avatarUrl.startsWith('background');
+        const avatarInline = hasImg ? `background-image:url('${post.avatarUrl}'); background-size:cover; background-position:center;` : avatarStyle;
+
+        return `
+        <div class="post-card anim" style="animation-delay:${idx * 0.05}s;">
+          <div class="post-inner">
+            <div class="post-hd">
+              <div class="post-ava" style="${avatarInline}">${hasImg ? '' : initials}</div>
+              <div style="flex:1; min-width:0;">
+                <div class="post-author">${post.authorName || 'Anonymous'}</div>
+                <div class="post-meta">${timeAgo(post.timestamp)} · <span style="color:var(--royal-red); font-weight:600;">Public</span></div>
+              </div>
+              <button class="post-more" onclick="this.nextElementSibling.classList.toggle('active')">···</button>
+            </div>
+            <div class="post-body">${post.content || ''}</div>
           </div>
-        </div>
-      `;
-      
-      mockStories.forEach(story => {
-        html += `
-          <div class="story-card" onclick="viewStory('${story.name}', '${story.img}')">
-            <div class="story-bg" style="background-image:url('${story.img}')"></div>
-            <div class="story-overlay"></div>
-            <div class="story-avatar" style="background-image:url('${story.img}')"></div>
-            <div class="story-name">${story.name}</div>
+          ${post.image ? `<img src="${post.image}" alt="Post image" class="post-img">` : ''}
+          <div class="post-reactions">
+            <button class="reaction-pill ${post.hasRespected ? 'liked' : ''}" onclick="toggleRespect(${post.id})">
+              <svg fill="${post.hasRespected ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
+              Respect${post.respects ? ' · ' + post.respects : ''}
+            </button>
+            <button class="reaction-pill" onclick="toggleComments(${post.id})">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+              ${post.comments && post.comments.length ? 'Comments · ' + post.comments.length : 'Comment'}
+            </button>
+            <button class="reaction-pill" onclick="sharePost(${post.id})" style="margin-left:auto;">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+              Share
+            </button>
           </div>
-        `;
+          <div class="comment-area" id="commentArea-${post.id}">
+            ${(post.comments || []).map(c => `
+              <div class="comment-row">
+                <div class="comment-bubble">
+                  <div class="comment-author">${c.author}</div>
+                  <div class="comment-text">${c.text}</div>
+                </div>
+              </div>
+            `).join('')}
+            <div class="comment-input-row">
+              <input class="comment-input" id="commentInput-${post.id}" placeholder="Write a comment..." onkeypress="if(event.key==='Enter') submitComment(${post.id})">
+              <button class="comment-send" onclick="submitComment(${post.id})">Send</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+    renderFeed();
+
+    // ── Stories ──
+    let mockStories = [];
+    try { const s = localStorage.getItem('vansh_stories_v1'); if (s) { const p = JSON.parse(s); if (Array.isArray(p)) mockStories = p; } } catch(e) {}
+
+    function renderStories() {
+      const c = document.getElementById('storiesContainer');
+      let html = `<div class="story-pill add-story-pill" onclick="openAddStoryModal()"><div class="asp-circle">+</div><div class="asp-lbl">Create Story</div></div>`;
+      mockStories.forEach(st => {
+        html += `<div class="story-pill" onclick="viewStory('${st.name}', '${st.img}')">
+          <div class="sp-bg" style="background-image:url('${st.img}')"></div>
+          <div class="sp-grad"></div>
+          <div class="sp-avatar" style="background-image:url('${st.img}')"></div>
+          <div class="sp-name">${st.name}</div>
+        </div>`;
       });
-      container.innerHTML = html;
+      c.innerHTML = html;
     }
     renderStories();
 
-    function openAddStoryModal() {
-      document.getElementById('addStoryModal').style.display = 'flex';
-    }
-
-    let currentStoryImage = null;
-
-    function handleStoryImageUpload(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          currentStoryImage = e.target.result;
-          document.getElementById('storyImagePreview').style.backgroundImage = `url(${currentStoryImage})`;
-          document.getElementById('storyImagePreview').style.display = 'block';
-        }
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function removeStoryImage() {
-      currentStoryImage = null;
-      document.getElementById('storyImagePreview').style.backgroundImage = 'none';
-      document.getElementById('storyImagePreview').style.display = 'none';
-      if(document.getElementById('storyImageUpload')) document.getElementById('storyImageUpload').value = '';
-    }
-
-    function closeAddStoryModal() {
-      document.getElementById('addStoryModal').style.display = 'none';
-      document.getElementById('newStoryTitle').value = '';
-      removeStoryImage();
-    }
-
-    function submitNewStory() {
-      const name = document.getElementById('newStoryTitle').value.trim();
-      if (!name) {
-        alert("Please enter a title for your story.");
-        return;
-      }
-      
-      let img = currentStoryImage;
-      if (!img) {
-        const images = [
-          "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&q=80",
-          "https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=400&q=80",
-          "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=400&q=80"
-        ];
-        img = images[Math.floor(Math.random() * images.length)];
-      }
-      
-      mockStories.unshift({
-        id: Date.now(),
-        name: name,
-        img: img,
-        type: "user"
-      });
-      localStorage.setItem('vansh_stories_v1', JSON.stringify(mockStories));
-      renderStories();
-      closeAddStoryModal();
-    }
-
-    function viewStory(name, imgUrl) {
-      document.getElementById('storyViewerName').innerText = name;
-      document.getElementById('storyViewerImage').style.backgroundImage = `url('${imgUrl}')`;
-      document.getElementById('storyViewer').style.display = 'flex';
-    }
-
-    function closeStory() {
-      document.getElementById('storyViewer').style.display = 'none';
-    }
-
+    // ── Feed interactions ──
     function toggleRespect(postId) {
       const post = feedPosts.find(p => p.id === postId);
-      if (post) {
-        if (!post.respects) post.respects = 0;
-        if (post.hasRespected) {
-          post.respects = Math.max(0, post.respects - 1);
-          post.hasRespected = false;
-        } else {
-          post.respects += 1;
-          post.hasRespected = true;
-        }
-        localStorage.setItem('vansh_feed_v2', JSON.stringify(feedPosts));
-        renderFeed();
-      }
+      if (!post) return;
+      if (!post.respects) post.respects = 0;
+      if (post.hasRespected) { post.respects = Math.max(0, post.respects - 1); post.hasRespected = false; }
+      else { post.respects++; post.hasRespected = true; }
+      localStorage.setItem('vansh_feed_v2', JSON.stringify(feedPosts));
+      renderFeed();
     }
 
-    function toggleCommentBox(postId) {
-      const box = document.getElementById(`commentBox-${postId}`);
-      if (box) {
-        box.style.display = box.style.display === 'none' ? 'block' : 'none';
-        if (box.style.display === 'block') {
-          document.getElementById(`commentInput-${postId}`).focus();
-        }
+    function toggleComments(postId) {
+      const area = document.getElementById(`commentArea-${postId}`);
+      if (!area) return;
+      area.classList.toggle('open');
+      if (area.classList.contains('open')) {
+        const inp = document.getElementById(`commentInput-${postId}`);
+        if (inp) inp.focus();
       }
     }
 
     function submitComment(postId) {
       const post = feedPosts.find(p => p.id === postId);
       const input = document.getElementById(`commentInput-${postId}`);
-      if (post && input) {
-        const text = input.value.trim();
-        if (text) {
-          if (!post.comments) post.comments = [];
-          post.comments.push({ author: getFullName(authMember), text: text });
-          localStorage.setItem('vansh_feed_v2', JSON.stringify(feedPosts));
-          renderFeed();
-          // Box will be closed on re-render, we can re-open it if we want, or leave it closed.
-          // Let's leave it open so they can see their comment.
-          const newBox = document.getElementById(`commentBox-${postId}`);
-          if (newBox) newBox.style.display = 'block';
-        }
+      if (!post || !input || !input.value.trim()) return;
+      if (!post.comments) post.comments = [];
+      post.comments.push({ author: getFullName(authMember), text: input.value.trim() });
+      localStorage.setItem('vansh_feed_v2', JSON.stringify(feedPosts));
+      renderFeed();
+      const area = document.getElementById(`commentArea-${postId}`);
+      if (area) area.classList.add('open');
+    }
+
+    function sharePost(postId) {
+      if (navigator.share) {
+        navigator.share({ title: 'Vansh Dynasty', text: 'Check out this post on Vansh!', url: window.location.href });
+      } else {
+        navigator.clipboard.writeText(window.location.href).then(() => showToast('Link Copied', 'Post link copied to clipboard.', 'ok'));
       }
     }
 
+    // ── Publish post ──
     let currentPostImage = null;
-    
     function handlePostImageUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = e => {
         currentPostImage = e.target.result;
         document.getElementById('postImagePreviewContainer').style.display = 'flex';
       };
       reader.readAsDataURL(file);
     }
-    
     function removePostImage() {
       currentPostImage = null;
       document.getElementById('postImageUpload').value = '';
       document.getElementById('postImagePreviewContainer').style.display = 'none';
     }
-    
     function addFamilyEvent() {
-      const eventName = prompt("Enter the name of the Family Event (e.g. Annual Gathering):");
-      if (eventName) {
-        const input = document.getElementById('postInput');
-        input.value = `📅 [Event: ${eventName}] ` + input.value;
-      }
+      const n = prompt('Enter family event name (e.g. Annual Gathering):');
+      if (n) document.getElementById('postInput').value = `📅 [Event: ${n}] ` + document.getElementById('postInput').value;
     }
-    
     function addMilestone() {
-      const milestone = prompt("What milestone are you celebrating? (e.g. Birth, Graduation, New House):");
-      if (milestone) {
-        const input = document.getElementById('postInput');
-        input.value = `🎉 Celebrating a Milestone: ${milestone}! ` + input.value;
-      }
+      const n = prompt('What milestone to celebrate? (e.g. Birth, Graduation):');
+      if (n) document.getElementById('postInput').value = `🎉 Milestone: ${n}! ` + document.getElementById('postInput').value;
     }
-
     function publishPost() {
-      const input = document.getElementById('postInput');
-      if (!input) return;
-      const content = input.value.trim();
+      const content = document.getElementById('postInput').value.trim();
       if (!content && !currentPostImage) return;
-      
       const newPost = {
         id: Date.now(),
+        timestamp: Date.now(),
         authorName: getFullName(authMember),
-        time: 'Just now',
-        avatarUrl: avaStyle || `background-color:var(--bg-hover)`,
-        content: content,
-        image: currentPostImage
+        avatarUrl: authMember.imageUrl || '',
+        avatarStyle: avaStyle,
+        initials: avaTxt,
+        content,
+        image: currentPostImage,
+        respects: 0,
+        hasRespected: false,
+        comments: []
       };
-      
       feedPosts.unshift(newPost);
       localStorage.setItem('vansh_feed_v2', JSON.stringify(feedPosts));
-      
-      input.value = '';
+      document.getElementById('postInput').value = '';
       removePostImage();
       renderFeed();
-      
-      const toast = document.querySelector('.toast-container');
-      if (toast) {
-        toast.querySelector('.toast-title').innerText = "Royal Announcement Published";
-        toast.querySelector('.toast-msg').innerText = "Your network has been notified.";
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
-      }
-    }
-    // ----------------------
-
-    // Production Data Center Handlers
-    function exportVanshData() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(familyMembers, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "vansh_production_family.json");
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-      alert("Family tree dataset exported successfully! Save this file as your secure backup. If you are setting up a fresh device or deploying the code to GitHub, you can import this JSON file back using the 'Import Backup' button to restore all your production data.");
+      showToast('Published', 'Your announcement has been shared!', 'ok');
     }
 
-    function importVanshData(event) {
-      const file = event.target.files[0];
+    // ── Stories modals ──
+    let currentStoryImage = null;
+    function openAddStoryModal() { document.getElementById('addStoryModal').style.display = 'flex'; }
+    function handleStoryImageUpload(e) {
+      const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = ev => {
+        currentStoryImage = ev.target.result;
+        const prev = document.getElementById('storyImagePreview');
+        prev.style.backgroundImage = `url('${currentStoryImage}')`;
+        prev.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+    function removeStoryImage() { currentStoryImage = null; document.getElementById('storyImagePreview').style.display = 'none'; }
+    function closeAddStoryModal() { document.getElementById('addStoryModal').style.display = 'none'; document.getElementById('newStoryTitle').value = ''; removeStoryImage(); }
+    function submitNewStory() {
+      const name = document.getElementById('newStoryTitle').value.trim();
+      if (!name) { alert('Please enter a story title.'); return; }
+      let img = currentStoryImage || 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&q=80';
+      mockStories.unshift({ id: Date.now(), name, img });
+      localStorage.setItem('vansh_stories_v1', JSON.stringify(mockStories));
+      renderStories();
+      closeAddStoryModal();
+    }
+    function viewStory(name, img) {
+      document.getElementById('storyViewerName').textContent = name;
+      document.getElementById('storyViewerImage').style.backgroundImage = `url('${img}')`;
+      document.getElementById('storyViewer').style.display = 'flex';
+    }
+    function closeStory() { document.getElementById('storyViewer').style.display = 'none'; }
+
+    // ── Data center ──
+    function exportVanshData() {
+      const a = document.createElement('a');
+      a.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(familyMembers, null, 2)));
+      a.setAttribute('download', 'vansh_family_backup.json');
+      document.body.appendChild(a); a.click(); a.remove();
+      showToast('Exported', 'Family tree JSON downloaded successfully.', 'ok');
+    }
+    function importVanshData(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
         try {
-          const imported = JSON.parse(e.target.result);
-          if (Array.isArray(imported) && imported.length > 0 && imported[0].id) {
-            saveFamilyData(imported);
-            alert('Family tree backup loaded successfully! Reloading the page...');
-            window.location.reload();
-          } else {
-            alert('Invalid backup file format. Please upload a valid Vansh JSON backup.');
-          }
-        } catch(err) {
-          alert('Error parsing JSON backup file.');
-        }
+          const data = JSON.parse(ev.target.result);
+          if (Array.isArray(data) && data.length && data[0].id) {
+            saveFamilyData(data);
+            showToast('Imported', 'Backup loaded! Reloading...', 'ok');
+            setTimeout(() => window.location.reload(), 1500);
+          } else { alert('Invalid backup file.'); }
+        } catch(err) { alert('Error reading JSON file.'); }
       };
       reader.readAsText(file);
     }
+
+    function showToast(title, msg, type) {
+      const t = document.querySelector('.toast-container');
+      if (!t) return;
+      t.querySelector('.toast-title').textContent = title;
+      t.querySelector('.toast-msg').textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3200);
+    }
   </script>
-
-  <!-- Story Viewer Modal -->
-  <div id="storyViewer" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:9999; flex-direction:column; align-items:center; justify-content:center;">
-    <button onclick="closeStory()" style="position:absolute; top:20px; right:20px; background:none; border:none; color:#fff; font-size:40px; cursor:pointer;">&times;</button>
-    <div style="width:100%; max-width:500px; position: relative;">
-      <div style="position: absolute; top: 16px; left: 16px; color:#fff; font-size:18px; font-weight:600; text-shadow: 0 2px 4px rgba(0,0,0,0.5); z-index: 10;">${document.getElementById('storyViewerName')?.innerText || 'Story'}</div>
-      <div id="storyViewerName" style="display:none;"></div>
-      <div style="width:100%; aspect-ratio: 9/16; border-radius:16px; background-size:cover; background-position:center; box-shadow:0 10px 40px rgba(0,0,0,0.5);" id="storyViewerImage"></div>
-    </div>
-  </div>
-
-  <!-- Add Story Modal -->
-  <div id="addStoryModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9998; flex-direction:column; align-items:center; justify-content:center;">
-    <div style="background:#fff; width:90%; max-width:400px; border-radius:12px; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,0.3); position:relative;">
-      <h3 style="margin-top:0; margin-bottom:16px; font-family:'Inter', sans-serif; color:#050505;">Create Story</h3>
-      <input type="text" id="newStoryTitle" placeholder="Enter story text or title..." style="width:100%; padding:12px; border:1px solid #e0e0e0; border-radius:8px; font-family:'Inter', sans-serif; margin-bottom:12px; outline:none; font-size:14px;">
-      
-      <div style="margin-bottom:20px;">
-        <input type="file" id="storyImageUpload" accept="image/*" style="display:none;" onchange="handleStoryImageUpload(event)">
-        <div id="storyImagePreview" style="display:none; width:100%; height:120px; border-radius:8px; background-size:cover; background-position:center; margin-bottom:8px; position:relative; border: 1px solid #e0e0e0;">
-           <button onclick="removeStoryImage()" style="position:absolute; top:4px; right:4px; background:rgba(0,0,0,0.5); color:#fff; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px;">&times;</button>
-        </div>
-        <button onclick="document.getElementById('storyImageUpload').click()" style="width:100%; padding:12px; border:1px dashed #c0c0c0; border-radius:8px; background:#fafafa; color:#65676b; font-family:'Inter', sans-serif; cursor:pointer; font-weight:600; display:flex; align-items:center; justify-content:center; gap:8px;">
-          <span style="font-size:18px;">📸</span> Upload Picture
-        </button>
-      </div>
-
-      <div style="display:flex; justify-content:flex-end; gap:12px;">
-        <button onclick="closeAddStoryModal()" style="padding:10px 20px; background:#f0f2f5; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-family:'Inter', sans-serif;">Cancel</button>
-        <button onclick="submitNewStory()" style="padding:10px 20px; background:#1877f2; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-family:'Inter', sans-serif;">Share to Story</button>
-      </div>
-    </div>
-  </div>
 </body>
 </html>

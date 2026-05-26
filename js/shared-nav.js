@@ -126,50 +126,45 @@ function initNav(pageName) {
     }
 
     topbar.innerHTML = `
-      <div class="topbar-left" style="display: flex; align-items: center; gap: 24px; flex: 1;">
-        <div style="display: flex; align-items: center; gap: 16px; white-space: nowrap;">
-          <button class="topbar-hamburger" onclick="toggleSidebar()">${NAV_ICONS.hamburger}</button>
-          <div class="topbar-breadcrumb">Vansh / <b>${title}</b></div>
-        </div>
-        
-        <div style="display: flex; gap: 12px; align-items: center;">
-          <button class="btn" style="flex-shrink: 0; background: var(--gold); border: 1px solid var(--gold); color: #fff; font-family: 'Cinzel', serif; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 8px; padding: 6px 12px; box-shadow: 0 4px 12px var(--gold-glow); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 16px var(--gold-glow)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px var(--gold-glow)';" onclick="openInviteExternalModal()">
-            <span style="margin-right: 6px; font-size: 14px;">💌</span> Invite Family
+      <div class="topbar-left" style="display:flex; align-items:center; gap:20px; flex:1; min-width:0;">
+        <button class="topbar-hamburger" onclick="toggleSidebar()">${NAV_ICONS.hamburger}</button>
+        <div class="topbar-breadcrumb">Vansh / <b>${title}</b></div>
+
+        <div style="display:flex; gap:8px; align-items:center; flex-shrink:0;">
+          <button onclick="openInviteExternalModal()" title="Invite Family" style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:linear-gradient(135deg,var(--royal-red-dark),#AB2330);color:#fff;border:none;border-radius:10px;font-family:'Cinzel',serif;font-weight:700;font-size:11px;letter-spacing:0.5px;cursor:pointer;transition:all 0.25s;box-shadow:0 3px 10px rgba(107,21,34,0.25);" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 18px rgba(107,21,34,0.35)'" onmouseout="this.style.transform='';this.style.boxShadow='0 3px 10px rgba(107,21,34,0.25)'">
+            💌 Invite
           </button>
-          <button class="btn" style="flex-shrink: 0; background: #FAF7F2; border: 1px solid rgba(168,138,103,0.3); color: #9A7B4F; font-family: 'Cinzel', serif; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 8px; padding: 6px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(168,138,103,0.15)'; this.style.borderColor='rgba(168,138,103,0.6)'; this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.03)'; this.style.borderColor='rgba(168,138,103,0.3)'; this.style.transform='translateY(0)'" onclick="window.location.href='matchmaking.html'">
-            <span style="margin-right: 6px; font-size: 14px;">👑</span> Request Alliance
+          <button onclick="window.location.href='matchmaking.html'" title="Request Alliance" style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--bg-elevated);color:var(--text-secondary);border:1px solid var(--border);border-radius:10px;font-family:'Cinzel',serif;font-weight:700;font-size:11px;letter-spacing:0.5px;cursor:pointer;transition:all 0.25s;" onmouseover="this.style.background='rgba(107,21,34,0.05)';this.style.borderColor='rgba(107,21,34,0.25)';this.style.color='var(--royal-red-dark)'" onmouseout="this.style.background='var(--bg-elevated)';this.style.borderColor='var(--border)';this.style.color='var(--text-secondary)'">
+            👑 Alliance
           </button>
-          <button class="btn" style="flex-shrink: 0; background: #FAF7F2; border: 1px solid rgba(168,138,103,0.3); color: #9A7B4F; font-family: 'Cinzel', serif; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 8px; padding: 6px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(168,138,103,0.15)'; this.style.borderColor='rgba(168,138,103,0.6)'; this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.03)'; this.style.borderColor='rgba(168,138,103,0.3)'; this.style.transform='translateY(0)'" onclick="window.location.href='trust.html'">
-            <span style="margin-right: 6px; font-size: 14px;">🏛️</span> View Estate
-          </button>
-          <button class="btn" style="flex-shrink: 0; background: #FAF7F2; border: 1px solid rgba(168,138,103,0.3); color: #9A7B4F; font-family: 'Cinzel', serif; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 8px; padding: 6px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(168,138,103,0.15)'; this.style.borderColor='rgba(168,138,103,0.6)'; this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.03)'; this.style.borderColor='rgba(168,138,103,0.3)'; this.style.transform='translateY(0)'" onclick="window.location.href='events.html'">
-            <span style="margin-right: 6px; font-size: 14px;">💍</span> RSVP Events
+          <button onclick="window.location.href='trust.html'" title="View Estate" style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--bg-elevated);color:var(--text-secondary);border:1px solid var(--border);border-radius:10px;font-family:'Cinzel',serif;font-weight:700;font-size:11px;letter-spacing:0.5px;cursor:pointer;transition:all 0.25s;" onmouseover="this.style.background='rgba(107,21,34,0.05)';this.style.borderColor='rgba(107,21,34,0.25)';this.style.color='var(--royal-red-dark)'" onmouseout="this.style.background='var(--bg-elevated)';this.style.borderColor='var(--border)';this.style.color='var(--text-secondary)'">
+            🏛️ Estate
           </button>
         </div>
       </div>
       
-      <div class="topbar-right" style="position: relative; display: flex; align-items: center; gap: 20px; flex-shrink: 0;">
-        <div class="universal-search-container" style="position: relative; max-width: 280px; width: 100%; margin: 0;">
-          <input type="text" id="universalSearchInput" placeholder="Search by Name..." style="width: 100%; padding: 8px 16px 8px 36px; border-radius: 20px; border: 1px solid var(--border-light); background: var(--bg-elevated); font-size: 12px; outline: none; transition: all 0.2s;">
-          <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--text-muted); pointer-events: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-          <div id="universalSearchResults" style="position: absolute; top: calc(100% + 8px); left: 0; width: 320px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 10px 30px rgba(0,0,0,0.12); max-height: 380px; overflow-y: auto; display: none; z-index: 200;"></div>
+      <div class="topbar-right" style="position:relative; display:flex; align-items:center; gap:16px; flex-shrink:0;">
+        <div class="universal-search-container" style="position:relative; width:240px;">
+          <input type="text" id="universalSearchInput" placeholder="Search family members..." style="width:100%; padding:9px 16px 9px 38px; border-radius:12px; border:1.5px solid var(--border); background:var(--bg-elevated); font-size:13px; outline:none; transition:all 0.25s; font-family:inherit; color:var(--text);" onfocus="this.style.borderColor='var(--royal-red)'; this.style.background='#fff'" onblur="this.style.borderColor='var(--border)'; this.style.background='var(--bg-elevated)'">
+          <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text-muted);pointer-events:none;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <div id="universalSearchResults" style="position:absolute;top:calc(100% + 6px);left:0;width:340px;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;box-shadow:0 16px 40px rgba(107,21,34,0.12);max-height:400px;overflow-y:auto;display:none;z-index:200;"></div>
         </div>
         
-        <div style="position: relative; cursor: pointer; display: flex; align-items: center;" onclick="document.getElementById('notifDropdown').classList.toggle('active')">
-          <div style="width: 24px; height: 24px; color: var(--text-secondary);">${bellIcon}</div>
+        <div style="position:relative;cursor:pointer;display:flex;align-items:center;" onclick="document.getElementById('notifDropdown').classList.toggle('active')">
+          <div style="width:22px;height:22px;color:var(--text-secondary);">${bellIcon}</div>
           ${bellBadge}
         </div>
         
         <div id="notifDropdown" class="notif-dropdown">
-          <div style="padding: 16px; border-bottom: 1px solid var(--border-light); font-weight: 700; font-family: 'Cinzel', serif; display: flex; justify-content: space-between;">
-            Requests
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border-light);font-weight:700;font-family:'Cinzel',serif;font-size:14px;color:var(--text);">
+            Relationship Requests
           </div>
           ${invitesHtml}
         </div>
         
-        <div style="display: flex; align-items: center; gap: 12px; padding-left: 20px; border-left: 1px solid var(--border-light);">
-          <div class="topbar-dot" style="background: var(--royal-red); box-shadow: 0 0 8px var(--royal-red-glow);"></div>
-          <span class="topbar-status">Network Active</span>
+        <div style="display:flex;align-items:center;gap:8px;padding-left:16px;border-left:1px solid var(--border-light);">
+          <div class="topbar-dot" style="background:var(--royal-red);box-shadow:0 0 8px var(--royal-red-glow);"></div>
+          <span class="topbar-status">Active</span>
         </div>
       </div>
     `;
