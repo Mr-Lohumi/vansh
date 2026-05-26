@@ -241,38 +241,38 @@ async function processCloudInvite(invite, action) {
   const rel = invite.relationType;
   
   if (rel === 'papa' || rel === 'mummy' || rel === 'parent') {
-    toUser.gender = (rel === 'papa') ? 'M' : 'F';
-    if (!fromUser.parents) fromUser.parents = [];
-    if (!fromUser.parents.includes(toUser.id)) fromUser.parents.push(toUser.id);
-  } else if (rel === 'beta' || rel === 'beti' || rel === 'child') {
-    toUser.gender = (rel === 'beta') ? 'M' : 'F';
+    fromUser.gender = (rel === 'papa') ? 'M' : 'F';
     if (!toUser.parents) toUser.parents = [];
     if (!toUser.parents.includes(fromUser.id)) toUser.parents.push(fromUser.id);
+  } else if (rel === 'beta' || rel === 'beti' || rel === 'child') {
+    fromUser.gender = (rel === 'beta') ? 'M' : 'F';
+    if (!fromUser.parents) fromUser.parents = [];
+    if (!fromUser.parents.includes(toUser.id)) fromUser.parents.push(toUser.id);
   } else if (rel === 'bhai' || rel === 'behen' || rel === 'brother' || rel === 'sister') {
-    toUser.gender = (rel === 'bhai' || rel === 'brother') ? 'M' : 'F';
+    fromUser.gender = (rel === 'bhai' || rel === 'brother') ? 'M' : 'F';
     linkSiblings(fromUser, toUser);
   } else if (rel === 'pati' || rel === 'patni' || rel === 'spouse') {
-    toUser.gender = (rel === 'pati') ? 'M' : 'F';
+    fromUser.gender = (rel === 'pati') ? 'M' : 'F';
     fromUser.spouse = toUser.id;
     toUser.spouse = fromUser.id;
   } else if (rel === 'dada' || rel === 'dadi') {
-    toUser.gender = (rel === 'dada') ? 'M' : 'F';
-    let papa = ensureParent(fromUser.id, 'M', 'Father');
+    fromUser.gender = (rel === 'dada') ? 'M' : 'F';
+    let papa = ensureParent(toUser.id, 'M', 'Father');
     if (!papa.parents) papa.parents = [];
-    if (!papa.parents.includes(toUser.id)) papa.parents.push(toUser.id);
+    if (!papa.parents.includes(fromUser.id)) papa.parents.push(fromUser.id);
   } else if (rel === 'nana' || rel === 'nani') {
-    toUser.gender = (rel === 'nana') ? 'M' : 'F';
-    let mummy = ensureParent(fromUser.id, 'F', 'Mother');
+    fromUser.gender = (rel === 'nana') ? 'M' : 'F';
+    let mummy = ensureParent(toUser.id, 'F', 'Mother');
     if (!mummy.parents) mummy.parents = [];
-    if (!mummy.parents.includes(toUser.id)) mummy.parents.push(toUser.id);
+    if (!mummy.parents.includes(fromUser.id)) mummy.parents.push(fromUser.id);
   } else if (rel === 'chacha' || rel === 'bua') {
-    toUser.gender = (rel === 'chacha') ? 'M' : 'F';
-    let papa = ensureParent(fromUser.id, 'M', 'Father');
-    linkSiblings(papa, toUser);
+    fromUser.gender = (rel === 'chacha') ? 'M' : 'F';
+    let papa = ensureParent(toUser.id, 'M', 'Father');
+    linkSiblings(papa, fromUser);
   } else if (rel === 'mama' || rel === 'masi') {
-    toUser.gender = (rel === 'mama') ? 'M' : 'F';
-    let mummy = ensureParent(fromUser.id, 'F', 'Mother');
-    linkSiblings(mummy, toUser);
+    fromUser.gender = (rel === 'mama') ? 'M' : 'F';
+    let mummy = ensureParent(toUser.id, 'F', 'Mother');
+    linkSiblings(mummy, fromUser);
   }
   
   saveFamilyData(familyMembers);
