@@ -76,7 +76,7 @@ async function initNav(pageName) {
 
     sidebar.innerHTML = `
       <div class="sidebar-brand">
-        <div class="logo">Vansh<span>.</span></div>
+        <div class="logo">Vansh</div>
         <div class="sub">Family Dynasty</div>
       </div>
       <nav class="sidebar-nav">
