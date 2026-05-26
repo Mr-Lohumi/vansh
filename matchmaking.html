@@ -204,14 +204,32 @@
             <select id="matchForSelect" class="form-select"></select>
           </div>
           <div class="form-group">
-            <label class="form-label">Min Age</label>
-            <input type="number" id="minAge" class="form-input" value="18">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Max Age</label>
+            <label class="form-label">Age Max</label>
             <input type="number" id="maxAge" class="form-input" value="35">
           </div>
-          <button class="btn btn-royal" style="padding: 12px 24px; height:42px" onclick="runEngine()">Find Alliances</button>
+          <div class="form-group">
+            <label class="form-label">Gotra</label>
+            <select id="gotraFilter" class="form-select">
+              <option value="">Any Gotra</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <select id="locationFilter" class="form-select">
+              <option value="">Any Location</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Education</label>
+            <input type="text" id="eduFilter" class="form-input" placeholder="e.g. MBA">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Occupation</label>
+            <input type="text" id="occFilter" class="form-input" placeholder="e.g. Tech">
+          </div>
+          <div class="form-group" style="flex: 1 1 100%;">
+            <button class="btn btn-royal" style="padding: 12px 24px; height:42px" onclick="runEngine()">Find Alliances</button>
+          </div>
         </div>
         
         <div class="section-header anim anim-delay-2" id="resultsTitle" style="color:var(--gold); border-bottom-color:rgba(212,175,55,0.2)">Potential Alliances</div>
@@ -238,6 +256,14 @@
       const loggedInId = getAuthData().userId;
       if(singles.find(s=>s.id===loggedInId)) select.value = loggedInId;
       else if (singles.length > 0) select.value = singles[0].id;
+      
+      const allGotras = [...new Set(familyMembers.map(m => m.gotra).filter(g => g))].sort();
+      const gotraSelect = document.getElementById('gotraFilter');
+      allGotras.forEach(g => gotraSelect.innerHTML += `<option value="${g}">${g}</option>`);
+
+      const allLocations = [...new Set(familyMembers.map(m => m.location || m.nativePlace).filter(l => l))].sort();
+      const locSelect = document.getElementById('locationFilter');
+      allLocations.forEach(l => locSelect.innerHTML += `<option value="${l}">${l}</option>`);
     }
     
     function runEngine() {
@@ -251,21 +277,31 @@
         return;
       }
       
-      const minAge = parseInt(document.getElementById('minAge').value) || 18;
       const maxAge = parseInt(document.getElementById('maxAge').value) || 100;
+      const gotraF = document.getElementById('gotraFilter').value;
+      const locF = document.getElementById('locationFilter').value;
+      const eduF = document.getElementById('eduFilter').value.toLowerCase();
+      const occF = document.getElementById('occFilter').value.toLowerCase();
+      
       const oppositeGender = target.gender === 'M' ? 'F' : 'M';
       
       document.getElementById('resultsTitle').innerHTML = `Verified Alliances for: <span style="color:var(--royal-red)">${getFullName(target)}</span>`;
       
       let html = '';
       
-      // Use only live network for matches
       const searchPool = [...familyMembers];
       
       searchPool.forEach(candidate => {
         if(candidate.id === target.id) return;
         if(candidate.gender !== oppositeGender) return;
-        if(candidate.age < minAge || candidate.age > maxAge) return;
+        if(candidate.age > maxAge) return;
+        
+        if(gotraF && candidate.gotra !== gotraF) return;
+        const cLoc = candidate.location || candidate.nativePlace;
+        if(locF && cLoc !== locF) return;
+        if(eduF && (!candidate.education || !candidate.education.toLowerCase().includes(eduF))) return;
+        if(occF && (!candidate.occupation || !candidate.occupation.toLowerCase().includes(occF))) return;
+        
         const isConflict = candidate.gotra === target.gotra;
         const barClass = isConflict ? 'bad' : 'ok';
         
