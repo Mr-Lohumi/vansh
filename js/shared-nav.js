@@ -111,10 +111,11 @@ function initNav(pageName) {
       invites.forEach(inv => {
         const fromM = getMemberById(inv.fromUserId);
         const name = fromM ? getFullName(fromM) : 'Someone';
+        const relCap = inv.relationType.charAt(0).toUpperCase() + inv.relationType.slice(1);
         invitesHtml += `
           <div style="padding: 16px; border-bottom: 1px solid var(--border-light);">
             <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Relationship Request</div>
-            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">${name} wants to add you as their ${inv.relationType}.</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">${name} wants to add you as their <strong>${relCap}</strong>.</div>
             <div style="display: flex; gap: 8px;">
               <button class="btn btn-gold btn-sm" style="flex:1" onclick="acceptInvite('${inv.id}'); window.location.reload();">Accept</button>
               <button class="btn btn-outline btn-sm" style="flex:1" onclick="rejectInvite('${inv.id}'); window.location.reload();">Reject</button>
@@ -222,8 +223,15 @@ function initNav(pageName) {
       if (results.length === 0) {
         searchResults.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:13px">No members found</div>';
       } else {
+        const authData = getAuthData();
+        const currentUserId = authData ? authData.userId : null;
+        
         searchResults.innerHTML = results.map(m => {
           const ava = m.imageUrl ? `background-image:url('${m.imageUrl}')` : getAvatarStyle(m);
+          const addBtn = (m.id !== currentUserId) 
+            ? `<button class="btn btn-outline btn-sm" style="margin-left:auto; font-size:10px; padding:4px 8px; border-color:var(--gold); color:var(--gold);" onclick="event.preventDefault(); openAddRelativeModal('${m.id}', '${getFullName(m)}')">Add Relative</button>` 
+            : `<span style="margin-left:auto; font-size:10px; color:var(--text-muted);">You</span>`;
+            
           return `
             <a href="profile.html?id=${m.id}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border-light);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='transparent'">
               <div style="width:36px;height:36px;border-radius:50%;background-size:cover;background-position:center;${ava};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--gold);flex-shrink:0">${m.imageUrl ? '' : getInitials(m)}</div>
@@ -231,6 +239,7 @@ function initNav(pageName) {
                 <div style="font-size:14px;font-weight:600;color:var(--text);font-family:'Cinzel',serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${getFullName(m)} ${m.verified ? '<span class="text-gold">✓</span>' : ''}</div>
                 <div style="font-size:11px;color:var(--text-secondary)">@${m.username || 'user'}</div>
               </div>
+              ${addBtn}
             </a>
           `;
         }).join('');
@@ -255,3 +264,86 @@ function toggleSidebar(force) {
   sidebar.classList.toggle('open', shouldOpen);
   overlay?.classList.toggle('active', shouldOpen);
 }
+
+// Global Relative Request Modal Logic
+function ensureAddRelativeModal() {
+  if (document.getElementById('addRelativeModal')) return;
+  const modalHtml = `
+  <div class="modal-overlay" id="addRelativeModal">
+    <div class="modal-box" style="max-width: 400px; padding: 24px;">
+      <div class="modal-header" style="margin-bottom: 16px; padding: 0 0 16px 0; border-bottom: 1px solid var(--border-light); background: none;">
+        <div class="modal-title" style="font-size: 18px; color: var(--text);">Send Request</div>
+        <button class="modal-close" style="color: var(--text-muted);" onclick="closeAddRelativeModal()">×</button>
+      </div>
+      <div style="margin-bottom: 16px; font-size: 14px; color: var(--text-secondary);">
+        How are you related to <strong id="relativeTargetName"></strong>?
+      </div>
+      <input type="hidden" id="relativeTargetId">
+      <select id="relativeTypeSelect" class="form-select" style="margin-bottom: 24px;">
+        <option value="">Select Relationship</option>
+        <option value="papa">Papa (Father)</option>
+        <option value="mummy">Mummy (Mother)</option>
+        <option value="bhai">Bhai (Brother)</option>
+        <option value="behen">Behen (Sister)</option>
+        <option value="pati">Pati (Husband)</option>
+        <option value="patni">Patni (Wife)</option>
+        <option value="beta">Beta (Son)</option>
+        <option value="beti">Beti (Daughter)</option>
+        <option value="dada">Dada (Paternal Grandfather)</option>
+        <option value="dadi">Dadi (Paternal Grandmother)</option>
+        <option value="nana">Nana (Maternal Grandfather)</option>
+        <option value="nani">Nani (Maternal Grandmother)</option>
+        <option value="chacha">Chacha (Paternal Uncle)</option>
+        <option value="bua">Bua (Paternal Aunt)</option>
+        <option value="mama">Mama (Maternal Uncle)</option>
+        <option value="masi">Masi (Maternal Aunt)</option>
+      </select>
+      <div style="display:flex; justify-content:flex-end; gap:12px;">
+        <button class="btn btn-outline" onclick="closeAddRelativeModal()">Cancel</button>
+        <button class="btn btn-gold" onclick="submitRelativeRequest()">Send Request</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+window.openAddRelativeModal = function(id, name) {
+  ensureAddRelativeModal();
+  document.getElementById('relativeTargetId').value = id;
+  document.getElementById('relativeTargetName').innerText = name;
+  document.getElementById('relativeTypeSelect').value = '';
+  
+  // Close the search results UI
+  const searchResults = document.getElementById('universalSearchResults');
+  if (searchResults) searchResults.style.display = 'none';
+  
+  document.getElementById('addRelativeModal').classList.add('active');
+};
+
+window.closeAddRelativeModal = function() {
+  const modal = document.getElementById('addRelativeModal');
+  if (modal) modal.classList.remove('active');
+};
+
+window.submitRelativeRequest = function() {
+  const authData = getAuthData();
+  if (!authData || !authData.userId) return;
+  
+  const toUserId = document.getElementById('relativeTargetId').value;
+  const relType = document.getElementById('relativeTypeSelect').value;
+  
+  if (!relType) {
+    alert("Please select a relationship.");
+    return;
+  }
+  
+  const res = sendInvite(authData.userId, toUserId, relType);
+  if (res.success) {
+    if (typeof showToast === 'function') showToast('Request Sent', 'Your request has been successfully sent.', 'ok');
+    else alert('Request sent successfully.');
+  } else {
+    if (typeof showToast === 'function') showToast('Error', res.message, 'error');
+    else alert(res.message);
+  }
+  closeAddRelativeModal();
+};
