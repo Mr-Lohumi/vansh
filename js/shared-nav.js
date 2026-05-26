@@ -201,6 +201,11 @@ async function initNav(pageName) {
     }
   }
 
+  // Trigger sync of accepted outbound invites
+  if (typeof syncOutboundInvites === 'function') {
+    syncOutboundInvites();
+  }
+
   if (!document.getElementById('sidebarOverlay')) {
     const overlay = document.createElement('div');
     overlay.id = 'sidebarOverlay';

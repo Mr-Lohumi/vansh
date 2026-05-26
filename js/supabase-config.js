@@ -141,6 +141,30 @@ async function fetchCloudInvites(userId) {
   }
 }
 
+async function fetchOutboundAcceptedInvites(userId) {
+  if (!window.supabaseClient) return [];
+  try {
+    const { data, error } = await window.supabaseClient
+      .from('vansh_invites')
+      .select('*')
+      .eq('from_user_id', userId)
+      .eq('status', 'accepted');
+      
+    if (error) return [];
+    
+    return (data || []).map(r => ({
+      id: r.id,
+      fromUserId: r.from_user_id,
+      toUserId: r.to_user_id,
+      relationType: r.relation_type,
+      status: r.status,
+      timestamp: r.created_at
+    }));
+  } catch (err) {
+    return [];
+  }
+}
+
 async function updateCloudInviteStatus(inviteId, status) {
   if (!window.supabaseClient) return false;
   try {

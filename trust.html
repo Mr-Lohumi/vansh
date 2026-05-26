@@ -31,11 +31,12 @@
   </style>
 </head>
 <body style="display: none;">
+  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=10"></script>
-  <script src="js/shared-auth.js?v=10"></script>
-  <script src="js/shared-data.js?v=10"></script>
-  <script src="js/shared-nav.js?v=10"></script>
+  <script src="js/supabase-config.js?v=11"></script>
+  <script src="js/shared-auth.js?v=11"></script>
+  <script src="js/shared-data.js?v=11"></script>
+  <script src="js/shared-nav.js?v=11"></script>
   <script>
     if (!localStorage.getItem('rootd_auth')) {
       window.location.href = 'login.html';
@@ -131,12 +132,6 @@
     .modal-close { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
     .modal-close:hover { color: var(--text); }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=10"></script>
-  <script src="js/shared-auth.js?v=10"></script>
-  <script src="js/shared-data.js?v=10"></script>
-  <script src="js/shared-nav.js?v=10"></script>
-
   <script>
     if (!requireAuth()) throw '';
     initNav('trust');

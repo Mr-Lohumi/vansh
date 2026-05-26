@@ -272,6 +272,43 @@ async function processCloudInvite(invite, action) {
   
   return true;
 }
+
+// Check and apply any accepted invites sent by the current user
+async function syncOutboundInvites() {
+  const auth = getAuthData();
+  if (!auth) return;
+  if (typeof fetchOutboundAcceptedInvites === 'function') {
+    const invites = await fetchOutboundAcceptedInvites(auth.userId);
+    let processed = [];
+    try { processed = JSON.parse(localStorage.getItem('vansh_processed_outbound') || '[]'); } catch(e) {}
+    
+    let changed = false;
+    for (const inv of invites) {
+      if (processed.includes(inv.id)) continue;
+      
+      // We momentarily disable updateCloudInviteStatus so we don't overwrite the cloud status
+      const origUpdate = window.updateCloudInviteStatus;
+      window.updateCloudInviteStatus = async () => true;
+      
+      const success = await processCloudInvite(inv, 'accepted');
+      
+      window.updateCloudInviteStatus = origUpdate;
+      
+      if (success) {
+        processed.push(inv.id);
+        changed = true;
+      }
+    }
+    
+    if (changed) {
+      localStorage.setItem('vansh_processed_outbound', JSON.stringify(processed));
+      // Refresh UI depending on the page
+      if (typeof renderTree === 'function') renderTree();
+      else window.location.reload();
+    }
+  }
+}
+
 // ----------------------------------
 
 function getAvatarStyle(m) {
