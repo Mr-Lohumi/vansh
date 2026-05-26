@@ -97,18 +97,20 @@ img { max-width: 100%; display: block; }
 
 /* ── APP LAYOUT ── */
 .app-layout { display: flex; min-height: 100vh; }
-.main-area { flex: 1; min-width: 0; display: flex; flex-direction: column; margin-left: var(--sidebar-w); }
+.main-area { flex: 1; min-width: 0; display: flex; flex-direction: column; margin-left: calc(var(--sidebar-w) + 16px); }
 .page-content { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 32px 40px 80px; }
 
-/* ── SIDEBAR ── */
+/* ── SIDEBAR (Premium Floating Glass) ── */
 .sidebar {
-  width: var(--sidebar-w); height: 100vh; position: fixed; top: 0; left: 0;
-  background: linear-gradient(135deg, #64121a, #AB2330); border-right: 1px solid rgba(212, 175, 55, 0.3);
+  width: var(--sidebar-w); height: calc(100vh - 32px); position: fixed; top: 16px; left: 16px;
+  background: linear-gradient(145deg, rgba(88, 24, 37, 0.95), rgba(44, 18, 22, 0.95));
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px;
   display: flex; flex-direction: column; z-index: 40;
-  transition: transform .3s; box-shadow: 2px 0 20px rgba(0,0,0,0.15);
+  transition: transform .3s; box-shadow: 0 20px 50px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.1);
 }
 .sidebar-brand {
-  padding: 32px 24px 24px; border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 32px 24px 24px; border-bottom: 1px solid rgba(255,255,255,0.05);
   background: transparent;
 }
 .sidebar-brand .logo { font-size: 28px; font-weight: 700; font-family: 'Cinzel', serif; letter-spacing: 2px; color: #fff; }
@@ -118,16 +120,16 @@ img { max-width: 100%; display: block; }
 .nav-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.5); padding: 0 16px 12px; }
 .nav-item {
   display: flex; align-items: center; gap: 14px; padding: 12px 16px;
-  border-radius: var(--radius-sm); font-size: 14px; font-weight: 500;
-  color: rgba(255,255,255,0.85); cursor: pointer; transition: all .2s;
+  border-radius: 12px; font-size: 14px; font-weight: 500;
+  color: rgba(255,255,255,0.75); cursor: pointer; transition: all .2s;
   text-decoration: none; margin-bottom: 4px;
 }
-.nav-item:hover { background: rgba(255,255,255,0.1); color: #fff; text-decoration: none; }
-.nav-item.active { background: rgba(255,255,255,0.15); color: #fff; font-weight: 600; }
+.nav-item:hover { background: rgba(255,255,255,0.06); color: #fff; text-decoration: none; }
+.nav-item.active { background: rgba(212, 175, 55, 0.15); color: var(--gold); font-weight: 600; box-shadow: inset 0 0 0 1px rgba(212,175,55,0.2); }
 .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; opacity: .7; }
 .nav-item.active svg { opacity: 1; color: var(--gold); }
 
-.sidebar-footer { padding: 20px 24px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.15); }
+.sidebar-footer { padding: 20px 24px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.2); border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
 .sidebar-footer .sf-info { flex: 1; min-width: 0; }
 .sidebar-footer .sf-name { font-size: 13px; font-weight: 600; color: #fff; }
 .sidebar-footer .sf-role { font-size: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-top:2px; }
