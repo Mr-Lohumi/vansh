@@ -223,10 +223,10 @@ function drawTreeConnections(containerId, canvasId, visibleMembers) {
   canvas.width = containerWrapper.scrollWidth;
   canvas.height = containerWrapper.scrollHeight;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.strokeStyle = '#d4af37'; // Hardcoded hex for canvas compatibility
-  ctx.lineWidth = 3;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
+  
+  const R = 14; // Corner rounding radius
   
   function getCenter(id, anchor='top') {
     const el = document.getElementById(`pc-${id}`);
@@ -247,28 +247,83 @@ function drawTreeConnections(containerId, canvasId, visibleMembers) {
     return { x: (c1.x + c2.x)/2, y: c1.y };
   }
   
+  // Draw a multi-point path with rounded corners using arcTo
+  function tracePath(points) {
+    if (points.length < 2) return;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length - 1; i++) {
+      ctx.arcTo(points[i].x, points[i].y, points[i+1].x, points[i+1].y, R);
+    }
+    ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+    ctx.stroke();
+  }
+  
+  // Draw a gradient-filled circle at a point
+  function drawDot(x, y, radius, isMain) {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, radius);
+    if (isMain) {
+      g.addColorStop(0, '#ffe89c');
+      g.addColorStop(0.5, '#d4af37');
+      g.addColorStop(1, '#8B2232');
+    } else {
+      g.addColorStop(0, '#ffe89c');
+      g.addColorStop(0.65, '#d4af37');
+      g.addColorStop(1, '#b8942a');
+    }
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  
   function drawForkLine(startX, startY, targets) {
     if(!targets || targets.length === 0) return;
     const targetCenters = targets.map(id => getCenter(id, 'top')).filter(c=>c);
     if(targetCenters.length === 0) return;
     
     const midY = startY + 50; // The horizontal spine
-    ctx.beginPath();
-    ctx.moveTo(startX, startY);
-    ctx.lineTo(startX, midY); // Draw down to spine
+    const bottomY = Math.max(...targetCenters.map(t => t.y));
     
-    const minX = Math.min(startX, ...targetCenters.map(t=>t.x));
-    const maxX = Math.max(startX, ...targetCenters.map(t=>t.x));
+    // Build the individual paths (parent → spine → child) for each child
+    const paths = targetCenters.map(t => [
+      { x: startX, y: startY },
+      { x: startX, y: midY },
+      { x: t.x, y: midY },
+      { x: t.x, y: t.y }
+    ]);
     
-    // Draw horizontal spine connecting the parent drop and all children
-    ctx.moveTo(minX, midY);
-    ctx.lineTo(maxX, midY); 
+    // --- PASS 1: OUTER GLOW (wide, very subtle) ---
+    ctx.strokeStyle = 'rgba(212, 175, 55, 0.07)';
+    ctx.lineWidth = 18;
+    paths.forEach(p => tracePath(p));
     
+    // --- PASS 2: INNER GLOW (medium, slightly brighter) ---
+    ctx.strokeStyle = 'rgba(212, 175, 55, 0.12)';
+    ctx.lineWidth = 10;
+    paths.forEach(p => tracePath(p));
+    
+    // --- PASS 3: MAIN GRADIENT LINE ---
+    const grad = ctx.createLinearGradient(0, startY, 0, bottomY);
+    grad.addColorStop(0, '#d4af37');
+    grad.addColorStop(0.45, '#8B2232');
+    grad.addColorStop(0.55, '#8B2232');
+    grad.addColorStop(1, '#d4af37');
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 3;
+    paths.forEach(p => tracePath(p));
+    
+    // --- PASS 4: JUNCTION DOTS ---
+    // Main fork point (where parent line meets the spine)
+    drawDot(startX, midY, 5, true);
+    
+    // Child junction dots (where spine meets each child drop)
     targetCenters.forEach(t => {
-      ctx.moveTo(t.x, midY);
-      ctx.lineTo(t.x, t.y); // Draw down to child
+      // Only draw if child is not directly below parent (avoid overlapping the main dot)
+      if (Math.abs(t.x - startX) > 10) {
+        drawDot(t.x, midY, 4, false);
+      }
     });
-    ctx.stroke();
   }
   
   // Group children by their parents
