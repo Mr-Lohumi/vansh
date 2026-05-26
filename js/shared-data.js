@@ -191,10 +191,8 @@ function getAvatarStyle(m) {
 }
 
 function addFamilyMember(memberData) {
-  const maxId = familyMembers.reduce((max, m) => {
-    const n = parseInt(m.id.replace('P', ''));
-    return n > max ? n : max;
-  }, 0);
+  // Generate globally unique ID
+  const nextId = 'P' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
   
   let gen = 2;
   if (memberData.parents && memberData.parents.length > 0) {
@@ -207,7 +205,7 @@ function addFamilyMember(memberData) {
   }
 
   const newMember = {
-    id: 'P' + (maxId + 1),
+    id: nextId,
     verified: false,
     gen: gen,
     ...memberData
@@ -220,6 +218,9 @@ function addFamilyMember(memberData) {
 
   familyMembers.push(newMember);
   saveFamilyData(familyMembers);
+  
+  if (typeof syncMemberToCloud === 'function') syncMemberToCloud(newMember);
+  
   return newMember;
 }
 
@@ -228,6 +229,8 @@ function updateFamilyMember(id, updates) {
   if (idx !== -1) {
     familyMembers[idx] = { ...familyMembers[idx], ...updates };
     saveFamilyData(familyMembers);
+    
+    if (typeof syncMemberToCloud === 'function') syncMemberToCloud(familyMembers[idx]);
   }
 }
 

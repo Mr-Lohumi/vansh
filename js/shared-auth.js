@@ -112,13 +112,8 @@ function registerUser(firstName, lastName, email, password, details = {}) {
     return { success: false, message: "A member with this email is already registered." };
   }
 
-  // Calculate next ID defensively
-  const maxId = members.reduce((max, m) => {
-    if (!m.id) return max;
-    const n = parseInt(m.id.toString().replace('P', ''));
-    return !isNaN(n) && n > max ? n : max;
-  }, 0);
-  const nextId = 'P' + (maxId + 1);
+  // Generate globally unique ID to prevent cross-device collisions in Supabase
+  const nextId = 'P' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
 
   // Generate unique username
   const baseUsername = (firstName.trim() + "_" + lastName.trim()).toLowerCase().replace(/[^a-z0-9_]/g, '');
