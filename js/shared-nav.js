@@ -214,7 +214,14 @@ function initNav(pageName) {
         return;
       }
       
-      const results = familyMembers.filter(m => {
+      const allUsers = [...familyMembers];
+      if (typeof MATCHMAKING_DB !== 'undefined') {
+        MATCHMAKING_DB.forEach(dbm => {
+          if (!allUsers.find(u => u.id === dbm.id)) allUsers.push(dbm);
+        });
+      }
+      
+      const results = allUsers.filter(m => {
         const full = getFullName(m).toLowerCase();
         const un = (m.username || '').toLowerCase();
         return full.includes(query) || un.includes(query);
