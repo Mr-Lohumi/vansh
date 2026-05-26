@@ -58,7 +58,11 @@ let familyMembers = loadFamilyData();
 
 function getMemberById(id) { return familyMembers.find(m => m.id === id) || null; }
 function getFullName(m) { return `${m.firstName} ${m.lastName}`; }
-function getInitials(m) { return (m.firstName[0] || '') + (m.lastName[0] || ''); }
+function getInitials(m) {
+  const f = m.firstName || '';
+  const l = m.lastName || '';
+  return (f[0] || '') + (l[0] || '');
+}
 function getCasteLine(m) { return `${m.caste}${m.subCaste ? ' (' + m.subCaste + ')' : ''}`; }
 function getVerifiedMembers() { return familyMembers.filter(m => m.verified); }
 

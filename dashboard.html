@@ -328,7 +328,7 @@
       const feedHtml = feedPosts.map((post, idx) => `
         <div class="post-card anim" style="animation-delay: ${0.06 * (idx + 1)}s">
           <div class="post-header">
-            <div class="post-avatar" style="${post.avatarUrl.includes('url') ? post.avatarUrl : `background-image:url('${post.avatarUrl}')`}"></div>
+            <div class="post-avatar" style="${post.avatarUrl && post.avatarUrl.includes('url') ? post.avatarUrl : (post.avatarUrl ? `background-image:url('${post.avatarUrl}')` : '')}"></div>
             <div>
               <div class="post-author">${post.authorName}</div>
               <div class="post-time">${post.time} · Public</div>
