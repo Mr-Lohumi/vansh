@@ -206,60 +206,87 @@ function initNav(pageName) {
   const searchResults = document.getElementById('universalSearchResults');
   if (searchInput && searchResults) {
     searchInput.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase().trim();
+      // Strip @ prefix so searching "@pankaj" matches username "pankaj"
+      let raw = e.target.value.trim();
+      const query = raw.startsWith('@') ? raw.slice(1).toLowerCase() : raw.toLowerCase();
+
       if (!query) {
         searchResults.style.display = 'none';
         return;
       }
-      
+
+      // Always reload from localStorage to catch newly registered users
+      let pool = [];
+      try {
+        const saved = localStorage.getItem('vansh_family_data_v2');
+        if (saved) pool = JSON.parse(saved);
+        if (!Array.isArray(pool)) pool = [];
+      } catch(err) { pool = []; }
+
       let results = [];
       try {
-        results = familyMembers.filter(m => {
+        results = pool.filter(m => {
           if (!m) return false;
-          const fn = m.firstName || '';
-          const ln = m.lastName || '';
-          const full = (fn + ' ' + ln).toLowerCase();
-          const un = (m.username || '').toLowerCase();
-          return full.includes(query) || un.includes(query);
-        }).slice(0, 10);
+          const full = ((m.firstName || '') + ' ' + (m.lastName || '')).toLowerCase();
+          const un   = (m.username || '').toLowerCase();
+          const email = (m.email || '').toLowerCase();
+          return full.includes(query) || un.includes(query) || email.includes(query);
+        }).slice(0, 12);
       } catch (err) {
-        console.error("Search error:", err);
+        console.error('Search error:', err);
       }
-      
+
       if (results.length === 0) {
-        const extraHint = (familyMembers.length <= 1) ? '<br><small style="color:var(--royal-red);display:block;margin-top:8px;">(Note: You are the only user in this database. Register a second account in a new tab to find them here.)</small>' : '';
+        const hint = pool.length <= 1
+          ? '<div style="color:var(--royal-red);font-size:11px;margin-top:8px;line-height:1.5;">You are the only registered user. Sign up on a second device or incognito tab to test live member search.</div>'
+          : '';
         searchResults.innerHTML = `
-          <div style="padding:16px;text-align:center;">
-            <div style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">No members found in network.${extraHint}</div>
-            <button class="btn btn-outline btn-sm" onclick="openInviteExternalModal()" style="font-size:11px; padding:6px 12px; border-color:var(--gold); color:var(--gold);">💌 Invite to Vansh</button>
-          </div>
-        `;
+          <div style="padding:20px;text-align:center;">
+            <div style="font-size:28px;margin-bottom:10px;">🔍</div>
+            <div style="color:var(--text-muted);font-size:13px;margin-bottom:4px;font-weight:600;">No members found</div>
+            ${hint}
+            <button onclick="openInviteExternalModal()" style="margin-top:14px;padding:7px 16px;background:linear-gradient(135deg,var(--royal-red-dark),#AB2330);color:#fff;border:none;border-radius:8px;font-family:'Cinzel',serif;font-weight:700;font-size:11px;cursor:pointer;">💌 Invite to Vansh</button>
+          </div>`;
       } else {
         const authData = getAuthData();
         const currentUserId = authData ? authData.userId : null;
-        
-        searchResults.innerHTML = results.map(m => {
-          const ava = m.imageUrl ? `background-image:url('${m.imageUrl}')` : getAvatarStyle(m);
-          const addBtn = (m.id !== currentUserId) 
-            ? `<button class="btn btn-outline btn-sm" style="margin-left:auto; font-size:10px; padding:4px 8px; border-color:var(--gold); color:var(--gold);" onclick="event.preventDefault(); openAddRelativeModal('${m.id}', '${getFullName(m)}')">Add Relative</button>` 
-            : `<span style="margin-left:auto; font-size:10px; color:var(--text-muted);">You</span>`;
-            
-          return `
-            <a href="profile.html?id=${m.id}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border-light);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='transparent'">
-              <div style="width:36px;height:36px;border-radius:50%;background-size:cover;background-position:center;${ava};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--gold);flex-shrink:0">${m.imageUrl ? '' : getInitials(m)}</div>
-              <div style="min-width:0">
-                <div style="font-size:14px;font-weight:600;color:var(--text);font-family:'Cinzel',serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${getFullName(m)} ${m.verified ? '<span class="text-gold">✓</span>' : ''}</div>
-                <div style="font-size:11px;color:var(--text-secondary)">@${m.username || 'user'}</div>
-              </div>
-              ${addBtn}
-            </a>
-          `;
+
+        // Header
+        let html = `<div style="padding:10px 16px 6px;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;border-bottom:1px solid var(--border-light);">
+          ${results.length} Member${results.length > 1 ? 's' : ''} Found
+        </div>`;
+
+        html += results.map(m => {
+          const ava = m.imageUrl
+            ? `background-image:url('${m.imageUrl}');background-size:cover;background-position:center;`
+            : getAvatarStyle(m);
+          const isMe = m.id === currentUserId;
+
+          const actionBtn = isMe
+            ? `<span style="padding:3px 10px;background:rgba(107,21,34,0.07);color:var(--royal-red);border-radius:20px;font-size:10px;font-weight:700;font-family:'Cinzel',serif;white-space:nowrap;">You</span>`
+            : `<button style="padding:5px 12px;background:linear-gradient(135deg,var(--royal-red-dark),#AB2330);color:#fff;border:none;border-radius:8px;font-family:'Cinzel',serif;font-weight:700;font-size:10px;cursor:pointer;white-space:nowrap;transition:all 0.2s;" onclick="event.preventDefault(); event.stopPropagation(); openAddRelativeModal('${m.id}', '${getFullName(m).replace(/'/g,"\\'")}')">+ Add Relative</button>`;
+
+          const verBadge = m.verified
+            ? `<span style="color:#059669;font-size:10px;font-weight:700;">✓ Verified</span>`
+            : `<span style="color:var(--text-muted);font-size:10px;">Unverified</span>`;
+
+          return `<a href="profile.html?id=${m.id}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border-light);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='transparent'">
+            <div style="width:40px;height:40px;border-radius:50%;border:2px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--royal-red);flex-shrink:0;${ava}">${m.imageUrl ? '' : getInitials(m)}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:13px;font-weight:700;color:var(--text);font-family:'Cinzel',serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${getFullName(m)}</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:1px;">@${m.username || 'user'} · ${verBadge}</div>
+              <div style="font-size:10px;color:var(--text-muted);margin-top:1px;">${m.caste || ''} ${m.gotra ? '• ' + m.gotra + ' Gotra' : ''}</div>
+            </div>
+            ${actionBtn}
+          </a>`;
         }).join('');
+
+        searchResults.innerHTML = html;
       }
       searchResults.style.display = 'block';
     });
-    
-    // Close search on outside click
+
+    // Close on outside click
     document.addEventListener('click', (e) => {
       if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
         searchResults.style.display = 'none';

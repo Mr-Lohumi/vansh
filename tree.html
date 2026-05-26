@@ -4,33 +4,94 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vansh (वंश) — Family Dynasty</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=6">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=8">
   <style>
+    /* ── TOOLBAR ── */
     .tree-toolbar {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 24px; background: var(--bg-elevated);
-      border: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; border-bottom: none;
+      padding: 20px 28px; background: var(--bg-card);
+      border: 1px solid var(--border); border-radius: 20px 20px 0 0;
+      border-bottom: none; gap: 16px; flex-wrap: wrap;
     }
-    .perspective-group { display: flex; align-items: center; gap: 12px; }
-    
+    .toolbar-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .perspective-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; white-space: nowrap; }
+
+    /* ── TREE WRAPPER ── */
     .tree-wrapper {
-      background: linear-gradient(135deg, #ffffff, #fdf6df); border: 1px solid var(--border);
-      border-radius: 0 0 var(--radius) var(--radius);
-      padding: 80px 40px; overflow-x: auto; position: relative;
-      min-height: 600px; text-align: center; box-shadow: inset 0 0 40px rgba(212,175,55,0.1);
+      background: linear-gradient(135deg, #fffdf5, #fdf8e8);
+      border: 1px solid var(--border); border-radius: 0 0 20px 20px;
+      padding: 60px 40px; overflow: auto; position: relative;
+      min-height: 620px; box-shadow: inset 0 0 60px rgba(212,175,55,0.08);
     }
     #treeCanvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 1; }
-    
-    .rel-panel { margin-top: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; display: none; box-shadow: var(--shadow-card); }
-    .rel-panel.active { display: block; animation: fadeUp 0.3s ease; }
-    .rel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 24px; }
-    
-    .form-row { display: flex; gap: 16px; margin-bottom: 16px; }
-    .form-row > div { flex: 1; }
+
+    /* ── PREMIUM MODAL ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; display: none; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: var(--bg-card); border-radius: 24px; width: 90%; max-width: 560px;
+      box-shadow: 0 24px 80px rgba(107,21,34,0.18), 0 0 0 1px rgba(212,175,55,0.1);
+      border: 1px solid var(--border); max-height: 92vh; overflow-y: auto;
+      animation: modal-in 0.35s cubic-bezier(.16,1,.3,1) both;
+    }
+    @keyframes modal-in { from { opacity:0; transform:scale(0.94) translateY(12px); } to { opacity:1; transform:none; } }
+    .modal-hd {
+      padding: 24px 28px 20px;
+      background: linear-gradient(135deg, var(--royal-red-dark) 0%, #AB2330 100%);
+      border-radius: 22px 22px 0 0; display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-hd-title { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: #fff; }
+    .modal-hd-sub { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 3px; }
+    .modal-close-btn { background: rgba(255,255,255,0.12); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; flex-shrink: 0; }
+    .modal-close-btn:hover { background: rgba(255,255,255,0.25); }
+    .modal-body { padding: 24px 28px; }
+
+    /* ── FORM ELEMENTS ── */
+    .form-section { margin-bottom: 20px; }
+    .form-section-title { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; color: var(--royal-red); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .form-section-title::after { content: ''; flex: 1; height: 1px; background: rgba(107,21,34,0.1); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 7px; }
+    .form-input, .form-select {
+      width: 100%; padding: 12px 14px; background: var(--bg-elevated);
+      border: 1.5px solid var(--border); border-radius: 10px;
+      color: var(--text); font-family: inherit; font-size: 14px;
+      transition: all 0.25s; appearance: none;
+    }
+    .form-input:focus, .form-select:focus { outline: none; border-color: var(--royal-red); background: #fff; box-shadow: 0 0 0 3px rgba(107,21,34,0.08); }
+    .form-input::placeholder { color: #BDB0A0; }
+
+    /* ── VERIFICATION TOGGLE ── */
+    .verify-toggle { display: flex; gap: 10px; margin-bottom: 24px; }
+    .verify-option {
+      flex: 1; padding: 14px 12px; border: 2px solid var(--border); border-radius: 12px;
+      cursor: pointer; text-align: center; transition: all 0.25s; background: var(--bg-elevated);
+    }
+    .verify-option.selected-verified { border-color: #059669; background: rgba(5,150,105,0.06); }
+    .verify-option.selected-unverified { border-color: var(--royal-red); background: rgba(107,21,34,0.06); }
+    .vo-icon { font-size: 24px; margin-bottom: 6px; }
+    .vo-label { font-size: 11px; font-weight: 700; font-family: 'Cinzel', serif; letter-spacing: 0.5px; }
+    .vo-sub { font-size: 10px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
+
+    /* ── MODAL FOOTER ── */
+    .modal-footer { padding: 16px 28px 24px; display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid var(--border-light); }
+    .btn-cancel { padding: 12px 24px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; transition: all 0.2s; }
+    .btn-cancel:hover { background: var(--bg-card); }
+    .btn-add { padding: 12px 28px; background: linear-gradient(135deg, var(--royal-red-dark), #AB2330); border: none; border-radius: 10px; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #fff; cursor: pointer; transition: all 0.25s; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+    .btn-add:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107,21,34,0.3); }
+
+    /* ── SUCCESS ANIMATION ── */
+    @keyframes successPop { 0%,100% { transform:scale(1); } 50% { transform:scale(1.06); } }
+    .success-pop { animation: successPop 0.4s ease; }
+
+    @media (max-width: 600px) { .form-row, .form-row-3 { grid-template-columns: 1fr; } .tree-toolbar { flex-direction: column; align-items: flex-start; } }
   </style>
 </head>
-<body style="display: none;">
+<body style="display:none;">
   <script>
     if (!localStorage.getItem('rootd_auth')) {
       window.location.href = 'login.html';
@@ -38,61 +99,223 @@
     }
     document.body.style.display = '';
   </script>
+
   <div class="app-layout">
     <aside class="sidebar" id="sidebar"></aside>
     <div class="main-area">
       <header class="topbar" id="topbar"></header>
       <div class="page-content">
-        
+
+        <!-- Toolbar -->
         <div class="tree-toolbar anim">
-          <div class="perspective-group">
-            <span class="text-xs font-bold text-muted uppercase tracking-widest" style="letter-spacing:1px">Perspective:</span>
-            <select class="form-select" id="perspectiveSelect" style="width:240px;padding:8px 12px;margin:0"></select>
+          <div class="toolbar-left">
+            <span class="perspective-label">👁 Perspective:</span>
+            <select class="form-select" id="perspectiveSelect" style="width:220px; padding:9px 12px; margin:0; font-size:13px;"></select>
           </div>
-          <button class="btn btn-gold" onclick="openAddModal()">+ Add Member</button>
+          <button onclick="openAddModal()" style="padding:10px 22px; background:linear-gradient(135deg, var(--royal-red-dark), #AB2330); color:#fff; border:none; border-radius:12px; font-family:'Cinzel',serif; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:all 0.25s; box-shadow:0 4px 14px rgba(107,21,34,0.25);" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 8px 24px rgba(107,21,34,0.35)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 14px rgba(107,21,34,0.25)'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            Add Member
+          </button>
         </div>
-        
+
+        <!-- Tree canvas -->
         <div class="tree-wrapper anim anim-delay-1" id="treeContainer">
           <canvas id="treeCanvas"></canvas>
           <div id="dynamicTreeNodes"></div>
         </div>
-        
+
       </div>
     </div>
   </div>
 
-  <!-- Add Member Modal -->
+  <!-- ═══════════════ ADD MEMBER MODAL ═══════════════ -->
   <div class="modal-overlay" id="addModalOverlay">
     <div class="modal-box">
-      <div class="modal-header">
-        <div class="modal-title">Register Member</div>
-        <button class="modal-close" onclick="closeAddModal()">✕</button>
+      <!-- Header -->
+      <div class="modal-hd">
+        <div>
+          <div class="modal-hd-title">Add Family Member</div>
+          <div class="modal-hd-sub">Register a new member to your dynasty</div>
+        </div>
+        <button class="modal-close-btn" onclick="closeAddModal()">×</button>
       </div>
-      <form id="addForm" class="modal-body">
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">First Name</label><input type="text" id="addFn" class="form-input" required></div>
-          <div class="form-group"><label class="form-label">Last Name</label><input type="text" id="addLn" class="form-input" required></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Gender</label>
-            <select id="addGen" class="form-select"><option value="M">Male</option><option value="F">Female</option></select>
+
+      <!-- Body -->
+      <div class="modal-body">
+
+        <!-- Section 1: Identity -->
+        <div class="form-section">
+          <div class="form-section-title">Identity</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name *</label>
+              <input type="text" id="addFn" class="form-input" placeholder="e.g. Ramesh" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name *</label>
+              <input type="text" id="addLn" class="form-input" placeholder="e.g. Sharma">
+            </div>
           </div>
-          <div class="form-group"><label class="form-label">Age</label><input type="number" id="addAge" class="form-input" required></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Date of Birth</label>
+              <input type="date" id="addDOB" class="form-input" max="" onchange="calcAddAge()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Age <span id="addAgeDisplay" style="color:var(--royal-red);font-weight:700;"></span></label>
+              <input type="number" id="addAge" class="form-input" placeholder="Years" min="0" max="120">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Gender</label>
+              <select id="addGen" class="form-select">
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Occupation</label>
+              <input type="text" id="addOccupation" class="form-input" placeholder="e.g. Farmer, Doctor">
+            </div>
+          </div>
         </div>
-        <div class="form-group"><label class="form-label">Gotra</label><input type="text" id="addGotra" class="form-input" required></div>
-        <div class="form-group">
-          <label class="form-label">Parent (Optional)</label>
-          <select id="addParent" class="form-select"><option value="">None</option></select>
+
+        <!-- Section 2: Dynasty -->
+        <div class="form-section">
+          <div class="form-section-title">Lineage Details</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Gotra *</label>
+              <select id="addGotra" class="form-select">
+                <option value="Kashyap">Kashyap</option>
+                <option value="Bharadwaj">Bharadwaj</option>
+                <option value="Vashistha">Vashistha</option>
+                <option value="Atri">Atri</option>
+                <option value="Garg">Garg</option>
+                <option value="Shandilya">Shandilya</option>
+                <option value="Gautam">Gautam</option>
+                <option value="Bhrigu">Bhrigu</option>
+                <option value="Parashar">Parashar</option>
+                <option value="Kaundinya">Kaundinya</option>
+                <option value="Vishwamitra">Vishwamitra</option>
+                <option value="Angirasa">Angirasa</option>
+                <option value="Agastya">Agastya</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Caste</label>
+              <select id="addCaste" class="form-select">
+                <option value="Brahmin">Brahmin</option>
+                <option value="Kshatriya">Kshatriya</option>
+                <option value="Vaishya">Vaishya</option>
+                <option value="Kayastha">Kayastha</option>
+                <option value="Rajput">Rajput</option>
+                <option value="Jat">Jat</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Native Place</label>
+            <input type="text" id="addNative" class="form-input" placeholder="e.g. Uttarakhand, Delhi">
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Spouse (Optional)</label>
-          <select id="addSpouse" class="form-select"><option value="">None</option></select>
+
+        <!-- Section 3: Relationship -->
+        <div class="form-section">
+          <div class="form-section-title">Family Connection</div>
+          <div class="form-group">
+            <label class="form-label">Relationship to You *</label>
+            <select id="addRelation" class="form-select" onchange="onRelationChange(this.value)">
+              <option value="">— Select Relation —</option>
+              <optgroup label="Direct Family">
+                <option value="papa">Papa (Father)</option>
+                <option value="mummy">Mummy (Mother)</option>
+                <option value="bhai">Bhai (Brother)</option>
+                <option value="behen">Behen (Sister)</option>
+                <option value="beta">Beta (Son)</option>
+                <option value="beti">Beti (Daughter)</option>
+                <option value="pati">Pati (Husband)</option>
+                <option value="patni">Patni (Wife)</option>
+              </optgroup>
+              <optgroup label="Grandparents">
+                <option value="dada">Dada (Paternal Grandfather)</option>
+                <option value="dadi">Dadi (Paternal Grandmother)</option>
+                <option value="nana">Nana (Maternal Grandfather)</option>
+                <option value="nani">Nani (Maternal Grandmother)</option>
+              </optgroup>
+              <optgroup label="Paternal Side">
+                <option value="chacha">Chacha (Paternal Uncle)</option>
+                <option value="chachi">Chachi (Paternal Aunt-in-law)</option>
+                <option value="bua">Bua (Paternal Aunt)</option>
+                <option value="fufa">Fufa (Bua's Husband)</option>
+                <option value="chachera_bhai">Chachera Bhai (Paternal Cousin Brother)</option>
+                <option value="chacheri_behen">Chacheri Behen (Paternal Cousin Sister)</option>
+              </optgroup>
+              <optgroup label="Maternal Side">
+                <option value="mama">Mama (Maternal Uncle)</option>
+                <option value="mami">Mami (Maternal Aunt-in-law)</option>
+                <option value="masi">Masi (Maternal Aunt)</option>
+                <option value="masad">Masad (Masi's Husband)</option>
+                <option value="mamere_bhai">Mamere Bhai (Maternal Cousin Brother)</option>
+                <option value="masere_behen">Masere Behen (Maternal Cousin Sister)</option>
+              </optgroup>
+              <optgroup label="In-Laws">
+                <option value="sasur">Sasur (Father-in-law)</option>
+                <option value="saas">Saas (Mother-in-law)</option>
+                <option value="devar">Devar (Husband's Brother)</option>
+                <option value="jethani">Jethani (Husband's Elder Brother's Wife)</option>
+                <option value="sala">Sala (Wife's Brother)</option>
+                <option value="sali">Sali (Wife's Sister)</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="form-row" id="parentSpouseRow">
+            <div class="form-group">
+              <label class="form-label">Parent / Connected To</label>
+              <select id="addParent" class="form-select">
+                <option value="">None</option>
+              </select>
+            </div>
+            <div class="form-group" id="spouseGroup">
+              <label class="form-label">Spouse (if applicable)</label>
+              <select id="addSpouse" class="form-select">
+                <option value="">None</option>
+              </select>
+            </div>
+          </div>
         </div>
-      </form>
+
+        <!-- Section 4: Verification Status -->
+        <div class="form-section">
+          <div class="form-section-title">Verification Status</div>
+          <div class="verify-toggle">
+            <div class="verify-option selected-verified" id="voVerified" onclick="selectVerification(true)">
+              <div class="vo-icon">✅</div>
+              <div class="vo-label" style="color:#059669;">Verified</div>
+              <div class="vo-sub">Member confirmed in the dynasty. Gold tick shown on profile.</div>
+            </div>
+            <div class="verify-option" id="voUnverified" onclick="selectVerification(false)">
+              <div class="vo-icon">🔴</div>
+              <div class="vo-label" style="color:var(--royal-red);">Unverified</div>
+              <div class="vo-sub">Added for tree reference. Needs identity confirmation later.</div>
+            </div>
+          </div>
+          <input type="hidden" id="addVerified" value="true">
+        </div>
+
+      </div>
+
+      <!-- Footer -->
       <div class="modal-footer">
-        <button class="btn btn-outline" onclick="closeAddModal()">Cancel</button>
-        <button class="btn btn-gold" onclick="submitAddMember()">Add Member</button>
+        <button class="btn-cancel" onclick="closeAddModal()">Cancel</button>
+        <button class="btn-add" onclick="submitAddMember()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          Add to Dynasty
+        </button>
       </div>
     </div>
   </div>
@@ -104,71 +327,155 @@
   <script>
     if (!requireAuth()) throw '';
     initNav('tree');
+
     const params = new URLSearchParams(location.search);
-    let currentPOV = params.get('id') || getAuthData()?.userId || 'P3';
-    
+    let currentPOV = params.get('id') || getAuthData()?.userId || familyMembers[0]?.id;
+
+    // Set DOB max to today
+    document.getElementById('addDOB').max = new Date().toISOString().split('T')[0];
+
     const pSelect = document.getElementById('perspectiveSelect');
-    
+
     function populateDropdowns() {
       pSelect.innerHTML = '';
       const parentSelect = document.getElementById('addParent');
       const spouseSelect = document.getElementById('addSpouse');
       parentSelect.innerHTML = '<option value="">None</option>';
       spouseSelect.innerHTML = '<option value="">None</option>';
-      
+
       familyMembers.forEach(m => {
-        pSelect.innerHTML += `<option value="${m.id}" ${m.id === currentPOV ? 'selected' : ''}>${getFullName(m)}</option>`;
-        parentSelect.innerHTML += `<option value="${m.id}">${getFullName(m)}</option>`;
-        if (!m.spouse) spouseSelect.innerHTML += `<option value="${m.id}">${getFullName(m)}</option>`;
+        const name = getFullName(m);
+        pSelect.innerHTML   += `<option value="${m.id}" ${m.id === currentPOV ? 'selected' : ''}>${name}</option>`;
+        parentSelect.innerHTML += `<option value="${m.id}">${name}</option>`;
+        if (!m.spouse) spouseSelect.innerHTML += `<option value="${m.id}">${name}</option>`;
       });
     }
     populateDropdowns();
-    
+
     pSelect.addEventListener('change', (e) => {
       currentPOV = e.target.value;
       renderTreeToContainer('dynamicTreeNodes', 'treeCanvas', currentPOV, 'handleNodeClick');
     });
-    
+
     function handleNodeClick(id) {
       currentPOV = id;
       pSelect.value = id;
       renderTreeToContainer('dynamicTreeNodes', 'treeCanvas', currentPOV, 'handleNodeClick');
     }
-    
+
     window.addEventListener('resize', () => {
       drawTreeConnections('dynamicTreeNodes', 'treeCanvas', getBloodlineNetwork(currentPOV));
     });
-    
-    // Initial Render
+
     renderTreeToContainer('dynamicTreeNodes', 'treeCanvas', currentPOV, 'handleNodeClick');
-    
-    function openAddModal() { document.getElementById('addModalOverlay').classList.add('active'); }
-    function closeAddModal() { document.getElementById('addModalOverlay').classList.remove('active'); document.getElementById('addForm').reset(); }
-    
+
+    // ── Modal open/close ──
+    function openAddModal() {
+      document.getElementById('addModalOverlay').classList.add('active');
+    }
+    function closeAddModal() {
+      document.getElementById('addModalOverlay').classList.remove('active');
+      document.getElementById('addFn').value = '';
+      document.getElementById('addLn').value = '';
+      document.getElementById('addDOB').value = '';
+      document.getElementById('addAge').value = '';
+      document.getElementById('addAgeDisplay').textContent = '';
+      document.getElementById('addOccupation').value = '';
+      document.getElementById('addNative').value = '';
+      document.getElementById('addRelation').value = '';
+      selectVerification(true);
+    }
+
+    // ── Auto-calculate age from DOB ──
+    function calcAddAge() {
+      const dob = document.getElementById('addDOB').value;
+      if (!dob) return;
+      const birth = new Date(dob);
+      const today = new Date();
+      let age = today.getFullYear() - birth.getFullYear();
+      const m = today.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+      age = Math.max(0, age);
+      document.getElementById('addAge').value = age;
+      document.getElementById('addAgeDisplay').textContent = '(' + age + ' yrs)';
+    }
+
+    // ── Relation change: auto-suggest parent slot ──
+    function onRelationChange(val) {
+      const auth = getAuthData();
+      const myId = auth ? auth.userId : null;
+
+      // For spouse-type relations, pre-select spouse slot
+      if (['pati', 'patni'].includes(val)) {
+        document.getElementById('addParent').value = '';
+        document.getElementById('addSpouse').value = myId || '';
+      } else if (['beta', 'beti'].includes(val)) {
+        document.getElementById('addParent').value = myId || '';
+      } else if (['papa', 'mummy', 'dada', 'dadi', 'nana', 'nani'].includes(val)) {
+        document.getElementById('addParent').value = '';
+      }
+    }
+
+    // ── Verification toggle ──
+    function selectVerification(isVerified) {
+      document.getElementById('addVerified').value = isVerified ? 'true' : 'false';
+      const vEl = document.getElementById('voVerified');
+      const uEl = document.getElementById('voUnverified');
+      if (isVerified) {
+        vEl.className = 'verify-option selected-verified';
+        uEl.className = 'verify-option';
+      } else {
+        vEl.className = 'verify-option';
+        uEl.className = 'verify-option selected-unverified';
+      }
+    }
+
+    // ── Submit add member ──
     function submitAddMember() {
-      const fn = document.getElementById('addFn').value;
-      const ln = document.getElementById('addLn').value;
-      if(!fn || !ln) return alert('Name required');
-      
-      const p = document.getElementById('addParent').value;
-      const s = document.getElementById('addSpouse').value;
-      
+      const fn       = document.getElementById('addFn').value.trim();
+      const ln       = document.getElementById('addLn').value.trim();
+      const relation = document.getElementById('addRelation').value;
+
+      if (!fn || !ln) { alert('First Name and Last Name are required.'); return; }
+      if (!relation)  { alert('Please select the relationship to you.'); return; }
+
+      const age      = parseInt(document.getElementById('addAge').value) || 0;
+      const dob      = document.getElementById('addDOB').value;
+      const gender   = document.getElementById('addGen').value;
+      const gotra    = document.getElementById('addGotra').value;
+      const caste    = document.getElementById('addCaste').value;
+      const native   = document.getElementById('addNative').value.trim();
+      const occ      = document.getElementById('addOccupation').value.trim();
+      const parent   = document.getElementById('addParent').value;
+      const spouse   = document.getElementById('addSpouse').value;
+      const verified = document.getElementById('addVerified').value === 'true';
+
       addFamilyMember({
-        firstName: fn, lastName: ln,
-        gender: document.getElementById('addGen').value,
-        age: parseInt(document.getElementById('addAge').value),
-        gotra: document.getElementById('addGotra').value,
-        caste: 'Brahmin', nativePlace: 'Delhi',
-        parents: p ? [p] : [],
-        spouse: s ? s : null,
-        imageUrl: `https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=80` // Mock image for testing new additions
+        firstName:   fn,
+        lastName:    ln,
+        gender:      gender,
+        age:         age,
+        dob:         dob,
+        gotra:       gotra,
+        caste:       caste,
+        nativePlace: native,
+        occupation:  occ || 'Family Member',
+        parents:     parent ? [parent] : [],
+        spouse:      spouse || null,
+        verified:    verified,
+        relation:    relation,
+        bio:         verified ? 'Dynasty member — verified.' : 'Dynasty member — awaiting verification.',
       });
-      
+
       closeAddModal();
-      showToast('Member Added', `${fn} ${ln} joined the network.`, 'ok');
-      
+
+      const verLabel = verified ? '✅ Verified' : '🔴 Unverified';
+      if (typeof showToast === 'function') {
+        showToast('Member Added', `${fn} ${ln} joined as ${relation} · ${verLabel}`, verified ? 'ok' : 'warn');
+      }
+
       populateDropdowns();
-      renderDynamicTree();
+      renderTreeToContainer('dynamicTreeNodes', 'treeCanvas', currentPOV, 'handleNodeClick');
     }
   </script>
 </body>
