@@ -270,18 +270,6 @@
 
       // Prepare Timeline / Feed
       let feedHTML = '';
-      if (canEdit) {
-        feedHTML += `
-          <div class="card mb-4">
-            <div style="padding:16px;">
-              <textarea id="postContent" placeholder="Share a royal dispatch or family update..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-family:inherit;min-height:80px;resize:vertical;"></textarea>
-              <div style="display:flex;justify-content:flex-end;margin-top:12px;">
-                <button class="btn btn-gold" onclick="submitPost()">Publish Dispatch</button>
-              </div>
-            </div>
-          </div>
-        `;
-      }
       
       feedHTML += `<div id="postsContainer" style="display:flex;flex-direction:column;gap:16px;">Loading dispatches...</div>`;
       
