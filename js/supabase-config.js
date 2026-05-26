@@ -177,3 +177,35 @@ async function updateCloudInviteStatus(inviteId, status) {
     return false;
   }
 }
+
+async function getCloudMemberById(userId) {
+  if (!window.supabaseClient || !userId) return null;
+  try {
+    const { data, error } = await window.supabaseClient
+      .from('vansh_members')
+      .select('*')
+      .eq('id', userId)
+      .single();
+      
+    if (error || !data) return null;
+    
+    return {
+      id:          data.id,
+      username:    data.username,
+      firstName:   data.first_name,
+      lastName:    data.last_name,
+      email:       data.email,
+      gender:      data.gender,
+      age:         data.age,
+      dob:         data.dob,
+      caste:       data.caste,
+      gotra:       data.gotra,
+      nativePlace: data.native_place,
+      occupation:  data.occupation,
+      verified:    data.verified,
+      imageUrl:    data.image_url,
+    };
+  } catch(err) {
+    return null;
+  }
+}

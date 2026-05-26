@@ -185,17 +185,23 @@ async function processCloudInvite(invite, action) {
   
   // We need to fetch the 'from' user from Supabase if they aren't in local storage yet!
   let fromUser = getMemberById(invite.fromUserId);
-  if (!fromUser && typeof searchMembersCloud === 'function') {
-    // Attempt to sync them locally
-    const cloudMembers = await searchMembersCloud(''); 
-    fromUser = cloudMembers.find(m => m.id === invite.fromUserId);
+  if (!fromUser && typeof getCloudMemberById === 'function') {
+    fromUser = await getCloudMemberById(invite.fromUserId);
     if (fromUser) {
       familyMembers.push(fromUser);
       saveFamilyData(familyMembers);
     }
   }
   
-  const toUser = getMemberById(invite.toUserId);
+  let toUser = getMemberById(invite.toUserId);
+  if (!toUser && typeof getCloudMemberById === 'function') {
+    toUser = await getCloudMemberById(invite.toUserId);
+    if (toUser) {
+      familyMembers.push(toUser);
+      saveFamilyData(familyMembers);
+    }
+  }
+  
   if (!fromUser || !toUser) return false;
   
   function ensureParent(userId, gender, label) {
