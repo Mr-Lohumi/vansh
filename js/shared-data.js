@@ -36,6 +36,13 @@ function saveFamilyData(members) {
 
 let familyMembers = loadFamilyData();
 
+// One-time sync of all local members to cloud (runs in background)
+setTimeout(() => {
+  if (typeof syncMemberToCloud === 'function' && familyMembers.length > 0) {
+    familyMembers.forEach(m => syncMemberToCloud(m));
+  }
+}, 2000);
+
 function getMemberById(id) { return familyMembers.find(m => m.id === id) || null; }
 function getFullName(m) { return `${m.firstName} ${m.lastName}`; }
 function getInitials(m) {
