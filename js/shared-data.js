@@ -174,9 +174,6 @@ function acceptInvite(inviteId) {
   return true;
 }
 
-  return true;
-}
-
 // Process an invite fetched from Supabase Cloud
 async function processCloudInvite(invite, action) {
   if (typeof updateCloudInviteStatus === 'function') {
