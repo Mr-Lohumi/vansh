@@ -209,21 +209,18 @@
           </div>
           <div class="form-group">
             <label class="form-label">Gotra</label>
-            <select id="gotraFilter" class="form-select">
-              <option value="">Any Gotra</option>
-            </select>
+            <input type="text" id="gotraFilter" class="form-input" list="gotraList" placeholder="Search Gotra...">
+            <datalist id="gotraList"></datalist>
           </div>
           <div class="form-group">
             <label class="form-label">Location</label>
-            <select id="locationFilter" class="form-select">
-              <option value="">Any Location</option>
-            </select>
+            <input type="text" id="locationFilter" class="form-input" list="locList" placeholder="Search City...">
+            <datalist id="locList"></datalist>
           </div>
           <div class="form-group">
             <label class="form-label">Occupation</label>
-            <select id="occFilter" class="form-select">
-              <option value="">Any Occupation</option>
-            </select>
+            <input type="text" id="occFilter" class="form-input" list="occList" placeholder="Search Profession...">
+            <datalist id="occList"></datalist>
           </div>
           <div class="form-group" style="flex: 1 1 100%;">
             <button class="btn btn-royal" style="padding: 12px 24px; height:42px" onclick="runEngine()">Find Alliances</button>
@@ -257,17 +254,21 @@
       
       const globalPool = [...familyMembers];
       
-      const allGotras = [...new Set(globalPool.map(m => m.gotra).filter(g => g))].sort();
-      const gotraSelect = document.getElementById('gotraFilter');
-      allGotras.forEach(g => gotraSelect.innerHTML += `<option value="${g}">${g}</option>`);
+      const baseGotras = ["Agrawal","Bansal","Bharadwaj","Garg","Gautam","Goyal","Jindal","Kashyap","Sandilya","Singhal","Vatsa"];
+      const baseLocations = ["Ahmedabad","Bangalore","Chennai","Delhi","Hyderabad","Jaipur","Kolkata","Mumbai","Pune","Surat"];
+      const baseOccs = ["Architect","Business","CA","Designer","Doctor","Engineer","Govt Service","IT Professional","Lawyer","Teacher"];
+      
+      const allGotras = [...new Set([...baseGotras, ...globalPool.map(m => m.gotra).filter(g => g)])].sort();
+      const gotraList = document.getElementById('gotraList');
+      allGotras.forEach(g => gotraList.innerHTML += `<option value="${g}">`);
 
-      const allLocations = [...new Set(globalPool.map(m => m.location || m.nativePlace).filter(l => l))].sort();
-      const locSelect = document.getElementById('locationFilter');
-      allLocations.forEach(l => locSelect.innerHTML += `<option value="${l}">${l}</option>`);
+      const allLocations = [...new Set([...baseLocations, ...globalPool.map(m => m.location || m.nativePlace).filter(l => l)])].sort();
+      const locList = document.getElementById('locList');
+      allLocations.forEach(l => locList.innerHTML += `<option value="${l}">`);
 
-      const allOccs = [...new Set(globalPool.map(m => m.occupation).filter(o => o))].sort();
-      const occSelect = document.getElementById('occFilter');
-      allOccs.forEach(o => occSelect.innerHTML += `<option value="${o}">${o}</option>`);
+      const allOccs = [...new Set([...baseOccs, ...globalPool.map(m => m.occupation).filter(o => o)])].sort();
+      const occList = document.getElementById('occList');
+      allOccs.forEach(o => occList.innerHTML += `<option value="${o}">`);
     }
     
     function runEngine() {
@@ -282,9 +283,9 @@
       }
       
       const maxAge = parseInt(document.getElementById('maxAge').value) || 100;
-      const gotraF = document.getElementById('gotraFilter').value;
-      const locF = document.getElementById('locationFilter').value;
-      const occF = document.getElementById('occFilter').value;
+      const gotraF = document.getElementById('gotraFilter').value.toLowerCase();
+      const locF = document.getElementById('locationFilter').value.toLowerCase();
+      const occF = document.getElementById('occFilter').value.toLowerCase();
       
       const oppositeGender = target.gender === 'M' ? 'F' : 'M';
       
@@ -299,10 +300,12 @@
         if(candidate.gender !== oppositeGender) return;
         if(candidate.age > maxAge) return;
         
-        if(gotraF && candidate.gotra !== gotraF) return;
+        if(gotraF && (!candidate.gotra || !candidate.gotra.toLowerCase().includes(gotraF))) return;
+        
         const cLoc = candidate.location || candidate.nativePlace;
-        if(locF && cLoc !== locF) return;
-        if(occF && candidate.occupation !== occF) return;
+        if(locF && (!cLoc || !cLoc.toLowerCase().includes(locF))) return;
+        
+        if(occF && (!candidate.occupation || !candidate.occupation.toLowerCase().includes(occF))) return;
         
         const isConflict = candidate.gotra === target.gotra;
         const barClass = isConflict ? 'bad' : 'ok';
