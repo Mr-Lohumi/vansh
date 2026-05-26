@@ -154,7 +154,18 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Gotra</label>
-              <input type="text" id="regGotra" class="form-input" placeholder="e.g. Kashyap" value="Kashyap">
+              <select id="regGotra" class="form-select">
+                <option value="Kashyap">Kashyap</option>
+                <option value="Bharadwaj">Bharadwaj</option>
+                <option value="Vashistha">Vashistha</option>
+                <option value="Garg">Garg</option>
+                <option value="Shandilya">Shandilya</option>
+                <option value="Kaundinya">Kaundinya</option>
+                <option value="Atri">Atri</option>
+                <option value="Gautam">Gautam</option>
+                <option value="Bhrigu">Bhrigu</option>
+                <option value="Parashar">Parashar</option>
+              </select>
             </div>
             <div class="form-group">
               <label class="form-label">Caste / Tribe</label>
@@ -355,7 +366,7 @@
 
       if (res.success) {
         alert(res.message);
-        window.location.reload();
+        window.location.href = 'dashboard.html';
       } else {
         alert(res.message);
       }

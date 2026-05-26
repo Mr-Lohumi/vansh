@@ -147,7 +147,7 @@ function registerUser(firstName, lastName, email, password, details = {}) {
     nativePlace: details.nativePlace || "",
     parents: [],
     spouse: null,
-    verified: false, // Pending Admin Approval
+    verified: true, // Auto-verified in local prototype
     gen: 2, // Default to Generation 2
     bio: "Lineage heir registered via production gateway.",
     education: details.education || "",
@@ -157,6 +157,7 @@ function registerUser(firstName, lastName, email, password, details = {}) {
   members.push(newMember);
   localStorage.setItem(DATABASE_KEY, JSON.stringify(members));
   
-  // Do NOT log them in immediately, they need approval
-  return { success: true, member: newMember, message: "Registration successful. Please wait for an Admin to approve your account." };
+  // Log them in immediately
+  login(newMember.id, newUsername);
+  return { success: true, member: newMember, message: "Registration successful. Welcome to Vansh!" };
 }
