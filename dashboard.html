@@ -224,35 +224,35 @@
             background-color: var(--bg-card); width: 100%; border-radius: var(--radius-lg); 
             border: 1px solid rgba(212, 175, 55, 0.5); 
             box-shadow: 0 8px 30px rgba(107, 21, 34, 0.1), 0 0 0 1px rgba(107, 21, 34, 0.05) inset; 
-            position: relative; overflow: hidden; padding-bottom: 16px;
+            position: relative; overflow: hidden; padding-bottom: 12px;
             font-family: 'Inter', sans-serif; transition: box-shadow 0.3s;
         }
         .wp-profile-card:hover { box-shadow: 0 12px 40px rgba(107, 21, 34, 0.15), 0 0 0 1px rgba(212, 175, 55, 0.2) inset; }
         .wp-cover-photo {
-            height: 80px; width: 100%;
+            height: 60px; width: 100%;
             background: linear-gradient(180deg, rgba(66, 10, 18, 0.4), var(--royal-red-dark)), url('images/royal_pattern.png');
             background-size: cover; background-position: center;
         }
         .wp-avatar-container {
-            margin-top: -40px; display: flex; justify-content: center; width: 100%;
+            margin-top: -32px; display: flex; justify-content: center; width: 100%;
             position: relative; z-index: 3;
         }
         .wp-avatar-img { 
-            width: 80px; height: 80px; border-radius: 50%; 
+            width: 64px; height: 64px; border-radius: 50%; 
             border: 3px solid var(--gold); box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.2); 
             background-color: var(--bg-elevated); 
         }
         
-        .wp-details-box { position: relative; z-index: 2; padding: 0 20px; margin-top: 12px; text-align: center; }
+        .wp-details-box { position: relative; z-index: 2; padding: 0 16px; margin-top: 8px; text-align: center; }
         
         .wp-status-card {
-            background: var(--bg-elevated); border-radius: var(--radius-sm); padding: 12px; margin: 12px 0;
+            background: var(--bg-elevated); border-radius: var(--radius-sm); padding: 8px; margin: 8px 0;
             border: 1px solid var(--border-light); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
-        .wp-info-list { text-align: left; margin-top: 12px; font-size: 12px; color: var(--text-secondary); }
-        .wp-info-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px dashed var(--border-light); }
+        .wp-info-list { text-align: left; margin-top: 8px; font-size: 11px; color: var(--text-secondary); }
+        .wp-info-item { display: flex; align-items: center; gap: 6px; padding: 4px 0; border-bottom: 1px dashed var(--border-light); }
         .wp-info-item:last-child { border-bottom: none; }
-        .wp-info-icon { width: 16px; text-align: center; font-size: 14px; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.05)); }
+        .wp-info-icon { width: 14px; text-align: center; font-size: 12px; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.05)); }
         .wp-info-value { font-weight: 500; color: var(--text); }
       </style>
 
@@ -260,22 +260,22 @@
         <div class="wp-cover-photo"></div>
         
         <div class="wp-avatar-container">
-          <div class="wp-avatar-img" style="${avaStyle}; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700; color:var(--royal-red); background-size: cover; background-position: center;">${avaTxt}</div>
+          <div class="wp-avatar-img" style="${avaStyle}; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700; color:var(--royal-red); background-size: cover; background-position: center;">${avaTxt}</div>
         </div>
         
         <div class="wp-details-box">
-          <h2 style="font-size:20px;font-weight:700;color:var(--text); margin-bottom: 2px; font-family: 'Cinzel', serif; letter-spacing: 1px;">${getFullName(authMember)}</h2>
-          <div style="font-size:12px; font-weight:400; color:var(--text-muted); margin-bottom:8px;">@${authMember.username || 'user'}</div>
+          <h2 style="font-size:16px;font-weight:700;color:var(--text); margin-bottom: 0px; font-family: 'Cinzel', serif; letter-spacing: 0.5px;">${getFullName(authMember)}</h2>
+          <div style="font-size:11px; font-weight:400; color:var(--text-muted); margin-bottom:4px;">@${authMember.username || 'user'}</div>
           
-          <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px; letter-spacing: 0.5px;">
+          <div style="font-size:11px; font-weight:500; color:var(--text-secondary); margin-bottom:8px;">
             ${getCasteLine(authMember)} <span style="color:var(--gold)">•</span> ${authMember.gotra} Gotra
           </div>
           
           <div class="wp-status-card">
-            <div style="font-size:14px; font-weight:600; color:var(--royal-red-dark); margin-bottom:4px; font-family: 'Cinzel', serif; letter-spacing: 0.5px;">
+            <div style="font-size:12px; font-weight:700; color:var(--royal-red-dark); margin-bottom:2px; font-family: 'Cinzel', serif; letter-spacing: 0.5px;">
               ${authMember.occupation || 'Network Member'}
             </div>
-            <div style="font-size:11px; color:var(--text-secondary); font-weight: 500; letter-spacing: 0.5px;">
+            <div style="font-size:11px; color:var(--text-secondary); font-weight: 500;">
               ${authMember.age} yrs <span style="color:var(--gold)">•</span> ${authMember.gender === 'M' ? 'Male' : 'Female'} <span style="color:var(--gold)">•</span> <span style="color:var(--royal-red); font-weight:700;">${authMember.spouse ? 'Married' : 'Single'}</span>
             </div>
           </div>
@@ -287,20 +287,20 @@
             ${authMember.diet ? `<div class="wp-info-item"><div class="wp-info-icon">🍽️</div><div class="wp-info-value">${authMember.diet}</div></div>` : ''}
           </div>
           
-          ${authMember.bio ? `<div style="margin-top: 12px; color: var(--gold); font-style: italic; font-family: 'Cinzel', serif; line-height: 1.4; font-size: 12px; text-align: center; padding: 12px; background: var(--bg-elevated); border: 1px solid var(--border-light); border-radius: var(--radius-sm);">"${authMember.bio}"</div>` : ''}
+          ${authMember.bio ? `<div style="margin-top: 8px; color: var(--gold); font-style: italic; font-family: 'Cinzel', serif; line-height: 1.3; font-size: 11px; text-align: center; padding: 8px; background: var(--bg-elevated); border: 1px solid var(--border-light); border-radius: var(--radius-sm);">"${authMember.bio}"</div>` : ''}
           
-          <div style="display:flex; justify-content:space-between; width:100%; border-top:1px solid var(--border-light); padding-top:16px; margin-top:16px">
+          <div style="display:flex; justify-content:space-between; width:100%; border-top:1px solid var(--border-light); padding-top:12px; margin-top:12px">
             <div style="text-align:center; flex:1; border-right:1px solid var(--border-light)">
-              <div style="font-size:16px; font-weight:700; color:var(--text); font-family: 'Cinzel', serif; display: flex; align-items: center; justify-content: center; gap: 4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> ${myNetworkCount}</div>
-              <div style="font-size:10px; color:var(--text-secondary); font-weight:600; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;">Network</div>
+              <div style="font-size:14px; font-weight:700; color:var(--text); font-family: 'Cinzel', serif; display: flex; align-items: center; justify-content: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> ${myNetworkCount}</div>
+              <div style="font-size:9px; color:var(--text-secondary); font-weight:700; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;">Network</div>
             </div>
             <div style="text-align:center; flex:1">
-              <div style="font-size:16px; font-weight:700; color:var(--text); font-family: 'Cinzel', serif; display: flex; align-items: center; justify-content: center; gap: 4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> ${verifiedPercentFinal}%</div>
-              <div style="font-size:10px; color:var(--text-secondary); font-weight:600; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;">Verified</div>
+              <div style="font-size:14px; font-weight:700; color:var(--text); font-family: 'Cinzel', serif; display: flex; align-items: center; justify-content: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> ${verifiedPercentFinal}%</div>
+              <div style="font-size:9px; color:var(--text-secondary); font-weight:700; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;">Verified</div>
             </div>
           </div>
           
-          <a href="profile.html?id=${authMember.id}" class="btn btn-royal" style="width:100%; margin-top:16px; border-radius: 30px; justify-content: center; padding: 10px 16px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit Profile</a>
+          <a href="profile.html?id=${authMember.id}" class="btn btn-royal" style="width:100%; margin-top:12px; border-radius: 30px; justify-content: center; padding: 8px 16px; font-size: 13px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit Profile</a>
         </div>
       </div>
     `;
