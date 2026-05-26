@@ -527,29 +527,7 @@
       const n = prompt('What milestone to celebrate? (e.g. Birth, Graduation):');
       if (n) document.getElementById('postInput').value = `🎉 Milestone: ${n}! ` + document.getElementById('postInput').value;
     }
-    function publishPost() {
-      const content = document.getElementById('postInput').value.trim();
-      if (!content && !currentPostImage) return;
-      const newPost = {
-        id: Date.now(),
-        timestamp: Date.now(),
-        authorName: getFullName(authMember),
-        avatarUrl: authMember.imageUrl || '',
-        avatarStyle: avaStyle,
-        initials: avaTxt,
-        content,
-        image: currentPostImage,
-        respects: 0,
-        hasRespected: false,
-        comments: []
-      };
-      feedPosts.unshift(newPost);
-      localStorage.setItem('vansh_feed_v2', JSON.stringify(feedPosts));
-      document.getElementById('postInput').value = '';
-      removePostImage();
-      renderFeed();
-      showToast('Published', 'Your announcement has been shared!', 'ok');
-    }
+
 
     // ── Stories modals ──
     let currentStoryImage = null;
