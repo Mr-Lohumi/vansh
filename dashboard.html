@@ -116,15 +116,7 @@
     .pw-edit-btn { width: 100%; padding: 11px; background: linear-gradient(135deg, var(--royal-red-dark), #AB2330); color: #fff; border: none; border-radius: 12px; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
     .pw-edit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107,21,34,0.3); }
 
-    /* ── QUICK LINKS WIDGET ── */
-    .quick-widget { background: linear-gradient(145deg, #1A1A1A, #2A1114); border: 1px solid rgba(212,175,55,0.2); border-radius: 20px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; overflow: hidden; }
-    .quick-widget::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
-    .qw-title { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px; }
-    .quick-links { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .ql-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px 10px; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: all 0.3s; text-decoration: none; backdrop-filter: blur(5px); }
-    .ql-btn:hover { background: rgba(212,175,55,0.1); border-color: rgba(212,175,55,0.3); transform: translateY(-4px); box-shadow: 0 8px 20px rgba(212,175,55,0.15); }
-    .ql-icon { font-size: 26px; }
-    .ql-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+
   </style>
 </head>
 <body style="display:none;">
@@ -202,16 +194,7 @@
             <!-- Profile Widget -->
             <div class="profile-widget" id="userWidget"></div>
 
-            <!-- Quick Links -->
-            <div class="quick-widget">
-              <div class="qw-title">⚡ Quick Access</div>
-              <div class="quick-links">
-                <a href="tree.html" class="ql-btn"><span class="ql-icon">🌳</span><span class="ql-label">Family Tree</span></a>
-                <a href="matchmaking.html" class="ql-btn"><span class="ql-icon">👑</span><span class="ql-label">Alliances</span></a>
-                <a href="trust.html" class="ql-btn"><span class="ql-icon">🏛️</span><span class="ql-label">Estate</span></a>
-                <a href="events.html" class="ql-btn"><span class="ql-icon">💍</span><span class="ql-label">Events</span></a>
-              </div>
-            </div>
+
 
           </div>
         </div>
