@@ -152,7 +152,7 @@ function initNav(pageName) {
         <div class="universal-search-container" style="position: relative; max-width: 280px; width: 100%; margin: 0;">
           <input type="text" id="universalSearchInput" placeholder="Search by Name..." style="width: 100%; padding: 8px 16px 8px 36px; border-radius: 20px; border: 1px solid var(--border-light); background: var(--bg-elevated); font-size: 12px; outline: none; transition: all 0.2s;">
           <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--text-muted); pointer-events: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-          <div id="universalSearchResults" style="position: absolute; top: calc(100% + 8px); right: 0; width: 300px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-height: 350px; overflow-y: auto; display: none; z-index: 50;"></div>
+          <div id="universalSearchResults" style="position: absolute; top: calc(100% + 8px); left: 0; width: 320px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 10px 30px rgba(0,0,0,0.12); max-height: 380px; overflow-y: auto; display: none; z-index: 200;"></div>
         </div>
         
         <div style="position: relative; cursor: pointer; display: flex; align-items: center;" onclick="document.getElementById('notifDropdown').classList.toggle('active')">

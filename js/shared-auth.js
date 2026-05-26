@@ -138,17 +138,19 @@ function registerUser(firstName, lastName, email, password, details = {}) {
     password: password,
     gender: details.gender || "M",
     age: parseInt(details.age) || 25,
+    dob: details.dob || "",
     caste: details.caste || "Brahmin",
     subCaste: details.subCaste || "",
     gotra: details.gotra || "Kashyap",
     nativePlace: details.nativePlace || "",
     parents: [],
     spouse: null,
-    verified: true, // Auto-verified in local prototype
-    gen: 2, // Default to Generation 2
+    verified: true,
+    gen: 2,
     bio: "Lineage heir registered via production gateway.",
     education: details.education || "",
-    occupation: details.occupation || "Network Member"
+    occupation: details.occupation || "Network Member",
+    imageUrl: details.imageUrl || ""
   };
 
   members.push(newMember);
