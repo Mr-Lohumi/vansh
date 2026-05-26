@@ -54,36 +54,69 @@
           </div>
         </div>
         
-        <div class="section-header anim anim-delay-1">Impact Areas</div>
+        <div class="section-header anim anim-delay-1" style="display:flex; justify-content:space-between; align-items:center;">
+          <span>Impact Areas</span>
+          <button class="btn btn-outline btn-sm" onclick="openTrustModal()">+ Add Impact Area</button>
+        </div>
         
-        <div class="impact-grid anim anim-delay-2">
-          
-          <div class="impact-card">
-            <div class="ic-icon">🎓</div>
-            <div class="ic-title">Vidyalaya Scholarships</div>
-            <div class="ic-desc">Funding higher education for underprivileged students in our ancestral village of Uttarakhand.</div>
-            <div class="ic-amt">12 Students Funded</div>
-          </div>
-          
-          <div class="impact-card">
-            <div class="ic-icon">🏥</div>
-            <div class="ic-title">Medical Relief Camp</div>
-            <div class="ic-desc">Annual free medical consultation camps held in rural districts, sponsored by MediCare Clinics.</div>
-            <div class="ic-amt">500+ Patients Served</div>
-          </div>
-          
-          <div class="impact-card">
-            <div class="ic-icon">🏛️</div>
-            <div class="ic-title">Temple Restoration</div>
-            <div class="ic-desc">Contributing to the preservation and structural maintenance of our Gotra's ancestral deity temple.</div>
-            <div class="ic-amt">₹5L Donated</div>
-          </div>
-          
+        <div class="impact-grid anim anim-delay-2" id="impactGrid">
+          <!-- Rendered via JS -->
         </div>
         
       </div>
     </div>
   </div>
+
+  <!-- Trust Modal -->
+  <div class="modal-overlay" id="trustModalOverlay">
+    <div class="modal-box" style="max-width: 500px;">
+      <div class="modal-header">
+        <div class="modal-title" id="trustModalTitle">Add Impact Area</div>
+        <button class="modal-close" onclick="closeTrustModal()">×</button>
+      </div>
+      <form id="trustForm" class="modal-body">
+        <input type="hidden" id="trustId">
+        <div class="form-group">
+          <label class="form-label">Icon (Emoji)</label>
+          <input type="text" id="trustIcon" class="form-input" placeholder="e.g. 🎓" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Title</label>
+          <input type="text" id="trustTitle" class="form-input" placeholder="e.g. Vidyalaya Scholarships" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea id="trustDesc" class="form-input" style="height:80px; resize:none;" required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Impact Metric / Amount</label>
+          <input type="text" id="trustAmount" class="form-input" placeholder="e.g. 12 Students Funded" required>
+        </div>
+      </form>
+      <div class="modal-footer" style="display:flex; justify-content:space-between;">
+        <button class="btn btn-outline" id="trustDeleteBtn" style="color:var(--royal-red); border-color:var(--royal-red); display:none;" onclick="deleteTrustItem()">Delete</button>
+        <div style="display:flex; gap:16px; margin-left:auto;">
+          <button class="btn btn-outline" onclick="closeTrustModal()">Cancel</button>
+          <button class="btn btn-gold" onclick="saveTrustItem()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Modal Styles */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; }
+    .modal-overlay.active { display: flex; }
+    .modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; width: 100%; padding: 32px; box-shadow: var(--shadow-hover); position: relative; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .modal-title { font-family: 'Cinzel', serif; font-size: 20px; color: var(--royal-red); text-transform: uppercase; font-weight: 700; }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; color: var(--text-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+    .form-input { width: 100%; background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text); padding: 12px 16px; border-radius: 6px; font-family: 'Inter', sans-serif; }
+    .form-input:focus { outline: none; border-color: var(--royal-red); box-shadow: 0 0 10px var(--royal-red-glow); }
+    .modal-close { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
+    .modal-close:hover { color: var(--text); }
+  </style>
 
   <script src="js/shared-auth.js"></script>
   <script src="js/shared-data.js"></script>
@@ -94,10 +127,93 @@
     
     const authData = getAuthData();
     const currentUser = getMemberById(authData.userId);
+    
+    // Set dynamic headers
     if (currentUser) {
-      document.querySelector('.trust-title').innerText = `The ${currentUser.lastName || ''} Legacy Trust`;
-      document.querySelector('.trust-sub').innerText = `Established to honor the vision of the ${currentUser.lastName || ''} ancestors. Dedicated to educational scholarships, community development, and heritage preservation.`;
+      document.querySelector('.trust-title').innerText = \`The \${currentUser.lastName || ''} Legacy Trust\`;
+      document.querySelector('.trust-sub').innerText = \`Established to honor the vision of the \${currentUser.lastName || ''} ancestors. Dedicated to educational scholarships, community development, and heritage preservation.\`;
     }
+    
+    // CRUD Logic
+    let trustItems = JSON.parse(localStorage.getItem('vansh_trust_items')) || [
+      { id: 't1', icon: '🎓', title: 'Vidyalaya Scholarships', desc: 'Funding higher education for underprivileged students in our ancestral village.', amount: '12 Students Funded' },
+      { id: 't2', icon: '🏥', title: 'Medical Relief Camp', desc: 'Annual free medical consultation camps held in rural districts.', amount: '500+ Patients Served' },
+      { id: 't3', icon: '🏛️', title: 'Temple Restoration', desc: 'Contributing to the preservation of our ancestral deity temple.', amount: '₹5L Donated' }
+    ];
+    
+    function renderTrustItems() {
+      const grid = document.getElementById('impactGrid');
+      grid.innerHTML = '';
+      trustItems.forEach(item => {
+        grid.innerHTML += \`
+          <div class="impact-card" style="position:relative;">
+            <button class="btn btn-outline btn-sm" style="position:absolute; top:12px; right:12px; padding:4px 8px; font-size:11px;" onclick="openTrustModal('\${item.id}')">Edit</button>
+            <div class="ic-icon">\${item.icon}</div>
+            <div class="ic-title">\${item.title}</div>
+            <div class="ic-desc">\${item.desc}</div>
+            <div class="ic-amt">\${item.amount}</div>
+          </div>
+        \`;
+      });
+    }
+    
+    function openTrustModal(id = null) {
+      const modal = document.getElementById('trustModalOverlay');
+      const deleteBtn = document.getElementById('trustDeleteBtn');
+      document.getElementById('trustModalTitle').innerText = id ? 'Edit Impact Area' : 'Add Impact Area';
+      
+      if (id) {
+        const item = trustItems.find(t => t.id === id);
+        document.getElementById('trustId').value = item.id;
+        document.getElementById('trustIcon').value = item.icon;
+        document.getElementById('trustTitle').value = item.title;
+        document.getElementById('trustDesc').value = item.desc;
+        document.getElementById('trustAmount').value = item.amount;
+        deleteBtn.style.display = 'block';
+      } else {
+        document.getElementById('trustForm').reset();
+        document.getElementById('trustId').value = '';
+        deleteBtn.style.display = 'none';
+      }
+      modal.classList.add('active');
+    }
+    
+    function closeTrustModal() { document.getElementById('trustModalOverlay').classList.remove('active'); }
+    
+    function saveTrustItem() {
+      const id = document.getElementById('trustId').value;
+      const newItem = {
+        id: id || 't_' + Date.now(),
+        icon: document.getElementById('trustIcon').value,
+        title: document.getElementById('trustTitle').value,
+        desc: document.getElementById('trustDesc').value,
+        amount: document.getElementById('trustAmount').value
+      };
+      
+      if (id) {
+        const idx = trustItems.findIndex(t => t.id === id);
+        if (idx !== -1) trustItems[idx] = newItem;
+      } else {
+        trustItems.push(newItem);
+      }
+      
+      localStorage.setItem('vansh_trust_items', JSON.stringify(trustItems));
+      closeTrustModal();
+      renderTrustItems();
+    }
+    
+    function deleteTrustItem() {
+      const id = document.getElementById('trustId').value;
+      if (confirm('Are you sure you want to delete this impact area?')) {
+        trustItems = trustItems.filter(t => t.id !== id);
+        localStorage.setItem('vansh_trust_items', JSON.stringify(trustItems));
+        closeTrustModal();
+        renderTrustItems();
+      }
+    }
+    
+    // Initial Render
+    renderTrustItems();
   </script>
 </body>
 </html>

@@ -187,17 +187,7 @@
     if (!requireAuth()) throw '';
     initNav('matchmaking');
     
-    // EXTERNAL CANDIDATE DATABASE (To ensure live users always have matches)
-    const EXTERNAL_CANDIDATES = [
-      { id: "E1", firstName: "Simran", lastName: "Verma", age: 24, caste: "Brahmin", gotra: "Vatsa", nativePlace: "Delhi", education: "M.Sc Economics", gender: "F", imageUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&q=80" },
-      { id: "E2", firstName: "Sneha", lastName: "Iyer", age: 25, caste: "Brahmin", gotra: "Bharadwaj", nativePlace: "Mumbai", education: "B.Tech CS", gender: "F", imageUrl: "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=400&q=80" },
-      { id: "E3", firstName: "Ananya", lastName: "Joshi", age: 22, caste: "Brahmin", gotra: "Sandilya", nativePlace: "Pune", education: "MBA Finance", gender: "F", imageUrl: "https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=400&q=80" },
-      { id: "E4", firstName: "Ritu", lastName: "Gupta", age: 26, caste: "Agarwal", gotra: "Gautam", nativePlace: "Jaipur", education: "B.Com", gender: "F", imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=80" },
-      { id: "E5", firstName: "Rohan", lastName: "Mishra", age: 28, caste: "Brahmin", gotra: "Vatsa", nativePlace: "Kanpur", education: "CA", gender: "M", imageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80" },
-      { id: "E6", firstName: "Aditya", lastName: "Sharma", age: 27, caste: "Brahmin", gotra: "Kashyap", nativePlace: "Delhi", education: "M.Tech", gender: "M", imageUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=80" },
-      { id: "E7", firstName: "Vikram", lastName: "Singh", age: 29, caste: "Rajput", gotra: "Chauhan", nativePlace: "Udaipur", education: "B.Arch", gender: "M", imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" }
-    ];
-
+    // Matchmaking engine now strictly uses the dynamic family network data
     const singles = familyMembers.filter(m => !m.spouse && m.age >= 18);
     const select = document.getElementById('matchForSelect');
     
@@ -231,8 +221,8 @@
       
       let html = '';
       
-      // Combine live network + external candidates for matches
-      const searchPool = [...familyMembers, ...EXTERNAL_CANDIDATES];
+      // Use only live network for matches
+      const searchPool = [...familyMembers];
       
       searchPool.forEach(candidate => {
         if(candidate.id === target.id) return;
