@@ -309,3 +309,11 @@ img { max-width: 100%; display: block; }
 }
 .sidebar-overlay { position: fixed; inset: 0; z-index: 35; background: rgba(0,0,0,.4); opacity: 0; pointer-events: none; transition: opacity .3s; backdrop-filter: blur(2px); }
 .sidebar-overlay.active { opacity: 1; pointer-events: all; }
+
+/* ── Feed Dropdown & Comments ── */
+.post-dropdown { position: absolute; top: 100%; right: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 8px; display: none; z-index: 10; min-width: 150px; }
+.post-more.active + .post-dropdown { display: block; }
+.post-dropdown-item { padding: 8px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; transition: background 0.2s; }
+.post-dropdown-item:hover { background: var(--bg-hover); }
+.post-comments-section { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); animation: fadeIn 0.3s; }
+.post-comments-section.active { display: block; }

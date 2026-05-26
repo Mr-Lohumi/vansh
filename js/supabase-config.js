@@ -380,6 +380,21 @@ async function createPost(userId, content, imageUrl = null, authorName = '', aut
   } catch (err) { return false; }
 }
 
+async function deletePost(postId, userId) {
+  if (!window.supabaseClient) return false;
+  try {
+    const { error } = await window.supabaseClient
+      .from('vansh_posts')
+      .delete()
+      .eq('id', postId)
+      .eq('user_id', userId);
+    return !error;
+  } catch (err) {
+    console.error('[Vansh] deletePost error:', err);
+    return false;
+  }
+}
+
 // --- MESSAGING API ---
 async function fetchUserMessages(userId) {
   if (!window.supabaseClient) return [];
