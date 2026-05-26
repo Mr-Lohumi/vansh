@@ -449,7 +449,7 @@ async function toggleRespect(postId, userId) {
       .select('id')
       .eq('post_id', postId)
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
       
     if (data) {
       // Remove respect

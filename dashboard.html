@@ -405,6 +405,28 @@
         const respectsCount = postRespects.length > 0 ? `<span style="margin-left:4px;font-size:12px;">${postRespects.length}</span>` : '';
         const commentsCount = postComments.length > 0 ? `<span style="margin-left:4px;font-size:12px;">${postComments.length}</span>` : '';
 
+        // Generate FB style respect text
+        const respectNames = postRespects.map(r => {
+          const m = getMemberById(r.user_id);
+          return m ? m.firstName : 'A member';
+        });
+        let respectTextHtml = '';
+        if (respectNames.length > 0) {
+          let rText = '';
+          if (respectNames.length === 1) rText = `<strong>${respectNames[0]}</strong> respects this.`;
+          else if (respectNames.length === 2) rText = `<strong>${respectNames[0]}</strong> and <strong>${respectNames[1]}</strong> respect this.`;
+          else rText = `<strong>${respectNames[0]}</strong>, <strong>${respectNames[1]}</strong> and ${respectNames.length - 2} others respect this.`;
+          
+          respectTextHtml = `
+            <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+              <div style="background:var(--gold); color:#fff; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
+              </div>
+              ${rText}
+            </div>
+          `;
+        }
+
         return `
         <div class="post-card anim" style="animation-delay:${idx * 0.05}s;" id="post-${post.id}">
           <div class="post-inner">
@@ -416,7 +438,7 @@
               </div>
               ${isOwnPost ? `
               <div style="position:relative;">
-                <button class="post-more" onclick="this.nextElementSibling.classList.toggle('active')">···</button>
+                <button class="post-more" onclick="this.classList.toggle('active')">···</button>
                 <div class="post-dropdown">
                   <div class="post-dropdown-item" style="color:var(--royal-red);" onclick="handleDeletePost('${post.id}')">
                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
@@ -429,6 +451,7 @@
             <div class="post-body" style="white-space:pre-wrap;">${post.content || ''}</div>
           </div>
           ${post.image_url ? `<img src="${post.image_url}" alt="Post image" class="post-img">` : ''}
+          ${respectTextHtml}
           <div class="post-reactions">
             <button class="reaction-pill ${hasRespected ? 'active' : ''}" style="${hasRespected ? 'color:var(--gold);' : ''}" onclick="handleToggleRespectUI('${post.id}', this)">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
