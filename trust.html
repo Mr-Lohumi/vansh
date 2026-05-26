@@ -74,8 +74,9 @@
         <div class="modal-title" id="trustModalTitle">Add Impact Area</div>
         <button class="modal-close" onclick="closeTrustModal()">×</button>
       </div>
-      <form id="trustForm" class="modal-body">
-        <input type="hidden" id="trustId">
+      <form id="trustForm" onsubmit="event.preventDefault(); saveTrustItem();">
+        <div class="modal-body">
+          <input type="hidden" id="trustId">
         <div class="form-group">
           <label class="form-label">Icon (Emoji)</label>
           <input type="text" id="trustIcon" class="form-input" placeholder="e.g. 🎓" required>
@@ -92,14 +93,15 @@
           <label class="form-label">Impact Metric / Amount</label>
           <input type="text" id="trustAmount" class="form-input" placeholder="e.g. 12 Students Funded" required>
         </div>
-      </form>
-      <div class="modal-footer" style="display:flex; justify-content:space-between;">
-        <button class="btn btn-outline" id="trustDeleteBtn" style="color:var(--royal-red); border-color:var(--royal-red); display:none;" onclick="deleteTrustItem()">Delete</button>
-        <div style="display:flex; gap:16px; margin-left:auto;">
-          <button class="btn btn-outline" onclick="closeTrustModal()">Cancel</button>
-          <button class="btn btn-gold" onclick="saveTrustItem()">Save</button>
         </div>
-      </div>
+        <div class="modal-footer" style="display:flex; justify-content:space-between;">
+          <button type="button" class="btn btn-outline" id="trustDeleteBtn" style="color:var(--royal-red); border-color:var(--royal-red); display:none;" onclick="deleteTrustItem()">Delete</button>
+          <div style="display:flex; gap:16px; margin-left:auto;">
+            <button type="button" class="btn btn-outline" onclick="closeTrustModal()">Cancel</button>
+            <button type="submit" class="btn btn-gold">Save</button>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 
