@@ -224,7 +224,12 @@ function initNav(pageName) {
       }).slice(0, 10);
       
       if (results.length === 0) {
-        searchResults.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:13px">No members found</div>';
+        searchResults.innerHTML = `
+          <div style="padding:16px;text-align:center;">
+            <div style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">No members found in network.</div>
+            <button class="btn btn-outline btn-sm" onclick="openInviteExternalModal()" style="font-size:11px; padding:6px 12px; border-color:var(--gold); color:var(--gold);">💌 Invite to Vansh</button>
+          </div>
+        `;
       } else {
         const authData = getAuthData();
         const currentUserId = authData ? authData.userId : null;
