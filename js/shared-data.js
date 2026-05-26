@@ -174,11 +174,105 @@ function acceptInvite(inviteId) {
   return true;
 }
 
-function rejectInvite(inviteId) {
-  const invite = pendingInvites.find(i => i.id === inviteId);
-  if (!invite) return false;
-  invite.status = 'rejected';
-  saveInvites(pendingInvites);
+  return true;
+}
+
+// Process an invite fetched from Supabase Cloud
+async function processCloudInvite(invite, action) {
+  if (typeof updateCloudInviteStatus === 'function') {
+    const success = await updateCloudInviteStatus(invite.id, action);
+    if (!success) return false;
+  }
+  
+  if (action !== 'accepted') return true;
+  
+  // We need to fetch the 'from' user from Supabase if they aren't in local storage yet!
+  let fromUser = getMemberById(invite.fromUserId);
+  if (!fromUser && typeof searchMembersCloud === 'function') {
+    // Attempt to sync them locally
+    const cloudMembers = await searchMembersCloud(''); 
+    fromUser = cloudMembers.find(m => m.id === invite.fromUserId);
+    if (fromUser) {
+      familyMembers.push(fromUser);
+      saveFamilyData(familyMembers);
+    }
+  }
+  
+  const toUser = getMemberById(invite.toUserId);
+  if (!fromUser || !toUser) return false;
+  
+  function ensureParent(userId, gender, label) {
+    let user = getMemberById(userId);
+    if (!user.parents) user.parents = [];
+    let parent = user.parents.map(pid => getMemberById(pid)).find(p => p && p.gender === gender);
+    if (!parent) {
+      parent = {
+        id: 'P' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2,6).toUpperCase(),
+        firstName: 'Unknown',
+        lastName: label,
+        gender: gender,
+        age: (user.age || 20) + 25,
+        parents: []
+      };
+      familyMembers.push(parent);
+      user.parents.push(parent.id);
+    }
+    return parent;
+  }
+
+  function linkSiblings(u1, u2) {
+    if (!u1.parents) u1.parents = [];
+    if (!u2.parents) u2.parents = [];
+    if (u1.parents.length === 0) ensureParent(u1.id, 'M', 'Father');
+    u1.parents.forEach(p => { if (!u2.parents.includes(p)) u2.parents.push(p); });
+    u2.parents.forEach(p => { if (!u1.parents.includes(p)) u1.parents.push(p); });
+  }
+
+  const rel = invite.relationType;
+  
+  if (rel === 'papa' || rel === 'mummy' || rel === 'parent') {
+    toUser.gender = (rel === 'papa') ? 'M' : 'F';
+    if (!fromUser.parents) fromUser.parents = [];
+    if (!fromUser.parents.includes(toUser.id)) fromUser.parents.push(toUser.id);
+  } else if (rel === 'beta' || rel === 'beti' || rel === 'child') {
+    toUser.gender = (rel === 'beta') ? 'M' : 'F';
+    if (!toUser.parents) toUser.parents = [];
+    if (!toUser.parents.includes(fromUser.id)) toUser.parents.push(fromUser.id);
+  } else if (rel === 'bhai' || rel === 'behen' || rel === 'brother' || rel === 'sister') {
+    toUser.gender = (rel === 'bhai' || rel === 'brother') ? 'M' : 'F';
+    linkSiblings(fromUser, toUser);
+  } else if (rel === 'pati' || rel === 'patni' || rel === 'spouse') {
+    toUser.gender = (rel === 'pati') ? 'M' : 'F';
+    fromUser.spouse = toUser.id;
+    toUser.spouse = fromUser.id;
+  } else if (rel === 'dada' || rel === 'dadi') {
+    toUser.gender = (rel === 'dada') ? 'M' : 'F';
+    let papa = ensureParent(fromUser.id, 'M', 'Father');
+    if (!papa.parents) papa.parents = [];
+    if (!papa.parents.includes(toUser.id)) papa.parents.push(toUser.id);
+  } else if (rel === 'nana' || rel === 'nani') {
+    toUser.gender = (rel === 'nana') ? 'M' : 'F';
+    let mummy = ensureParent(fromUser.id, 'F', 'Mother');
+    if (!mummy.parents) mummy.parents = [];
+    if (!mummy.parents.includes(toUser.id)) mummy.parents.push(toUser.id);
+  } else if (rel === 'chacha' || rel === 'bua') {
+    toUser.gender = (rel === 'chacha') ? 'M' : 'F';
+    let papa = ensureParent(fromUser.id, 'M', 'Father');
+    linkSiblings(papa, toUser);
+  } else if (rel === 'mama' || rel === 'masi') {
+    toUser.gender = (rel === 'mama') ? 'M' : 'F';
+    let mummy = ensureParent(fromUser.id, 'F', 'Mother');
+    linkSiblings(mummy, toUser);
+  }
+  
+  saveFamilyData(familyMembers);
+  
+  // Sync the updated users to cloud
+  if (typeof syncMemberToCloud === 'function') {
+    syncMemberToCloud(fromUser);
+    syncMemberToCloud(toUser);
+  }
+  
   return true;
 }
 // ----------------------------------

@@ -101,28 +101,48 @@ function initNav(pageName) {
     
     const bellIcon = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>';
     
-    const invites = user ? getInvitesForUser(user.id) : [];
+    // Fetch cloud invites if available, fallback to local
+    let invites = [];
+    if (user) {
+      if (typeof fetchCloudInvites === 'function') {
+        invites = await fetchCloudInvites(user.id);
+      } else {
+        invites = getInvitesForUser(user.id);
+      }
+    }
+    
     const bellBadge = invites.length > 0 ? `<div style="position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: var(--royal-red); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-card);">${invites.length}</div>` : '';
     
     let invitesHtml = '';
     if (invites.length === 0) {
       invitesHtml = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;">No pending requests</div>';
     } else {
-      invites.forEach(inv => {
-        const fromM = getMemberById(inv.fromUserId);
-        const name = fromM ? getFullName(fromM) : 'Someone';
+      for (const inv of invites) {
+        // Find sender locally, or attempt cloud search
+        let name = 'Someone';
+        let fromM = getMemberById(inv.fromUserId);
+        
+        if (!fromM && typeof searchMembersCloud === 'function') {
+           const cloudMembers = await searchMembersCloud(''); 
+           fromM = cloudMembers.find(m => m.id === inv.fromUserId);
+        }
+        
+        if (fromM) name = getFullName(fromM);
+        
         const relCap = inv.relationType.charAt(0).toUpperCase() + inv.relationType.slice(1);
+        const safeInv = JSON.stringify(inv).replace(/"/g, '&quot;');
+        
         invitesHtml += `
           <div style="padding: 16px; border-bottom: 1px solid var(--border-light);">
             <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Relationship Request</div>
             <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">${name} wants to add you as their <strong>${relCap}</strong>.</div>
             <div style="display: flex; gap: 8px;">
-              <button class="btn btn-gold btn-sm" style="flex:1" onclick="acceptInvite('${inv.id}'); window.location.reload();">Accept</button>
-              <button class="btn btn-outline btn-sm" style="flex:1" onclick="rejectInvite('${inv.id}'); window.location.reload();">Reject</button>
+              <button class="btn btn-gold btn-sm" style="flex:1" onclick="handleInviteAction(${safeInv}, 'accepted')">Accept</button>
+              <button class="btn btn-outline btn-sm" style="flex:1" onclick="handleInviteAction(${safeInv}, 'rejected')">Reject</button>
             </div>
           </div>
         `;
-      });
+      }
     }
 
     topbar.innerHTML = `
@@ -407,7 +427,7 @@ window.closeAddRelativeModal = function() {
   if (modal) modal.classList.remove('active');
 };
 
-window.submitRelativeRequest = function() {
+window.submitRelativeRequest = async function() {
   const authData = getAuthData();
   if (!authData || !authData.userId) return;
   
@@ -419,7 +439,14 @@ window.submitRelativeRequest = function() {
     return;
   }
   
-  const res = sendInvite(authData.userId, toUserId, relType);
+  // Use Cloud Invites
+  let res;
+  if (typeof sendCloudInvite === 'function') {
+    res = await sendCloudInvite(authData.userId, toUserId, relType);
+  } else {
+    res = sendInvite(authData.userId, toUserId, relType); // Fallback to local
+  }
+  
   if (res.success) {
     if (typeof showToast === 'function') showToast('Request Sent', 'Your request has been successfully sent.', 'ok');
     else alert('Request sent successfully.');
@@ -428,6 +455,23 @@ window.submitRelativeRequest = function() {
     else alert(res.message);
   }
   closeAddRelativeModal();
+};
+
+window.handleInviteAction = async function(invite, action) {
+  if (typeof processCloudInvite === 'function') {
+    const success = await processCloudInvite(invite, action);
+    if (success) {
+      if (typeof showToast === 'function') showToast('Success', \`Invite \${action}\`, 'ok');
+      setTimeout(() => window.location.reload(), 1000);
+    } else {
+      if (typeof showToast === 'function') showToast('Error', 'Failed to process invite', 'error');
+    }
+  } else {
+    // Fallback to local
+    if (action === 'accepted') acceptInvite(invite.id);
+    else rejectInvite(invite.id);
+    window.location.reload();
+  }
 };
 
 // External Invite Modal

@@ -93,3 +93,63 @@ async function searchMembersCloud(query) {
     return [];
   }
 }
+
+/* ──────────────────────────────────────────────────────────────
+   Global Relationship Invites
+   ────────────────────────────────────────────────────────────── */
+
+async function sendCloudInvite(fromUserId, toUserId, relationType) {
+  if (!window.supabaseClient) return { success: false, message: 'Cloud disconnected' };
+  try {
+    const payload = {
+      id: 'INV_' + Date.now().toString(36) + Math.random().toString(36).substring(2,6),
+      from_user_id: fromUserId,
+      to_user_id: toUserId,
+      relation_type: relationType,
+      status: 'pending'
+    };
+    const { error } = await window.supabaseClient.from('vansh_invites').insert(payload);
+    if (error) return { success: false, message: error.message };
+    return { success: true, message: 'Invite sent globally.' };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+}
+
+async function fetchCloudInvites(userId) {
+  if (!window.supabaseClient) return [];
+  try {
+    const { data, error } = await window.supabaseClient
+      .from('vansh_invites')
+      .select('*')
+      .eq('to_user_id', userId)
+      .eq('status', 'pending');
+      
+    if (error) return [];
+    
+    // Map to local format
+    return (data || []).map(r => ({
+      id: r.id,
+      fromUserId: r.from_user_id,
+      toUserId: r.to_user_id,
+      relationType: r.relation_type,
+      status: r.status,
+      timestamp: r.created_at
+    }));
+  } catch (err) {
+    return [];
+  }
+}
+
+async function updateCloudInviteStatus(inviteId, status) {
+  if (!window.supabaseClient) return false;
+  try {
+    const { error } = await window.supabaseClient
+      .from('vansh_invites')
+      .update({ status: status })
+      .eq('id', inviteId);
+    return !error;
+  } catch (err) {
+    return false;
+  }
+}
