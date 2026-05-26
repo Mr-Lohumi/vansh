@@ -98,16 +98,56 @@
     .pw-cover::after { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4A843' fill-opacity='0.08'%3E%3Ccircle cx='30' cy='30' r='15'/%3E%3Ccircle cx='30' cy='30' r='25'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
     .pw-ava-wrap { display: flex; justify-content: center; margin-top: -60px; position: relative; z-index: 2; margin-bottom: 12px; }
     .pw-ava { width: 120px; height: 120px; border-radius: 28px; border: 4px solid var(--bg-card); box-shadow: 0 8px 24px rgba(107,21,34,0.25); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 700; color: var(--royal-red); background-color: var(--bg-elevated); }
-    .pw-body { padding: 0 20px 20px; text-align: center; }
-    .pw-name { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
-    .pw-handle { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
-    .pw-lineage { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
-    .pw-badge { display: inline-block; background: rgba(107,21,34,0.06); color: var(--royal-red); border: 1px solid rgba(107,21,34,0.15); border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; font-family: 'Cinzel', serif; letter-spacing: 0.5px; }
-    .pw-stats { display: flex; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); margin: 14px 0; }
-    .pw-stat { flex: 1; padding: 12px 8px; text-align: center; }
-    .pw-stat:not(:last-child) { border-right: 1px solid var(--border-light); }
-    .pw-stat-num { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: var(--text); }
-    .pw-stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+    .pw-body { padding: 0 20px 20px; }
+    .pw-name { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 2px; }
+    .pw-id { font-size: 12px; font-weight: 600; color: var(--text-muted); text-align: center; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+    .pw-stats { display: flex; border-top: 1px solid var(--border-light); background: var(--bg-elevated); }
+    .pw-stat { flex: 1; text-align: center; padding: 12px 10px; border-right: 1px solid var(--border-light); }
+    .pw-stat:last-child { border-right: none; }
+    .pw-stat-val { font-size: 16px; font-weight: 700; color: var(--text); font-family: 'Cinzel', serif; }
+    .pw-stat-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+    /* ── DYNASTY GROWTH WIDGET ── */
+    .growth-widget {
+      background: linear-gradient(135deg, rgba(138,28,36,0.9) 0%, rgba(74,12,16,0.95) 100%);
+      border: 1.5px solid var(--gold-bright);
+      border-radius: 20px; padding: 20px;
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.15), 0 10px 30px rgba(0,0,0,0.3);
+      position: relative; overflow: hidden;
+    }
+    .gw-header { text-align: center; margin-bottom: 20px; }
+    .gw-title { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: var(--gold-bright); text-transform: uppercase; letter-spacing: 1px; }
+    .gw-subtitle { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .gw-tree-container { position: relative; height: 160px; display: flex; align-items: flex-end; justify-content: center; }
+    
+    .gw-svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 6px rgba(212,175,55,0.6)); }
+    .gw-path {
+      fill: none; stroke: var(--gold-bright); stroke-width: 3; stroke-linecap: round;
+      stroke-dasharray: 100; stroke-dashoffset: 100;
+    }
+    
+    /* Animation Sequence (Bottom to Top) */
+    .growth-widget.animate .gw-roots { animation: growPath 1s forwards cubic-bezier(0.4, 0, 0.2, 1); }
+    .growth-widget.animate .gw-trunk { animation: growPath 0.8s forwards 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+    .growth-widget.animate .b3 { animation: growPath 0.8s forwards 1.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .growth-widget.animate .b1 { animation: growPath 1.2s forwards 1.8s cubic-bezier(0.4, 0, 0.2, 1); }
+    .growth-widget.animate .b2 { animation: growPath 1.5s forwards 2.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    
+    @keyframes growPath { to { stroke-dashoffset: 0; } }
+    
+    .gw-stats {
+      position: absolute; bottom: 0px; left: 0; right: 0; display: flex; justify-content: center;
+      opacity: 0; transform: translateY(10px); transition: all 1s 3s;
+    }
+    .growth-widget.animate .gw-stats { opacity: 1; transform: translateY(0); }
+    
+    .gw-stat-item {
+      background: rgba(0,0,0,0.5); border: 1px solid var(--gold-dark); backdrop-filter: blur(4px);
+      padding: 6px 16px; border-radius: 20px; font-size: 12px; color: #fff; font-weight: 700;
+      display: flex; gap: 6px; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+    .gw-stat-item span:first-child { color: var(--gold-bright); font-size: 14px; }
+    
     .pw-info-list { text-align: left; margin-bottom: 16px; }
     .pw-info-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px dashed var(--border-light); font-size: 12px; }
     .pw-info-row:last-child { border-bottom: none; }
@@ -194,9 +234,28 @@
             <!-- Profile Widget -->
             <div class="profile-widget" id="userWidget"></div>
 
-
-
-          </div>
+            <!-- Dynasty Growth Widget -->
+            <div class="growth-widget" id="dynastyGrowthWidget">
+              <div class="gw-header">
+                <div class="gw-title">Dynasty Ascending</div>
+                <div class="gw-subtitle" id="gwGenCount">Analyzing lineage...</div>
+              </div>
+              <div class="gw-tree-container">
+                <svg class="gw-svg" viewBox="0 0 100 120" preserveAspectRatio="xMidYMax meet">
+                  <!-- Roots -->
+                  <path class="gw-path gw-roots" d="M30 110 Q50 90 50 100 Q50 90 70 110 M40 115 Q50 95 60 115" />
+                  <!-- Trunk -->
+                  <path class="gw-path gw-trunk" d="M50 100 L50 70" />
+                  <!-- Branches -->
+                  <path class="gw-path gw-branch b1" d="M50 70 Q30 50 20 60 M50 70 Q70 50 80 60" />
+                  <path class="gw-path gw-branch b2" d="M50 50 Q20 30 30 15 M50 50 Q80 30 70 15 M50 50 L50 20" />
+                  <path class="gw-path gw-branch b3" d="M50 70 L50 50" />
+                </svg>
+                <div class="gw-stats">
+                  <div class="gw-stat-item"><span id="gwTotalMem">0</span> <span>Members</span></div>
+                </div>
+              </div>
+            </div>          </div>
         </div>
       </div>
     </div>
@@ -263,27 +322,22 @@
       </div>
       <div class="pw-body">
         <div class="pw-name">${getFullName(authMember)}</div>
-        <div class="pw-handle">@${authMember.username || 'user'}</div>
-        <div class="pw-lineage">
-          <span class="pw-badge">${authMember.caste || 'Brahmin'}</span>
-          <span style="color:var(--text-muted)">•</span>
-          <span class="pw-badge">${authMember.gotra || 'Kashyap'} Gotra</span>
-        </div>
+        <div class="pw-id">@${authMember.username || 'user'}</div>
         <div class="pw-stats">
           <div class="pw-stat">
-            <div class="pw-stat-num">${netCount}</div>
-            <div class="pw-stat-label">Network</div>
+            <div class="pw-stat-val">${netCount}</div>
+            <div class="pw-stat-lbl">Network</div>
           </div>
           <div class="pw-stat">
-            <div class="pw-stat-num">${verPct}%</div>
-            <div class="pw-stat-label">Verified</div>
+            <div class="pw-stat-val">${verPct}%</div>
+            <div class="pw-stat-lbl">Verified</div>
           </div>
           <div class="pw-stat">
-            <div class="pw-stat-num">${authMember.age || '—'}</div>
-            <div class="pw-stat-label">Age</div>
+            <div class="pw-stat-val">${authMember.age || '—'}</div>
+            <div class="pw-stat-lbl">Age</div>
           </div>
         </div>
-        <div class="pw-info-list">
+        <div class="pw-info-list" style="margin-top:16px;">
           ${authMember.occupation ? `<div class="pw-info-row"><span class="pw-info-icon">💼</span><span class="pw-info-val">${authMember.occupation}</span></div>` : ''}
           ${authMember.education ? `<div class="pw-info-row"><span class="pw-info-icon">🎓</span><span class="pw-info-val">${authMember.education}</span></div>` : ''}
           ${authMember.nativePlace ? `<div class="pw-info-row"><span class="pw-info-icon">📍</span><span class="pw-info-val">${authMember.nativePlace}</span></div>` : ''}
@@ -532,7 +586,10 @@
     }
 
     // Refresh member profile pics from cloud, then load feed with fresh data
-    refreshMembersFromCloud().then(() => loadFeed());
+    refreshMembersFromCloud().then(() => { 
+      loadFeed(); 
+      initDynastyGrowth();
+    });
 
     // ── Stories ──
     let mockStories = [];
@@ -686,6 +743,35 @@
       t.querySelector('.toast-msg').textContent = msg;
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 3200);
+    }
+    
+    // ── Dynasty Growth Widget Logic ──
+    function initDynastyGrowth() {
+      const widget = document.getElementById('dynastyGrowthWidget');
+      if(!widget) return;
+      
+      const total = familyMembers.length;
+      document.getElementById('gwTotalMem').innerText = total;
+      
+      // Calculate depth (generations)
+      let maxGen = 1;
+      
+      function getDepth(id, currentDepth) {
+        if(currentDepth > maxGen) maxGen = currentDepth;
+        const children = familyMembers.filter(m => (m.parents && m.parents.includes(id)));
+        children.forEach(c => getDepth(c.id, currentDepth + 1));
+      }
+      
+      // Find roots (members with no parents in the system)
+      const roots = familyMembers.filter(m => !m.parents || m.parents.length === 0);
+      roots.forEach(r => getDepth(r.id, 1));
+      
+      document.getElementById('gwGenCount').innerText = `${maxGen} Generations Spanned`;
+      
+      // Trigger animation
+      setTimeout(() => {
+        widget.classList.add('animate');
+      }, 500);
     }
   </script>
 </body>
