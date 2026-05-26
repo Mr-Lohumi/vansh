@@ -61,7 +61,8 @@ async function initNav(pageName) {
   if (sidebar) {
     let navHtml = '';
     NAV_GROUPS.forEach(group => {
-      navHtml += `<div class="nav-label" style="margin-top: 16px">${group.name}</div>`;
+      navHtml += `<div class="nav-group-card">`;
+      navHtml += `<div class="nav-label">${group.name}</div>`;
       group.items.forEach(item => {
         navHtml += `
           <a href="${item.href}" class="nav-item ${item.id === pageName ? 'active' : ''}" id="nav-${item.id}">
@@ -70,6 +71,7 @@ async function initNav(pageName) {
           </a>
         `;
       });
+      navHtml += `</div>`;
     });
 
     sidebar.innerHTML = `
