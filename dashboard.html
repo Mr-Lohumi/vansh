@@ -424,14 +424,15 @@
     async function publishPost() {
       const input = document.getElementById('postInput');
       const text = input.value.trim();
-      if (!text) return;
+      if (!text && !currentPostImage) return;
       
       const auth = getAuthData();
       if (!auth) return;
       
-      const success = await createPost(auth.userId, text);
+      const success = await createPost(auth.userId, text, currentPostImage);
       if (success) {
         input.value = '';
+        removePostImage();
         showToast('Success', 'Royal announcement published to dynasty!', 'ok');
         loadFeed();
       } else {

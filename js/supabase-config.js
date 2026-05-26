@@ -246,7 +246,7 @@ async function fetchNetworkPosts(userIds) {
   } catch (err) { return []; }
 }
 
-async function createPost(userId, content) {
+async function createPost(userId, content, imageUrl = null) {
   if (!window.supabaseClient) return false;
   try {
     const { error } = await window.supabaseClient
@@ -254,7 +254,8 @@ async function createPost(userId, content) {
       .insert({
         id: 'POST_' + Date.now().toString(36) + Math.random().toString(36).substring(2,6),
         user_id: userId,
-        content: content
+        content: content,
+        image_url: imageUrl
       });
     return !error;
   } catch (err) { return false; }
