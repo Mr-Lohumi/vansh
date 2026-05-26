@@ -151,7 +151,7 @@ function initNav(pageName) {
       <div class="topbar-right" style="position: relative; display: flex; align-items: center; gap: 20px; flex-shrink: 0;">
         <div class="universal-search-container" style="position: relative; max-width: 280px; width: 100%; margin: 0;">
           <input type="text" id="universalSearchInput" placeholder="Search by Name..." style="width: 100%; padding: 8px 16px 8px 36px; border-radius: 20px; border: 1px solid var(--border-light); background: var(--bg-elevated); font-size: 12px; outline: none; transition: all 0.2s;">
-          <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--text-muted); pointer-events: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           <div id="universalSearchResults" style="position: absolute; top: calc(100% + 8px); right: 0; width: 300px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-height: 350px; overflow-y: auto; display: none; z-index: 50;"></div>
         </div>
         
@@ -217,16 +217,25 @@ function initNav(pageName) {
         return;
       }
       
-      const results = familyMembers.filter(m => {
-        const full = getFullName(m).toLowerCase();
-        const un = (m.username || '').toLowerCase();
-        return full.includes(query) || un.includes(query);
-      }).slice(0, 10);
+      let results = [];
+      try {
+        results = familyMembers.filter(m => {
+          if (!m) return false;
+          const fn = m.firstName || '';
+          const ln = m.lastName || '';
+          const full = (fn + ' ' + ln).toLowerCase();
+          const un = (m.username || '').toLowerCase();
+          return full.includes(query) || un.includes(query);
+        }).slice(0, 10);
+      } catch (err) {
+        console.error("Search error:", err);
+      }
       
       if (results.length === 0) {
+        const extraHint = (familyMembers.length <= 1) ? '<br><small style="color:var(--royal-red);display:block;margin-top:8px;">(Note: You are the only user in this database. Register a second account in a new tab to find them here.)</small>' : '';
         searchResults.innerHTML = `
           <div style="padding:16px;text-align:center;">
-            <div style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">No members found in network.</div>
+            <div style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">No members found in network.${extraHint}</div>
             <button class="btn btn-outline btn-sm" onclick="openInviteExternalModal()" style="font-size:11px; padding:6px 12px; border-color:var(--gold); color:var(--gold);">💌 Invite to Vansh</button>
           </div>
         `;
