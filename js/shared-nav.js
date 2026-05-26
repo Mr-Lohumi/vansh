@@ -44,7 +44,6 @@ const NAV_GROUPS = [
       { id: 'trust',       label: 'Family Trust', href: 'trust.html',       icon: NAV_ICONS.trust },
       { id: 'traditions',  label: 'Traditions',   href: 'traditions.html',  icon: NAV_ICONS.traditions },
       { id: 'governance',  label: 'Governance',   href: 'governance.html',  icon: NAV_ICONS.governance },
-      { id: 'migration',   label: 'Migration',    href: 'migration.html',   icon: NAV_ICONS.migration },
       { id: 'admin',       label: 'Admin Portal', href: 'admin.html',       icon: NAV_ICONS.governance },
     ]
   }
