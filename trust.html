@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vansh (वंश) — Family Trust & Philanthropy</title>
+  <title>Vansh (à¤µà¤‚à¤¶) â€” Family Trust & Philanthropy</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css?v=6">
   <style>
@@ -31,6 +31,11 @@
   </style>
 </head>
 <body style="display: none;">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js?v=10"></script>
+  <script src="js/shared-auth.js?v=10"></script>
+  <script src="js/shared-data.js?v=10"></script>
+  <script src="js/shared-nav.js?v=10"></script>
   <script>
     if (!localStorage.getItem('rootd_auth')) {
       window.location.href = 'login.html';
@@ -51,7 +56,7 @@
           <div class="goal-card">
             <div class="goal-top">
               <span>Annual Education Fund</span>
-              <span style="color: var(--royal-red)">₹8.5L / ₹10L</span>
+              <span style="color: var(--royal-red)">â‚¹8.5L / â‚¹10L</span>
             </div>
             <div class="goal-bar">
               <div class="goal-fill" style="width: 85%"></div>
@@ -79,14 +84,14 @@
     <div class="modal-box" style="max-width: 500px;">
       <div class="modal-header">
         <div class="modal-title" id="trustModalTitle">Add Impact Area</div>
-        <button class="modal-close" onclick="closeTrustModal()">×</button>
+        <button class="modal-close" onclick="closeTrustModal()">Ã—</button>
       </div>
       <form id="trustForm" onsubmit="event.preventDefault(); saveTrustItem();">
         <div class="modal-body">
           <input type="hidden" id="trustId">
         <div class="form-group">
           <label class="form-label">Icon (Emoji)</label>
-          <input type="text" id="trustIcon" class="form-input" placeholder="e.g. 🎓" required>
+          <input type="text" id="trustIcon" class="form-input" placeholder="e.g. ðŸŽ“" required>
         </div>
         <div class="form-group">
           <label class="form-label">Title</label>
@@ -126,10 +131,12 @@
     .modal-close { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
     .modal-close:hover { color: var(--text); }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js?v=10"></script>
+  <script src="js/shared-auth.js?v=10"></script>
+  <script src="js/shared-data.js?v=10"></script>
+  <script src="js/shared-nav.js?v=10"></script>
 
-  <script src="js/shared-auth.js"></script>
-  <script src="js/shared-data.js"></script>
-  <script src="js/shared-nav.js"></script>
   <script>
     if (!requireAuth()) throw '';
     initNav('trust');
@@ -145,9 +152,9 @@
     
     // CRUD Logic
     let trustItems = JSON.parse(localStorage.getItem('vansh_trust_items')) || [
-      { id: 't1', icon: '🎓', title: 'Vidyalaya Scholarships', desc: 'Funding higher education for underprivileged students in our ancestral village.', amount: '12 Students Funded' },
-      { id: 't2', icon: '🏥', title: 'Medical Relief Camp', desc: 'Annual free medical consultation camps held in rural districts.', amount: '500+ Patients Served' },
-      { id: 't3', icon: '🏛️', title: 'Temple Restoration', desc: 'Contributing to the preservation of our ancestral deity temple.', amount: '₹5L Donated' }
+      { id: 't1', icon: 'ðŸŽ“', title: 'Vidyalaya Scholarships', desc: 'Funding higher education for underprivileged students in our ancestral village.', amount: '12 Students Funded' },
+      { id: 't2', icon: 'ðŸ¥', title: 'Medical Relief Camp', desc: 'Annual free medical consultation camps held in rural districts.', amount: '500+ Patients Served' },
+      { id: 't3', icon: 'ðŸ›ï¸', title: 'Temple Restoration', desc: 'Contributing to the preservation of our ancestral deity temple.', amount: 'â‚¹5L Donated' }
     ];
     
     function renderTrustItems() {
@@ -226,3 +233,4 @@
   </script>
 </body>
 </html>
+

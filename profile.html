@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vansh (वंश) — Member Profile</title>
+  <title>Vansh (à¤µà¤‚à¤¶) â€” Member Profile</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css?v=3">
   <style>
@@ -70,7 +70,7 @@
     <div class="modal-box">
       <div class="modal-header">
         <div class="modal-title">Edit Profile</div>
-        <button class="modal-close" onclick="closeEditModal()">×</button>
+        <button class="modal-close" onclick="closeEditModal()">Ã—</button>
       </div>
       <form id="editForm" onsubmit="event.preventDefault(); submitEditProfile();">
         <div class="modal-body">
@@ -178,10 +178,12 @@
       </form>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js?v=10"></script>
+  <script src="js/shared-auth.js?v=10"></script>
+  <script src="js/shared-data.js?v=10"></script>
+  <script src="js/shared-nav.js?v=10"></script>
 
-  <script src="js/shared-auth.js"></script>
-  <script src="js/shared-data.js"></script>
-  <script src="js/shared-nav.js"></script>
   <script src="js/shared-tree.js"></script>
   <script>
     if (!requireAuth()) throw '';
@@ -199,7 +201,7 @@
       }
       const relToViewer = getSmartIndianRelation(familyMembers, loggedInId, member.id);
       
-      const verifiedIcon = member.verified ? '<span class="text-green" style="font-size:20px; border-radius:50%; background:var(--green-dim); width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center;">✓</span>' : '';
+      const verifiedIcon = member.verified ? '<span class="text-green" style="font-size:20px; border-radius:50%; background:var(--green-dim); width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center;">âœ“</span>' : '';
       const badgeHTML = relToViewer ? `<div class="pc-badge ${relToViewer.badge}" style="position:static;display:inline-block">${relToViewer.latin}</div>` : '';
       
       let statusText = 'Single';
@@ -219,9 +221,9 @@
           <div style="padding:0 24px 24px;display:flex;align-items:center;gap:24px;">
             <div class="pc-avatar" style="width:90px;height:90px;font-size:28px;border:4px solid var(--bg-card);box-shadow:0 0 0 2px var(--royal-red);z-index:2;${getAvatarStyle(member)}">${member.imageUrl?'':getInitials(member)}</div>
             <div style="flex:1; z-index:2;">
-              <h1 style="font-size:24px;font-weight:700;color:var(--royal-red);font-family:'Cinzel',serif;margin-bottom:4px;display:flex;align-items:center;gap:12px;text-transform:uppercase;letter-spacing:1px;">${getFullName(member)} ${member.verified?'<span class="text-green" style="font-size:20px">✓</span>':''}</h1>
+              <h1 style="font-size:24px;font-weight:700;color:var(--royal-red);font-family:'Cinzel',serif;margin-bottom:4px;display:flex;align-items:center;gap:12px;text-transform:uppercase;letter-spacing:1px;">${getFullName(member)} ${member.verified?'<span class="text-green" style="font-size:20px">âœ“</span>':''}</h1>
               <div style="color:var(--text-secondary);font-weight:600;font-size:14px;margin-bottom:6px">@${member.username || 'user'}</div>
-              <div style="color:var(--text-muted);font-size:13px;font-weight:600;">Age: ${member.age} Yrs · ${member.gender} · ${member.occupation || 'N/A'} · Status: ${statusText}</div>
+              <div style="color:var(--text-muted);font-size:13px;font-weight:600;">Age: ${member.age} Yrs Â· ${member.gender} Â· ${member.occupation || 'N/A'} Â· Status: ${statusText}</div>
             </div>
             <div style="z-index:2;">
               ${member.id===loggedInId 
@@ -287,7 +289,7 @@
           </div>
           <div class="info-box">
             <div class="info-label">Manglik / Diet</div>
-            <div class="info-val">${member.manglik || 'Not Provided'} · ${member.diet || 'Not Provided'}</div>
+            <div class="info-val">${member.manglik || 'Not Provided'} Â· ${member.diet || 'Not Provided'}</div>
           </div>
         </div>
         
@@ -380,3 +382,4 @@
   </script>
 </body>
 </html>
+

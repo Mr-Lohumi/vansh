@@ -1,13 +1,13 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vansh (वंश) — Family Dynasty</title>
+  <title>Vansh (à¤µà¤‚à¤¶) â€” Family Dynasty</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css?v=8">
   <style>
-    /* ── TOOLBAR ── */
+    /* â”€â”€ TOOLBAR â”€â”€ */
     .tree-toolbar {
       display: flex; justify-content: space-between; align-items: center;
       padding: 20px 28px; background: var(--bg-card);
@@ -17,7 +17,7 @@
     .toolbar-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
     .perspective-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; white-space: nowrap; }
 
-    /* ── TREE WRAPPER ── */
+    /* â”€â”€ TREE WRAPPER â”€â”€ */
     .tree-wrapper {
       background: linear-gradient(135deg, #fffdf5, #fdf8e8);
       border: 1px solid var(--border); border-radius: 0 0 20px 20px;
@@ -26,7 +26,7 @@
     }
     #treeCanvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 1; }
 
-    /* ── PREMIUM MODAL ── */
+    /* â”€â”€ PREMIUM MODAL â”€â”€ */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; display: none; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
     .modal-overlay.active { display: flex; }
     .modal-box {
@@ -47,7 +47,7 @@
     .modal-close-btn:hover { background: rgba(255,255,255,0.25); }
     .modal-body { padding: 24px 28px; }
 
-    /* ── FORM ELEMENTS ── */
+    /* â”€â”€ FORM ELEMENTS â”€â”€ */
     .form-section { margin-bottom: 20px; }
     .form-section-title { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; color: var(--royal-red); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
     .form-section-title::after { content: ''; flex: 1; height: 1px; background: rgba(107,21,34,0.1); }
@@ -65,7 +65,7 @@
     .form-input:focus, .form-select:focus { outline: none; border-color: var(--royal-red); background: #fff; box-shadow: 0 0 0 3px rgba(107,21,34,0.08); }
     .form-input::placeholder { color: #BDB0A0; }
 
-    /* ── VERIFICATION TOGGLE ── */
+    /* â”€â”€ VERIFICATION TOGGLE â”€â”€ */
     .verify-toggle { display: flex; gap: 10px; margin-bottom: 24px; }
     .verify-option {
       flex: 1; padding: 14px 12px; border: 2px solid var(--border); border-radius: 12px;
@@ -77,14 +77,14 @@
     .vo-label { font-size: 11px; font-weight: 700; font-family: 'Cinzel', serif; letter-spacing: 0.5px; }
     .vo-sub { font-size: 10px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
 
-    /* ── MODAL FOOTER ── */
+    /* â”€â”€ MODAL FOOTER â”€â”€ */
     .modal-footer { padding: 16px 28px 24px; display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid var(--border-light); }
     .btn-cancel { padding: 12px 24px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; transition: all 0.2s; }
     .btn-cancel:hover { background: var(--bg-card); }
     .btn-add { padding: 12px 28px; background: linear-gradient(135deg, var(--royal-red-dark), #AB2330); border: none; border-radius: 10px; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #fff; cursor: pointer; transition: all 0.25s; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
     .btn-add:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107,21,34,0.3); }
 
-    /* ── SUCCESS ANIMATION ── */
+    /* â”€â”€ SUCCESS ANIMATION â”€â”€ */
     @keyframes successPop { 0%,100% { transform:scale(1); } 50% { transform:scale(1.06); } }
     .success-pop { animation: successPop 0.4s ease; }
 
@@ -109,7 +109,7 @@
         <!-- Toolbar -->
         <div class="tree-toolbar anim">
           <div class="toolbar-left">
-            <span class="perspective-label">👁 Perspective:</span>
+            <span class="perspective-label">ðŸ‘ Perspective:</span>
             <select class="form-select" id="perspectiveSelect" style="width:220px; padding:9px 12px; margin:0; font-size:13px;"></select>
           </div>
           <button onclick="openAddModal()" style="padding:10px 22px; background:linear-gradient(135deg, var(--royal-red-dark), #AB2330); color:#fff; border:none; border-radius:12px; font-family:'Cinzel',serif; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:all 0.25s; box-shadow:0 4px 14px rgba(107,21,34,0.25);" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 8px 24px rgba(107,21,34,0.35)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 14px rgba(107,21,34,0.25)'">
@@ -128,7 +128,7 @@
     </div>
   </div>
 
-  <!-- ═══════════════ ADD MEMBER MODAL ═══════════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• ADD MEMBER MODAL â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <div class="modal-overlay" id="addModalOverlay">
     <div class="modal-box">
       <!-- Header -->
@@ -137,7 +137,7 @@
           <div class="modal-hd-title">Add Family Member</div>
           <div class="modal-hd-sub">Register a new member to your dynasty</div>
         </div>
-        <button class="modal-close-btn" onclick="closeAddModal()">×</button>
+        <button class="modal-close-btn" onclick="closeAddModal()">Ã—</button>
       </div>
 
       <!-- Body -->
@@ -230,7 +230,7 @@
           <div class="form-group">
             <label class="form-label">Relationship to You *</label>
             <select id="addRelation" class="form-select" onchange="onRelationChange(this.value)">
-              <option value="">— Select Relation —</option>
+              <option value="">â€” Select Relation â€”</option>
               <optgroup label="Direct Family">
                 <option value="papa">Papa (Father)</option>
                 <option value="mummy">Mummy (Mother)</option>
@@ -294,12 +294,12 @@
           <div class="form-section-title">Verification Status</div>
           <div class="verify-toggle">
             <div class="verify-option selected-verified" id="voVerified" onclick="selectVerification(true)">
-              <div class="vo-icon">✅</div>
+              <div class="vo-icon">âœ…</div>
               <div class="vo-label" style="color:#059669;">Verified</div>
               <div class="vo-sub">Member confirmed in the dynasty. Gold tick shown on profile.</div>
             </div>
             <div class="verify-option" id="voUnverified" onclick="selectVerification(false)">
-              <div class="vo-icon">🔴</div>
+              <div class="vo-icon">ðŸ”´</div>
               <div class="vo-label" style="color:var(--royal-red);">Unverified</div>
               <div class="vo-sub">Added for tree reference. Needs identity confirmation later.</div>
             </div>
@@ -319,10 +319,12 @@
       </div>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js?v=10"></script>
+  <script src="js/shared-auth.js?v=10"></script>
+  <script src="js/shared-data.js?v=10"></script>
+  <script src="js/shared-nav.js?v=10"></script>
 
-  <script src="js/shared-auth.js"></script>
-  <script src="js/shared-data.js"></script>
-  <script src="js/shared-nav.js"></script>
   <script src="js/shared-tree.js"></script>
   <script>
     if (!requireAuth()) throw '';
@@ -369,7 +371,7 @@
 
     renderTreeToContainer('dynamicTreeNodes', 'treeCanvas', currentPOV, 'handleNodeClick');
 
-    // ── Modal open/close ──
+    // â”€â”€ Modal open/close â”€â”€
     function openAddModal() {
       document.getElementById('addModalOverlay').classList.add('active');
     }
@@ -386,7 +388,7 @@
       selectVerification(true);
     }
 
-    // ── Auto-calculate age from DOB ──
+    // â”€â”€ Auto-calculate age from DOB â”€â”€
     function calcAddAge() {
       const dob = document.getElementById('addDOB').value;
       if (!dob) return;
@@ -400,7 +402,7 @@
       document.getElementById('addAgeDisplay').textContent = '(' + age + ' yrs)';
     }
 
-    // ── Relation change: auto-suggest parent slot ──
+    // â”€â”€ Relation change: auto-suggest parent slot â”€â”€
     function onRelationChange(val) {
       const auth = getAuthData();
       const myId = auth ? auth.userId : null;
@@ -416,7 +418,7 @@
       }
     }
 
-    // ── Verification toggle ──
+    // â”€â”€ Verification toggle â”€â”€
     function selectVerification(isVerified) {
       document.getElementById('addVerified').value = isVerified ? 'true' : 'false';
       const vEl = document.getElementById('voVerified');
@@ -430,7 +432,7 @@
       }
     }
 
-    // ── Submit add member ──
+    // â”€â”€ Submit add member â”€â”€
     function submitAddMember() {
       const fn       = document.getElementById('addFn').value.trim();
       const ln       = document.getElementById('addLn').value.trim();
@@ -464,14 +466,14 @@
         spouse:      spouse || null,
         verified:    verified,
         relation:    relation,
-        bio:         verified ? 'Dynasty member — verified.' : 'Dynasty member — awaiting verification.',
+        bio:         verified ? 'Dynasty member â€” verified.' : 'Dynasty member â€” awaiting verification.',
       });
 
       closeAddModal();
 
-      const verLabel = verified ? '✅ Verified' : '🔴 Unverified';
+      const verLabel = verified ? 'âœ… Verified' : 'ðŸ”´ Unverified';
       if (typeof showToast === 'function') {
-        showToast('Member Added', `${fn} ${ln} joined as ${relation} · ${verLabel}`, verified ? 'ok' : 'warn');
+        showToast('Member Added', `${fn} ${ln} joined as ${relation} Â· ${verLabel}`, verified ? 'ok' : 'warn');
       }
 
       populateDropdowns();
@@ -480,3 +482,4 @@
   </script>
 </body>
 </html>
+
