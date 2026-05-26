@@ -61,8 +61,8 @@ function renderProfileCardHTML(member, relation, opts = {}) {
     `;
   }
 
-  const jeweled = isActive ? 'jeweled' : '';
-  const gemsHtml = isActive ? `<div class="gems" id="gems-${member.id}"></div>` : '';
+  const jeweled = '';
+  const gemsHtml = '';
   const fallbackSvg = member.imageUrl ? '' : `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#2a1410"/><path d="M10 100 L10 80 Q25 65 50 65 Q75 65 90 80 L90 100 Z" fill="#1a1a2e"/><ellipse cx="50" cy="42" rx="18" ry="22" fill="#d4a574"/><text x="50" y="47" font-size="16" fill="#fff" text-anchor="middle" font-family="Cinzel">${ini}</text></svg>`;
 
   return `
