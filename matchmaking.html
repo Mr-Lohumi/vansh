@@ -7,222 +7,157 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css?v=19">
   <style>
-    /* Premium Indian Wedding Theme */
+    /* Premium Indian Wedding Theme - BloodLine Overhaul */
+    .page-content { position: relative; z-index: 2; padding-top: 10px; }
+    
+    .bg-arches { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.15; stroke: var(--gold-bright); stroke-width: 0.5; fill: none; }
+    
     .match-hero {
-      background: radial-gradient(circle at center, #8a1c24 0%, #4a0c10 100%);
-      background-size: cover;
-      background-position: center;
+      background: linear-gradient(180deg, var(--maroon-dark) 0%, rgba(42,6,8,0.95) 100%);
+      border: 1px solid var(--gold-dark);
       border-radius: var(--radius);
-      margin-bottom: -40px; /* Overlap with filter panel */
       position: relative;
       overflow: hidden;
-      box-shadow: var(--shadow-card);
-      min-height: 280px;
+      box-shadow: inset 0 1px 0 rgba(212,175,55,0.18), 0 8px 32px rgba(0,0,0,0.5);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 40px;
+      padding: 30px 20px 50px 20px;
+      margin-bottom: -30px;
     }
     
-    .match-hero::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.65);
-      z-index: 1;
-    }
-
-    .match-hero-content {
-      position: relative;
-      z-index: 2;
-      padding-bottom: 30px;
-    }
+    .match-hero-content { position: relative; z-index: 2; }
 
     .match-hero h1 { 
-      font-size: 42px; 
+      font-size: 28px; 
       font-weight: 800; 
-      color: #fff; 
-      margin-bottom: 12px; 
+      color: var(--gold-bright); 
+      margin-bottom: 8px; 
       text-transform: uppercase;
       letter-spacing: 4px;
-      text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      font-family: 'Cinzel', serif;
+      text-shadow: 0 2px 8px rgba(212,175,55,0.3);
     }
     
     .match-hero p {
-      font-size: 18px;
-      color: rgba(255,255,255,0.85);
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
       letter-spacing: 1px;
       max-width: 600px;
       margin: 0 auto;
     }
     
     .filter-panel { 
-      background: var(--bg-card); 
-      padding: 24px 32px; 
+      background: linear-gradient(135deg, rgba(42,6,8,0.95) 0%, rgba(92,20,24,0.95) 100%);
+      padding: 16px 24px; 
       border-radius: var(--radius); 
-      border: 1px solid var(--border); 
-      margin: 0 auto 40px; 
+      border: 1px solid var(--gold-dark); 
+      margin: 0 auto 30px; 
       display: flex; 
-      gap: 20px; 
+      gap: 16px; 
       align-items: flex-end; 
       flex-wrap: wrap; 
-      box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+      box-shadow: inset 0 1px 0 rgba(212,175,55,0.18), 0 8px 24px rgba(0,0,0,0.4);
       position: relative;
       z-index: 3;
       width: 90%;
       max-width: 900px;
+      backdrop-filter: blur(10px);
     }
     
-    .filter-panel .form-label { color: var(--text-muted); font-weight: 600; letter-spacing: 1px; font-family: 'Cinzel', serif; font-size: 12px; }
+    .filter-panel .form-label { color: var(--gold); font-weight: 600; letter-spacing: 1.5px; font-family: 'Cinzel', serif; font-size: 10px; margin-bottom: 6px; display: block; }
     .filter-panel .form-input, .filter-panel .form-select {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 15px;
-      padding: 10px 14px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--gold-dark);
+      color: var(--cream-light);
+      font-size: 13px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
     }
     .filter-panel .form-input:focus, .filter-panel .form-select:focus {
-      border-color: var(--royal-red);
-      box-shadow: 0 0 0 3px var(--royal-red-dim);
+      border-color: var(--gold-bright);
+      outline: none;
+      box-shadow: 0 0 0 1px var(--gold-bright);
     }
-    .filter-panel .form-group { margin-bottom: 0; flex: 1; min-width: 140px; }
+    .filter-panel .form-select option { background: var(--maroon-dark); color: #fff; }
+    .filter-panel .form-group { margin-bottom: 0; flex: 1; min-width: 120px; }
     
-    .grid-matches { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 24px; }
+    .grid-matches { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
     
-    .match-card { 
-      background: var(--bg-card);
-      border: 1px solid var(--border); 
-      border-radius: var(--radius); 
-      padding: 0; 
-      transition: all 0.3s ease; 
-      position: relative; 
-      overflow: hidden; 
-      box-shadow: var(--shadow-sm); 
-      display: flex;
-      flex-direction: column;
+    /* ── SUPER COMPACT BLOODLINE CARD ── */
+    .match-card {
+      position: relative; width: 230px; padding: 2.5px; border-radius: 12px; 
+      background: linear-gradient(135deg, #f0c75a 0%, #d4af37 30%, #8b6914 55%, #d4af37 80%, #f4d772 100%); 
+      box-shadow: 0 8px 24px rgba(0,0,0,0.55); 
+      transition: transform 0.3s ease, box-shadow 0.3s ease; 
+      cursor: pointer;
+      display: flex; flex-direction: column;
     }
+    .match-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.65), 0 0 20px rgba(212,175,55,0.3); }
+    .match-card::before { content: ''; position: absolute; inset: 2.5px; border-radius: 10px; border: 1.5px solid rgba(139, 105, 20, 0.55); pointer-events: none; z-index: 3; }
     
-    .match-card:hover { 
-      transform: translateY(-4px); 
-      box-shadow: var(--shadow-hover);
-      border-color: rgba(203, 163, 101, 0.4);
+    .match-inner {
+      position: relative; display: flex; flex-direction: column; padding: 12px; 
+      background: linear-gradient(135deg, #6e1a1f 0%, #5c1418 60%, #4a0e12 100%); 
+      border-radius: 9px; overflow: hidden; z-index: 2; height: 100%;
     }
+    .match-inner::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 0%, rgba(212, 175, 55, 0.08), transparent 60%); pointer-events: none; }
     
-    .mc-header {
-      padding: 24px 24px 20px;
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      border-bottom: 1px solid var(--border-light);
-      position: relative;
-    }
-
-    .mc-status-bar {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-    }
-    .mc-status-bar.ok { background: linear-gradient(90deg, #10b981, #34d399); }
-    .mc-status-bar.bad { background: linear-gradient(90deg, #ef4444, #f87171); }
+    .mc-header { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; border-bottom: 1px dashed rgba(212,175,55,0.2); padding-bottom: 10px; }
     
-    .mc-avatar {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background-size: cover;
-      background-position: center;
-      border: 2px solid var(--border);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      flex-shrink: 0;
-    }
-
-    .mc-name {
-      font-family: 'Cinzel', serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--royal-red);
-      margin-bottom: 4px;
-      line-height: 1.2;
-    }
+    .photo-frame { position: relative; width: 52px; height: 52px; flex-shrink: 0; }
+    .photo-frame .photo-clip { width: 100%; height: 100%; clip-path: polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%); background: linear-gradient(135deg, #f4d772, #d4af37 50%, #8b6914); padding: 2px; }
+    .photo-frame .photo-inner { width: 100%; height: 100%; clip-path: polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%); background: #2a0608; display: flex; align-items: center; justify-content: center; overflow: hidden; background-size: cover; background-position: center; }
+    .photo-frame .photo-inner svg { width: 100%; height: 100%; }
     
-    .mc-meta {
-      color: var(--text-secondary);
-      font-weight: 500;
-      font-size: 13px;
-    }
-
-    .mc-body {
-      padding: 20px 24px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .mc-info-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      color: var(--text);
-    }
-
-    .mc-info-icon {
-      color: var(--gold);
-      flex-shrink: 0;
-    }
-
+    .mc-info { flex: 1; min-width: 0; }
+    .mc-name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; color: var(--gold-bright); letter-spacing: 0.02em; text-shadow: 0 1px 2px rgba(0,0,0,0.55); margin-bottom: 2px; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mc-meta { font-family: 'Cinzel', serif; font-weight: 600; font-size: 9px; letter-spacing: 0.15em; color: #d4a880; }
+    
+    .mc-body { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .mc-info-row { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 500; color: #f0d8b0; line-height: 1.3; }
+    .mc-info-icon { width: 12px; height: 12px; color: var(--gold-bright); opacity: 0.85; flex-shrink: 0; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.4)); }
+    
+    /* Glowing Seal */
     .mc-seal {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      position: absolute; top: -8px; right: -8px; 
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1.5px solid var(--gold-bright); z-index: 10;
     }
-    
     .mc-seal.ok {
-      background: rgba(16, 185, 129, 0.1);
-      color: #059669;
-      border: 1px solid rgba(16, 185, 129, 0.2);
+      background: radial-gradient(circle at 30% 30%, #6fdcc8, #2a9d8f 70%, #0c4a40 100%);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), inset 0 -1px 1px rgba(0,0,0,0.4), 0 0 10px rgba(42, 157, 143, 0.6);
+      color: #fff;
     }
-
     .mc-seal.bad {
-      background: rgba(239, 68, 68, 0.1);
-      color: #dc2626;
-      border: 1px solid rgba(239, 68, 68, 0.2);
+      background: radial-gradient(circle at 30% 30%, #ff5c6c, #c41e3a 70%, #6a0a14 100%);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), inset 0 -1px 1px rgba(0,0,0,0.4), 0 0 10px rgba(196, 30, 58, 0.6);
+      color: #fff;
     }
     
-    .mc-footer {
-      padding: 16px 24px;
-      background: var(--bg-elevated);
-      border-top: 1px solid var(--border-light);
-    }
-
     .btn-royal {
-      background: var(--royal-red);
-      color: #fff;
+      background: linear-gradient(135deg, var(--gold-bright), var(--gold-dark));
+      color: var(--maroon-deepest);
       border: none;
+      border-radius: 6px;
       font-family: 'Cinzel', serif;
       font-weight: 700;
       letter-spacing: 1px;
       text-transform: uppercase;
+      font-size: 10px;
+      padding: 8px;
       transition: 0.3s;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      cursor: pointer;
+      text-align: center;
+      width: 100%;
+      margin-top: 12px;
     }
-    .btn-royal:hover {
-      background: var(--royal-red-dark);
-      box-shadow: var(--shadow-hover);
-      transform: translateY(-2px);
-    }
+    .btn-royal:hover { background: linear-gradient(135deg, #fff, var(--gold-bright)); transform: translateY(-1px); box-shadow: 0 6px 14px rgba(212,175,55,0.4); }
   </style>
 </head>
 <body style="display: none;">
@@ -244,6 +179,15 @@
     <div class="main-area">
       <header class="topbar" id="topbar"></header>
       <div class="page-content">
+        <svg class="bg-arches" xmlns="http://www.w3.org/2000/svg">
+          <pattern id="arch" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+            <path d="M60 0 C90 30 120 60 120 120 M0 120 C0 60 30 30 60 0 M60 20 C80 40 100 70 100 120 M20 120 C20 70 40 40 60 20 M60 40 C70 60 80 80 80 120 M40 120 C40 80 50 60 60 40" />
+            <circle cx="60" cy="10" r="3" fill="var(--gold-bright)" />
+            <circle cx="60" cy="30" r="2" fill="var(--gold)" />
+            <circle cx="60" cy="50" r="1" fill="var(--gold-dark)" />
+          </pattern>
+          <rect x="0" y="0" width="100%" height="100%" fill="url(#arch)" />
+        </svg>
         
         <div class="match-hero anim">
           <div class="match-hero-content">
@@ -323,40 +267,48 @@
         const isConflict = candidate.gotra === target.gotra;
         const barClass = isConflict ? 'bad' : 'ok';
         
+        const ini = getInitials(candidate);
+        const fallbackSvg = candidate.imageUrl ? '' : `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#2a1410"/><path d="M10 100 L10 80 Q25 65 50 65 Q75 65 90 80 L90 100 Z" fill="#1a1a2e"/><ellipse cx="50" cy="42" rx="18" ry="22" fill="#d4a574"/><text x="50" y="47" font-size="16" fill="#fff" text-anchor="middle" font-family="Cinzel">${ini}</text></svg>`;
+
         html += `
           <div class="match-card">
-            <div class="mc-status-bar ${barClass}"></div>
-            <div class="mc-seal ${barClass}">
-              ${isConflict ? 
-                '<svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg> Exogamy Conflict' : 
-                '<svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg> 100% Verified'}
-            </div>
-            
-            <div class="mc-header">
-              <div class="mc-avatar" style="background-image:url('${candidate.imageUrl || ''}')"></div>
-              <div>
-                <div class="mc-name">${candidate.firstName} ${candidate.lastName}</div>
-                <div class="mc-meta">${candidate.age} Yrs · ${candidate.gender === 'M' ? 'Male' : 'Female'}</div>
+            <div class="match-inner">
+              <div class="mc-seal ${barClass}">
+                ${isConflict ? 
+                  '<svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>' : 
+                  '<svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg>'}
               </div>
-            </div>
-            
-            <div class="mc-body">
-              <div class="mc-info-row">
-                <svg class="mc-info-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                <span><strong>${candidate.gotra}</strong> Gotra · ${candidate.caste}</span>
+              
+              <div class="mc-header">
+                <div class="photo-frame">
+                  <div class="photo-clip">
+                    <div class="photo-inner" style="background-image:url('${candidate.imageUrl || ''}')">
+                      ${fallbackSvg}
+                    </div>
+                  </div>
+                </div>
+                <div class="mc-info">
+                  <div class="mc-name">${candidate.firstName} ${candidate.lastName}</div>
+                  <div class="mc-meta">${candidate.age} Yrs · ${candidate.gender === 'M' ? 'Male' : 'Female'}</div>
+                </div>
               </div>
-              <div class="mc-info-row">
-                <svg class="mc-info-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
-                <span>${candidate.education || 'Education not specified'}</span>
+              
+              <div class="mc-body">
+                <div class="mc-info-row">
+                  <svg class="mc-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                  <span><strong>${candidate.gotra}</strong> · ${candidate.caste}</span>
+                </div>
+                <div class="mc-info-row">
+                  <svg class="mc-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
+                  <span>${candidate.education || 'N/A'}</span>
+                </div>
+                <div class="mc-info-row">
+                  <svg class="mc-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                  <span>${candidate.location || candidate.nativePlace || 'N/A'}</span>
+                </div>
               </div>
-              <div class="mc-info-row">
-                <svg class="mc-info-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                <span>${candidate.location || candidate.nativePlace || 'Location not specified'}</span>
-              </div>
-            </div>
-            
-            <div class="mc-footer">
-              <button class="btn btn-royal" style="width:100%" onclick="window.location.href='profile.html?id=${candidate.id}'">View Royal Profile</button>
+              
+              <button class="btn-royal" onclick="window.location.href='profile.html?id=${candidate.id}'">View Profile</button>
             </div>
           </div>
         `;
