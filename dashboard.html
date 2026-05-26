@@ -1,19 +1,19 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vansh (à¤µà¤‚à¤¶) â€” Dynasty Feed</title>
+  <title>Vansh (वंश) — Dynasty Feed</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css?v=8">
   <style>
-    /* â”€â”€ DASHBOARD LAYOUT â”€â”€ */
+    /* ── DASHBOARD LAYOUT ── */
     .dashboard-layout { display: flex; gap: 32px; align-items: flex-start; max-width: 1060px; margin: 0 auto; }
     .feed-column { flex: 1 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
     .profile-column { flex: 0 0 320px; position: sticky; top: 88px; display: flex; flex-direction: column; gap: 16px; }
     @media (max-width: 1080px) { .dashboard-layout { flex-direction: column; } .profile-column { width: 100%; max-width: 100%; position: static; } }
 
-    /* â”€â”€ STORIES STRIP â”€â”€ */
+    /* ── STORIES STRIP ── */
     .stories-wrap { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
     .stories-wrap::-webkit-scrollbar { display: none; }
     .story-pill {
@@ -31,7 +31,7 @@
     .add-story-pill .asp-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; text-align: center; }
     .add-story-pill:hover { border-color: var(--royal-red); background: rgba(107,21,34,0.03); }
 
-    /* â”€â”€ CREATE POST BOX â”€â”€ */
+    /* ── CREATE POST BOX ── */
     .compose-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: 0 2px 12px rgba(107,21,34,0.04); }
     .compose-top { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
     .compose-ava { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; background-size: cover; background-position: center; border: 2px solid var(--gold-border); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: var(--royal-red); background-color: var(--bg-elevated); }
@@ -46,11 +46,11 @@
     .compose-post-btn { margin-left: auto; padding: 10px 24px; background: linear-gradient(135deg, var(--royal-red-dark), #AB2330); color: #fff; border: none; border-radius: 10px; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; gap: 8px; }
     .compose-post-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107,21,34,0.3); }
 
-    /* â”€â”€ FEED SECTION LABEL â”€â”€ */
+    /* ── FEED SECTION LABEL ── */
     .feed-label { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; }
     .feed-label::after { content: ''; flex: 1; height: 1px; background: var(--border-light); }
 
-    /* â”€â”€ POST CARD â”€â”€ */
+    /* ── POST CARD ── */
     .post-card {
       background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
       overflow: hidden; box-shadow: 0 2px 12px rgba(107,21,34,0.04);
@@ -83,13 +83,13 @@
     .comment-input:focus { border-color: var(--gold-border); }
     .comment-send { background: var(--royal-red-dark); color: #fff; border: none; border-radius: 10px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Cinzel', serif; }
 
-    /* â”€â”€ EMPTY FEED â”€â”€ */
+    /* ── EMPTY FEED ── */
     .empty-feed { text-align: center; padding: 48px 32px; background: var(--bg-card); border: 1px dashed var(--border); border-radius: 20px; }
     .empty-feed .ef-icon { font-size: 48px; margin-bottom: 16px; }
     .empty-feed .ef-title { font-family: 'Cinzel', serif; font-size: 18px; color: var(--text); margin-bottom: 8px; }
     .empty-feed .ef-sub { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
 
-    /* â”€â”€ PROFILE WIDGET â”€â”€ */
+    /* ── PROFILE WIDGET ── */
     .profile-widget { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: 0 2px 12px rgba(107,21,34,0.04); }
     .pw-cover { height: 72px; background: linear-gradient(135deg, #420A12 0%, #6B1522 50%, #AB2330 100%); position: relative; }
     .pw-cover::after { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4A843' fill-opacity='0.08'%3E%3Ccircle cx='30' cy='30' r='15'/%3E%3Ccircle cx='30' cy='30' r='25'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
@@ -113,7 +113,7 @@
     .pw-edit-btn { width: 100%; padding: 11px; background: linear-gradient(135deg, var(--royal-red-dark), #AB2330); color: #fff; border: none; border-radius: 12px; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
     .pw-edit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107,21,34,0.3); }
 
-    /* â”€â”€ QUICK LINKS WIDGET â”€â”€ */
+    /* ── QUICK LINKS WIDGET ── */
     .quick-widget { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: 0 2px 12px rgba(107,21,34,0.04); }
     .qw-title { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
     .quick-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -122,7 +122,7 @@
     .ql-icon { font-size: 22px; }
     .ql-label { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
 
-    /* â”€â”€ DATA CENTER WIDGET â”€â”€ */
+    /* ── DATA CENTER WIDGET ── */
     .data-widget { background: linear-gradient(135deg, rgba(66,10,18,0.03) 0%, rgba(203,163,101,0.03) 100%); border: 1px dashed rgba(107,21,34,0.25); border-radius: 20px; padding: 20px; }
     .dw-title { font-family: 'Cinzel', serif; font-size: 13px; color: var(--royal-red); font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
     .dw-sub { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px; }
@@ -136,10 +136,10 @@
 <body style="display:none;">
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=11"></script>
-  <script src="js/shared-auth.js?v=11"></script>
-  <script src="js/shared-data.js?v=11"></script>
-  <script src="js/shared-nav.js?v=11"></script>
+  <script src="js/supabase-config.js?v=12"></script>
+  <script src="js/shared-auth.js?v=12"></script>
+  <script src="js/shared-data.js?v=12"></script>
+  <script src="js/shared-nav.js?v=12"></script>
   <script>
     if (!localStorage.getItem('rootd_auth')) {
       window.location.href = 'login.html';
@@ -155,12 +155,12 @@
       <div class="page-content">
         <div class="dashboard-layout">
 
-          <!-- â•â• LEFT: FEED â•â• -->
+          <!-- ══ LEFT: FEED ══ -->
           <div class="feed-column">
 
             <!-- Stories -->
             <div>
-              <div class="feed-label" style="margin-bottom:12px;">ðŸ“¸ Stories</div>
+              <div class="feed-label" style="margin-bottom:12px;">📸 Stories</div>
               <div class="stories-wrap" id="storiesContainer"></div>
             </div>
 
@@ -174,17 +174,17 @@
               <div class="compose-actions">
                 <input type="file" id="postImageUpload" accept="image/*" style="display:none;" onchange="handlePostImageUpload(event)">
                 <button class="compose-btn" onclick="document.getElementById('postImageUpload').click()">
-                  <span>ðŸ“¸</span> Photo
+                  <span>📸</span> Photo
                 </button>
                 <button class="compose-btn" onclick="addFamilyEvent()">
-                  <span>ðŸ“…</span> Event
+                  <span>📅</span> Event
                 </button>
                 <button class="compose-btn" onclick="addMilestone()">
-                  <span>ðŸŽ‰</span> Milestone
+                  <span>🎉</span> Milestone
                 </button>
                 <div id="postImagePreviewContainer" style="display:none; align-items:center; gap:6px; background:var(--bg-elevated); padding:5px 12px; border-radius:20px; font-size:12px; color:var(--text-muted); border:1px solid var(--border-light);">
-                  ðŸ“Ž <span id="postImagePreviewName">Image attached</span>
-                  <button onclick="removePostImage()" style="background:none;border:none;color:var(--royal-red);cursor:pointer;font-weight:bold;">âœ•</button>
+                  📎 <span id="postImagePreviewName">Image attached</span>
+                  <button onclick="removePostImage()" style="background:none;border:none;color:var(--royal-red);cursor:pointer;font-weight:bold;">✕</button>
                 </div>
                 <button class="compose-post-btn" onclick="publishPost()">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -194,14 +194,14 @@
             </div>
 
             <!-- Feed Section Label -->
-            <div class="feed-label anim anim-delay-2">ðŸ“£ Dynasty Feed</div>
+            <div class="feed-label anim anim-delay-2">📣 Dynasty Feed</div>
 
             <!-- Posts -->
             <div id="feedContainer"></div>
 
           </div>
 
-          <!-- â•â• RIGHT: WIDGETS â•â• -->
+          <!-- ══ RIGHT: WIDGETS ══ -->
           <div class="profile-column anim anim-delay-2">
 
             <!-- Profile Widget -->
@@ -209,23 +209,23 @@
 
             <!-- Quick Links -->
             <div class="quick-widget">
-              <div class="qw-title">âš¡ Quick Access</div>
+              <div class="qw-title">⚡ Quick Access</div>
               <div class="quick-links">
-                <a href="tree.html" class="ql-btn"><span class="ql-icon">ðŸŒ³</span><span class="ql-label">Family Tree</span></a>
-                <a href="matchmaking.html" class="ql-btn"><span class="ql-icon">ðŸ‘‘</span><span class="ql-label">Alliances</span></a>
-                <a href="trust.html" class="ql-btn"><span class="ql-icon">ðŸ›ï¸</span><span class="ql-label">Estate</span></a>
-                <a href="events.html" class="ql-btn"><span class="ql-icon">ðŸ’</span><span class="ql-label">Events</span></a>
+                <a href="tree.html" class="ql-btn"><span class="ql-icon">🌳</span><span class="ql-label">Family Tree</span></a>
+                <a href="matchmaking.html" class="ql-btn"><span class="ql-icon">👑</span><span class="ql-label">Alliances</span></a>
+                <a href="trust.html" class="ql-btn"><span class="ql-icon">🏛️</span><span class="ql-label">Estate</span></a>
+                <a href="events.html" class="ql-btn"><span class="ql-icon">💍</span><span class="ql-label">Events</span></a>
               </div>
             </div>
 
             <!-- Data Center -->
             <div class="data-widget">
-              <div class="dw-title">âš™ï¸ Data Center</div>
+              <div class="dw-title">⚙️ Data Center</div>
               <div class="dw-sub">Export your family tree or restore from a backup JSON file.</div>
               <div class="dw-btns">
-                <button class="dw-btn primary" onclick="exportVanshData()">ðŸ“¥ Export Tree (JSON)</button>
+                <button class="dw-btn primary" onclick="exportVanshData()">📥 Export Tree (JSON)</button>
                 <label class="dw-btn secondary" style="cursor:pointer;">
-                  ðŸ“¤ Import Backup
+                  📤 Import Backup
                   <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importVanshData(event)">
                 </label>
               </div>
@@ -239,7 +239,7 @@
 
   <!-- Story Viewer -->
   <div id="storyViewer" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:9999; align-items:center; justify-content:center; flex-direction:column;">
-    <button onclick="closeStory()" style="position:absolute; top:20px; right:24px; background:rgba(255,255,255,0.1); border:none; color:#fff; font-size:28px; cursor:pointer; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;">Ã—</button>
+    <button onclick="closeStory()" style="position:absolute; top:20px; right:24px; background:rgba(255,255,255,0.1); border:none; color:#fff; font-size:28px; cursor:pointer; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;">×</button>
     <div id="storyViewerName" style="color:#fff; font-family:'Cinzel',serif; font-size:18px; margin-bottom:16px; font-weight:700;"></div>
     <div id="storyViewerImage" style="width:360px; max-width:90vw; aspect-ratio:9/16; border-radius:20px; background-size:cover; background-position:center; box-shadow:0 20px 60px rgba(0,0,0,0.6);"></div>
   </div>
@@ -251,15 +251,16 @@
       <input type="text" id="newStoryTitle" placeholder="Story title or caption..." style="width:100%; padding:12px 16px; border:1.5px solid var(--border); border-radius:12px; font-family:inherit; font-size:14px; outline:none; color:var(--text); background:var(--bg-elevated); margin-bottom:16px;">
       <input type="file" id="storyImageUpload" accept="image/*" style="display:none;" onchange="handleStoryImageUpload(event)">
       <div id="storyImagePreview" style="display:none; width:100%; height:140px; border-radius:12px; background-size:cover; background-position:center; margin-bottom:12px; position:relative; border:1px solid var(--border);">
-        <button onclick="removeStoryImage()" style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.5); color:#fff; border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; font-size:16px; line-height:1; display:flex; align-items:center; justify-content:center;">Ã—</button>
+        <button onclick="removeStoryImage()" style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.5); color:#fff; border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; font-size:16px; line-height:1; display:flex; align-items:center; justify-content:center;">×</button>
       </div>
-      <button onclick="document.getElementById('storyImageUpload').click()" style="width:100%; padding:12px; border:1.5px dashed var(--border); border-radius:12px; background:var(--bg-elevated); color:var(--text-muted); font-family:inherit; cursor:pointer; font-weight:600; margin-bottom:20px;">ðŸ“¸ Upload Photo</button>
+      <button onclick="document.getElementById('storyImageUpload').click()" style="width:100%; padding:12px; border:1.5px dashed var(--border); border-radius:12px; background:var(--bg-elevated); color:var(--text-muted); font-family:inherit; cursor:pointer; font-weight:600; margin-bottom:20px;">📸 Upload Photo</button>
       <div style="display:flex; gap:12px; justify-content:flex-end;">
         <button onclick="closeAddStoryModal()" style="padding:10px 20px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:10px; cursor:pointer; font-family:inherit; font-weight:600; color:var(--text);">Cancel</button>
         <button onclick="submitNewStory()" style="padding:10px 24px; background:linear-gradient(135deg, var(--royal-red-dark), #AB2330); color:#fff; border:none; border-radius:10px; cursor:pointer; font-family:'Cinzel',serif; font-weight:700; font-size:13px;">Share Story</button>
       </div>
     </div>
   </div>
+
   <script>
     if (!requireAuth()) throw '';
     initNav('dashboard');
@@ -274,11 +275,11 @@
       throw new Error('No authMember');
     }
 
-    // â”€â”€ Avatar styles â”€â”€
+    // ── Avatar styles ──
     const avaStyle = authMember.imageUrl ? `background-image:url('${authMember.imageUrl}'); background-size:cover; background-position:center;` : getAvatarStyle(authMember);
     const avaTxt   = authMember.imageUrl ? '' : getInitials(authMember);
 
-    // â”€â”€ Network stats â”€â”€
+    // ── Network stats ──
     let netCount = 0, verCount = 0;
     familyMembers.forEach(m => {
       if (m.id === authMember.id) return;
@@ -289,7 +290,7 @@
     verCount += (authMember.verified ? 1 : 0);
     const verPct = netCount > 0 ? Math.round((verCount / netCount) * 100) : 0;
 
-    // â”€â”€ Render Profile Widget â”€â”€
+    // ── Render Profile Widget ──
     document.getElementById('userWidget').innerHTML = `
       <div class="pw-cover"></div>
       <div class="pw-ava-wrap">
@@ -300,7 +301,7 @@
         <div class="pw-handle">@${authMember.username || 'user'}</div>
         <div class="pw-lineage">
           <span class="pw-badge">${authMember.caste || 'Brahmin'}</span>
-          <span style="color:var(--text-muted)">â€¢</span>
+          <span style="color:var(--text-muted)">•</span>
           <span class="pw-badge">${authMember.gotra || 'Kashyap'} Gotra</span>
         </div>
         <div class="pw-stats">
@@ -313,15 +314,15 @@
             <div class="pw-stat-label">Verified</div>
           </div>
           <div class="pw-stat">
-            <div class="pw-stat-num">${authMember.age || 'â€”'}</div>
+            <div class="pw-stat-num">${authMember.age || '—'}</div>
             <div class="pw-stat-label">Age</div>
           </div>
         </div>
         <div class="pw-info-list">
-          ${authMember.occupation ? `<div class="pw-info-row"><span class="pw-info-icon">ðŸ’¼</span><span class="pw-info-val">${authMember.occupation}</span></div>` : ''}
-          ${authMember.education ? `<div class="pw-info-row"><span class="pw-info-icon">ðŸŽ“</span><span class="pw-info-val">${authMember.education}</span></div>` : ''}
-          ${authMember.nativePlace ? `<div class="pw-info-row"><span class="pw-info-icon">ðŸ“</span><span class="pw-info-val">${authMember.nativePlace}</span></div>` : ''}
-          <div class="pw-info-row"><span class="pw-info-icon">${authMember.gender === 'F' ? 'ðŸ‘©' : 'ðŸ‘¨'}</span><span class="pw-info-val">${authMember.gender === 'F' ? 'Female' : 'Male'} Â· ${authMember.spouse ? '<span style="color:var(--royal-red)">Married</span>' : 'Single'}</span></div>
+          ${authMember.occupation ? `<div class="pw-info-row"><span class="pw-info-icon">💼</span><span class="pw-info-val">${authMember.occupation}</span></div>` : ''}
+          ${authMember.education ? `<div class="pw-info-row"><span class="pw-info-icon">🎓</span><span class="pw-info-val">${authMember.education}</span></div>` : ''}
+          ${authMember.nativePlace ? `<div class="pw-info-row"><span class="pw-info-icon">📍</span><span class="pw-info-val">${authMember.nativePlace}</span></div>` : ''}
+          <div class="pw-info-row"><span class="pw-info-icon">${authMember.gender === 'F' ? '👩' : '👨'}</span><span class="pw-info-val">${authMember.gender === 'F' ? 'Female' : 'Male'} · ${authMember.spouse ? '<span style="color:var(--royal-red)">Married</span>' : 'Single'}</span></div>
         </div>
         <a href="profile.html?id=${authMember.id}" class="pw-edit-btn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -330,7 +331,7 @@
       </div>
     `;
 
-    // â”€â”€ Set compose avatar â”€â”€
+    // ── Set compose avatar ──
     const cpa = document.getElementById('createPostAvatar');
     if (authMember.imageUrl) {
       cpa.style.backgroundImage = `url('${authMember.imageUrl}')`;
@@ -340,7 +341,7 @@
       cpa.textContent = avaTxt;
     }
 
-    // â”€â”€ Feed â”€â”€
+    // ── Feed ──
     let feedPosts = [];
     try {
       const s = localStorage.getItem('vansh_feed_v2');
@@ -361,7 +362,7 @@
       if (!feedPosts.length) {
         container.innerHTML = `
           <div class="empty-feed">
-            <div class="ef-icon">ðŸ“£</div>
+            <div class="ef-icon">📣</div>
             <div class="ef-title">No Royal Announcements Yet</div>
             <div class="ef-sub">Be the first to share a milestone, event, or update with your dynasty network!</div>
           </div>`;
@@ -380,9 +381,9 @@
               <div class="post-ava" style="${avatarInline}">${hasImg ? '' : initials}</div>
               <div style="flex:1; min-width:0;">
                 <div class="post-author">${post.authorName || 'Anonymous'}</div>
-                <div class="post-meta">${timeAgo(post.timestamp)} Â· <span style="color:var(--royal-red); font-weight:600;">Public</span></div>
+                <div class="post-meta">${timeAgo(post.timestamp)} · <span style="color:var(--royal-red); font-weight:600;">Public</span></div>
               </div>
-              <button class="post-more" onclick="this.nextElementSibling.classList.toggle('active')">Â·Â·Â·</button>
+              <button class="post-more" onclick="this.nextElementSibling.classList.toggle('active')">···</button>
             </div>
             <div class="post-body">${post.content || ''}</div>
           </div>
@@ -390,11 +391,11 @@
           <div class="post-reactions">
             <button class="reaction-pill ${post.hasRespected ? 'liked' : ''}" onclick="toggleRespect(${post.id})">
               <svg fill="${post.hasRespected ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
-              Respect${post.respects ? ' Â· ' + post.respects : ''}
+              Respect${post.respects ? ' · ' + post.respects : ''}
             </button>
             <button class="reaction-pill" onclick="toggleComments(${post.id})">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-              ${post.comments && post.comments.length ? 'Comments Â· ' + post.comments.length : 'Comment'}
+              ${post.comments && post.comments.length ? 'Comments · ' + post.comments.length : 'Comment'}
             </button>
             <button class="reaction-pill" onclick="sharePost(${post.id})" style="margin-left:auto;">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
@@ -420,7 +421,7 @@
     }
     renderFeed();
 
-    // â”€â”€ Stories â”€â”€
+    // ── Stories ──
     let mockStories = [];
     try { const s = localStorage.getItem('vansh_stories_v1'); if (s) { const p = JSON.parse(s); if (Array.isArray(p)) mockStories = p; } } catch(e) {}
 
@@ -439,7 +440,7 @@
     }
     renderStories();
 
-    // â”€â”€ Feed interactions â”€â”€
+    // ── Feed interactions ──
     function toggleRespect(postId) {
       const post = feedPosts.find(p => p.id === postId);
       if (!post) return;
@@ -480,7 +481,7 @@
       }
     }
 
-    // â”€â”€ Publish post â”€â”€
+    // ── Publish post ──
     let currentPostImage = null;
     function handlePostImageUpload(event) {
       const file = event.target.files[0];
@@ -499,11 +500,11 @@
     }
     function addFamilyEvent() {
       const n = prompt('Enter family event name (e.g. Annual Gathering):');
-      if (n) document.getElementById('postInput').value = `ðŸ“… [Event: ${n}] ` + document.getElementById('postInput').value;
+      if (n) document.getElementById('postInput').value = `📅 [Event: ${n}] ` + document.getElementById('postInput').value;
     }
     function addMilestone() {
       const n = prompt('What milestone to celebrate? (e.g. Birth, Graduation):');
-      if (n) document.getElementById('postInput').value = `ðŸŽ‰ Milestone: ${n}! ` + document.getElementById('postInput').value;
+      if (n) document.getElementById('postInput').value = `🎉 Milestone: ${n}! ` + document.getElementById('postInput').value;
     }
     function publishPost() {
       const content = document.getElementById('postInput').value.trim();
@@ -529,7 +530,7 @@
       showToast('Published', 'Your announcement has been shared!', 'ok');
     }
 
-    // â”€â”€ Stories modals â”€â”€
+    // ── Stories modals ──
     let currentStoryImage = null;
     function openAddStoryModal() { document.getElementById('addStoryModal').style.display = 'flex'; }
     function handleStoryImageUpload(e) {
@@ -562,7 +563,7 @@
     }
     function closeStory() { document.getElementById('storyViewer').style.display = 'none'; }
 
-    // â”€â”€ Data center â”€â”€
+    // ── Data center ──
     function exportVanshData() {
       const a = document.createElement('a');
       a.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(familyMembers, null, 2)));
@@ -598,4 +599,3 @@
   </script>
 </body>
 </html>
-

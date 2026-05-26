@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vansh (à¤µà¤‚à¤¶) â€” Royal Heritage Museum</title>
+  <title>Vansh (वंश) — Royal Heritage Museum</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css?v=6">
   <style>
@@ -181,7 +181,7 @@
   <!-- Upload Modal -->
   <div class="modal-overlay" id="uploadModal">
     <div class="modal-box">
-      <button class="modal-close" onclick="closeUploadModal()">âœ•</button>
+      <button class="modal-close" onclick="closeUploadModal()">✕</button>
       <div class="modal-title">Deposit Artifact</div>
       
       <div class="form-group">
@@ -221,12 +221,13 @@
       </div>
     </div>
   </div>
+
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=11"></script>
-  <script src="js/shared-auth.js?v=11"></script>
-  <script src="js/shared-data.js?v=11"></script>
-  <script src="js/shared-nav.js?v=11"></script>
+  <script src="js/supabase-config.js?v=12"></script>
+  <script src="js/shared-auth.js?v=12"></script>
+  <script src="js/shared-data.js?v=12"></script>
+  <script src="js/shared-nav.js?v=12"></script>
   <script>
     if (!requireAuth()) throw '';
     initNav('museum');
@@ -278,7 +279,7 @@
 
       grid.innerHTML = artifacts.map((art, idx) => `
         <div class="museum-frame">
-          <button class="btn-remove-art" onclick="deleteArtifact(${idx})" title="Remove Artifact">âœ•</button>
+          <button class="btn-remove-art" onclick="deleteArtifact(${idx})" title="Remove Artifact">✕</button>
           <div class="frame-loop loop-tl"></div>
           <div class="frame-loop loop-tr"></div>
           <div class="frame-loop loop-bl"></div>
@@ -392,4 +393,3 @@
   </script>
 </body>
 </html>
-

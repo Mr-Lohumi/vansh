@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vansh (à¤µà¤‚à¤¶) â€” Royal Events</title>
+  <title>Vansh (वंश) — Royal Events</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css?v=6">
   <style>
@@ -130,7 +130,7 @@
   <!-- Create Event Modal -->
   <div class="modal-overlay" id="eventModal">
     <div class="modal-box">
-      <button class="modal-close" onclick="closeEventModal()">âœ•</button>
+      <button class="modal-close" onclick="closeEventModal()">✕</button>
       <div class="modal-title">Host a Royal Event</div>
       
       <div class="form-group">
@@ -171,12 +171,13 @@
       </div>
     </div>
   </div>
+
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=11"></script>
-  <script src="js/shared-auth.js?v=11"></script>
-  <script src="js/shared-data.js?v=11"></script>
-  <script src="js/shared-nav.js?v=11"></script>
+  <script src="js/supabase-config.js?v=12"></script>
+  <script src="js/shared-auth.js?v=12"></script>
+  <script src="js/shared-data.js?v=12"></script>
+  <script src="js/shared-nav.js?v=12"></script>
   <script>
     if (!requireAuth()) throw '';
     initNav('events');
@@ -247,7 +248,7 @@
         localStorage.setItem(EVENTS_KEY, JSON.stringify(events));
         
         if (ev.rsvped) {
-          btnElement.innerText = "RSVP'd âœ“";
+          btnElement.innerText = "RSVP'd ✓";
           btnElement.style.background = 'var(--royal-red-dim)';
           btnElement.style.color = 'var(--royal-red-dark)';
         } else {
@@ -299,7 +300,7 @@
         
         const coverHtml = ev.imgUrl ? `<div class="event-cover" style="background-image:url('${ev.imgUrl}')"></div>` : '';
         
-        const rsvpText = ev.rsvped ? "RSVP'd âœ“" : "RSVP";
+        const rsvpText = ev.rsvped ? "RSVP'd ✓" : "RSVP";
         const rsvpStyle = ev.rsvped ? "background: var(--royal-red-dim); color: var(--royal-red-dark);" : "";
 
         return `
@@ -313,8 +314,8 @@
             <div class="event-details">
               <div class="event-title">${ev.title}</div>
               <div class="event-meta">
-                <span>ðŸ“ ${ev.location}</span>
-                <span>ðŸ•’ ${timeStr}</span>
+                <span>📍 ${ev.location}</span>
+                <span>🕒 ${timeStr}</span>
               </div>
               <div class="event-desc">${ev.desc}</div>
               <div class="event-actions">
@@ -429,4 +430,3 @@
   </script>
 </body>
 </html>
-

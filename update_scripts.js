@@ -6,10 +6,10 @@ const files = fs.readdirSync(dir).filter(f => f.endsWith('.html') && !['index.ht
 
 const scriptBlock = `
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=11"></script>
-  <script src="js/shared-auth.js?v=11"></script>
-  <script src="js/shared-data.js?v=11"></script>
-  <script src="js/shared-nav.js?v=11"></script>`;
+  <script src="js/supabase-config.js?v=12"></script>
+  <script src="js/shared-auth.js?v=12"></script>
+  <script src="js/shared-data.js?v=12"></script>
+  <script src="js/shared-nav.js?v=12"></script>`;
 
 files.forEach(f => {
   const p = path.join(dir, f);

@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vansh (à¤µà¤‚à¤¶) â€” Dynasty Gateway</title>
+  <title>Vansh (वंश) — Dynasty Gateway</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -24,7 +24,7 @@
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; overflow-x: hidden; }
     h1, h2, h3, .brand { font-family: 'Cinzel', serif; }
 
-    /* â”€â”€ SPLIT LEFT â”€â”€ */
+    /* ── SPLIT LEFT ── */
     .split-left {
       flex: 1.1; display: flex; flex-direction: column;
       justify-content: center; align-items: center;
@@ -94,7 +94,7 @@
     .stat-num { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 700; color: var(--gold); }
     .stat-label { font-size: 9px; color: rgba(255,255,255,0.5); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
 
-    /* â”€â”€ SPLIT RIGHT â”€â”€ */
+    /* ── SPLIT RIGHT ── */
     .split-right {
       flex: 1; display: flex; justify-content: center; align-items: center;
       padding: 32px 20px; overflow-y: auto; background: var(--bg);
@@ -208,7 +208,7 @@
 </head>
 <body>
 
-  <!-- â”€â”€ LEFT PANEL â”€â”€ -->
+  <!-- ── LEFT PANEL ── -->
   <div class="split-left">
     <!-- Rotating Mandalas -->
     <div class="mandala mandala-1"></div>
@@ -251,20 +251,20 @@
     </div>
   </div>
 
-  <!-- â”€â”€ RIGHT PANEL â”€â”€ -->
+  <!-- ── RIGHT PANEL ── -->
   <div class="split-right">
     <div class="login-card">
 
       <!-- Global error/success message -->
       <div class="form-msg error" id="globalMsg"></div>
 
-      <!-- â”€â”€ TABS â”€â”€ -->
+      <!-- ── TABS ── -->
       <div class="tabs" id="tabsHeader">
         <button class="tab active" id="tabSignIn" onclick="switchTab('signin')">Sign In</button>
         <button class="tab" id="tabSignUp" onclick="switchTab('signup')">Sign Up</button>
       </div>
 
-      <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SIGN IN FORM â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <!-- ══════════════════════ SIGN IN FORM ══════════════════════ -->
       <form id="signInForm" onsubmit="handleSignIn(event)">
         <div class="card-header">
           <div class="card-greeting">Welcome Back</div>
@@ -294,10 +294,10 @@
           Enter Dynasty
         </button>
 
-        <p style="text-align:center; margin-top:16px; font-size:12px; color:var(--text-muted);">Don't have an account? <a onclick="switchTab('signup')" style="color:var(--royal-red); cursor:pointer; font-weight:600;">Register Here â†’</a></p>
+        <p style="text-align:center; margin-top:16px; font-size:12px; color:var(--text-muted);">Don't have an account? <a onclick="switchTab('signup')" style="color:var(--royal-red); cursor:pointer; font-weight:600;">Register Here →</a></p>
       </form>
 
-      <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SIGN UP FORM â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <!-- ══════════════════════ SIGN UP FORM ══════════════════════ -->
       <form id="signUpForm" class="hidden" onsubmit="handleSignUp(event)">
         <div class="card-header">
           <div class="card-greeting">Join Vansh</div>
@@ -314,7 +314,7 @@
         <!-- Avatar upload -->
         <div class="avatar-uploader" onclick="document.getElementById('avatarInput').click()" style="cursor:pointer;">
           <div class="avatar-circle">
-            <div id="avatarPreview" class="avatar-preview">ðŸ‘¤</div>
+            <div id="avatarPreview" class="avatar-preview">👤</div>
           </div>
           <div class="avatar-info">
             <div class="avatar-info-title">Upload Profile Photo</div>
@@ -358,7 +358,7 @@
         <!-- Dynasty Details Section -->
         <div class="section-sep">
           <div class="section-sep-line"></div>
-          <div class="section-sep-label">ðŸª” Dynasty Details</div>
+          <div class="section-sep-label">🪔 Dynasty Details</div>
           <div class="section-sep-line"></div>
         </div>
 
@@ -378,7 +378,7 @@
           </div>
         </div>
         <div id="ageBadgeContainer" style="margin-bottom:16px; display:none;">
-          <div class="age-badge" id="ageBadge">ðŸŽ‚ Age: â€”</div>
+          <div class="age-badge" id="ageBadge">🎂 Age: —</div>
         </div>
         <input type="hidden" id="regAge" value="25">
 
@@ -442,10 +442,10 @@
           Register Dynasty Profile
         </button>
 
-        <p style="text-align:center; margin-top:14px; font-size:12px; color:var(--text-muted);">Already registered? <a onclick="switchTab('signin')" style="color:var(--royal-red); cursor:pointer; font-weight:600;">Sign In â†’</a></p>
+        <p style="text-align:center; margin-top:14px; font-size:12px; color:var(--text-muted);">Already registered? <a onclick="switchTab('signin')" style="color:var(--royal-red); cursor:pointer; font-weight:600;">Sign In →</a></p>
       </form>
 
-      <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• FORGOT PASSWORD â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <!-- ══════════════════════ FORGOT PASSWORD ══════════════════════ -->
       <div id="forgotForm" class="hidden">
         <div class="card-header">
           <div class="card-greeting">Account Recovery</div>
@@ -467,7 +467,7 @@
 
         <div id="forgotStep2" class="hidden">
           <div style="background: rgba(34,139,34,0.06); border: 1px solid rgba(34,139,34,0.2); border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; font-size: 13px; color: #228B22;">
-            âœ… Account found! Set your new password below.
+            ✅ Account found! Set your new password below.
           </div>
           <div class="form-group">
             <label class="form-label">New Password</label>
@@ -480,21 +480,22 @@
           <button type="button" class="btn-gold" onclick="handleResetPassword()">Set New Password</button>
         </div>
 
-        <button type="button" class="btn-outline-red" onclick="switchTab('signin')">â† Back to Sign In</button>
+        <button type="button" class="btn-outline-red" onclick="switchTab('signin')">← Back to Sign In</button>
       </div>
 
     </div>
   </div>
+
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=11"></script>
-  <script src="js/shared-auth.js?v=11"></script>
-  <script src="js/shared-data.js?v=11"></script>
-  <script src="js/shared-nav.js?v=11"></script>
+  <script src="js/supabase-config.js?v=12"></script>
+  <script src="js/shared-auth.js?v=12"></script>
+  <script src="js/shared-data.js?v=12"></script>
+  <script src="js/shared-nav.js?v=12"></script>
   <script>
     let base64AvatarData = "";
 
-    /* â”€â”€ Floating gold dots â”€â”€ */
+    /* ── Floating gold dots ── */
     (function spawnDots() {
       const container = document.getElementById('dotsContainer');
       for (let i = 0; i < 18; i++) {
@@ -509,10 +510,10 @@
       }
     })();
 
-    /* â”€â”€ DOB max = today â”€â”€ */
+    /* ── DOB max = today ── */
     document.getElementById('regDOB').max = new Date().toISOString().split('T')[0];
 
-    /* â”€â”€ Tab switcher â”€â”€ */
+    /* ── Tab switcher ── */
     function switchTab(tab) {
       document.getElementById('signInForm').classList.add('hidden');
       document.getElementById('signUpForm').classList.add('hidden');
@@ -533,7 +534,7 @@
       }
     }
 
-    /* â”€â”€ Show/hide message â”€â”€ */
+    /* ── Show/hide message ── */
     function showMsg(text, type = 'error', id = 'globalMsg') {
       const el = document.getElementById(id);
       if (!el) return;
@@ -544,7 +545,7 @@
       document.querySelectorAll('.form-msg').forEach(el => el.classList.remove('show'));
     }
 
-    /* â”€â”€ Password toggle â”€â”€ */
+    /* ── Password toggle ── */
     function togglePwd(inputId, btn) {
       const input = document.getElementById(inputId);
       if (input.type === 'password') {
@@ -556,7 +557,7 @@
       }
     }
 
-    /* â”€â”€ Password strength â”€â”€ */
+    /* ── Password strength ── */
     function checkPwdStrength(val) {
       const bar = document.getElementById('pwdBar');
       const hint = document.getElementById('pwdHint');
@@ -578,7 +579,7 @@
       document.getElementById('sp3').className = 'step-dot ' + (score >= 5 ? 'done' : score >= 4 ? 'active' : '');
     }
 
-    /* â”€â”€ DOB â†’ Age calculator â”€â”€ */
+    /* ── DOB → Age calculator ── */
     function calcAgeFromDOB() {
       const dob = document.getElementById('regDOB').value;
       if (!dob) return;
@@ -590,11 +591,11 @@
       document.getElementById('regAge').value = age > 0 ? age : 1;
       const badge = document.getElementById('ageBadge');
       const container = document.getElementById('ageBadgeContainer');
-      badge.textContent = 'ðŸŽ‚ Age: ' + age + ' years';
+      badge.textContent = '🎂 Age: ' + age + ' years';
       container.style.display = 'block';
     }
 
-    /* â”€â”€ Avatar upload â”€â”€ */
+    /* ── Avatar upload ── */
     function handleAvatarUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -610,7 +611,7 @@
       reader.readAsDataURL(file);
     }
 
-    /* â”€â”€ SIGN IN â”€â”€ */
+    /* ── SIGN IN ── */
     function handleSignIn(e) {
       e.preventDefault();
       hideMsg();
@@ -624,7 +625,7 @@
       }
     }
 
-    /* â”€â”€ SIGN UP â”€â”€ */
+    /* ── SIGN UP ── */
     function handleSignUp(e) {
       e.preventDefault();
       hideMsg();
@@ -659,7 +660,7 @@
       }
     }
 
-    /* â”€â”€ FORGOT PASSWORD â”€â”€ */
+    /* ── FORGOT PASSWORD ── */
     function handleForgotLookup() {
       const email = document.getElementById('forgotEmail').value.trim();
       if (!email) { showMsg('Please enter your email.', 'error', 'forgotMsg'); return; }
@@ -705,4 +706,3 @@
   </script>
 </body>
 </html>
-
