@@ -53,6 +53,20 @@
   --orange: #ea580c;
   --orange-dim: rgba(234, 88, 12, 0.1);
 
+  /* BloodLine Theme Colors */
+  --maroon-deepest: #2a0608;
+  --maroon-dark:    #3a0a10;
+  --maroon:         #5c1418;
+  --maroon-mid:     #6e1a1f;
+  --maroon-light:   #8a2226;
+  --gold-bright:    #f4d772;
+  --gold-deepest:   #5a4209;
+  --cream:          #f5e6c0;
+  --cream-light:    #fbf3dd;
+  --cream-text:     #4a2818;
+  --ruby:           #c41e3a;
+  --emerald-bright: #2a9d8f;
+
   --sidebar-w: 260px;
   --topbar-h: 70px;
   --radius: 16px;

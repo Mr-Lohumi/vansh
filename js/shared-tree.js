@@ -197,8 +197,7 @@ function getBloodlineNetwork(currentPOV) {
 
 function renderTreeToContainer(containerId, canvasId, currentPOV, onNodeClickName) {
   const container = document.getElementById(containerId);
-  const canvas = document.getElementById(canvasId);
-  if (!container || !canvas) return;
+  if (!container) return;
   
   container.style.display = 'inline-flex';
   container.style.flexDirection = 'column';
