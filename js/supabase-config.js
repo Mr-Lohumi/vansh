@@ -56,11 +56,15 @@ async function searchMembersCloud(query) {
   try {
     // Search by first_name, last_name, username, or email (case-insensitive)
     const q = query.replace(/'/g, '');  // basic sanitize
-    const { data, error } = await window.supabaseClient
-      .from('vansh_members')
-      .select('*')
-      .or(`first_name.ilike.%${q}%,last_name.ilike.%${q}%,username.ilike.%${q}%,email.ilike.%${q}%`)
-      .limit(15);
+    const terms = q.split(' ').filter(t => t.trim().length > 0);
+    
+    let queryBuilder = window.supabaseClient.from('vansh_members').select('*');
+    
+    terms.forEach(term => {
+      queryBuilder = queryBuilder.or(`first_name.ilike.%${term}%,last_name.ilike.%${term}%,username.ilike.%${term}%,email.ilike.%${term}%`);
+    });
+    
+    const { data, error } = await queryBuilder.limit(20);
 
     if (error) {
       console.warn('[Vansh Search] Cloud query failed:', error.message);
