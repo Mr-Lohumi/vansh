@@ -1,0 +1,299 @@
+
+
+  <div class="split-left">
+    <svg class="motif" viewBox="0 0 100 100" fill="currentColor">
+      <path d="M50 0 C60 30 90 40 100 50 C90 60 60 70 50 100 C40 70 10 60 0 50 C10 40 40 30 50 0 Z M50 15 C55 35 75 45 85 50 C75 55 55 65 50 85 C45 65 25 55 15 50 C25 45 45 35 50 15 Z"></path>
+    </svg>
+    <div class="brand-content">
+      <div class="brand">Vansh<span>.</span></div>
+      <div class="brand-sub">Family Dynasty</div>
+    </div>
+  </div>
+
+  <div class="split-right">
+    <div class="login-card animate-fade">
+      
+      <!-- Premium Authentication Tabs -->
+      <div class="tabs" id="tabsHeader">
+        <button class="tab active" id="tabSignIn" onclick="switchTab('signin')">Sign In</button>
+        <button class="tab" id="tabSignUp" onclick="switchTab('signup')">Sign Up</button>
+      </div>
+
+      <!-- Form 1: SIGN IN -->
+      <form id="signInForm">
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px; line-height: 1.5;">Enter your registered **Email Address** to access your family dashboard.</p>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="loginKey" class="form-input" placeholder="e.g. anand@email.com" required="">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="loginPassword" class="form-input" placeholder="Enter password (default: vansh2025)" required="">
+        </div>
+        <button type="submit" class="btn-gold" style="margin-top: 12px;">Sign In</button>
+      </form>
+
+      <!-- Form 2: SIGN UP -->
+      <form id="signUpForm" class="hidden">
+        
+        <!-- Profile Pic Upload Circle -->
+        <div class="avatar-uploader">
+          <label class="form-label">Upload Profile Photo</label>
+          <div class="avatar-circle" onclick="document.getElementById('avatarInput').click()">
+            <div id="avatarPreview" class="avatar-preview">📸</div>
+          </div>
+          <input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="handleAvatarUpload(event)">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" id="regFirst" class="form-input" placeholder="e.g. Priya" required="">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" id="regLast" class="form-input" placeholder="e.g. Sharma" required="">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="regEmail" class="form-input" placeholder="e.g. priya@email.com" required="">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Create Password</label>
+          <input type="password" id="regPassword" class="form-input" placeholder="Create your login password" required="">
+        </div>
+
+        <div style="border-top: 1px dashed var(--border); padding-top: 16px; margin-top: 16px; margin-bottom: 16px;">
+          <h4 style="font-family:'Cinzel',serif; font-size: 12px; color: var(--royal-red); margin-bottom: 12px; letter-spacing: 1px;">Dynasty Profile Details</h4>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Gender</label>
+              <select id="regGender" class="form-input" style="padding: 12px;">
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Age</label>
+              <input type="number" id="regAge" class="form-input" placeholder="Yrs" value="25" min="1" max="120">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Gotra</label>
+              <input type="text" id="regGotra" class="form-input" placeholder="e.g. Kashyap" value="Kashyap">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Caste / Tribe</label>
+              <input type="text" id="regCaste" class="form-input" placeholder="e.g. Brahmin" value="Brahmin">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Native Place (State / City)</label>
+            <input type="text" id="regNative" class="form-input" placeholder="e.g. Uttarakhand or Delhi">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-gold">Register Profile</button>
+      </form>
+
+      <!-- Stage 3: OTP VERIFICATION MODAL OVERLAY -->
+      <div id="otpSection" class="hidden">
+        <h2 style="font-size:24px; color: var(--royal-red-dark); font-weight:700; margin-bottom:8px;">🔒 Security Verification</h2>
+        <p style="color: var(--text-muted); font-size: 13px; line-height: 1.5; margin-bottom: 24px;" id="otpSub">
+          A secure 8-digit OTP verification code has been dispatched to your registered contact.
+        </p>
+
+        <div class="otp-inputs">
+          <input type="text" class="otp-field" maxlength="1" onkeyup="focusNext(this, event)">
+          <input type="text" class="otp-field" maxlength="1" onkeyup="focusNext(this, event)">
+          <input type="text" class="otp-field" maxlength="1" onkeyup="focusNext(this, event)">
+          <input type="text" class="otp-field" maxlength="1" onkeyup="focusNext(this, event)">
+          <input type="text" class="otp-field" maxlength="1" onkeyup="focusNext(this, event)">
+          <input type="text" class="otp-field" maxlength="1" onkeyup="focusNext(this, event)">
+          <input type="text" class="otp-field" maxlength="1" onkeyup="focusNext(this, event)">
+          <input type="text" class="otp-field" maxlength="1" onkeyup="focusNext(this, event)">
+        </div>
+
+        <button type="button" class="btn-gold" onclick="verifyOTPCode()">Verify &amp; Proceed</button>
+        <button type="button" class="demo-link" onclick="window.location.reload()">Cancel &amp; Go Back</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/shared-auth.js"></script>
+  <script>
+    let pendingAuthAction = null;
+    let base64AvatarData = "";
+    let correctSimulatedOTP = "123456";
+
+    // Tab Switcher
+    function switchTab(tabType) {
+      const tabSignIn = document.getElementById('tabSignIn');
+      const tabSignUp = document.getElementById('tabSignUp');
+      const signInForm = document.getElementById('signInForm');
+      const signUpForm = document.getElementById('signUpForm');
+      
+      if (tabType === 'signin') {
+        tabSignIn.classList.add('active');
+        tabSignUp.classList.remove('active');
+        signInForm.classList.remove('hidden');
+        signUpForm.classList.add('hidden');
+      } else {
+        tabSignIn.classList.remove('active');
+        tabSignUp.classList.add('active');
+        signInForm.classList.add('hidden');
+        signUpForm.classList.remove('hidden');
+      }
+    }
+
+    // Avatar Upload Base64 Reader
+    function handleAvatarUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        base64AvatarData = e.target.result;
+        const preview = document.getElementById('avatarPreview');
+        preview.style.backgroundImage = `url('${base64AvatarData}')`;
+        preview.innerText = "";
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Auto-focus logic for 6 OTP boxes
+    function focusNext(current, event) {
+      if (event.key === "Backspace" || event.key === "Delete") {
+        const prev = current.previousElementSibling;
+        if (prev && prev.classList.contains('otp-field')) {
+          prev.focus();
+        }
+      } else if (current.value.length >= 1) {
+        const next = current.nextElementSibling;
+        if (next && next.classList.contains('otp-field')) {
+          next.focus();
+        }
+      }
+    }
+
+    let currentOTPAuthEmail = null;
+
+    // Generate random 6-digit OTP and send real email
+    async function triggerOTPScreen(dest, action) {
+      pendingAuthAction = action;
+      currentOTPAuthEmail = dest;
+      
+      // Update UI loading state
+      document.getElementById('otpSub').innerText = `Sending secure verification code to: ${dest}...`;
+      
+      // Hide login inputs, show OTP screen
+      document.getElementById('tabsHeader').classList.add('hidden');
+      document.getElementById('signInForm').classList.add('hidden');
+      document.getElementById('signUpForm').classList.add('hidden');
+      document.getElementById('otpSection').classList.remove('hidden');
+
+      if (dest.includes('@')) {
+        const { data, error } = await window.supabaseClient.auth.signInWithOtp({
+          email: dest
+        });
+        if (error) {
+          document.getElementById('otpSub').innerText = `Error sending OTP: ${error.message}`;
+        } else {
+          document.getElementById('otpSub').innerText = `A secure 8-digit verification code has been successfully dispatched to: ${dest}. Please check your inbox and spam folder.`;
+        }
+      } else {
+        document.getElementById('otpSub').innerText = `SMS OTP is disabled without a Twilio upgrade. Please cancel and use an Email Address instead.`;
+      }
+      
+      // Focus first OTP field
+      setTimeout(() => {
+        const firstField = document.querySelector('.otp-field');
+        if (firstField) firstField.focus();
+      }, 100);
+    }
+
+    // Verify OTP code
+    async function verifyOTPCode() {
+      const fields = document.querySelectorAll('.otp-field');
+      let entered = "";
+      fields.forEach(f => entered += f.value.trim());
+
+      if (currentOTPAuthEmail && currentOTPAuthEmail.includes('@')) {
+        const { data: { session }, error } = await window.supabaseClient.auth.verifyOtp({
+          email: currentOTPAuthEmail,
+          token: entered,
+          type: 'email'
+        });
+
+        if (error) {
+          alert('Incorrect verification code or code expired. Please try again.');
+        } else if (session) {
+          if (pendingAuthAction) pendingAuthAction(session.user);
+        }
+      } else {
+         alert('Please use an email address for OTP verification.');
+      }
+    }
+
+    // SIGN IN FORM CAPTURE
+    document.getElementById('signInForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const loginKey = document.getElementById('loginKey').value;
+      const pass = document.getElementById('loginPassword').value;
+      
+      // Pre-validate locally
+      const res = authenticateUser(loginKey, pass);
+      if (res.success) {
+        // Skip OTP and log in directly
+        window.location.href = 'dashboard.html';
+      } else {
+        alert(res.message);
+      }
+    });
+
+    // SIGN UP FORM CAPTURE
+    document.getElementById('signUpForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const first = document.getElementById('regFirst').value;
+      const last = document.getElementById('regLast').value;
+      const email = document.getElementById('regEmail').value;
+      const pass = document.getElementById('regPassword').value;
+      
+      const gender = document.getElementById('regGender').value;
+      const age = document.getElementById('regAge').value;
+      const gotra = document.getElementById('regGotra').value;
+      const caste = document.getElementById('regCaste').value;
+      const native = document.getElementById('regNative').value;
+
+      // Register directly without OTP
+      const res = registerUser(first, last, email, pass, {
+        gender: gender,
+        age: age,
+        gotra: gotra,
+        caste: caste,
+        nativePlace: native,
+        imageUrl: base64AvatarData
+      });
+
+      if (res.success) {
+        alert(res.message);
+        window.location.reload();
+      } else {
+        alert(res.message);
+      }
+    });
+
+
+  </script>
+
+

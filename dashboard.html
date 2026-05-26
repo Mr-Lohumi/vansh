@@ -7,12 +7,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css?v=7">
   <style>
-    .dashboard-layout { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+    /* Dynamic Dashboard Layout */
+    .dashboard-layout { display: flex; gap: 48px; align-items: flex-start; }
     .feed-column { flex: 1 1 550px; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
     .profile-column { flex: 1 1 320px; max-width: 360px; position: sticky; top: 96px; display: flex; flex-direction: column; gap: 24px; }
     
     @media (max-width: 1100px) {
-      .dashboard-layout { flex-direction: column-reverse; }
+      .dashboard-layout { flex-direction: column-reverse; gap: 24px; }
       .profile-column { width: 100%; max-width: 100%; position: static; }
     }
     
@@ -26,23 +27,25 @@
     .stories-container { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
     .stories-container::-webkit-scrollbar { display: none; }
     .story-card { 
-      width: 112px; height: 200px; border-radius: 12px; overflow: hidden; position: relative; 
-      cursor: pointer; flex-shrink: 0; transition: transform 0.2s; 
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e0e0e0;
+      width: 112px; height: 180px; border-radius: var(--radius); overflow: hidden; position: relative; 
+      cursor: pointer; flex-shrink: 0; transition: transform 0.3s, box-shadow 0.3s; 
+      box-shadow: var(--shadow-sm); border: 1px solid var(--border-light);
+      background: var(--bg-card);
     }
-    .story-card:hover { transform: scale(1.02); }
-    .story-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 0.3s; }
-    .story-card:hover .story-bg { transform: scale(1.05); }
-    .story-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%); }
-    .story-avatar { position: absolute; top: 12px; left: 12px; width: 32px; height: 32px; border-radius: 50%; border: 2px solid #c5a059; background-size: cover; background-position: center; z-index: 2; background-color: #581825; }
-    .story-name { position: absolute; bottom: 12px; left: 12px; right: 12px; font-size: 13px; font-weight: 600; color: #fff; font-family: 'Inter', sans-serif; z-index: 2; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+    .story-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--gold-border); }
+    .story-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 0.4s ease; opacity: 0.9; }
+    .story-card:hover .story-bg { transform: scale(1.05); opacity: 1; }
+    .story-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(66, 10, 18, 0.9) 0%, rgba(0,0,0,0) 60%); }
+    .story-avatar { position: absolute; top: 12px; left: 12px; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--gold); background-size: cover; background-position: center; z-index: 2; background-color: var(--bg-elevated); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .story-name { position: absolute; bottom: 12px; left: 12px; right: 12px; font-size: 11px; font-weight: 600; color: #fff; font-family: 'Inter', sans-serif; z-index: 2; text-shadow: 0 1px 4px rgba(0,0,0,0.8); text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
     
     /* Add Story Card styling */
-    .add-story-card { background: #ffffff; display: flex; flex-direction: column; }
-    .add-story-img { height: 130px; background-size: cover; background-position: center; }
-    .add-story-bottom { height: 70px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 12px; }
-    .add-story-btn { position: absolute; top: -16px; width: 32px; height: 32px; border-radius: 50%; background: #581825; border: 3px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; font-weight: bold; }
-    .add-story-text { font-size: 13px; font-weight: 600; color: #050505; font-family: 'Inter', sans-serif; }
+    .add-story-card { background: var(--bg-card); display: flex; flex-direction: column; }
+    .add-story-img { height: 110px; background-size: cover; background-position: center; opacity: 0.8; border-bottom: 1px solid var(--border-light); }
+    .add-story-bottom { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 16px; background: var(--bg-card); }
+    .add-story-btn { position: absolute; top: -18px; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--royal-red-dark), var(--royal-red)); border: 3px solid var(--bg-card); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; font-weight: 300; box-shadow: 0 4px 12px rgba(107, 21, 34, 0.3); transition: transform 0.2s; }
+    .add-story-card:hover .add-story-btn { transform: scale(1.1); }
+    .add-story-text { font-size: 11px; font-weight: 600; color: var(--text-secondary); font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
     
     /* Quick Actions Grid */
     .qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -58,20 +61,21 @@
     
     /* Enhanced Post Styling - Clean Flat Theme */
     .post-card { 
-      background: #ffffff;
-      border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); 
-      color: #050505; position: relative; overflow: hidden; font-family: 'Inter', sans-serif;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); 
+      color: var(--text); position: relative; overflow: hidden; font-family: 'Inter', sans-serif; transition: box-shadow 0.3s;
     }
-    .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-    .post-avatar { width: 48px; height: 48px; border-radius: 50%; background-size: cover; background-position: center; border: 1px solid #e0e0e0; background-color: #f0f2f5; }
-    .post-author { font-size: 16px; font-weight: 600; color: #050505; font-family: 'Inter', sans-serif; }
-    .post-time { font-size: 12px; font-weight: 500; color: #65676b; margin-top: 2px; }
-    .post-content { font-size: 15px; color: #050505; line-height: 1.5; margin-bottom: 16px; }
-    .post-image { width: 100%; border-radius: 8px; margin-bottom: 16px; border: 1px solid #e0e0e0; }
-    .post-actions { display: flex; gap: 24px; border-top: 1px solid #e0e0e0; padding-top: 12px; }
-    .post-action { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: #65676b; cursor: pointer; transition: background 0.2s; padding: 6px 12px; border-radius: 4px; font-family: 'Inter', sans-serif; }
-    .post-action:hover { background: #f0f2f5; }
-    .post-action svg { width: 20px; height: 20px; }
+    .post-card:hover { box-shadow: var(--shadow-card); }
+    .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .post-avatar { width: 48px; height: 48px; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid var(--gold-border); background-color: var(--bg-elevated); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .post-author { font-size: 16px; font-weight: 700; color: var(--text); font-family: 'Cinzel', serif; letter-spacing: 0.5px; }
+    .post-time { font-size: 12px; font-weight: 500; color: var(--text-muted); margin-top: 4px; }
+    .post-content { font-size: 15px; color: var(--text); line-height: 1.6; margin-bottom: 20px; }
+    .post-image { width: 100%; border-radius: var(--radius); margin-bottom: 20px; border: 1px solid var(--border-light); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.02); }
+    .post-actions { display: flex; gap: 24px; border-top: 1px solid var(--border-light); padding-top: 16px; }
+    .post-action { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; padding: 8px 16px; border-radius: 30px; font-family: 'Inter', sans-serif; border: 1px solid transparent; }
+    .post-action:hover { background: var(--bg-hover); color: var(--gold); border-color: var(--gold-border); }
+    .post-action svg { width: 18px; height: 18px; }
     
     /* Widget Profile Centering Fix */
     .widget-profile { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px 24px; text-align: center; box-shadow: var(--shadow-card); position: relative; overflow: hidden; }
@@ -99,44 +103,49 @@
           <!-- LEFT: The Feed -->
           <div class="feed-column">
             
-            <div class="section-header anim anim-delay-1" style="margin-bottom: 12px; font-size: 14px; font-family: 'Inter', sans-serif; font-weight: 600; color: #65676b; text-transform: none; letter-spacing: 0;">Announcements</div>
+            <div class="section-header anim anim-delay-1" style="margin-bottom: 24px; font-size: 11px; font-family: 'Inter', sans-serif; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 3px; display: flex; align-items: center; gap: 12px; border: none; padding: 0;">
+              <span style="font-size: 14px;">📣</span> ANNOUNCEMENTS
+              <div style="flex: 1; height: 1px; background: linear-gradient(90deg, var(--gold-border), transparent);"></div>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" style="opacity: 0.5"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+            </div>
             <div class="stories-container anim anim-delay-1" id="storiesContainer">
               <!-- Rendered via JS -->
             </div>
             
-            <div style="display: flex; gap: 12px; margin-bottom: 24px; overflow-x: auto; scrollbar-width: none;" class="anim anim-delay-2">
-              <button class="btn btn-outline" style="flex-shrink: 0; background: #ffffff; border: 1px solid #e0e0e0; color: #050505; font-weight: 600; border-radius: 8px;" onclick="window.location.href='matchmaking.html'">
-                👑 Request Alliance
+            <div style="display: flex; gap: 16px; margin-bottom: 32px; overflow-x: auto; scrollbar-width: none;" class="anim anim-delay-2">
+              <button class="btn" style="flex-shrink: 0; background: var(--bg-elevated); border: 1px solid var(--border-light); color: var(--text-secondary); font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; border-radius: var(--radius-sm); padding: 12px 24px; box-shadow: var(--shadow-sm); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='var(--shadow-hover)'; this.style.borderColor='var(--gold-border)'; this.style.color='var(--gold)'" onmouseout="this.style.boxShadow='var(--shadow-sm)'; this.style.borderColor='var(--border-light)'; this.style.color='var(--text-secondary)'" onclick="window.location.href='matchmaking.html'">
+                <span style="margin-right: 8px; font-size: 16px; filter: drop-shadow(0 2px 4px rgba(203,163,101,0.3));">👑</span> Request Alliance
               </button>
-              <button class="btn btn-outline" style="flex-shrink: 0; background: #ffffff; border: 1px solid #e0e0e0; color: #050505; font-weight: 600; border-radius: 8px;" onclick="window.location.href='trust.html'">
-                🏛️ View Estate
+              <button class="btn" style="flex-shrink: 0; background: var(--bg-elevated); border: 1px solid var(--border-light); color: var(--text-secondary); font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; border-radius: var(--radius-sm); padding: 12px 24px; box-shadow: var(--shadow-sm); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='var(--shadow-hover)'; this.style.borderColor='var(--gold-border)'; this.style.color='var(--gold)'" onmouseout="this.style.boxShadow='var(--shadow-sm)'; this.style.borderColor='var(--border-light)'; this.style.color='var(--text-secondary)'" onclick="window.location.href='trust.html'">
+                <span style="margin-right: 8px; font-size: 16px; filter: drop-shadow(0 2px 4px rgba(203,163,101,0.3));">🏛️</span> View Estate
               </button>
-              <button class="btn btn-outline" style="flex-shrink: 0; background: #ffffff; border: 1px solid #e0e0e0; color: #050505; font-weight: 600; border-radius: 8px;" onclick="window.location.href='events.html'">
-                💍 RSVP Events
+              <button class="btn" style="flex-shrink: 0; background: var(--bg-elevated); border: 1px solid var(--border-light); color: var(--text-secondary); font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; border-radius: var(--radius-sm); padding: 12px 24px; box-shadow: var(--shadow-sm); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='var(--shadow-hover)'; this.style.borderColor='var(--gold-border)'; this.style.color='var(--gold)'" onmouseout="this.style.boxShadow='var(--shadow-sm)'; this.style.borderColor='var(--border-light)'; this.style.color='var(--text-secondary)'" onclick="window.location.href='events.html'">
+                <span style="margin-right: 8px; font-size: 16px; filter: drop-shadow(0 2px 4px rgba(203,163,101,0.3));">💍</span> RSVP Events
               </button>
-              <button class="btn btn-outline" style="flex-shrink: 0; background: #ffffff; border: 1px solid #e0e0e0; color: #050505; font-weight: 600; border-radius: 8px;" onclick="window.location.href='tree.html'">
-                ➕ Register Birth
+              <button class="btn" style="flex-shrink: 0; background: var(--bg-elevated); border: 1px solid var(--border-light); color: var(--text-secondary); font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; border-radius: var(--radius-sm); padding: 12px 24px; box-shadow: var(--shadow-sm); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='var(--shadow-hover)'; this.style.borderColor='var(--gold-border)'; this.style.color='var(--gold)'" onmouseout="this.style.boxShadow='var(--shadow-sm)'; this.style.borderColor='var(--border-light)'; this.style.color='var(--text-secondary)'" onclick="window.location.href='tree.html'">
+                <span style="margin-right: 8px; font-size: 16px; filter: drop-shadow(0 2px 4px rgba(203,163,101,0.3));">➕</span> Register Birth
               </button>
             </div>
 
             <!-- Create Post Box -->
-            <div class="post-card anim anim-delay-2" style="margin-bottom: 24px; padding: 16px;">
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <div class="post-avatar" id="createPostAvatar" style="width: 40px; height: 40px; display:flex; align-items:center; justify-content:center; font-weight:600; color:#050505; font-size:16px;"></div>
-                <input type="text" id="postInput" placeholder="What's on your mind?" style="flex: 1; border: none; background: #f0f2f5; padding: 10px 16px; border-radius: 20px; font-family: inherit; font-size: 15px; outline: none; color: #050505;" onkeypress="if(event.key==='Enter') publishPost()">
+            <div class="card anim anim-delay-2" style="margin-bottom: 32px; border-radius: 24px; padding: 24px;">
+              <div style="display: flex; gap: 16px; align-items: center;">
+                <div class="post-avatar" id="createPostAvatar" style="width: 48px; height: 48px; display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--gold); font-size:18px; border: 2px solid var(--border-light); box-shadow: var(--shadow-sm)"></div>
+                <input type="text" id="postInput" placeholder="What's on your mind?" style="flex: 1; border: 1px solid transparent; background: var(--bg-elevated); padding: 14px 20px; border-radius: 30px; font-family: inherit; font-size: 15px; outline: none; color: var(--text); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition: all 0.3s;" onfocus="this.style.borderColor='var(--gold-border)'; this.style.boxShadow='0 0 0 4px var(--gold-dim)'" onblur="this.style.borderColor='transparent'; this.style.boxShadow='inset 0 2px 4px rgba(0,0,0,0.02)'" onkeypress="if(event.key==='Enter') publishPost()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" style="position: absolute; right: 48px; pointer-events: none; opacity: 0.5"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
               </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px solid #e0e0e0; padding-top: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; border-top: 1px solid var(--border-light); padding-top: 16px;">
                 <div style="display: flex; gap: 16px; padding-left: 8px;">
                   <input type="file" id="postImageUpload" accept="image/*" style="display:none;" onchange="handlePostImageUpload(event)">
-                  <button onclick="document.getElementById('postImageUpload').click()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: #65676b; font-weight: 600; font-size: 14px; cursor: pointer; padding: 6px 8px; border-radius: 4px;" onmouseover="this.style.background='#f0f2f5'" onmouseout="this.style.background='transparent'"><span style="font-size: 18px;">📸</span> Photo / Video</button>
-                  <button onclick="addFamilyEvent()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: #65676b; font-weight: 600; font-size: 14px; cursor: pointer; padding: 6px 8px; border-radius: 4px;" onmouseover="this.style.background='#f0f2f5'" onmouseout="this.style.background='transparent'"><span style="font-size: 18px;">📅</span> Event</button>
-                  <button onclick="addMilestone()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: #65676b; font-weight: 600; font-size: 14px; cursor: pointer; padding: 6px 8px; border-radius: 4px;" onmouseover="this.style.background='#f0f2f5'" onmouseout="this.style.background='transparent'"><span style="font-size: 18px;">📜</span> Milestone</button>
-                  <div id="postImagePreviewContainer" style="display:none; align-items:center; gap:8px; margin-left:auto; background:#f0f2f5; padding:4px 8px; border-radius:12px; font-size:12px; color:#050505; font-weight:500">
+                  <button onclick="document.getElementById('postImageUpload').click()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 500; font-size: 13px; cursor: pointer; padding: 6px 12px; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.background='var(--bg-hover)'; this.style.color='var(--gold)'" onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'"><span style="font-size: 18px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));">📸</span> Photo / Video</button>
+                  <button onclick="addFamilyEvent()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 500; font-size: 13px; cursor: pointer; padding: 6px 12px; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.background='var(--bg-hover)'; this.style.color='var(--gold)'" onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'"><span style="font-size: 18px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));">📅</span> Event</button>
+                  <button onclick="addMilestone()" style="background: none; border: none; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: 500; font-size: 13px; cursor: pointer; padding: 6px 12px; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.background='var(--bg-hover)'; this.style.color='var(--gold)'" onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'"><span style="font-size: 18px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));">📜</span> Milestone</button>
+                  <div id="postImagePreviewContainer" style="display:none; align-items:center; gap:8px; margin-left:auto; background:var(--bg-elevated); padding:6px 12px; border-radius:20px; font-size:12px; color:var(--text); font-weight:500; border: 1px solid var(--border-light)">
                     <span id="postImagePreviewName">Attached</span>
-                    <button onclick="removePostImage()" style="background:none;border:none;color:#d93025;cursor:pointer;font-weight:bold;font-size:12px">✕</button>
+                    <button onclick="removePostImage()" style="background:none;border:none;color:var(--royal-red);cursor:pointer;font-weight:bold;font-size:12px">✕</button>
                   </div>
                 </div>
-                <button class="btn" style="padding: 8px 24px; font-size: 14px; background:#1877f2; border:none; color:#ffffff; font-family:'Inter',sans-serif; font-weight:600; border-radius: 6px;" onclick="publishPost()">Post</button>
+                <button class="btn btn-royal" style="padding: 10px 24px; border-radius: 30px; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px;" onclick="publishPost()">Post <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg></button>
               </div>
             </div>
             
@@ -227,80 +236,84 @@
     document.getElementById('userWidget').innerHTML = `
       <style>
         .wp-profile-card {
-            background-color: #ffffff; width: 100%; border-radius: 12px; border: 1px solid #e0e0e0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); position: relative; overflow: hidden; padding-bottom: 20px;
-            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-card); width: 100%; border-radius: var(--radius-lg); border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm); position: relative; overflow: hidden; padding-bottom: 24px;
+            font-family: 'Inter', sans-serif; transition: box-shadow 0.3s;
         }
+        .wp-profile-card:hover { box-shadow: var(--shadow-card); }
         .wp-cover-photo {
-            height: 100px; width: 100%;
-            background: linear-gradient(135deg, #581825, #8a2538);
-            background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 0), linear-gradient(135deg, #581825, #8a2538);
-            background-size: 10px 10px, auto;
+            height: 120px; width: 100%;
+            background: linear-gradient(180deg, rgba(66, 10, 18, 0.4), var(--royal-red-dark)), url('images/royal_pattern.png');
+            background-size: cover; background-position: center;
         }
         .wp-avatar-container {
-            margin-top: -45px; margin-left: 20px; width: 90px; height: 90px; border-radius: 50%;
-            background: #ffffff; padding: 3px; position: relative; z-index: 3;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            margin-top: -55px; display: flex; justify-content: center; width: 100%;
+            position: relative; z-index: 3;
         }
-        .wp-avatar-img { width: 100%; height: 100%; border-radius: 50%; border: 1px solid #e0e0e0; background-color: #f0f2f5; }
+        .wp-avatar-img { 
+            width: 110px; height: 110px; border-radius: 50%; 
+            border: 4px solid var(--gold); box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.2); 
+            background-color: var(--bg-elevated); 
+        }
         
-        .wp-details-box { position: relative; z-index: 2; padding: 0 20px; margin-top: 10px; }
+        .wp-details-box { position: relative; z-index: 2; padding: 0 24px; margin-top: 16px; text-align: center; }
         
         .wp-status-card {
-            background: #f0f2f5; border-radius: 8px; padding: 12px; margin: 16px 0;
-            text-align: center;
+            background: var(--bg-elevated); border-radius: var(--radius-sm); padding: 16px; margin: 20px 0;
+            border: 1px solid var(--border-light); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
-        .wp-info-list { text-align: left; margin-top: 16px; font-size: 14px; color: #65676b; }
-        .wp-info-item { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
-        .wp-info-icon { width: 20px; text-align: center; font-size: 16px; color: #8a2538; }
-        .wp-info-value { font-weight: 500; color: #050505; }
+        .wp-info-list { text-align: left; margin-top: 16px; font-size: 13px; color: var(--text-secondary); }
+        .wp-info-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--border-light); }
+        .wp-info-item:last-child { border-bottom: none; }
+        .wp-info-icon { width: 20px; text-align: center; font-size: 16px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.05)); }
+        .wp-info-value { font-weight: 500; color: var(--text); }
       </style>
 
       <div class="wp-profile-card">
         <div class="wp-cover-photo"></div>
         
         <div class="wp-avatar-container">
-          <div class="wp-avatar-img" style="${avaStyle}; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700; color:#581825; background-size: cover; background-position: center;">${avaTxt}</div>
+          <div class="wp-avatar-img" style="${avaStyle}; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:700; color:var(--royal-red); background-size: cover; background-position: center;">${avaTxt}</div>
         </div>
         
         <div class="wp-details-box">
-          <h2 style="font-size:20px;font-weight:700;color:#050505; margin-bottom: 2px;">${getFullName(authMember)}</h2>
-          <div style="font-size:14px; font-weight:400; color:#65676b; margin-bottom:12px;">@${authMember.username || 'user'}</div>
+          <h2 style="font-size:24px;font-weight:700;color:var(--text); margin-bottom: 2px; font-family: 'Cinzel', serif; letter-spacing: 1px;">${getFullName(authMember)}</h2>
+          <div style="font-size:13px; font-weight:400; color:var(--text-muted); margin-bottom:12px;">@${authMember.username || 'user'}</div>
           
-          <div style="font-size:14px; font-weight:500; color:#050505; margin-bottom:16px;">
-            ${getCasteLine(authMember)} · ${authMember.gotra} Gotra
+          <div style="font-size:13px; font-weight:500; color:var(--text-secondary); margin-bottom:16px; letter-spacing: 0.5px;">
+            ${getCasteLine(authMember)} <span style="color:var(--gold)">•</span> ${authMember.gotra} Gotra
           </div>
           
           <div class="wp-status-card">
-            <div style="font-size:15px; font-weight:600; color:#050505; margin-bottom:4px;">
+            <div style="font-size:15px; font-weight:600; color:var(--royal-red-dark); margin-bottom:6px; font-family: 'Cinzel', serif; letter-spacing: 0.5px;">
               ${authMember.occupation || 'Network Member'}
             </div>
-            <div style="font-size:13px; color:#65676b;">
-              ${authMember.age} yrs • ${authMember.gender === 'M' ? 'Male' : 'Female'} • <span style="color:#8a2538; font-weight:600;">${authMember.spouse ? 'Married' : 'Single'}</span>
+            <div style="font-size:12px; color:var(--text-secondary); font-weight: 500; letter-spacing: 0.5px;">
+              ${authMember.age} yrs <span style="color:var(--gold)">•</span> ${authMember.gender === 'M' ? 'Male' : 'Female'} <span style="color:var(--gold)">•</span> <span style="color:var(--royal-red); font-weight:700;">${authMember.spouse ? 'Married' : 'Single'}</span>
             </div>
           </div>
           
           <div class="wp-info-list">
             ${authMember.education ? `<div class="wp-info-item"><div class="wp-info-icon">🎓</div><div class="wp-info-value">${authMember.education}</div></div>` : ''}
             ${authMember.company ? `<div class="wp-info-item"><div class="wp-info-icon">💼</div><div class="wp-info-value">${authMember.company}</div></div>` : ''}
-            ${authMember.manglik ? `<div class="wp-info-item"><div class="wp-info-icon">✨</div><div class="wp-info-value" style="color:#8a2538">${authMember.manglik}</div></div>` : ''}
+            ${authMember.manglik ? `<div class="wp-info-item"><div class="wp-info-icon">✨</div><div class="wp-info-value" style="color:var(--royal-red)">${authMember.manglik}</div></div>` : ''}
             ${authMember.diet ? `<div class="wp-info-item"><div class="wp-info-icon">🍽️</div><div class="wp-info-value">${authMember.diet}</div></div>` : ''}
           </div>
           
-          ${authMember.bio ? `<div style="margin-top: 16px; color: #050505; line-height: 1.4; font-size: 14px; text-align: center; padding: 12px; background: #f0f2f5; border-radius: 8px;">${authMember.bio}</div>` : ''}
+          ${authMember.bio ? `<div style="margin-top: 20px; color: var(--gold); font-style: italic; font-family: 'Cinzel', serif; line-height: 1.5; font-size: 14px; text-align: center; padding: 16px; background: var(--bg-elevated); border: 1px solid var(--border-light); border-radius: var(--radius-sm);">"${authMember.bio}"</div>` : ''}
           
-          <div style="display:flex; justify-content:space-between; width:100%; border-top:1px solid #e0e0e0; padding-top:16px; margin-top:20px">
-            <div style="text-align:center; flex:1; border-right:1px solid #e0e0e0">
-              <div style="font-size:18px; font-weight:700; color:#050505">${myNetworkCount}</div>
-              <div style="font-size:12px; color:#65676b; font-weight:500">Network</div>
+          <div style="display:flex; justify-content:space-between; width:100%; border-top:1px solid var(--border-light); padding-top:20px; margin-top:24px">
+            <div style="text-align:center; flex:1; border-right:1px solid var(--border-light)">
+              <div style="font-size:18px; font-weight:700; color:var(--text); font-family: 'Cinzel', serif; display: flex; align-items: center; justify-content: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> ${myNetworkCount}</div>
+              <div style="font-size:11px; color:var(--text-secondary); font-weight:600; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;">Network</div>
             </div>
             <div style="text-align:center; flex:1">
-              <div style="font-size:18px; font-weight:700; color:#050505">${verifiedPercentFinal}%</div>
-              <div style="font-size:12px; color:#65676b; font-weight:500">Verified</div>
+              <div style="font-size:18px; font-weight:700; color:var(--text); font-family: 'Cinzel', serif; display: flex; align-items: center; justify-content: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> ${verifiedPercentFinal}%</div>
+              <div style="font-size:11px; color:var(--text-secondary); font-weight:600; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;">Verified</div>
             </div>
           </div>
           
-          <a href="profile.html?id=${authMember.id}" class="btn" style="width:100%; margin-top:20px; background:#e4e6eb; border:none; color:#050505; font-weight:600; font-size:14px; border-radius: 6px; padding: 8px;">Edit Profile</a>
+          <a href="profile.html?id=${authMember.id}" class="btn btn-royal" style="width:100%; margin-top:24px; border-radius: 30px; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit Profile</a>
         </div>
       </div>
     `;
