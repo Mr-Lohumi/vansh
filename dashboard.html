@@ -139,11 +139,11 @@
 <body style="display:none;">
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=17"></script>
-  <script src="js/shared-auth.js?v=17"></script>
-  <script src="js/shared-data.js?v=17"></script>
-  <script src="js/shared-tree.js?v=17"></script>
-  <script src="js/shared-nav.js?v=17"></script>
+  <script src="js/supabase-config.js?v=18"></script>
+  <script src="js/shared-auth.js?v=18"></script>
+  <script src="js/shared-data.js?v=18"></script>
+  <script src="js/shared-tree.js?v=18"></script>
+  <script src="js/shared-nav.js?v=18"></script>
   <script>
     if (!localStorage.getItem('rootd_auth')) {
       window.location.href = 'login.html';
@@ -518,12 +518,12 @@
       const auth = getAuthData();
       if (!auth) return;
       
-      const success = await deletePost(postId, auth.userId);
-      if (success) {
+      const res = await deletePost(postId, auth.userId);
+      if (res && res.success) {
         showToast('Deleted', 'Your post was removed from the dynasty feed.', 'ok');
         loadFeed();
       } else {
-        alert("Failed to delete post. Please try again.");
+        alert("Failed to delete post: " + (res && res.error ? res.error : "Unknown error"));
       }
     }
 
@@ -535,10 +535,11 @@
       btnEl.style.color = isNowActive ? 'var(--gold)' : '';
       
       const res = await toggleRespect(postId, auth.userId);
-      if (!res) {
+      if (!res || !res.success) {
         // Revert UI if failed
         btnEl.classList.toggle('active');
         btnEl.style.color = !isNowActive ? 'var(--gold)' : '';
+        alert("Failed to toggle respect: " + (res && res.error ? res.error : "Unknown error"));
       } else {
         loadFeed(); // Reload counts
       }
@@ -556,15 +557,15 @@
       const authorName = getFullName(authMember);
       const authorAvatar = authMember.imageUrl || '';
       
-      const success = await addComment(postId, auth.userId, text, authorName, authorAvatar);
-      if (success) {
+      const res = await addComment(postId, auth.userId, text, authorName, authorAvatar);
+      if (res && res.success) {
         input.value = '';
         // Reload feed to show new comment, and ensure the comments section stays active
         await loadFeed();
         const cmtSection = document.getElementById(`comments-${postId}`);
         if (cmtSection) cmtSection.classList.add('active');
       } else {
-        alert("Failed to post comment.");
+        alert("Failed to post comment: " + (res && res.error ? res.error : "Unknown error"));
       }
       input.disabled = false;
     }

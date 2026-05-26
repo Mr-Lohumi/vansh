@@ -381,17 +381,18 @@ async function createPost(userId, content, imageUrl = null, authorName = '', aut
 }
 
 async function deletePost(postId, userId) {
-  if (!window.supabaseClient) return false;
+  if (!window.supabaseClient) return { success: false, error: 'Cloud disconnected' };
   try {
     const { error } = await window.supabaseClient
       .from('vansh_posts')
       .delete()
       .eq('id', postId)
       .eq('user_id', userId);
-    return !error;
+    if (error) return { success: false, error: error.message };
+    return { success: true };
   } catch (err) {
     console.error('[Vansh] deletePost error:', err);
-    return false;
+    return { success: false, error: err.message };
   }
 }
 
@@ -441,34 +442,38 @@ async function fetchPostInteractions(postIds) {
 }
 
 async function toggleRespect(postId, userId) {
-  if (!window.supabaseClient) return false;
+  if (!window.supabaseClient) return { success: false, error: 'Cloud disconnected' };
   try {
     // Check if respect exists
-    const { data } = await window.supabaseClient
+    const { data, error: findErr } = await window.supabaseClient
       .from('vansh_respects')
       .select('id')
       .eq('post_id', postId)
       .eq('user_id', userId)
       .maybeSingle();
       
+    if (findErr) return { success: false, error: findErr.message };
+      
     if (data) {
       // Remove respect
-      await window.supabaseClient.from('vansh_respects').delete().eq('id', data.id);
-      return { status: 'removed' };
+      const { error: delErr } = await window.supabaseClient.from('vansh_respects').delete().eq('id', data.id);
+      if (delErr) return { success: false, error: delErr.message };
+      return { success: true, status: 'removed' };
     } else {
       // Add respect
-      await window.supabaseClient.from('vansh_respects').insert({
+      const { error: insErr } = await window.supabaseClient.from('vansh_respects').insert({
         id: 'RSP_' + Date.now().toString(36) + Math.random().toString(36).substring(2,6),
         post_id: postId,
         user_id: userId
       });
-      return { status: 'added' };
+      if (insErr) return { success: false, error: insErr.message };
+      return { success: true, status: 'added' };
     }
-  } catch (err) { return false; }
+  } catch (err) { return { success: false, error: err.message }; }
 }
 
 async function addComment(postId, userId, content, authorName, authorAvatar) {
-  if (!window.supabaseClient) return false;
+  if (!window.supabaseClient) return { success: false, error: 'Cloud disconnected' };
   try {
     const { error } = await window.supabaseClient.from('vansh_comments').insert({
       id: 'CMT_' + Date.now().toString(36) + Math.random().toString(36).substring(2,6),
@@ -478,6 +483,10 @@ async function addComment(postId, userId, content, authorName, authorAvatar) {
       author_name: authorName,
       author_avatar: authorAvatar
     });
-    return !error;
-  } catch (err) { return false; }
+    if (error) {
+      console.error('[Vansh] addComment error:', error);
+      return { success: false, error: error.message };
+    }
+    return { success: true };
+  } catch (err) { return { success: false, error: err.message }; }
 }
