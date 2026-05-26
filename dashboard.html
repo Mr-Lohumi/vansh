@@ -314,11 +314,14 @@
     let feedPosts = [];
     try {
       const savedFeed = localStorage.getItem('vansh_feed_v2');
-      if (savedFeed) feedPosts = JSON.parse(savedFeed);
+      if (savedFeed) {
+        const parsed = JSON.parse(savedFeed);
+        if (Array.isArray(parsed)) feedPosts = parsed;
+      }
     } catch(e) {}
 
     function renderFeed() {
-      if (feedPosts.length === 0) {
+      if (!feedPosts || feedPosts.length === 0) {
         document.getElementById('feedContainer').innerHTML = `<div style="text-align:center; padding: 40px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; color: #65676b; font-size: 14px; margin-top: 20px;">No royal announcements yet. Be the first to share an update with the family!</div>`;
         return;
       }
@@ -366,7 +369,10 @@
     let mockStories = [];
     try {
       const savedStories = localStorage.getItem('vansh_stories_v1');
-      if (savedStories) mockStories = JSON.parse(savedStories);
+      if (savedStories) {
+        const parsed = JSON.parse(savedStories);
+        if (Array.isArray(parsed)) mockStories = parsed;
+      }
     } catch(e) {}
 
     function renderStories() {
