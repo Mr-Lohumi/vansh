@@ -8,12 +8,19 @@
   <link rel="stylesheet" href="css/shared.css?v=19">
   <style>
     /* Premium Indian Wedding Theme - BloodLine Overhaul */
-    .page-content { position: relative; z-index: 2; padding-top: 10px; }
-    
-    .bg-arches { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.15; stroke: var(--gold-bright); stroke-width: 0.5; fill: none; }
+    .page-content { 
+      position: relative; z-index: 2; padding-top: 10px; 
+      background-image: url('assets/wedding_bg.png'); 
+      background-size: cover; 
+      background-attachment: fixed; 
+      background-position: center; 
+      min-height: 100vh; 
+    }
     
     .match-hero {
-      background: radial-gradient(circle at center, #9e1b22 0%, #5c1418 100%);
+      background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(60, 5, 10, 0.85) 100%), url('assets/wedding_hero.png');
+      background-size: cover;
+      background-position: center;
       border: 1px solid var(--gold-bright);
       border-radius: var(--radius);
       position: relative;
@@ -182,15 +189,6 @@
     <div class="main-area">
       <header class="topbar" id="topbar"></header>
       <div class="page-content">
-        <svg class="bg-arches" xmlns="http://www.w3.org/2000/svg">
-          <pattern id="arch" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
-            <path d="M60 0 C90 30 120 60 120 120 M0 120 C0 60 30 30 60 0 M60 20 C80 40 100 70 100 120 M20 120 C20 70 40 40 60 20 M60 40 C70 60 80 80 80 120 M40 120 C40 80 50 60 60 40" />
-            <circle cx="60" cy="10" r="3" fill="var(--gold-bright)" />
-            <circle cx="60" cy="30" r="2" fill="var(--gold)" />
-            <circle cx="60" cy="50" r="1" fill="var(--gold-dark)" />
-          </pattern>
-          <rect x="0" y="0" width="100%" height="100%" fill="url(#arch)" />
-        </svg>
         
         <div class="match-hero anim">
           <div class="match-hero-content">
