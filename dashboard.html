@@ -41,11 +41,11 @@
     
     /* Add Story Card styling */
     .add-story-card { background: var(--bg-card); display: flex; flex-direction: column; }
-    .add-story-img { height: 110px; background-size: cover; background-position: center; opacity: 0.8; border-bottom: 1px solid var(--border-light); }
+    .add-story-img { height: 110px; background-size: cover; background-position: center; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; color: var(--royal-red); }
     .add-story-bottom { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 16px; background: var(--bg-card); }
-    .add-story-btn { position: absolute; top: -18px; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--royal-red-dark), var(--royal-red)); border: 3px solid var(--bg-card); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; font-weight: 300; box-shadow: 0 4px 12px rgba(107, 21, 34, 0.3); transition: transform 0.2s; }
+    .add-story-btn { position: absolute; top: -18px; width: 36px; height: 36px; border-radius: 50%; background: var(--royal-red-dark); border: 3px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; font-weight: 500; box-shadow: 0 4px 12px rgba(107, 21, 34, 0.4); transition: transform 0.2s; outline: 2px solid var(--gold); outline-offset: -1px; }
     .add-story-card:hover .add-story-btn { transform: scale(1.1); }
-    .add-story-text { font-size: 11px; font-weight: 600; color: var(--text-secondary); font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+    .add-story-text { font-size: 11px; font-weight: 600; color: #581825; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
     
     /* Quick Actions Grid */
     .qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -113,17 +113,17 @@
             </div>
             
             <div style="display: flex; gap: 16px; margin-bottom: 32px; overflow-x: auto; scrollbar-width: none;" class="anim anim-delay-2">
-              <button class="btn" style="flex-shrink: 0; background: var(--bg-elevated); border: 1px solid var(--border-light); color: var(--text-secondary); font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; border-radius: var(--radius-sm); padding: 12px 24px; box-shadow: var(--shadow-sm); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='var(--shadow-hover)'; this.style.borderColor='var(--gold-border)'; this.style.color='var(--gold)'" onmouseout="this.style.boxShadow='var(--shadow-sm)'; this.style.borderColor='var(--border-light)'; this.style.color='var(--text-secondary)'" onclick="window.location.href='matchmaking.html'">
-                <span style="margin-right: 8px; font-size: 16px; filter: drop-shadow(0 2px 4px rgba(203,163,101,0.3));">👑</span> Request Alliance
+              <button class="btn" style="flex-shrink: 0; background: #FAF7F2; border: 1px solid rgba(168,138,103,0.3); color: #9A7B4F; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 12px; padding: 12px 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 6px 16px rgba(168,138,103,0.15)'; this.style.borderColor='rgba(168,138,103,0.6)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.03)'; this.style.borderColor='rgba(168,138,103,0.3)'; this.style.transform='translateY(0)'" onclick="window.location.href='matchmaking.html'">
+                <span style="margin-right: 8px; font-size: 16px;">👑</span> Request Alliance
               </button>
-              <button class="btn" style="flex-shrink: 0; background: var(--bg-elevated); border: 1px solid var(--border-light); color: var(--text-secondary); font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; border-radius: var(--radius-sm); padding: 12px 24px; box-shadow: var(--shadow-sm); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='var(--shadow-hover)'; this.style.borderColor='var(--gold-border)'; this.style.color='var(--gold)'" onmouseout="this.style.boxShadow='var(--shadow-sm)'; this.style.borderColor='var(--border-light)'; this.style.color='var(--text-secondary)'" onclick="window.location.href='trust.html'">
-                <span style="margin-right: 8px; font-size: 16px; filter: drop-shadow(0 2px 4px rgba(203,163,101,0.3));">🏛️</span> View Estate
+              <button class="btn" style="flex-shrink: 0; background: #FAF7F2; border: 1px solid rgba(168,138,103,0.3); color: #9A7B4F; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 12px; padding: 12px 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 6px 16px rgba(168,138,103,0.15)'; this.style.borderColor='rgba(168,138,103,0.6)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.03)'; this.style.borderColor='rgba(168,138,103,0.3)'; this.style.transform='translateY(0)'" onclick="window.location.href='trust.html'">
+                <span style="margin-right: 8px; font-size: 16px;">🏛️</span> View Estate
               </button>
-              <button class="btn" style="flex-shrink: 0; background: var(--bg-elevated); border: 1px solid var(--border-light); color: var(--text-secondary); font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; border-radius: var(--radius-sm); padding: 12px 24px; box-shadow: var(--shadow-sm); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='var(--shadow-hover)'; this.style.borderColor='var(--gold-border)'; this.style.color='var(--gold)'" onmouseout="this.style.boxShadow='var(--shadow-sm)'; this.style.borderColor='var(--border-light)'; this.style.color='var(--text-secondary)'" onclick="window.location.href='events.html'">
-                <span style="margin-right: 8px; font-size: 16px; filter: drop-shadow(0 2px 4px rgba(203,163,101,0.3));">💍</span> RSVP Events
+              <button class="btn" style="flex-shrink: 0; background: #FAF7F2; border: 1px solid rgba(168,138,103,0.3); color: #9A7B4F; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 12px; padding: 12px 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 6px 16px rgba(168,138,103,0.15)'; this.style.borderColor='rgba(168,138,103,0.6)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.03)'; this.style.borderColor='rgba(168,138,103,0.3)'; this.style.transform='translateY(0)'" onclick="window.location.href='events.html'">
+                <span style="margin-right: 8px; font-size: 16px;">💍</span> RSVP Events
               </button>
-              <button class="btn" style="flex-shrink: 0; background: var(--bg-elevated); border: 1px solid var(--border-light); color: var(--text-secondary); font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; border-radius: var(--radius-sm); padding: 12px 24px; box-shadow: var(--shadow-sm); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='var(--shadow-hover)'; this.style.borderColor='var(--gold-border)'; this.style.color='var(--gold)'" onmouseout="this.style.boxShadow='var(--shadow-sm)'; this.style.borderColor='var(--border-light)'; this.style.color='var(--text-secondary)'" onclick="window.location.href='tree.html'">
-                <span style="margin-right: 8px; font-size: 16px; filter: drop-shadow(0 2px 4px rgba(203,163,101,0.3));">➕</span> Register Birth
+              <button class="btn" style="flex-shrink: 0; background: #FAF7F2; border: 1px solid rgba(168,138,103,0.3); color: #9A7B4F; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 12px; padding: 12px 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 6px 16px rgba(168,138,103,0.15)'; this.style.borderColor='rgba(168,138,103,0.6)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.03)'; this.style.borderColor='rgba(168,138,103,0.3)'; this.style.transform='translateY(0)'" onclick="window.location.href='tree.html'">
+                <span style="margin-right: 8px; font-size: 16px;">➕</span> Register Birth
               </button>
             </div>
 
@@ -392,9 +392,12 @@
       const container = document.getElementById('storiesContainer');
       if (!container) return;
       
+      const storyAvaStyle = authMember.imageUrl ? `background-image:url('${authMember.imageUrl}')` : getAvatarStyle(authMember);
+      const storyAvaTxt = authMember.imageUrl ? '' : getInitials(authMember);
+
       let html = `
         <div class="story-card add-story-card" onclick="openAddStoryModal()">
-          <div class="add-story-img" style="background-image: url('https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=200&q=80');"></div>
+          <div class="add-story-img" style="${storyAvaStyle}">${storyAvaTxt}</div>
           <div class="add-story-bottom">
             <div class="add-story-btn">+</div>
             <div class="add-story-text">Create Story</div>
