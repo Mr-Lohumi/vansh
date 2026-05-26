@@ -424,3 +424,60 @@ async function sendMessage(fromId, toId, content, hasAllianceCard = false) {
     return !error;
   } catch (err) { return false; }
 }
+
+// --- POST INTERACTIONS API ---
+async function fetchPostInteractions(postIds) {
+  if (!window.supabaseClient || !postIds || postIds.length === 0) return { respects: [], comments: [] };
+  try {
+    const [resRespects, resComments] = await Promise.all([
+      window.supabaseClient.from('vansh_respects').select('*').in('post_id', postIds),
+      window.supabaseClient.from('vansh_comments').select('*').in('post_id', postIds).order('created_at', { ascending: true })
+    ]);
+    return {
+      respects: resRespects.data || [],
+      comments: resComments.data || []
+    };
+  } catch (err) { return { respects: [], comments: [] }; }
+}
+
+async function toggleRespect(postId, userId) {
+  if (!window.supabaseClient) return false;
+  try {
+    // Check if respect exists
+    const { data } = await window.supabaseClient
+      .from('vansh_respects')
+      .select('id')
+      .eq('post_id', postId)
+      .eq('user_id', userId)
+      .single();
+      
+    if (data) {
+      // Remove respect
+      await window.supabaseClient.from('vansh_respects').delete().eq('id', data.id);
+      return { status: 'removed' };
+    } else {
+      // Add respect
+      await window.supabaseClient.from('vansh_respects').insert({
+        id: 'RSP_' + Date.now().toString(36) + Math.random().toString(36).substring(2,6),
+        post_id: postId,
+        user_id: userId
+      });
+      return { status: 'added' };
+    }
+  } catch (err) { return false; }
+}
+
+async function addComment(postId, userId, content, authorName, authorAvatar) {
+  if (!window.supabaseClient) return false;
+  try {
+    const { error } = await window.supabaseClient.from('vansh_comments').insert({
+      id: 'CMT_' + Date.now().toString(36) + Math.random().toString(36).substring(2,6),
+      post_id: postId,
+      user_id: userId,
+      content: content,
+      author_name: authorName,
+      author_avatar: authorAvatar
+    });
+    return !error;
+  } catch (err) { return false; }
+}

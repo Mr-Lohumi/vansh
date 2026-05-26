@@ -139,11 +139,11 @@
 <body style="display:none;">
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=15"></script>
-  <script src="js/shared-auth.js?v=15"></script>
-  <script src="js/shared-data.js?v=15"></script>
-  <script src="js/shared-tree.js?v=15"></script>
-  <script src="js/shared-nav.js?v=15"></script>
+  <script src="js/supabase-config.js?v=17"></script>
+  <script src="js/shared-auth.js?v=17"></script>
+  <script src="js/shared-data.js?v=17"></script>
+  <script src="js/shared-tree.js?v=17"></script>
+  <script src="js/shared-nav.js?v=17"></script>
   <script>
     if (!localStorage.getItem('rootd_auth')) {
       window.location.href = 'login.html';
@@ -362,15 +362,20 @@
       const networkIds = network.map(m => m.id);
       
       let posts = [];
+      let interactions = { respects: [], comments: [] };
       if (typeof fetchNetworkPosts === 'function') {
         posts = await fetchNetworkPosts(networkIds);
+        if (posts.length && typeof fetchPostInteractions === 'function') {
+          interactions = await fetchPostInteractions(posts.map(p => p.id));
+        }
       }
       
-      renderFeed(posts);
+      renderFeed(posts, interactions);
     }
 
-    function renderFeed(posts) {
+    function renderFeed(posts, interactions = { respects: [], comments: [] }) {
       const container = document.getElementById('feedContainer');
+      const auth = getAuthData();
       if (!posts || !posts.length) {
         container.innerHTML = `
           <div class="empty-feed">
@@ -381,8 +386,6 @@
         return;
       }
       container.innerHTML = posts.map((post, idx) => {
-        // Prefer embedded author info saved at post time (works across devices)
-        // Fall back to local lookup for own posts
         const localAuthor = getMemberById(post.user_id);
         const displayName = post.author_name || (localAuthor ? getFullName(localAuthor) : 'Unknown Member');
         const displayAvatar = post.author_avatar || (localAuthor ? localAuthor.imageUrl : '');
@@ -395,6 +398,13 @@
         
         const isOwnPost = auth && auth.userId === post.user_id;
         
+        const postRespects = interactions.respects.filter(r => r.post_id === post.id);
+        const postComments = interactions.comments.filter(c => c.post_id === post.id);
+        const hasRespected = auth && postRespects.some(r => r.user_id === auth.userId);
+        
+        const respectsCount = postRespects.length > 0 ? `<span style="margin-left:4px;font-size:12px;">${postRespects.length}</span>` : '';
+        const commentsCount = postComments.length > 0 ? `<span style="margin-left:4px;font-size:12px;">${postComments.length}</span>` : '';
+
         return `
         <div class="post-card anim" style="animation-delay:${idx * 0.05}s;" id="post-${post.id}">
           <div class="post-inner">
@@ -420,13 +430,13 @@
           </div>
           ${post.image_url ? `<img src="${post.image_url}" alt="Post image" class="post-img">` : ''}
           <div class="post-reactions">
-            <button class="reaction-pill" onclick="this.classList.toggle('active'); this.style.color = this.classList.contains('active') ? 'var(--gold)' : '';">
+            <button class="reaction-pill ${hasRespected ? 'active' : ''}" style="${hasRespected ? 'color:var(--gold);' : ''}" onclick="handleToggleRespectUI('${post.id}', this)">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
-              Respect
+              Respect ${respectsCount}
             </button>
             <button class="reaction-pill" onclick="document.getElementById('comments-${post.id}').classList.toggle('active')">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-              Comment
+              Comment ${commentsCount}
             </button>
             <button class="reaction-pill" style="margin-left:auto;" onclick="alert('Share link copied to clipboard!')">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
@@ -434,23 +444,24 @@
             </button>
           </div>
           
-          <!-- Expandable Comment Section (FB Style) -->
+          <!-- Expandable Comment Section -->
           <div class="post-comments-section" id="comments-${post.id}">
             <div style="display:flex; gap:12px; margin-bottom: 16px;">
               <div class="post-ava" style="width:32px; height:32px; font-size:12px; ${authMember.imageUrl ? `background-image:url('${authMember.imageUrl}'); background-size:cover; color:transparent;` : 'background:var(--bg-elevated); border:1px solid var(--border);'}">${authMember.imageUrl ? '' : getInitials(authMember)}</div>
               <div style="flex:1; display:flex; background:var(--bg-elevated); border:1px solid var(--border); border-radius:20px; padding:4px 16px; align-items:center;">
-                <input type="text" placeholder="Write a comment..." style="flex:1; border:none; background:transparent; outline:none; font-size:14px; padding:6px 0;" onkeypress="if(event.key==='Enter') { this.value=''; alert('Comment posted (demo only)'); }">
-                <button style="background:none; border:none; color:var(--gold); font-weight:600; font-size:13px; cursor:pointer;" onclick="this.previousElementSibling.value=''; alert('Comment posted (demo only)')">Post</button>
+                <input type="text" id="cmt-input-${post.id}" placeholder="Write a comment..." style="flex:1; border:none; background:transparent; outline:none; font-size:14px; padding:6px 0;" onkeypress="if(event.key==='Enter') submitCommentUI('${post.id}')">
+                <button style="background:none; border:none; color:var(--gold); font-weight:600; font-size:13px; cursor:pointer;" onclick="submitCommentUI('${post.id}')">Post</button>
               </div>
             </div>
-            <!-- Mock Comments for demonstration -->
-            <div style="display:flex; gap:10px; margin-bottom:12px;">
-              <div class="post-ava" style="width:28px; height:28px; font-size:10px; background:var(--bg-hover); color:var(--gold);">S</div>
-              <div style="background:var(--bg-elevated); padding:8px 12px; border-radius:14px; font-size:13px;">
-                <strong>Sushma Sharma</strong>
-                <div style="color:var(--text-secondary); margin-top:2px;">Beautiful update! So proud of the dynasty.</div>
+            ${postComments.map(c => `
+              <div style="display:flex; gap:10px; margin-bottom:12px;">
+                <div class="post-ava" style="width:28px; height:28px; font-size:10px; ${c.author_avatar ? `background-image:url('${c.author_avatar}'); background-size:cover; color:transparent;` : 'background:var(--bg-hover); color:var(--gold);'}">${c.author_avatar ? '' : c.author_name.charAt(0).toUpperCase()}</div>
+                <div style="background:var(--bg-elevated); padding:8px 12px; border-radius:14px; font-size:13px;">
+                  <strong>${c.author_name || 'Member'}</strong>
+                  <div style="color:var(--text-secondary); margin-top:2px;">${c.content}</div>
+                </div>
               </div>
-            </div>
+            `).join('')}
           </div>
         </div>`;
       }).join('');
@@ -491,6 +502,48 @@
       } else {
         alert("Failed to delete post. Please try again.");
       }
+    }
+
+    async function handleToggleRespectUI(postId, btnEl) {
+      const auth = getAuthData();
+      if (!auth) return;
+      
+      const isNowActive = btnEl.classList.toggle('active');
+      btnEl.style.color = isNowActive ? 'var(--gold)' : '';
+      
+      const res = await toggleRespect(postId, auth.userId);
+      if (!res) {
+        // Revert UI if failed
+        btnEl.classList.toggle('active');
+        btnEl.style.color = !isNowActive ? 'var(--gold)' : '';
+      } else {
+        loadFeed(); // Reload counts
+      }
+    }
+
+    async function submitCommentUI(postId) {
+      const input = document.getElementById(`cmt-input-${postId}`);
+      const text = input.value.trim();
+      if (!text) return;
+      
+      const auth = getAuthData();
+      if (!auth) return;
+      
+      input.disabled = true;
+      const authorName = getFullName(authMember);
+      const authorAvatar = authMember.imageUrl || '';
+      
+      const success = await addComment(postId, auth.userId, text, authorName, authorAvatar);
+      if (success) {
+        input.value = '';
+        // Reload feed to show new comment, and ensure the comments section stays active
+        await loadFeed();
+        const cmtSection = document.getElementById(`comments-${postId}`);
+        if (cmtSection) cmtSection.classList.add('active');
+      } else {
+        alert("Failed to post comment.");
+      }
+      input.disabled = false;
     }
 
     // Refresh member profile pics from cloud, then load feed with fresh data
