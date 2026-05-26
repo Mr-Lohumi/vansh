@@ -1,27 +1,32 @@
--- Create the family_members table
-CREATE TABLE family_members (
-  id TEXT PRIMARY KEY,
-  first_name TEXT NOT NULL,
-  last_name TEXT,
-  gender TEXT,
-  age INTEGER,
-  caste TEXT,
-  sub_caste TEXT,
-  gotra TEXT,
-  native_place TEXT,
-  parents JSONB DEFAULT '[]',
-  spouse TEXT,
-  verified BOOLEAN DEFAULT true,
-  gen INTEGER DEFAULT 2,
-  bio TEXT,
-  education TEXT,
-  occupation TEXT,
-  image_url TEXT,
-  mobile TEXT,
-  password TEXT,
-  deceased BOOLEAN DEFAULT false,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+-- ═══════════════════════════════════════════════════════════════
+--   VANSH (वंश) — Supabase Table Setup
+--   Run this ONCE in your Supabase SQL Editor:
+--   https://supabase.com/dashboard → SQL Editor → New Query
+-- ═══════════════════════════════════════════════════════════════
+
+-- Create the shared members table
+CREATE TABLE IF NOT EXISTS vansh_members (
+  id            TEXT PRIMARY KEY,
+  username      TEXT,
+  first_name    TEXT NOT NULL,
+  last_name     TEXT NOT NULL,
+  email         TEXT,
+  gender        TEXT DEFAULT 'M',
+  age           INTEGER DEFAULT 0,
+  dob           DATE,
+  caste         TEXT DEFAULT 'Brahmin',
+  gotra         TEXT DEFAULT 'Kashyap',
+  native_place  TEXT,
+  occupation    TEXT,
+  verified      BOOLEAN DEFAULT true,
+  image_url     TEXT,
+  updated_at    TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Turn off Row Level Security for easy public access (since this is a shared family tree)
-ALTER TABLE family_members DISABLE ROW LEVEL SECURITY;
+ALTER TABLE vansh_members ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "public_read" ON vansh_members FOR SELECT USING (true);
+CREATE POLICY "public_insert" ON vansh_members FOR INSERT WITH CHECK (true);
+CREATE POLICY "public_update" ON vansh_members FOR UPDATE USING (true);
+
+CREATE INDEX IF NOT EXISTS idx_vansh_members_names ON vansh_members (first_name, last_name, username);

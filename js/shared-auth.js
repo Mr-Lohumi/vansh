@@ -155,7 +155,12 @@ function registerUser(firstName, lastName, email, password, details = {}) {
 
   members.push(newMember);
   localStorage.setItem(DATABASE_KEY, JSON.stringify(members));
-  
+
+  // Sync to Supabase cloud so other devices can discover this user
+  if (typeof syncMemberToCloud === 'function') {
+    syncMemberToCloud(newMember);
+  }
+
   // Log them in immediately
   login(newMember.id, newUsername);
   return { success: true, member: newMember, message: "Registration successful. Welcome to Vansh!" };

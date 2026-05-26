@@ -204,95 +204,138 @@ function initNav(pageName) {
   // Universal Search Logic
   const searchInput = document.getElementById('universalSearchInput');
   const searchResults = document.getElementById('universalSearchResults');
-  if (searchInput && searchResults) {
-    searchInput.addEventListener('input', (e) => {
-      // Strip @ prefix so searching "@pankaj" matches username "pankaj"
-      let raw = e.target.value.trim();
-      const query = raw.startsWith('@') ? raw.slice(1).toLowerCase() : raw.toLowerCase();
+  if (!searchInput || !searchResults) return;
 
-      if (!query) {
-        searchResults.style.display = 'none';
-        return;
-      }
+  let searchTimer = null;
 
-      // Always reload from localStorage to catch newly registered users
-      let pool = [];
-      try {
-        const saved = localStorage.getItem('vansh_family_data_v2');
-        if (saved) pool = JSON.parse(saved);
-        if (!Array.isArray(pool)) pool = [];
-      } catch(err) { pool = []; }
+  function renderSearchResults(results, query) {
+    const authData = getAuthData();
+    const currentUserId = authData ? authData.userId : null;
 
-      let results = [];
-      try {
-        results = pool.filter(m => {
-          if (!m) return false;
-          const full = ((m.firstName || '') + ' ' + (m.lastName || '')).toLowerCase();
-          const un   = (m.username || '').toLowerCase();
-          const email = (m.email || '').toLowerCase();
-          return full.includes(query) || un.includes(query) || email.includes(query);
-        }).slice(0, 12);
-      } catch (err) {
-        console.error('Search error:', err);
-      }
-
-      if (results.length === 0) {
-        const hint = pool.length <= 1
-          ? '<div style="color:var(--royal-red);font-size:11px;margin-top:8px;line-height:1.5;">You are the only registered user. Sign up on a second device or incognito tab to test live member search.</div>'
-          : '';
-        searchResults.innerHTML = `
-          <div style="padding:20px;text-align:center;">
-            <div style="font-size:28px;margin-bottom:10px;">🔍</div>
-            <div style="color:var(--text-muted);font-size:13px;margin-bottom:4px;font-weight:600;">No members found</div>
-            ${hint}
-            <button onclick="openInviteExternalModal()" style="margin-top:14px;padding:7px 16px;background:linear-gradient(135deg,var(--royal-red-dark),#AB2330);color:#fff;border:none;border-radius:8px;font-family:'Cinzel',serif;font-weight:700;font-size:11px;cursor:pointer;">💌 Invite to Vansh</button>
-          </div>`;
-      } else {
-        const authData = getAuthData();
-        const currentUserId = authData ? authData.userId : null;
-
-        // Header
-        let html = `<div style="padding:10px 16px 6px;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;border-bottom:1px solid var(--border-light);">
-          ${results.length} Member${results.length > 1 ? 's' : ''} Found
+    if (results.length === 0) {
+      searchResults.innerHTML = `
+        <div style="padding:24px;text-align:center;">
+          <div style="font-size:32px;margin-bottom:10px;">🔍</div>
+          <div style="color:var(--text);font-size:14px;font-weight:700;margin-bottom:6px;">No one found for "${query}"</div>
+          <div style="color:var(--text-muted);font-size:12px;margin-bottom:16px;line-height:1.5;">They might not have registered yet.</div>
+          <button onclick="openInviteExternalModal()" style="padding:8px 18px;background:linear-gradient(135deg,var(--royal-red-dark),#AB2330);color:#fff;border:none;border-radius:10px;font-family:'Cinzel',serif;font-weight:700;font-size:12px;cursor:pointer;letter-spacing:0.5px;">💌 Invite to Vansh</button>
         </div>`;
+      return;
+    }
 
-        html += results.map(m => {
-          const ava = m.imageUrl
-            ? `background-image:url('${m.imageUrl}');background-size:cover;background-position:center;`
-            : getAvatarStyle(m);
-          const isMe = m.id === currentUserId;
+    let html = `<div style="padding:10px 16px 8px;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;gap:6px;">
+      <span>🌐</span> ${results.length} Member${results.length > 1 ? 's' : ''} found
+    </div>`;
 
-          const actionBtn = isMe
-            ? `<span style="padding:3px 10px;background:rgba(107,21,34,0.07);color:var(--royal-red);border-radius:20px;font-size:10px;font-weight:700;font-family:'Cinzel',serif;white-space:nowrap;">You</span>`
-            : `<button style="padding:5px 12px;background:linear-gradient(135deg,var(--royal-red-dark),#AB2330);color:#fff;border:none;border-radius:8px;font-family:'Cinzel',serif;font-weight:700;font-size:10px;cursor:pointer;white-space:nowrap;transition:all 0.2s;" onclick="event.preventDefault(); event.stopPropagation(); openAddRelativeModal('${m.id}', '${getFullName(m).replace(/'/g,"\\'")}')">+ Add Relative</button>`;
+    html += results.map(m => {
+      const ava = m.imageUrl && m.imageUrl.startsWith('http')
+        ? `background-image:url('${m.imageUrl}');background-size:cover;background-position:center;`
+        : getAvatarStyle(m);
+      const isMe = m.id === currentUserId;
+      const safeName = (getFullName(m) || '').replace(/'/g, "\\'");
 
-          const verBadge = m.verified
-            ? `<span style="color:#059669;font-size:10px;font-weight:700;">✓ Verified</span>`
-            : `<span style="color:var(--text-muted);font-size:10px;">Unverified</span>`;
+      const actionBtn = isMe
+        ? `<span style="padding:4px 12px;background:rgba(107,21,34,0.08);color:var(--royal-red);border-radius:20px;font-size:10px;font-weight:700;font-family:'Cinzel',serif;white-space:nowrap;border:1px solid rgba(107,21,34,0.15);">You</span>`
+        : `<button style="padding:6px 14px;background:linear-gradient(135deg,var(--royal-red-dark),#AB2330);color:#fff;border:none;border-radius:8px;font-family:'Cinzel',serif;font-weight:700;font-size:10px;cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(107,21,34,0.2);letter-spacing:0.3px;" onclick="event.preventDefault();event.stopPropagation();openAddRelativeModal('${m.id}','${safeName}')">+ Add Relative</button>`;
 
-          return `<a href="profile.html?id=${m.id}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border-light);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='transparent'">
-            <div style="width:40px;height:40px;border-radius:50%;border:2px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--royal-red);flex-shrink:0;${ava}">${m.imageUrl ? '' : getInitials(m)}</div>
-            <div style="flex:1;min-width:0;">
-              <div style="font-size:13px;font-weight:700;color:var(--text);font-family:'Cinzel',serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${getFullName(m)}</div>
-              <div style="font-size:11px;color:var(--text-muted);margin-top:1px;">@${m.username || 'user'} · ${verBadge}</div>
-              <div style="font-size:10px;color:var(--text-muted);margin-top:1px;">${m.caste || ''} ${m.gotra ? '• ' + m.gotra + ' Gotra' : ''}</div>
-            </div>
-            ${actionBtn}
-          </a>`;
-        }).join('');
+      const verBadge = m.verified
+        ? `<span style="color:#059669;font-size:10px;font-weight:600;">✓ Verified</span>`
+        : `<span style="color:#e67e22;font-size:10px;font-weight:600;">⚠ Unverified</span>`;
 
-        searchResults.innerHTML = html;
-      }
-      searchResults.style.display = 'block';
-    });
+      const cloudBadge = m._fromCloud
+        ? `<span style="color:var(--text-muted);font-size:9px;font-weight:600;background:rgba(0,0,0,0.04);padding:1px 5px;border-radius:4px;margin-left:4px;">CLOUD</span>`
+        : '';
 
-    // Close on outside click
-    document.addEventListener('click', (e) => {
-      if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-        searchResults.style.display = 'none';
-      }
-    });
+      return `<a href="profile.html?id=${m.id}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border-light);text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='var(--bg-elevated)'" onmouseout="this.style.background='transparent'">
+        <div style="width:42px;height:42px;border-radius:50%;border:2px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--royal-red);flex-shrink:0;${ava}">${(m.imageUrl && m.imageUrl.startsWith('http')) ? '' : getInitials(m)}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);font-family:'Cinzel',serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${getFullName(m)}${cloudBadge}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">@${m.username || 'user'} · ${verBadge}</div>
+          ${m.caste || m.gotra ? `<div style="font-size:10px;color:var(--text-muted);margin-top:1px;">${m.caste || ''}${m.gotra ? ' • ' + m.gotra + ' Gotra' : ''}</div>` : ''}
+        </div>
+        ${actionBtn}
+      </a>`;
+    }).join('');
+
+    searchResults.innerHTML = html;
   }
+
+  searchInput.addEventListener('input', (e) => {
+    // Strip @ prefix
+    let raw = e.target.value.trim();
+    const query = raw.startsWith('@') ? raw.slice(1) : raw;
+
+    if (!query) {
+      searchResults.style.display = 'none';
+      return;
+    }
+
+    const q = query.toLowerCase();
+
+    // ── Step 1: Show LOCAL results immediately (fast) ──
+    let localPool = [];
+    try {
+      const saved = localStorage.getItem('vansh_family_data_v2');
+      if (saved) localPool = JSON.parse(saved);
+      if (!Array.isArray(localPool)) localPool = [];
+    } catch(err) { localPool = []; }
+
+    const localResults = localPool.filter(m => {
+      if (!m) return false;
+      const full  = ((m.firstName || '') + ' ' + (m.lastName || '')).toLowerCase();
+      const un    = (m.username || '').toLowerCase();
+      const email = (m.email || '').toLowerCase();
+      return full.includes(q) || un.includes(q) || email.includes(q);
+    });
+
+    // Show local results immediately
+    searchResults.style.display = 'block';
+
+    // Show loading state
+    searchResults.innerHTML = `<div style="padding:14px 16px;font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:8px;">
+      <span style="display:inline-block;width:12px;height:12px;border:2px solid var(--royal-red);border-top-color:transparent;border-radius:50%;animation:spin 0.7s linear infinite;"></span>
+      Searching all members...
+    </div>
+    <style>@keyframes spin{100%{transform:rotate(360deg)}}</style>`;
+
+    // ── Step 2: Query Supabase cloud (async, cross-device) ──
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(async () => {
+      let cloudResults = [];
+      try {
+        if (typeof searchMembersCloud === 'function') {
+          cloudResults = await searchMembersCloud(query);
+        }
+      } catch(err) {
+        console.warn('Cloud search failed, using local only:', err);
+      }
+
+      // Merge: cloud results + local results, deduped by id
+      const seenIds = new Set();
+      const merged = [];
+
+      // Cloud results first (they're richer, from real table)
+      cloudResults.forEach(m => {
+        if (!seenIds.has(m.id)) { seenIds.add(m.id); merged.push(m); }
+      });
+
+      // Add local results that aren't in cloud yet (just registered, sync pending)
+      localResults.forEach(m => {
+        if (!seenIds.has(m.id)) { seenIds.add(m.id); merged.push({ ...m, _fromCloud: false }); }
+      });
+
+      merged.sort((a, b) => (getFullName(a) || '').localeCompare(getFullName(b) || ''));
+
+      renderSearchResults(merged, query);
+    }, 300); // 300ms debounce
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+      searchResults.style.display = 'none';
+    }
+  });
 }
 
 function toggleSidebar(force) {
