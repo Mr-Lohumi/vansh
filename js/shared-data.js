@@ -183,13 +183,14 @@ async function processCloudInvite(invite, action) {
   
   if (action !== 'accepted') return true;
   
-  // We need to fetch the 'from' user from Supabase if they aren't in local storage yet!
   let fromUser = getMemberById(invite.fromUserId);
   if (!fromUser && typeof getCloudMemberById === 'function') {
     fromUser = await getCloudMemberById(invite.fromUserId);
     if (fromUser) {
       familyMembers.push(fromUser);
       saveFamilyData(familyMembers);
+    } else {
+      console.error('[Vansh] Failed to fetch fromUser from cloud:', invite.fromUserId);
     }
   }
   
@@ -199,10 +200,16 @@ async function processCloudInvite(invite, action) {
     if (toUser) {
       familyMembers.push(toUser);
       saveFamilyData(familyMembers);
+    } else {
+      console.error('[Vansh] Failed to fetch toUser from cloud:', invite.toUserId);
     }
   }
   
-  if (!fromUser || !toUser) return false;
+  if (!fromUser || !toUser) {
+    console.error('[Vansh] Missing users in processCloudInvite. fromUser:', !!fromUser, 'toUser:', !!toUser);
+    if (typeof showToast === 'function') showToast('Debug', `fromUser=${!!fromUser}, toUser=${!!toUser}`, 'warn');
+    return false;
+  }
   
   function ensureParent(userId, gender, label) {
     let user = getMemberById(userId);

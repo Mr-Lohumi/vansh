@@ -172,8 +172,14 @@ async function updateCloudInviteStatus(inviteId, status) {
       .from('vansh_invites')
       .update({ status: status })
       .eq('id', inviteId);
-    return !error;
+    if (error) {
+      console.error('[Vansh] updateCloudInviteStatus error:', error);
+      if (typeof showToast === 'function') showToast('Debug', `Update failed: ${error.message}`, 'warn');
+      return false;
+    }
+    return true;
   } catch (err) {
+    console.error('[Vansh] updateCloudInviteStatus catch:', err);
     return false;
   }
 }
