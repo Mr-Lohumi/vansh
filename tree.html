@@ -30,7 +30,14 @@
     .form-row > div { flex: 1; }
   </style>
 </head>
-<body>
+<body style="display: none;">
+  <script>
+    if (!localStorage.getItem('rootd_auth')) {
+      window.location.href = 'login.html';
+      throw new Error('Not authenticated');
+    }
+    document.body.style.display = 'flex';
+  </script>
   <div class="app-layout">
     <aside class="sidebar" id="sidebar"></aside>
     <div class="main-area">

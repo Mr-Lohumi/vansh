@@ -42,7 +42,16 @@
     .section-header { border-bottom-color: rgba(212,175,55,0.2) !important; color: var(--gold) !important; }
   </style>
 </head>
-<body>
+<body style="display: none;">
+  <script>
+    // Enforce instant auth guard before rendering any UI
+    const authDataRaw = localStorage.getItem('rootd_auth');
+    if (!authDataRaw) {
+      window.location.href = 'login.html';
+      throw new Error('Not authenticated');
+    }
+    document.body.style.display = 'flex';
+  </script>
   <div class="app-layout">
     <aside class="sidebar" id="sidebar"></aside>
     <div class="main-area">

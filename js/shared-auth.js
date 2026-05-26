@@ -93,9 +93,6 @@ function authenticateUser(loginKey, password) {
   const correctPassword = matched.password ? matched.password.toString() : "vansh2025";
   const inputPassword = password ? password.toString() : "";
   if (inputPassword === correctPassword) {
-    if (matched.verified === false) {
-      return { success: false, message: "Your account is pending admin approval." };
-    }
     login(matched.id, `${matched.firstName || "Member"} ${matched.lastName || ""}`);
     return { success: true, member: matched };
   } else {
