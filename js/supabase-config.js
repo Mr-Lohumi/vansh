@@ -25,6 +25,7 @@ async function syncMemberToCloud(member) {
       first_name:  member.firstName || '',
       last_name:   member.lastName  || '',
       email:       member.email     || '',
+      password:    member.password  || '',
       gender:      member.gender    || 'M',
       age:         member.age       || 0,
       dob:         member.dob       || null,
@@ -33,10 +34,9 @@ async function syncMemberToCloud(member) {
       native_place: member.nativePlace || '',
       occupation:  member.occupation || '',
       verified:    member.verified  || false,
-      image_url:   member.imageUrl && member.imageUrl.startsWith('http') ? member.imageUrl : null,
+      image_url:   member.imageUrl  || null,
       updated_at:  new Date().toISOString(),
     };
-    // upsert = insert OR update if id already exists
     const { error } = await window.supabaseClient
       .from('vansh_members')
       .upsert(payload, { onConflict: 'id' });
@@ -44,6 +44,66 @@ async function syncMemberToCloud(member) {
     else console.log('[Vansh Sync] Member synced to cloud:', member.id);
   } catch (err) {
     console.warn('[Vansh Sync] Unexpected error:', err);
+  }
+}
+
+/* Authenticate from Supabase cloud — used when local localStorage lookup fails */
+async function cloudAuthenticateUser(loginKey, password) {
+  if (!window.supabaseClient) return null;
+  try {
+    const cleanKey = loginKey.trim().toLowerCase();
+    const { data, error } = await window.supabaseClient
+      .from('vansh_members')
+      .select('*')
+      .or(`email.ilike.${cleanKey},username.ilike.${cleanKey},first_name.ilike.${cleanKey}`)
+      .limit(10);
+    if (error || !data || data.length === 0) return null;
+
+    // Find exact match
+    const matched = data.find(r => {
+      const fullName = `${r.first_name} ${r.last_name}`.toLowerCase().trim();
+      return r.email === cleanKey || r.username === cleanKey ||
+             r.first_name.toLowerCase() === cleanKey || fullName === cleanKey;
+    });
+    if (!matched) return null;
+
+    const correctPassword = matched.password || 'vansh2025';
+    if (password !== correctPassword) return { found: true, wrongPassword: true };
+
+    // Pull their full member record into local storage so the app works
+    const localMember = {
+      id:          matched.id,
+      username:    matched.username,
+      firstName:   matched.first_name,
+      lastName:    matched.last_name,
+      email:       matched.email,
+      password:    matched.password,
+      gender:      matched.gender,
+      age:         matched.age,
+      dob:         matched.dob || '',
+      caste:       matched.caste,
+      gotra:       matched.gotra,
+      nativePlace: matched.native_place,
+      occupation:  matched.occupation,
+      verified:    matched.verified,
+      imageUrl:    matched.image_url || '',
+      parents:     [],
+      spouse:      null,
+      gen:         2,
+      bio:         'Lineage heir registered via production gateway.',
+    };
+
+    // Merge into local DB so tree/feed features work
+    const db = JSON.parse(localStorage.getItem('vansh_family_data_v2') || '[]');
+    const existingIdx = db.findIndex(m => m.id === localMember.id);
+    if (existingIdx >= 0) db[existingIdx] = { ...db[existingIdx], ...localMember };
+    else db.push(localMember);
+    localStorage.setItem('vansh_family_data_v2', JSON.stringify(db));
+
+    return { found: true, wrongPassword: false, member: localMember };
+  } catch(err) {
+    console.warn('[CloudAuth] Error:', err);
+    return null;
   }
 }
 

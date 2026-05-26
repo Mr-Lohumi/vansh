@@ -612,17 +612,35 @@
     }
 
     /* ── SIGN IN ── */
-    function handleSignIn(e) {
+    async function handleSignIn(e) {
       e.preventDefault();
       hideMsg();
       const loginKey = document.getElementById('loginKey').value.trim();
       const pass = document.getElementById('loginPassword').value;
-      const res = authenticateUser(loginKey, pass);
-      if (res.success) {
+
+      // 1. Try local first (fast path)
+      const localRes = authenticateUser(loginKey, pass);
+      if (localRes.success) {
         window.location.href = 'dashboard.html';
-      } else {
-        showMsg(res.message, 'error');
+        return;
       }
+
+      // 2. If not found locally, try cloud (cross-device login)
+      if (localRes.message && localRes.message.includes('not registered')) {
+        showMsg('Checking dynasty cloud...', 'info');
+        const cloudRes = await cloudAuthenticateUser(loginKey, pass);
+        if (cloudRes && cloudRes.found && !cloudRes.wrongPassword) {
+          // Cloud auth succeeded — member now merged into local DB, log them in
+          login(cloudRes.member.id, cloudRes.member.firstName + ' ' + cloudRes.member.lastName);
+          window.location.href = 'dashboard.html';
+          return;
+        } else if (cloudRes && cloudRes.found && cloudRes.wrongPassword) {
+          showMsg('Incorrect password. Please try again.', 'error');
+          return;
+        }
+      }
+
+      showMsg(localRes.message, 'error');
     }
 
     /* ── SIGN UP ── */
