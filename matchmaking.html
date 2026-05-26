@@ -220,12 +220,10 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Education</label>
-            <input type="text" id="eduFilter" class="form-input" placeholder="e.g. MBA">
-          </div>
-          <div class="form-group">
             <label class="form-label">Occupation</label>
-            <input type="text" id="occFilter" class="form-input" placeholder="e.g. Tech">
+            <select id="occFilter" class="form-select">
+              <option value="">Any Occupation</option>
+            </select>
           </div>
           <div class="form-group" style="flex: 1 1 100%;">
             <button class="btn btn-royal" style="padding: 12px 24px; height:42px" onclick="runEngine()">Find Alliances</button>
@@ -257,7 +255,7 @@
       if(singles.find(s=>s.id===loggedInId)) select.value = loggedInId;
       else if (singles.length > 0) select.value = singles[0].id;
       
-      const globalPool = [...familyMembers, ...MATCHMAKING_DB];
+      const globalPool = [...familyMembers];
       
       const allGotras = [...new Set(globalPool.map(m => m.gotra).filter(g => g))].sort();
       const gotraSelect = document.getElementById('gotraFilter');
@@ -266,6 +264,10 @@
       const allLocations = [...new Set(globalPool.map(m => m.location || m.nativePlace).filter(l => l))].sort();
       const locSelect = document.getElementById('locationFilter');
       allLocations.forEach(l => locSelect.innerHTML += `<option value="${l}">${l}</option>`);
+
+      const allOccs = [...new Set(globalPool.map(m => m.occupation).filter(o => o))].sort();
+      const occSelect = document.getElementById('occFilter');
+      allOccs.forEach(o => occSelect.innerHTML += `<option value="${o}">${o}</option>`);
     }
     
     function runEngine() {
@@ -282,8 +284,7 @@
       const maxAge = parseInt(document.getElementById('maxAge').value) || 100;
       const gotraF = document.getElementById('gotraFilter').value;
       const locF = document.getElementById('locationFilter').value;
-      const eduF = document.getElementById('eduFilter').value.toLowerCase();
-      const occF = document.getElementById('occFilter').value.toLowerCase();
+      const occF = document.getElementById('occFilter').value;
       
       const oppositeGender = target.gender === 'M' ? 'F' : 'M';
       
@@ -291,7 +292,7 @@
       
       let html = '';
       
-      const searchPool = [...familyMembers, ...MATCHMAKING_DB];
+      const searchPool = [...familyMembers];
       
       searchPool.forEach(candidate => {
         if(candidate.id === target.id) return;
@@ -301,8 +302,7 @@
         if(gotraF && candidate.gotra !== gotraF) return;
         const cLoc = candidate.location || candidate.nativePlace;
         if(locF && cLoc !== locF) return;
-        if(eduF && (!candidate.education || !candidate.education.toLowerCase().includes(eduF))) return;
-        if(occF && (!candidate.occupation || !candidate.occupation.toLowerCase().includes(occF))) return;
+        if(occF && candidate.occupation !== occF) return;
         
         const isConflict = candidate.gotra === target.gotra;
         const barClass = isConflict ? 'bad' : 'ok';
