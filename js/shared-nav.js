@@ -50,7 +50,7 @@ const NAV_GROUPS = [
   }
 ];
 
-function initNav(pageName) {
+async function initNav(pageName) {
   const auth = getAuthData();
   const user = auth ? getMemberById(auth.userId) : null;
   const userName = user ? getFullName(user) : (auth?.userName || 'User');
