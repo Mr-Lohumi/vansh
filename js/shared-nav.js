@@ -43,8 +43,7 @@ const NAV_GROUPS = [
       { id: 'ventures',    label: 'Ventures',     href: 'ventures.html',    icon: NAV_ICONS.ventures },
       { id: 'trust',       label: 'Family Trust', href: 'trust.html',       icon: NAV_ICONS.trust },
       { id: 'traditions',  label: 'Traditions',   href: 'traditions.html',  icon: NAV_ICONS.traditions },
-      { id: 'governance',  label: 'Governance',   href: 'governance.html',  icon: NAV_ICONS.governance },
-      { id: 'admin',       label: 'Admin Portal', href: 'admin.html',       icon: NAV_ICONS.governance },
+
     ]
   }
 ];
