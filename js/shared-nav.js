@@ -133,6 +133,9 @@ function initNav(pageName) {
         </div>
         
         <div style="display: flex; gap: 12px; align-items: center;">
+          <button class="btn" style="flex-shrink: 0; background: var(--gold); border: 1px solid var(--gold); color: #fff; font-family: 'Cinzel', serif; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 8px; padding: 6px 12px; box-shadow: 0 4px 12px var(--gold-glow); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 16px var(--gold-glow)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px var(--gold-glow)';" onclick="openInviteExternalModal()">
+            <span style="margin-right: 6px; font-size: 14px;">💌</span> Invite Family
+          </button>
           <button class="btn" style="flex-shrink: 0; background: #FAF7F2; border: 1px solid rgba(168,138,103,0.3); color: #9A7B4F; font-family: 'Cinzel', serif; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 8px; padding: 6px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(168,138,103,0.15)'; this.style.borderColor='rgba(168,138,103,0.6)'; this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.03)'; this.style.borderColor='rgba(168,138,103,0.3)'; this.style.transform='translateY(0)'" onclick="window.location.href='matchmaking.html'">
             <span style="margin-right: 6px; font-size: 14px;">👑</span> Request Alliance
           </button>
@@ -346,4 +349,47 @@ window.submitRelativeRequest = function() {
     else alert(res.message);
   }
   closeAddRelativeModal();
+};
+
+// External Invite Modal
+window.openInviteExternalModal = function() {
+  if (!document.getElementById('inviteExtModal')) {
+    const modalHtml = `
+    <div class="modal-overlay" id="inviteExtModal">
+      <div class="modal-box" style="max-width: 450px; padding: 24px;">
+        <div class="modal-header" style="margin-bottom: 16px; padding: 0 0 16px 0; border-bottom: 1px solid var(--border-light); background: none;">
+          <div class="modal-title" style="font-size: 18px; color: var(--text);">Invite to Vansh</div>
+          <button class="modal-close" style="color: var(--text-muted);" onclick="document.getElementById('inviteExtModal').classList.remove('active')">×</button>
+        </div>
+        <div style="margin-bottom: 24px; font-size: 14px; color: var(--text-secondary); line-height: 1.5;">
+          Send an invitation link to a family member so they can register and join your dynasty network.
+        </div>
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label class="form-label" style="display:block; margin-bottom:8px; font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Email or Phone Number</label>
+          <input type="text" id="extInviteInput" class="form-input" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:8px;" placeholder="e.g. uncle@example.com or +91...">
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:12px;">
+          <button class="btn btn-outline" onclick="document.getElementById('inviteExtModal').classList.remove('active')">Cancel</button>
+          <button class="btn btn-gold" onclick="submitExtInvite()">Send Invitation</button>
+        </div>
+      </div>
+    </div>`;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+  }
+  document.getElementById('extInviteInput').value = '';
+  document.getElementById('inviteExtModal').classList.add('active');
+};
+
+window.submitExtInvite = function() {
+  const val = document.getElementById('extInviteInput').value.trim();
+  if (!val) {
+    alert("Please enter an email or phone number.");
+    return;
+  }
+  document.getElementById('inviteExtModal').classList.remove('active');
+  if (typeof showToast === 'function') {
+    showToast('Invitation Sent', 'An invitation link has been dispatched to ' + val, 'ok');
+  } else {
+    alert('Invitation sent to ' + val);
+  }
 };
