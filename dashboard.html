@@ -142,7 +142,7 @@
       display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;
       opacity: 0; transform: translateY(10px); transition: all 1s;
     }
-    .growth-widget.animate .gw-details-grid { opacity: 1; transform: translateY(0); transition-delay: 2.5s; }
+    .growth-widget.animate .gw-details-grid { opacity: 1; transform: translateY(0); transition-delay: 1.5s; }
     
     .gw-detail-item {
       background: rgba(0,0,0,0.3); border: 1px solid rgba(212,175,55,0.2);
@@ -821,15 +821,19 @@
       const pathsGroup = document.getElementById('gwDynamicPaths');
       const nodesGroup = document.getElementById('gwDynamicNodes');
       if (pathsGroup && nodesGroup) {
-        const branches = [];
-        // Root trunk
-        branches.push({ x: 100, y: 195, angle: 0, length: 45, width: 2.5, depth: 1 });
-        
-        let activeBranches = [0]; 
-        
         // Ensure at least 1, map up to 100 leaves for visual sanity
         const targetNodes = Math.max(1, Math.min(total, 100)); 
         
+        // Dynamically scale base length so small trees fill the height gracefully
+        const baseLength = 30 + (80 / Math.max(1.5, Math.sqrt(targetNodes)));
+        
+        const branches = [];
+        // Root trunk
+        branches.push({ x: 100, y: 195, angle: 0, length: baseLength, width: 2.5, depth: 1 });
+        
+        let activeBranches = [0];
+        
+
         // Breadth-First generation to ensure balanced canopy
         while (branches.length < targetNodes && activeBranches.length > 0) {
            let newActive = [];
