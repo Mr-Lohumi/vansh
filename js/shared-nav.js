@@ -461,7 +461,7 @@ window.handleInviteAction = async function(invite, action) {
   if (typeof processCloudInvite === 'function') {
     const success = await processCloudInvite(invite, action);
     if (success) {
-      if (typeof showToast === 'function') showToast('Success', \`Invite \${action}\`, 'ok');
+      if (typeof showToast === 'function') showToast('Success', `Invite ${action}`, 'ok');
       setTimeout(() => window.location.reload(), 1000);
     } else {
       if (typeof showToast === 'function') showToast('Error', 'Failed to process invite', 'error');
