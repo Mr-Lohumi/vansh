@@ -393,10 +393,10 @@
         <div class="post-card anim" style="animation-delay:${idx * 0.05}s;">
           <div class="post-inner">
             <div class="post-hd">
-              <div class="post-ava" style="${avatarInline}">${hasImg ? '' : initials}</div>
-              <div style="flex:1; min-width:0;" onclick="window.location.href='profile.html?id=${post.user_id}'" style="cursor:pointer">
-                <div class="post-author" style="cursor:pointer;">${getFullName(author)}</div>
-                <div class="post-meta">${dateStr} · <span style="color:var(--royal-red); font-weight:600;">Dynasty Visible</span></div>
+              <div class="post-ava" style="${avatarInline} cursor:pointer;" onclick="window.location.href='profile.html?id=${post.user_id}'">${hasImg ? '' : initials}</div>
+              <div style="flex:1; min-width:0;">
+                <div class="post-author" style="cursor:pointer;" onclick="window.location.href='profile.html?id=${post.user_id}'">${getFullName(author)}</div>
+                <div class="post-meta">${dateStr}</div>
               </div>
               <button class="post-more" onclick="this.nextElementSibling.classList.toggle('active')">···</button>
             </div>
