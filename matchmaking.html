@@ -257,11 +257,13 @@
       if(singles.find(s=>s.id===loggedInId)) select.value = loggedInId;
       else if (singles.length > 0) select.value = singles[0].id;
       
-      const allGotras = [...new Set(familyMembers.map(m => m.gotra).filter(g => g))].sort();
+      const globalPool = [...familyMembers, ...MATCHMAKING_DB];
+      
+      const allGotras = [...new Set(globalPool.map(m => m.gotra).filter(g => g))].sort();
       const gotraSelect = document.getElementById('gotraFilter');
       allGotras.forEach(g => gotraSelect.innerHTML += `<option value="${g}">${g}</option>`);
 
-      const allLocations = [...new Set(familyMembers.map(m => m.location || m.nativePlace).filter(l => l))].sort();
+      const allLocations = [...new Set(globalPool.map(m => m.location || m.nativePlace).filter(l => l))].sort();
       const locSelect = document.getElementById('locationFilter');
       allLocations.forEach(l => locSelect.innerHTML += `<option value="${l}">${l}</option>`);
     }
@@ -289,7 +291,7 @@
       
       let html = '';
       
-      const searchPool = [...familyMembers];
+      const searchPool = [...familyMembers, ...MATCHMAKING_DB];
       
       searchPool.forEach(candidate => {
         if(candidate.id === target.id) return;
