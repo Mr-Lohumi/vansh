@@ -180,6 +180,18 @@
               <input type="text" id="addOccupation" class="form-input" placeholder="e.g. Farmer, Doctor">
             </div>
           </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">Profile Photo <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div id="addAvatarPreview" style="width:54px;height:54px;border-radius:50%;background:var(--bg-elevated);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--text-muted);overflow:hidden;background-size:cover;background-position:center;">📷</div>
+                <label style="flex:1;padding:10px 14px;border:1.5px dashed var(--border);border-radius:10px;cursor:pointer;font-size:13px;color:var(--text-muted);text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--royal-red)'" onmouseout="this.style.borderColor='var(--border)'">
+                  Click to upload photo
+                  <input type="file" id="addAvatarInput" accept="image/*" style="display:none;" onchange="handleAddAvatarUpload(event)">
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Section 2: Dynasty -->
@@ -446,12 +458,134 @@
       const dob      = document.getElementById('addDOB').value;
       const gender   = document.getElementById('addGen').value;
       const gotra    = document.getElementById('addGotra').value;
+  <script src="js/shared-tree.js"></script>
+  <script>
+    if (!requireAuth()) throw '';
+    initNav('tree');
+
+    const params = new URLSearchParams(location.search);
+    let currentPOV = params.get('id') || getAuthData()?.userId || familyMembers[0]?.id;
+
+    // Set DOB max to today
+    document.getElementById('addDOB').max = new Date().toISOString().split('T')[0];
+
+    const pSelect = document.getElementById('perspectiveSelect');
+
+    function populateDropdowns() {
+      pSelect.innerHTML = '';
+      const parentSelect = document.getElementById('addParent');
+      const spouseSelect = document.getElementById('addSpouse');
+      parentSelect.innerHTML = '<option value="">None</option>';
+      spouseSelect.innerHTML = '<option value="">None</option>';
+
+      familyMembers.forEach(m => {
+        const name = getFullName(m);
+        pSelect.innerHTML   += `<option value="${m.id}" ${m.id === currentPOV ? 'selected' : ''}>${name}</option>`;
+        parentSelect.innerHTML += `<option value="${m.id}">${name}</option>`;
+        if (!m.spouse) spouseSelect.innerHTML += `<option value="${m.id}">${name}</option>`;
+      });
+    }
+    populateDropdowns();
+
+    pSelect.addEventListener('change', (e) => {
+      currentPOV = e.target.value;
+      renderTreeToContainer('dynamicTreeNodes', 'treeCanvas', currentPOV, 'handleNodeClick');
+    });
+
+    function handleNodeClick(id) {
+      currentPOV = id;
+      pSelect.value = id;
+      renderTreeToContainer('dynamicTreeNodes', 'treeCanvas', currentPOV, 'handleNodeClick');
+    }
+
+    window.addEventListener('resize', () => {
+      drawTreeConnections('dynamicTreeNodes', 'treeCanvas', getBloodlineNetwork(currentPOV));
+    });
+
+    renderTreeToContainer('dynamicTreeNodes', 'treeCanvas', currentPOV, 'handleNodeClick');
+
+    // ── Modal open/close ──
+    function openAddModal() {
+      document.getElementById('addModalOverlay').classList.add('active');
+    }
+    function closeAddModal() {
+      document.getElementById('addModalOverlay').classList.remove('active');
+      document.getElementById('addFn').value = '';
+      document.getElementById('addLn').value = '';
+      document.getElementById('addDOB').value = '';
+      document.getElementById('addAge').value = '';
+      document.getElementById('addAgeDisplay').textContent = '';
+      document.getElementById('addOccupation').value = '';
+      document.getElementById('addNative').value = '';
+      document.getElementById('addRelation').value = '';
+      selectVerification(true);
+    }
+
+    // ── Auto-calculate age from DOB ──
+    function calcAddAge() {
+      const dob = document.getElementById('addDOB').value;
+      if (!dob) return;
+      const birth = new Date(dob);
+      const today = new Date();
+      let age = today.getFullYear() - birth.getFullYear();
+      const m = today.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+      age = Math.max(0, age);
+      document.getElementById('addAge').value = age;
+      document.getElementById('addAgeDisplay').textContent = '(' + age + ' yrs)';
+    }
+
+    // ── Relation change: auto-suggest parent slot ──
+    function onRelationChange(val) {
+      const auth = getAuthData();
+      const myId = auth ? auth.userId : null;
+
+      // For spouse-type relations, pre-select spouse slot
+      if (['pati', 'patni'].includes(val)) {
+        document.getElementById('addParent').value = '';
+        document.getElementById('addSpouse').value = myId || '';
+      } else if (['beta', 'beti'].includes(val)) {
+        document.getElementById('addParent').value = myId || '';
+      } else if (['papa', 'mummy', 'dada', 'dadi', 'nana', 'nani'].includes(val)) {
+        document.getElementById('addParent').value = '';
+      }
+    }
+
+    // ── Verification toggle ──
+    function selectVerification(isVerified) {
+      document.getElementById('addVerified').value = isVerified ? 'true' : 'false';
+      const vEl = document.getElementById('voVerified');
+      const uEl = document.getElementById('voUnverified');
+      if (isVerified) {
+        vEl.className = 'verify-option selected-verified';
+        uEl.className = 'verify-option';
+      } else {
+        vEl.className = 'verify-option';
+        uEl.className = 'verify-option selected-unverified';
+      }
+    }
+
+    // ── Submit add member ──
+    function submitAddMember() {
+      const fn       = document.getElementById('addFn').value.trim();
+      const ln       = document.getElementById('addLn').value.trim();
+      const relation = document.getElementById('addRelation').value;
+
+      if (!fn || !ln) { alert('First Name and Last Name are required.'); return; }
+      if (!relation)  { alert('Please select the relationship to you.'); return; }
+
+      const age      = parseInt(document.getElementById('addAge').value) || 0;
+      const dob      = document.getElementById('addDOB').value;
+      const gender   = document.getElementById('addGen').value;
+      const gotra    = document.getElementById('addGotra').value;
       const caste    = document.getElementById('addCaste').value;
       const native   = document.getElementById('addNative').value.trim();
       const occ      = document.getElementById('addOccupation').value.trim();
       const parent   = document.getElementById('addParent').value;
       const spouse   = document.getElementById('addSpouse').value;
       const verified = document.getElementById('addVerified').value === 'true';
+      const imageUrl = window._addMemberAvatarData || '';
+
 
       addFamilyMember({
         firstName:   fn,
@@ -467,6 +601,7 @@
         spouse:      spouse || null,
         verified:    verified,
         relation:    relation,
+        imageUrl:    imageUrl,
         bio:         verified ? 'Dynasty member — verified.' : 'Dynasty member — awaiting verification.',
       });
 
@@ -477,8 +612,25 @@
         showToast('Member Added', `${fn} ${ln} joined as ${relation} · ${verLabel}`, verified ? 'ok' : 'warn');
       }
 
+      window._addMemberAvatarData = '';
+      document.getElementById('addAvatarPreview').style.backgroundImage = '';
+      document.getElementById('addAvatarPreview').innerHTML = '📷';
+      document.getElementById('addAvatarInput').value = '';
       populateDropdowns();
       renderTreeToContainer('dynamicTreeNodes', 'treeCanvas', currentPOV, 'handleNodeClick');
+    }
+
+    function handleAddAvatarUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        window._addMemberAvatarData = e.target.result;
+        const preview = document.getElementById('addAvatarPreview');
+        preview.style.backgroundImage = `url('${e.target.result}')`;
+        preview.innerHTML = '';
+      };
+      reader.readAsDataURL(file);
     }
   </script>
 </body>
