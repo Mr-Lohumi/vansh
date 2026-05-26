@@ -11,7 +11,8 @@
     .tree-toolbar {
       display: flex; align-items: center; justify-content: space-between; gap: 24px;
       padding: 22px 48px; border: 1px solid var(--gold-dark); border-radius: 20px 20px 0 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.95)); position: relative;
+      background: linear-gradient(180deg, #3a0a10, #1a0508); position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 10;
     }
     .tree-toolbar::before, .tree-toolbar::after {
       content: ''; position: absolute; left: 0; right: 0; height: 8px;
@@ -21,6 +22,8 @@
     .tree-toolbar::before { top: 4px; }
     .tree-toolbar::after  { bottom: 4px; }
 
+    #perspectiveSelect option { background: #2a0608; color: #fbf3dd; font-family: 'Inter', sans-serif; }
+    
     .toolbar-left { display: flex; align-items: center; gap: 18px; }
     .perspective-label { font-family: 'Cinzel', serif; font-weight: 600; font-size: 15px; letter-spacing: 0.22em; color: var(--gold-bright); text-shadow: 0 1px 2px rgba(0,0,0,0.6); }
     
