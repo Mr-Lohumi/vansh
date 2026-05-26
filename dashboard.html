@@ -11,22 +11,7 @@
   <link rel="stylesheet" href="css/shared.css?v=16">
   <style>
     /* ── DASHBOARD LAYOUT ── */
-    body {
-      background-color: var(--bg-body);
-      position: relative;
-    }
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url('images/dynasty_tree_bg_v2.png');
-      background-size: cover;
-      background-position: center top;
-      opacity: 0.25;
-      pointer-events: none;
-      z-index: -1;
-    }
-    .dashboard-layout { max-width: 1140px; margin: 0 auto; display: flex; gap: 24px; padding: 24px; position: relative; }
+    .dashboard-layout { display: flex; gap: 32px; align-items: flex-start; max-width: 1060px; margin: 0 auto; }
     .feed-column { flex: 1 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
     .profile-column { flex: 0 0 320px; position: sticky; top: 88px; display: flex; flex-direction: column; gap: 16px; }
     @media (max-width: 1080px) { .dashboard-layout { flex-direction: column; } .profile-column { width: 100%; max-width: 100%; position: static; } }
@@ -74,34 +59,32 @@
       overflow: hidden; box-shadow: 0 2px 12px rgba(107,21,34,0.04);
       transition: box-shadow 0.3s, border-color 0.3s, transform 0.25s;
     }
-    .post-card:hover { box-shadow: 0 12px 30px rgba(107,21,34,0.08); border-color: rgba(107,21,34,0.15); transform: translateY(-2px); }
-    .post-head { display: flex; justify-content: space-between; align-items: flex-start; padding: 20px; }
-    .ph-left { display: flex; gap: 14px; align-items: center; }
-    .ph-ava { width: 44px; height: 44px; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid var(--border-light); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: var(--royal-red); background-color: var(--bg-elevated); cursor: pointer; }
-    .ph-name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 16px; color: var(--text); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
-    .ph-meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
-    .ph-right { color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 4px; border-radius: 50%; }
-    .ph-right:hover { background: var(--bg-elevated); color: var(--text); }
-    .post-body { padding: 0 20px 20px; font-size: 14px; line-height: 1.6; color: var(--text); }
-    .post-body p { margin: 0 0 12px; }
-    .post-body p:last-child { margin: 0; }
-    .post-media { width: 100%; max-height: 600px; object-fit: contain; background: #000; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); cursor: pointer; }
-    .post-actions { display: flex; gap: 6px; padding: 12px 20px; border-top: 1px solid var(--border-light); }
-    .act-btn { display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; color: var(--text-secondary); background: transparent; border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; }
-    .act-btn:hover { background: var(--bg-elevated); color: var(--royal-red); }
-    .act-btn.active { color: var(--royal-red); }
-    .act-btn.active .icon { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .act-btn span.icon { font-size: 18px; }
-    .post-comments { padding: 16px 20px; border-top: 1px solid var(--border-light); background: var(--bg-elevated); }
-    .comment-item { display: flex; gap: 12px; margin-bottom: 16px; }
-    .comment-item:last-child { margin-bottom: 0; }
-    .com-ava { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; background-size: cover; background-position: center; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--royal-red); background-color: #fff; cursor: pointer; }
-    .com-bubble { background: var(--bg-card); border: 1px solid var(--border); padding: 10px 14px; border-radius: 4px 16px 16px 16px; flex: 1; font-size: 13px; color: var(--text); }
-    .com-name { font-weight: 700; font-family: 'Cinzel', serif; font-size: 12px; margin-bottom: 4px; cursor: pointer; color: var(--text); display: flex; justify-content: space-between; }
-    .com-time { font-family: 'Inter', sans-serif; font-size: 10px; color: var(--text-muted); font-weight: 400; }
-    .com-input-wrap { display: flex; gap: 12px; align-items: center; margin-top: 16px; }
-    .com-input { flex: 1; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 10px 16px; font-family: inherit; font-size: 13px; color: var(--text); outline: none; transition: border-color 0.2s; }
-    .com-input:focus { border-color: var(--gold-border); box-shadow: 0 0 0 2px var(--gold-dim); }
+    .post-card:hover { box-shadow: 0 8px 28px rgba(107,21,34,0.09); border-color: var(--gold-border); transform: translateY(-2px); }
+    .post-inner { padding: 20px 24px; }
+    .post-hd { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .post-ava { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--gold-border); background-size: cover; background-position: center; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: var(--royal-red); background-color: var(--bg-elevated); }
+    .post-author { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 700; color: var(--text); }
+    .post-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .post-more { margin-left: auto; background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: background 0.2s; line-height: 1; }
+    .post-more:hover { background: var(--bg-elevated); color: var(--text); }
+    .post-body { font-size: 14px; line-height: 1.7; color: var(--text); margin-bottom: 0; }
+    .post-img { width: 100%; max-height: 360px; object-fit: cover; display: block; border-top: 1px solid var(--border-light); margin-top: 14px; }
+    .post-reactions { display: flex; align-items: center; gap: 6px; padding: 12px 24px; border-top: 1px solid var(--border-light); }
+    .reaction-pill { display: flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 30px; font-size: 13px; font-weight: 600; color: var(--text-secondary); background: none; border: 1px solid transparent; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .reaction-pill:hover { background: var(--bg-elevated); color: var(--royal-red); border-color: rgba(107,21,34,0.15); }
+    .reaction-pill.liked { color: var(--royal-red); background: var(--royal-red-dim); border-color: rgba(107,21,34,0.2); }
+    .reaction-pill svg { width: 16px; height: 16px; }
+    .comment-divider { flex: 1; }
+    .comment-area { padding: 12px 20px; border-top: 1px solid var(--border-light); background: var(--bg-elevated); display: none; }
+    .comment-area.open { display: block; }
+    .comment-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+    .comment-bubble { flex: 1; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 14px; padding: 10px 14px; }
+    .comment-author { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .comment-text { font-size: 13px; color: var(--text-secondary); }
+    .comment-input-row { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
+    .comment-input { flex: 1; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 20px; padding: 9px 16px; font-family: inherit; font-size: 13px; outline: none; color: var(--text); }
+    .comment-input:focus { border-color: var(--gold-border); }
+    .comment-send { background: var(--royal-red-dark); color: #fff; border: none; border-radius: 10px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Cinzel', serif; }
 
     /* ── EMPTY FEED ── */
     .empty-feed { text-align: center; padding: 48px 32px; background: var(--bg-card); border: 1px dashed var(--border); border-radius: 20px; }
@@ -133,31 +116,7 @@
     .pw-edit-btn { width: 100%; padding: 11px; background: linear-gradient(135deg, var(--royal-red-dark), #AB2330); color: #fff; border: none; border-radius: 12px; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
     .pw-edit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107,21,34,0.3); }
 
-    /* ── DYNASTY COMMAND CENTER WIDGETS ── */
-    .dynasty-widget { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(107,21,34,0.08); position: relative; overflow: hidden; }
-    .dynasty-widget::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--royal-red-dark), var(--gold), var(--royal-red-dark)); }
-    
-    .dw-title { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; letter-spacing: 1px; }
-    .dw-title-icon { font-size: 20px; background: linear-gradient(135deg, var(--gold), var(--royal-red)); -webkit-background-clip: text; color: transparent; }
-    
-    /* Alliance Widget Specifics */
-    .alliance-card { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-elevated); border: 1px solid var(--border-light); border-radius: 16px; transition: all 0.3s; margin-bottom: 16px; }
-    .alliance-card:hover { border-color: var(--gold-border); transform: translateX(4px); box-shadow: 0 4px 12px rgba(212,175,55,0.08); }
-    .ac-ava { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--royal-red-dark), #AB2330); display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: #fff; filter: blur(1px); }
-    .ac-info { flex: 1; }
-    .ac-match { display: inline-block; padding: 3px 10px; background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.25); color: var(--gold); font-size: 10px; font-weight: 700; border-radius: 10px; letter-spacing: 0.5px; margin-bottom: 4px; }
-    .ac-gotra { font-size: 12px; color: var(--text-secondary); font-weight: 600; }
-    
-    /* Ledger Widget Specifics */
-    .ledger-stats { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
-    .ls-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border-light); padding-bottom: 8px; }
-    .ls-row:last-child { border-bottom: none; padding-bottom: 0; }
-    .ls-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-    .ls-val { font-family: 'Cinzel', serif; font-size: 14px; color: var(--text); font-weight: 700; }
-    
-    /* Widget Action Button */
-    .dw-action-btn { width: 100%; padding: 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; color: var(--text-secondary); font-family: 'Cinzel', serif; font-weight: 700; font-size: 12px; letter-spacing: 0.5px; cursor: pointer; transition: all 0.3s; text-align: center; text-decoration: none; display: block; }
-    .dw-action-btn:hover { background: linear-gradient(135deg, var(--royal-red-dark), #AB2330); color: #fff; border-color: transparent; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(107,21,34,0.25); }
+
   </style>
 </head>
 <body style="display:none;">
@@ -234,64 +193,6 @@
 
             <!-- Profile Widget -->
             <div class="profile-widget" id="userWidget"></div>
-
-            <!-- Royal Alliances Widget -->
-            <div class="dynasty-widget anim anim-delay-3">
-              <div class="dw-title">
-                <span>Royal Alliances</span>
-                <span class="dw-title-icon">👑</span>
-              </div>
-              <div class="alliance-card">
-                <div class="ac-ava">S</div>
-                <div class="ac-info">
-                  <div class="ac-match">98% Lineage Match</div>
-                  <div class="ac-gotra">Bharadwaj Gotra</div>
-                </div>
-              </div>
-              <a href="matchmaking.html" class="dw-action-btn">Review Prospect</a>
-            </div>
-
-            <!-- Dynasty Ledger Widget -->
-            <div class="dynasty-widget anim anim-delay-4">
-              <div class="dw-title">
-                <span>Dynasty Ledger</span>
-                <span class="dw-title-icon">🏛️</span>
-              </div>
-              <div class="ledger-stats">
-                <div class="ls-row">
-                  <span class="ls-label">Active Trusts</span>
-                  <span class="ls-val">2</span>
-                </div>
-                <div class="ls-row">
-                  <span class="ls-label">Verified Assets</span>
-                  <span class="ls-val">₹4.5Cr</span>
-                </div>
-              </div>
-              <a href="trust.html" class="dw-action-btn">Manage Estate</a>
-            </div>
-
-            <!-- Lineage Overview Widget -->
-            <div class="dynasty-widget anim anim-delay-5">
-              <div class="dw-title">
-                <span>Lineage Overview</span>
-                <span class="dw-title-icon">🌳</span>
-              </div>
-              <div class="ledger-stats">
-                <div class="ls-row">
-                  <span class="ls-label">Generations</span>
-                  <span class="ls-val">4</span>
-                </div>
-                <div class="ls-row">
-                  <span class="ls-label">Relatives</span>
-                  <span class="ls-val">142</span>
-                </div>
-                <div class="ls-row">
-                  <span class="ls-label">Verified</span>
-                  <span class="ls-val">89%</span>
-                </div>
-              </div>
-              <a href="tree.html" class="dw-action-btn">Expand Lineage</a>
-            </div>
 
 
 
