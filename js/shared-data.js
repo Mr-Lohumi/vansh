@@ -233,7 +233,9 @@ async function processCloudInvite(invite, action) {
   function linkSiblings(u1, u2) {
     if (!u1.parents) u1.parents = [];
     if (!u2.parents) u2.parents = [];
-    if (u1.parents.length === 0) ensureParent(u1.id, 'M', 'Father');
+    if (u1.parents.length === 0 && u2.parents.length === 0) {
+      ensureParent(u1.id, 'M', 'Father');
+    }
     u1.parents.forEach(p => { if (!u2.parents.includes(p)) u2.parents.push(p); });
     u2.parents.forEach(p => { if (!u1.parents.includes(p)) u1.parents.push(p); });
   }

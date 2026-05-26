@@ -210,6 +210,9 @@ async function getCloudMemberById(userId) {
       occupation:  data.occupation,
       verified:    data.verified,
       imageUrl:    data.image_url,
+      parents:     [],
+      spouse:      null,
+      gen:         2
     };
   } catch(err) {
     return null;

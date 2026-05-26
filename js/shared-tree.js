@@ -82,15 +82,18 @@ function getBloodlineNetwork(currentPOV) {
   if (pov.spouse) visible.add(pov.spouse);
   
   // Add Parents
-  pov.parents.forEach(pid => {
-    visible.add(pid);
-    const p = getMemberById(pid);
-    if(p && p.spouse) visible.add(p.spouse);
-  });
+  if (pov.parents) {
+    pov.parents.forEach(pid => {
+      visible.add(pid);
+      const p = getMemberById(pid);
+      if(p && p.spouse) visible.add(p.spouse);
+    });
+  }
   
   // Add Siblings (shared parents)
   familyMembers.forEach(m => {
     if (m.id === currentPOV) return;
+    if (!m.parents || !pov.parents) return;
     const isSibling = m.parents.some(pid => pov.parents.includes(pid));
     if (isSibling) {
       visible.add(m.id);
@@ -100,13 +103,57 @@ function getBloodlineNetwork(currentPOV) {
   
   // Add Children
   familyMembers.forEach(m => {
-    if (m.parents.includes(currentPOV) || (pov.spouse && m.parents.includes(pov.spouse))) {
+    if (m.parents && (m.parents.includes(currentPOV) || (pov.spouse && m.parents.includes(pov.spouse)))) {
       visible.add(m.id);
       if (m.spouse) visible.add(m.spouse);
     }
   });
   
-  return Array.from(visible).map(id => getMemberById(id)).filter(m => m);
+  let network = Array.from(visible).map(id => getMemberById(id)).filter(m => m);
+  
+  // Dynamically assign correct generations relative to POV
+  network.forEach(m => m._tempGen = undefined);
+  pov._tempGen = 10; // Start at 10 to avoid negative generations
+  
+  let queue = [pov];
+  while(queue.length > 0) {
+    let curr = queue.shift();
+    
+    // Parents
+    if (curr.parents) {
+      curr.parents.forEach(pid => {
+        let p = network.find(m => m.id === pid);
+        if (p && p._tempGen === undefined) {
+          p._tempGen = curr._tempGen - 1;
+          queue.push(p);
+        }
+      });
+    }
+    
+    // Children
+    let children = network.filter(m => m.parents && m.parents.includes(curr.id));
+    children.forEach(c => {
+      if (c._tempGen === undefined) {
+        c._tempGen = curr._tempGen + 1;
+        queue.push(c);
+      }
+    });
+    
+    // Spouse
+    if (curr.spouse) {
+      let s = network.find(m => m.id === curr.spouse);
+      if (s && s._tempGen === undefined) {
+        s._tempGen = curr._tempGen;
+        queue.push(s);
+      }
+    }
+  }
+  
+  network.forEach(m => {
+    if (m._tempGen !== undefined) m.gen = m._tempGen;
+  });
+  
+  return network;
 }
 
 function renderTreeToContainer(containerId, canvasId, currentPOV, onNodeClickName) {
