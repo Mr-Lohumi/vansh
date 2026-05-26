@@ -99,14 +99,16 @@
     .pw-cover::after { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4A843' fill-opacity='0.08'%3E%3Ccircle cx='30' cy='30' r='15'/%3E%3Ccircle cx='30' cy='30' r='25'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
     .pw-ava-wrap { display: flex; justify-content: center; margin-top: -60px; position: relative; z-index: 2; margin-bottom: 12px; }
     .pw-ava { width: 120px; height: 120px; border-radius: 28px; border: 4px solid var(--bg-card); box-shadow: 0 8px 24px rgba(107,21,34,0.25); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 700; color: var(--royal-red); background-color: var(--bg-elevated); }
-    .pw-body { padding: 0 20px 20px; }
-    .pw-name { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 2px; }
-    .pw-id { font-size: 12px; font-weight: 600; color: var(--text-muted); text-align: center; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
-    .pw-stats { display: flex; border-top: 1px solid var(--border-light); background: var(--bg-elevated); }
-    .pw-stat { flex: 1; text-align: center; padding: 12px 10px; border-right: 1px solid var(--border-light); }
-    .pw-stat:last-child { border-right: none; }
-    .pw-stat-val { font-size: 16px; font-weight: 700; color: var(--text); font-family: 'Cinzel', serif; }
-    .pw-stat-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+    .pw-body { padding: 0 20px 20px; text-align: center; }
+    .pw-name { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .pw-handle { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+    .pw-lineage { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
+    .pw-badge { display: inline-block; background: rgba(107,21,34,0.06); color: var(--royal-red); border: 1px solid rgba(107,21,34,0.15); border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; font-family: 'Cinzel', serif; letter-spacing: 0.5px; }
+    .pw-stats { display: flex; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); margin: 14px 0; }
+    .pw-stat { flex: 1; padding: 12px 8px; text-align: center; }
+    .pw-stat:not(:last-child) { border-right: 1px solid var(--border-light); }
+    .pw-stat-num { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: var(--text); }
+    .pw-stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
 
     /* ── DYNASTY GROWTH WIDGET ── */
     .growth-widget {
@@ -351,22 +353,27 @@
       </div>
       <div class="pw-body">
         <div class="pw-name">${getFullName(authMember)}</div>
-        <div class="pw-id">@${authMember.username || 'user'}</div>
+        <div class="pw-handle">@${authMember.username || 'user'}</div>
+        <div class="pw-lineage">
+          <span class="pw-badge">${authMember.caste || 'Brahmin'}</span>
+          <span style="color:var(--text-muted)">•</span>
+          <span class="pw-badge">${authMember.gotra || 'Kashyap'} Gotra</span>
+        </div>
         <div class="pw-stats">
           <div class="pw-stat">
-            <div class="pw-stat-val">${netCount}</div>
-            <div class="pw-stat-lbl">Network</div>
+            <div class="pw-stat-num">${netCount}</div>
+            <div class="pw-stat-label">Network</div>
           </div>
           <div class="pw-stat">
-            <div class="pw-stat-val">${verPct}%</div>
-            <div class="pw-stat-lbl">Verified</div>
+            <div class="pw-stat-num">${verPct}%</div>
+            <div class="pw-stat-label">Verified</div>
           </div>
           <div class="pw-stat">
-            <div class="pw-stat-val">${authMember.age || '—'}</div>
-            <div class="pw-stat-lbl">Age</div>
+            <div class="pw-stat-num">${authMember.age || '—'}</div>
+            <div class="pw-stat-label">Age</div>
           </div>
         </div>
-        <div class="pw-info-list" style="margin-top:16px;">
+        <div class="pw-info-list">
           ${authMember.occupation ? `<div class="pw-info-row"><span class="pw-info-icon">💼</span><span class="pw-info-val">${authMember.occupation}</span></div>` : ''}
           ${authMember.education ? `<div class="pw-info-row"><span class="pw-info-icon">🎓</span><span class="pw-info-val">${authMember.education}</span></div>` : ''}
           ${authMember.nativePlace ? `<div class="pw-info-row"><span class="pw-info-icon">📍</span><span class="pw-info-val">${authMember.nativePlace}</span></div>` : ''}
