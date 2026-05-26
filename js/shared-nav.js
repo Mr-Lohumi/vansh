@@ -125,18 +125,32 @@ function initNav(pageName) {
     }
 
     topbar.innerHTML = `
-      <div class="topbar-left" style="display: flex; align-items: center; gap: 32px; flex: 1;">
+      <div class="topbar-left" style="display: flex; align-items: center; gap: 24px; flex: 1;">
         <div style="display: flex; align-items: center; gap: 16px; white-space: nowrap;">
           <button class="topbar-hamburger" onclick="toggleSidebar()">${NAV_ICONS.hamburger}</button>
           <div class="topbar-breadcrumb">Vansh / <b>${title}</b></div>
         </div>
-        <div class="universal-search-container" style="position: relative; max-width: 400px; width: 100%;">
-          <input type="text" id="universalSearchInput" placeholder="Search by Name or @username..." style="width: 100%; padding: 10px 16px 10px 40px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-elevated); font-size: 13px; outline: none; transition: all 0.2s;">
-          <svg style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-          <div id="universalSearchResults" style="position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-height: 350px; overflow-y: auto; display: none; z-index: 50;"></div>
+        
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <button class="btn" style="flex-shrink: 0; background: #FAF7F2; border: 1px solid rgba(168,138,103,0.3); color: #9A7B4F; font-family: 'Cinzel', serif; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 8px; padding: 6px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(168,138,103,0.15)'; this.style.borderColor='rgba(168,138,103,0.6)'; this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.03)'; this.style.borderColor='rgba(168,138,103,0.3)'; this.style.transform='translateY(0)'" onclick="window.location.href='matchmaking.html'">
+            <span style="margin-right: 6px; font-size: 14px;">👑</span> Request Alliance
+          </button>
+          <button class="btn" style="flex-shrink: 0; background: #FAF7F2; border: 1px solid rgba(168,138,103,0.3); color: #9A7B4F; font-family: 'Cinzel', serif; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 8px; padding: 6px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(168,138,103,0.15)'; this.style.borderColor='rgba(168,138,103,0.6)'; this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.03)'; this.style.borderColor='rgba(168,138,103,0.3)'; this.style.transform='translateY(0)'" onclick="window.location.href='trust.html'">
+            <span style="margin-right: 6px; font-size: 14px;">🏛️</span> View Estate
+          </button>
+          <button class="btn" style="flex-shrink: 0; background: #FAF7F2; border: 1px solid rgba(168,138,103,0.3); color: #9A7B4F; font-family: 'Cinzel', serif; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 8px; padding: 6px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(168,138,103,0.15)'; this.style.borderColor='rgba(168,138,103,0.6)'; this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.03)'; this.style.borderColor='rgba(168,138,103,0.3)'; this.style.transform='translateY(0)'" onclick="window.location.href='events.html'">
+            <span style="margin-right: 6px; font-size: 14px;">💍</span> RSVP Events
+          </button>
         </div>
       </div>
-      <div class="topbar-right" style="position: relative; display: flex; align-items: center; gap: 20px;">
+      
+      <div class="topbar-right" style="position: relative; display: flex; align-items: center; gap: 20px; flex-shrink: 0;">
+        <div class="universal-search-container" style="position: relative; max-width: 280px; width: 100%; margin: 0;">
+          <input type="text" id="universalSearchInput" placeholder="Search by Name..." style="width: 100%; padding: 8px 16px 8px 36px; border-radius: 20px; border: 1px solid var(--border-light); background: var(--bg-elevated); font-size: 12px; outline: none; transition: all 0.2s;">
+          <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <div id="universalSearchResults" style="position: absolute; top: calc(100% + 8px); right: 0; width: 300px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-height: 350px; overflow-y: auto; display: none; z-index: 50;"></div>
+        </div>
+        
         <div style="position: relative; cursor: pointer; display: flex; align-items: center;" onclick="document.getElementById('notifDropdown').classList.toggle('active')">
           <div style="width: 24px; height: 24px; color: var(--text-secondary);">${bellIcon}</div>
           ${bellBadge}
