@@ -87,7 +87,7 @@
         <div class="modal-title">Edit Profile</div>
         <button class="modal-close" onclick="closeEditModal()">×</button>
       </div>
-      <form id="editForm" class="modal-body">
+      <form id="editForm" class="modal-body" onsubmit="event.preventDefault(); submitEditProfile();">
         <input type="hidden" id="editId">
         <div class="form-row">
           <div class="form-group"><label class="form-label">First Name</label><input type="text" id="editFn" class="form-input" required></div>
@@ -183,13 +183,13 @@
         </div>
 
         <div class="form-group"><label class="form-label">Biography</label><input type="text" id="editBio" class="form-input" placeholder="A short bio..."></div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+          <button type="submit" class="btn btn-gold">Save Changes</button>
+        </div>
       </form>
-      <div class="modal-footer">
-        <button class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
-        <button class="btn btn-gold" onclick="submitEditProfile()">Save Changes</button>
-      </div>
     </div>
-  </div>
   </div>
 
   <script src="js/shared-auth.js"></script>
