@@ -97,16 +97,16 @@
     .fc-link { font-size: 10px; font-weight: 700; color: #946941; display: flex; align-items: center; gap: 4px; margin-top: auto; }
     
     /* ── CHARTS ROW ── */
-    .charts-row { display: grid; grid-template-columns: 260px 1fr; gap: 24px; margin-top: 24px; }
-    .donut-wrap { display: flex; align-items: center; gap: 20px; margin-top: 16px; }
-    .donut-chart { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+    .charts-row { display: grid; grid-template-columns: 200px 1fr; gap: 24px; margin-top: 24px; }
+    .donut-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; margin-top: 16px; }
+    .donut-chart { position: relative; width: 80px; height: 80px; flex-shrink: 0; margin: 0 auto; }
     .donut-chart svg { transform: rotate(-90deg); width: 100%; height: 100%; }
     .donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .donut-val { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: #3c1218; line-height: 1; }
     .donut-lbl { font-size: 7px; color: #7c4c3a; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
-    .insights-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex: 1; position: relative; }
-    .is-item { display: flex; flex-direction: column; gap: 4px; }
-    .is-lbl { font-size: 10px; color: #7c4c3a; display: flex; align-items: center; gap: 6px; }
+    .insights-stats { display: flex; width: 100%; justify-content: space-around; gap: 8px; position: relative; }
+    .is-item { display: flex; flex-direction: column; gap: 2px; }
+    .is-lbl { font-size: 9px; color: #7c4c3a; display: flex; align-items: center; gap: 4px; justify-content: center; }
     .is-val { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: #dcb381; }
     .map-bg { position: absolute; right: 0; bottom: 0; width: 120px; height: 80px; background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg"><path d="M10 20 Q 20 10 30 20 T 50 20" fill="none" stroke="%23ebdcc6" stroke-width="2"/></svg>') no-repeat right bottom/contain; opacity: 0.5; pointer-events: none; }
     
