@@ -92,7 +92,7 @@ async function initNav(pageName) {
   }
 
   const topbar = document.getElementById('topbar');
-  if (topbar && !topbar.classList.contains('custom-topbar')) {
+  if (topbar) {
     let title = 'Dashboard';
     for (const group of NAV_GROUPS) {
       const found = group.items.find(n => n.id === pageName);
