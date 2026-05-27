@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vansh (वंश) — Royal Inbox</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css?v=100">
   <style>
     .inbox-layout {
@@ -15,7 +15,7 @@
       flex: 0 0 350px; background: var(--bg-card); border: 1px solid var(--border);
       border-radius: var(--radius); display: flex; flex-direction: column; overflow: hidden;
     }
-    .inbox-header { padding: 20px; border-bottom: 1px solid var(--border); font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; background: var(--bg-elevated); color: var(--royal-red);}
+    .inbox-header { padding: 20px; border-bottom: 1px solid var(--border); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 18px; background: var(--bg-elevated); color: var(--royal-red);}
     
     .inbox-threads { overflow-y: auto; flex: 1; }
 
@@ -58,7 +58,7 @@
     }
 
     .btn-royal {
-      background: var(--royal-red); color: #fff; border: none; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px;
+      background: var(--royal-red); color: #fff; border: none; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 13px;
       padding: 10px 20px; border-radius: 6px; cursor: pointer; transition: 0.2s;
     }
     .btn-royal:hover { background: #8a1a25; }
@@ -202,7 +202,7 @@
         const isActive = t.id === currentThreadId ? 'active' : '';
         const badge = t.isAlliance ? `<div class="msg-badge">Alliance Request</div>` : '';
         
-        const avatar = t.contactAvatar ? `<div class="msg-ava" style="background-image:url('${t.contactAvatar}')"></div>` : `<div class="msg-ava" style="background:var(--bg-hover);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--gold);font-family:Cinzel,serif;border:1px solid var(--gold);">${t.contactName[0]}</div>`;
+        const avatar = t.contactAvatar ? `<div class="msg-ava" style="background-image:url('${t.contactAvatar}')"></div>` : `<div class="msg-ava" style="background:var(--bg-hover);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--gold);font-family:Playfair Display,serif;border:1px solid var(--gold);">${t.contactName[0]}</div>`;
         
         return `
           <div class="msg-item ${isActive}" onclick="openThread('${t.id}')">
@@ -235,7 +235,7 @@
         if (m.hasAllianceCard) {
           extraHtml = `
             <div class="alliance-card">
-              <div style="font-family:'Cinzel', serif; font-weight: 800; color: var(--royal-red); margin-bottom: 8px; font-size:16px;">Official Alliance Proposal</div>
+              <div style="font-family:'Playfair Display', serif; font-weight: 800; color: var(--royal-red); margin-bottom: 8px; font-size:16px;">Official Alliance Proposal</div>
               <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
                 <b>Match:</b> <span style="color: var(--green)">Exogamy Verified</span>
               </div>
@@ -253,7 +253,7 @@
         `;
       }).join('');
 
-      const avatar = thread.contactAvatar ? `<div class="msg-ava" style="background-image:url('${thread.contactAvatar}')"></div>` : `<div class="msg-ava" style="background:var(--bg-hover);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--gold);font-family:Cinzel,serif;border:1px solid var(--gold);">${thread.contactName[0]}</div>`;
+      const avatar = thread.contactAvatar ? `<div class="msg-ava" style="background-image:url('${thread.contactAvatar}')"></div>` : `<div class="msg-ava" style="background:var(--bg-hover);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--gold);font-family:Playfair Display,serif;border:1px solid var(--gold);">${thread.contactName[0]}</div>`;
 
       container.innerHTML = `
         <div class="view-header">
