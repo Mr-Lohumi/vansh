@@ -9,7 +9,7 @@
   <style>
     /* ── PRECISE BACKGROUNDS & LAYOUT ── */
     body, .page-content { background-color: #fcf9f5 !important; }
-    .dash-wrapper { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; padding-bottom: 60px; }
+    .dash-wrapper { max-width: 1400px; width: 100%; box-sizing: border-box; padding: 0 40px 60px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
     
     /* ── OVERRIDE SIDEBAR ── */
     .sidebar { background: #320a0e !important; border-radius: 20px !important; margin: 16px 0 16px 16px !important; height: calc(100vh - 32px) !important; box-shadow: none !important; border: none !important; }
@@ -49,7 +49,7 @@
     .stat-sub { font-size: 10px; color: #a18a7a; }
     
     /* ── MAIN GRID ── */
-    .dash-main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
+    .dash-main-grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: start; }
     
     .dash-card { background: #fdfbf7; border-radius: 12px; border: 1px solid #ebdcc6; padding: 24px; position: relative; }
     .dash-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
@@ -86,7 +86,7 @@
     .compact-tree-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
     
     /* ── FEATURE ROW ── */
-    .feature-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
+    .feature-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-top: 24px; }
     .feature-card { background: #fdfbf7; border-radius: 12px; border: 1px solid #ebdcc6; padding: 24px 20px; box-shadow: none; text-decoration: none; display: flex; flex-direction: column; transition: transform 0.3s; }
     .feature-card:hover { transform: translateY(-3px); }
     .fc-icon { font-size: 32px; margin-bottom: 16px; display: inline-block; }
@@ -277,7 +277,7 @@
                      <div class="ct-row" id="ctRootRow"></div>
                      <div id="ctNodes" style="width: 100%;"></div>
                      
-                     <div style="width:100%; display:flex; justify-content:space-between; align-items:center; padding: 20px 32px 0 160px; z-index:10; margin-top:auto;">
+                     <div style="width:100%; display:flex; justify-content:space-between; align-items:center; padding: 20px 32px 0 32px; box-sizing: border-box; z-index:10; margin-top:auto;">
                        <div class="tree-legend">
                           <div class="leg-item"><div class="leg-dot" style="background:#dcb381;"></div> Male</div>
                           <div class="leg-item"><div class="leg-dot" style="background:#8a2226;"></div> Female</div>
