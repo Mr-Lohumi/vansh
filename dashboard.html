@@ -64,25 +64,25 @@
     
     .tree-sidebar-floating { position: absolute; top: 80px; left: 24px; background: #fdfbf7; padding: 30px 20px; border-radius: 12px; border: 1px solid #f4eade; z-index: 10; display: flex; flex-direction: column; gap: 30px; align-items: center; box-shadow: 0 4px 12px rgba(107,21,34,0.02); }
     .ts-item { text-align: center; }
-    .ts-val { font-family: 'Cinzel', serif; font-size: 28px; font-weight: 700; color: #7c2d33; line-height: 1; margin-bottom: 6px; }
-    .ts-lbl { font-size: 9px; color: #7c4c3a; font-weight: 600; letter-spacing: 0.5px; }
+    .ts-val { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 700; color: #4a151b; line-height: 1; margin-bottom: 8px; }
+    .ts-lbl { font-size: 10px; color: #7c4c3a; font-weight: 700; letter-spacing: 0.5px; }
     .ts-div { width: 40px; height: 1px; background: #ebdcc6; }
     
     .tree-layout-box { display: flex; flex: 1; min-height: 400px; position: relative; padding-top: 40px; padding-bottom: 80px; }
     .tree-main-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding-left: 140px; } /* pad left to clear sidebar */
     
-    .ct-row { display: flex; align-items: center; justify-content: center; margin-bottom: 48px; gap: 64px; position: relative; width: 100%; }
-    .ct-gen { position: absolute; left: 20px; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #7c4c3a; width: 36px; height: 36px; border-radius: 50%; background: #f5eedf; display: flex; align-items: center; justify-content: center; }
+    .ct-row { display: flex; align-items: flex-start; justify-content: center; margin-bottom: 48px; gap: 64px; position: relative; width: 100%; }
+    .ct-gen { position: absolute; left: 20px; top: 10px; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #7c4c3a; width: 36px; height: 36px; border-radius: 50%; background: #f5eedf; display: flex; align-items: center; justify-content: center; }
     .ct-node { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 80px; position: relative; z-index: 2; text-decoration: none; }
     .ct-ava { width: 56px; height: 56px; border-radius: 50%; border: 3px solid #ebdcc6; background-size: cover; background-position: center; background-color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #dcb381; box-shadow: 0 4px 12px rgba(60, 10, 14, 0.1); }
     .ct-ava.female { border-color: #8a2226; color: #8a2226; }
     .ct-ava.deceased { border-color: #f4eade; opacity: 0.6; }
     .ct-name { font-size: 10px; font-weight: 700; color: #3c1218; text-align: center; white-space: nowrap; }
     
-    .tree-legend { position: absolute; bottom: 24px; left: 160px; display: flex; gap: 24px; font-size: 10px; color: #7c4c3a; font-weight: 600; z-index: 10; }
+    .tree-legend { display: flex; gap: 24px; font-size: 12px; color: #7c4c3a; font-weight: 600; }
     .leg-item { display: flex; align-items: center; gap: 8px; }
     .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .leg-link { position: absolute; bottom: 24px; right: 32px; font-size: 12px; font-weight: 700; color: #946941; text-decoration: none; z-index: 10; display: flex; align-items: center; gap: 4px; }
+    .leg-link { font-size: 12px; font-weight: 700; color: #946941; text-decoration: none; display: flex; align-items: center; gap: 4px; }
     .compact-tree-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
     
     /* ── FEATURE ROW ── */
@@ -277,13 +277,15 @@
                      <div class="ct-row" id="ctRootRow"></div>
                      <div id="ctNodes" style="width: 100%;"></div>
                      
-                     <div class="tree-legend">
-                        <div class="leg-item"><div class="leg-dot" style="background:#dcb381;"></div> Male</div>
-                        <div class="leg-item"><div class="leg-dot" style="background:#8a2226;"></div> Female</div>
-                        <div class="leg-item"><div class="leg-dot" style="background:#ebdcc6;"></div> Deceased</div>
-                        <div class="leg-item"><div class="leg-dot" style="background:#f5eedf;"></div> Unverified</div>
+                     <div style="width:100%; display:flex; justify-content:space-between; align-items:center; padding: 20px 32px 0 160px; z-index:10; margin-top:auto;">
+                       <div class="tree-legend">
+                          <div class="leg-item"><div class="leg-dot" style="background:#dcb381;"></div> Male</div>
+                          <div class="leg-item"><div class="leg-dot" style="background:#8a2226;"></div> Female</div>
+                          <div class="leg-item"><div class="leg-dot" style="background:#ebdcc6;"></div> Deceased</div>
+                          <div class="leg-item"><div class="leg-dot" style="background:#f5eedf;"></div> Unverified</div>
+                       </div>
+                       <a href="tree.html" class="leg-link">View Full Tree ➔</a>
                      </div>
-                     <a href="tree.html" class="leg-link">View Full Tree ➔</a>
                   </div>
                 </div>
               </div>
@@ -557,14 +559,16 @@
        let r = rootMembers[0];
        
        rootContainer.innerHTML = `
-          <a href="tree.html?id=${r.id}" class="ct-node" id="ctn-${r.id}" style="margin-bottom:32px; width:auto; display:flex; flex-direction:row; align-items:center; gap:16px;">
-             <div class="ct-ava ${r.gender==='F'?'female':''} ${r.deceased?'deceased':''}" style="width:64px; height:64px; font-size:22px;">${getInitials(r)}</div>
-             <div style="display:flex; flex-direction:column; align-items:flex-start; text-align:left;">
-                 <div style="font-size:10px; font-weight:700; color:#3c1218;">Late Shri</div>
-                 <div style="font-family:'Cinzel', serif; font-size:13px; font-weight:700; color:#3c1218;">${r.firstName} ${r.lastName||''}</div>
-                 <div style="font-size:9px; color:#a18a7a;">1920 - 1998</div>
-             </div>
-          </a>
+          <div style="position:relative; display:flex; justify-content:center; width:100%; margin-bottom:32px;">
+             <a href="tree.html?id=${r.id}" class="ct-node" id="ctn-${r.id}" style="position:relative; width:auto;">
+                <div class="ct-ava ${r.gender==='F'?'female':''} ${r.deceased?'deceased':''}" style="width:64px; height:64px; font-size:22px;">${getInitials(r)}</div>
+                <div style="position:absolute; left:calc(100% + 16px); top:50%; transform:translateY(-50%); display:flex; flex-direction:column; align-items:flex-start; text-align:left; width:max-content; pointer-events:none;">
+                    <div style="font-size:10px; font-weight:700; color:#3c1218;">Late Shri</div>
+                    <div style="font-family:'Cinzel', serif; font-size:14px; font-weight:700; color:#3c1218; text-transform:uppercase;">${r.firstName} ${r.lastName||''}</div>
+                    <div style="font-size:10px; color:#a18a7a;">1920 - 1998</div>
+                </div>
+             </a>
+          </div>
        `;
        
        let html = '';
@@ -622,13 +626,16 @@
                    const cY = cAvaRect.top - sRect.top - 6; // slightly above child
                    const midY = (pY + cY) / 2;
                    
-                   pathHtml += `<path d="M${pX},${pY} L${pX},${midY} L${cX},${midY} L${cX},${cY}" fill="none" stroke="#ebdcc6" stroke-width="1.5" />`;
-                   
-                   // The joint dots
-                   pathHtml += `<circle cx="${pX}" cy="${pY}" r="2" fill="#dcb381" />`;
-                   pathHtml += `<circle cx="${cX}" cy="${cY}" r="2" fill="#dcb381" />`;
-                   // Middle joint dot (for aesthetics)
-                   pathHtml += `<circle cx="${cX}" cy="${midY}" r="2.5" fill="#fdfbf7" stroke="#dcb381" stroke-width="1.5" />`;
+                   if (Math.abs(pX - cX) < 2) {
+                     pathHtml += `<path d="M${pX},${pY} L${cX},${cY}" fill="none" stroke="#ebdcc6" stroke-width="1.5" />`;
+                     pathHtml += `<circle cx="${pX}" cy="${pY}" r="2" fill="#dcb381" />`;
+                     pathHtml += `<circle cx="${cX}" cy="${cY}" r="2" fill="#dcb381" />`;
+                   } else {
+                     pathHtml += `<path d="M${pX},${pY} L${pX},${midY} L${cX},${midY} L${cX},${cY}" fill="none" stroke="#ebdcc6" stroke-width="1.5" />`;
+                     pathHtml += `<circle cx="${pX}" cy="${pY}" r="2" fill="#dcb381" />`;
+                     pathHtml += `<circle cx="${cX}" cy="${cY}" r="2" fill="#dcb381" />`;
+                     pathHtml += `<circle cx="${cX}" cy="${midY}" r="2.5" fill="#fdfbf7" stroke="#dcb381" stroke-width="1.5" />`;
+                   }
                 });
              });
           }
