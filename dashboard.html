@@ -9,7 +9,7 @@
   <style>
     /* ── PRECISE BACKGROUNDS & LAYOUT ── */
     body, .page-content { background-color: #fcf9f5 !important; }
-    .dash-wrapper { max-width: 1400px; width: 100%; box-sizing: border-box; padding: 0 40px 60px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+    .dash-wrapper { width: 100%; box-sizing: border-box; padding: 0 40px 60px; margin: 0; display: flex; flex-direction: column; gap: 24px; }
     
     /* ── OVERRIDE SIDEBAR ── */
     .sidebar { background: #320a0e !important; border-radius: 20px !important; margin: 16px 0 16px 16px !important; height: calc(100vh - 32px) !important; box-shadow: none !important; border: none !important; }
@@ -36,10 +36,10 @@
     .tb-btn { background: #7c2d33; color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
     
     /* ── WELCOME HEADER ── */
-    .dash-welcome-header { margin-bottom: 24px; }
+    .dash-welcome-header { margin-bottom: 24px; padding: 0 40px; }
     
     /* ── TOP STAT STRIP ── */
-    .top-stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+    .top-stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
     .stat-card { background: #320a0e; border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; border: none; }
     .stat-icon { width: 44px; height: 44px; border-radius: 50%; border: 1px solid #7c4c3a; display: flex; align-items: center; justify-content: center; color: #dcb381; font-size: 20px; flex-shrink: 0; }
     .stat-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.5; }
@@ -49,7 +49,7 @@
     .stat-sub { font-size: 10px; color: #a18a7a; }
     
     /* ── MAIN GRID ── */
-    .dash-main-grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: start; }
+    .dash-main-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 320px); gap: 24px; align-items: start; }
     
     .dash-card { background: #fdfbf7; border-radius: 12px; border: 1px solid #ebdcc6; padding: 24px; position: relative; }
     .dash-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
@@ -79,7 +79,7 @@
     .ct-ava.deceased { border-color: #f4eade; opacity: 0.6; }
     .ct-name { font-size: 10px; font-weight: 700; color: #3c1218; text-align: center; white-space: nowrap; }
     
-    .tree-legend { display: flex; gap: 24px; font-size: 12px; color: #7c4c3a; font-weight: 600; }
+    .tree-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; color: #7c4c3a; font-weight: 600; }
     .leg-item { display: flex; align-items: center; gap: 8px; }
     .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
     .leg-link { font-size: 12px; font-weight: 700; color: #946941; text-decoration: none; display: flex; align-items: center; gap: 4px; white-space: nowrap; flex-shrink: 0; }
@@ -141,6 +141,16 @@
     .dl-sub { font-size: 9px; color: #7c4c3a; }
     .dl-time { font-size: 9px; color: #a18a7a; text-align: right; }
     .view-all-link { display: block; text-align: center; margin-top: 12px; font-size: 10px; font-weight: 700; color: #946941; text-decoration: none; padding-top: 12px; border-top: 1px solid #ebdcc6; }
+    
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1200px) {
+       .dash-main-grid { grid-template-columns: 1fr; }
+       .dash-right-col { position: static; }
+       .charts-row { grid-template-columns: 1fr; }
+       .tree-main-area { padding-left: 20px; }
+       .tree-sidebar-floating { position: static; margin-bottom: 24px; flex-direction: row; justify-content: center; width: 100%; box-sizing: border-box; }
+       .ts-div { width: 1px; height: 40px; }
+    }
   </style>
 </head>
 <body style="display:none;">
