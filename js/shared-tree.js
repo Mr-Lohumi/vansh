@@ -261,11 +261,15 @@ function renderTreeToContainer(containerId, canvasId, currentPOV, onNodeClickNam
   
   container.innerHTML = html;
   
-  // Wait for DOM to render then draw connections and place gems
-  setTimeout(() => {
+  // Wait for DOM to render then draw connections and place gems using ResizeObserver
+  if (window.sharedTreeObserver) window.sharedTreeObserver.disconnect();
+  const drawTree = () => {
     drawTreeConnections(containerId, canvasId, visibleMembers);
     placeGemsForActiveNode(currentPOV);
-  }, 150);
+  };
+  window.sharedTreeObserver = new ResizeObserver(() => drawTree());
+  window.sharedTreeObserver.observe(container);
+  setTimeout(drawTree, 100);
 }
 
 function placeGemsForActiveNode(currentPOV) {

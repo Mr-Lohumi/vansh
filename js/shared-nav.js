@@ -73,10 +73,11 @@ async function initNav(pageName) {
     });
 
     sidebar.innerHTML = `
-      <div class="sidebar-brand">
-        <div class="logo">Vansh</div>
-        <div class="sub">Family Dynasty</div>
-      </div>
+      <div class="sidebar">
+        <div class="sidebar-brand">
+          <div class="logo">Vansh</div>
+          <div class="sub">Family Dynasty</div>
+        </div>
       <nav class="sidebar-nav">
         ${navHtml}
       </nav>
@@ -86,8 +87,10 @@ async function initNav(pageName) {
           <div class="sf-name">${userName}</div>
           <div class="sf-role">Verified</div>
         </div>
+        </div>
         <button class="sf-logout" onclick="logout()">Logout</button>
       </div>
+    </div>
     `;
   }
 
@@ -157,11 +160,11 @@ async function initNav(pageName) {
 
     if (!topbar.classList.contains('custom-topbar')) {
       topbar.innerHTML = `
-        <div class="topbar-left" style="display:flex; align-items:center; gap:20px; flex:1; min-width:0;">
+        <div class="topbar-left cluster" style="flex:1; min-width:0;">
           <button class="topbar-hamburger" onclick="toggleSidebar()">${NAV_ICONS.hamburger}</button>
           <div class="topbar-breadcrumb">Vansh / <b>${title}</b></div>
 
-        <div style="display:flex; gap:10px; align-items:center; flex-shrink:0;">
+        <div class="cluster" style="flex-shrink:0;">
           <button onclick="openInviteExternalModal()" title="Invite Family" style="display:flex;align-items:center;gap:6px;padding:8px 20px;background:linear-gradient(135deg,var(--royal-red-dark),var(--royal-red));color:#fff;border:none;border-radius:30px;font-family:'Cinzel',serif;font-weight:700;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all 0.3s;box-shadow:0 4px 14px rgba(107,21,34,0.25);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 22px rgba(107,21,34,0.35)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 14px rgba(107,21,34,0.25)'">
             INVITE
           </button>
@@ -174,8 +177,8 @@ async function initNav(pageName) {
         </div>
       </div>
       
-      <div class="topbar-right" style="position:relative; display:flex; align-items:center; gap:16px; flex-shrink:0;">
-        <div class="universal-search-container" style="position:relative; width:240px;">
+      <div class="topbar-right cluster" style="position:relative; flex-shrink:0;">
+        <div class="universal-search-container" style="position:relative; flex:1; max-width: 300px; min-width: 200px;">
           <input type="text" id="universalSearchInput" placeholder="Search family members..." style="width:100%; padding:9px 16px 9px 38px; border-radius:12px; border:1.5px solid var(--border); background:var(--bg-elevated); font-size:13px; outline:none; transition:all 0.25s; font-family:inherit; color:var(--text);" onfocus="this.style.borderColor='var(--royal-red)'; this.style.background='#fff'" onblur="this.style.borderColor='var(--border)'; this.style.background='var(--bg-elevated)'">
           <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text-muted);pointer-events:none;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           <div id="universalSearchResults" style="position:absolute;top:calc(100% + 6px);left:0;width:340px;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;box-shadow:0 16px 40px rgba(107,21,34,0.12);max-height:400px;overflow-y:auto;display:none;z-index:200;"></div>

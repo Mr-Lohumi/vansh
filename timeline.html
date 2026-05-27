@@ -32,6 +32,7 @@
     
     .dna-container {
       position: relative; max-width: 1000px; margin: 0 auto; padding: 40px 0 120px;
+      container-type: inline-size;
     }
     
     /* The Central DNA Helix */
@@ -48,6 +49,14 @@
     }
     .dna-item.left { left: 0; justify-content: flex-end; padding-right: 120px; text-align: right; transform: translateX(-100px) scale(0.9); }
     .dna-item.right { left: 50%; justify-content: flex-start; padding-left: 120px; text-align: left; transform: translateX(100px) scale(0.9); }
+    
+    @container (max-width: 768px) {
+      .dna-helix { left: 40px; transform: translateX(-50%); }
+      .dna-item { width: 100%; padding: 20px 20px 20px 100px !important; margin-bottom: 32px; left: 0 !important; justify-content: flex-start !important; text-align: left !important; transform: translateX(-100px) scale(0.9); }
+      .dna-item.visible { transform: translateX(0) scale(1); }
+      .dna-item .dna-rung { width: 40px !important; left: -80px !important; right: auto !important; transform: translateY(-50%) !important; }
+      .dna-item.left .dna-avatars, .dna-item.right .dna-avatars { justify-content: flex-start; }
+    }
     
     .dna-item.visible { opacity: 1; transform: translateX(0) scale(1); }
     
