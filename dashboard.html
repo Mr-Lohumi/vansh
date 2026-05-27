@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vansh (वंश) — Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css?v=100">
   <style>
     /* ── PRECISE BACKGROUNDS & LAYOUT ── */
@@ -17,7 +17,7 @@
     .topbar { background: transparent !important; border-bottom: none !important; box-shadow: none !important; padding: 0 24px !important; }
     .tb-content { justify-content: flex-end; width: 100%; display: flex; gap: 24px; align-items: center; }
     .tb-search { background: #fdfbf7; border: 1px solid #ebdcc6; border-radius: 30px; padding: 8px 16px; flex: 1; max-width: 300px; display: flex; align-items: center; gap: 8px; color: #7c4c3a; font-size: 13px; }
-    .tb-search input { border: none; background: transparent; flex: 1; outline: none; color: #3c1218; font-family: 'Montserrat'; }
+    .tb-search input { border: none; background: transparent; flex: 1; outline: none; color: #3c1218; font-family: 'Outfit'; }
     .tb-actions { display: flex; align-items: center; gap: 20px; }
     .tb-bell { color: #7c4c3a; position: relative; display: flex; align-items: center; justify-content: center; }
     .tb-bell-badge { position: absolute; top: -4px; right: -4px; background: #8a2226; color: #fff; font-size: 9px; font-weight: bold; width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
@@ -33,7 +33,7 @@
     .stat-icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.5; }
     .stat-info { flex: 1; }
     .stat-label { font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.7); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
-    .stat-value { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #fff; line-height: 1; margin-bottom: 2px; }
+    .stat-value { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; color: #fff; line-height: 1; margin-bottom: 2px; }
     .stat-sub { font-size: 9px; color: #d5bba8; }
     
     /* ── MAIN GRID ── */
@@ -41,7 +41,7 @@
     
     .dash-card { background: linear-gradient(135deg, #ffffff 0%, #fdfbf7 100%); border-radius: 16px; border: 1px solid rgba(220,179,129,0.3); padding: 24px; position: relative; box-shadow: 0 10px 30px rgba(60, 18, 24, 0.04), inset 0 2px 4px rgba(255,255,255,0.8); overflow: hidden; }
     .dash-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .dash-card-title { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: #3c1218; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 12px; }
+    .dash-card-title { font-family: 'Lora', serif; font-size: 14px; font-weight: 700; color: #3c1218; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 12px; }
     
     /* ── TREE OVERVIEW (PREMIUM DARK) ── */
     .tree-overview-card { min-height: 240px; padding: 0; display: flex; flex-direction: column; overflow: hidden; position: relative; background-color: #0a0102; background-image: radial-gradient(circle at center, rgba(220,179,129,0.15) 0%, transparent 60%), linear-gradient(160deg, rgba(66,10,18,0.85) 0%, rgba(10,1,2,0.98) 100%), url('damask_bg.png'); background-size: cover, cover, cover; background-position: center; border: 1px solid rgba(220, 179, 129, 0.4); box-shadow: 0 0 24px rgba(220, 179, 129, 0.15), inset 0 0 60px rgba(0,0,0,0.8); border-radius: 12px; }
@@ -56,7 +56,7 @@
     .tree-sidebar-static { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 32px; border-right: 1px solid rgba(220, 179, 129, 0.3); background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 10%, rgba(0,0,0,0.5) 25%, transparent 100%); position: relative; z-index: 5; }
     .tree-sidebar-static::before { content: ''; position: absolute; top: 0; left: 0; width: 2px; height: 100%; background: linear-gradient(180deg, transparent, rgba(255,255,255,0.8) 20%, rgba(255,255,255,0.8) 80%, transparent); box-shadow: 0 0 15px rgba(255,255,255,0.6); z-index: 6; }
     .ts-item { text-align: center; }
-    .ts-val { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: #f4d772; line-height: 1; margin-bottom: 8px; text-shadow: 0 0 16px rgba(244,215,114,0.7), 0 0 32px rgba(244,215,114,0.4); }
+    .ts-val { font-family: 'Lora', serif; font-size: 36px; font-weight: 700; color: #f4d772; line-height: 1; margin-bottom: 8px; text-shadow: 0 0 16px rgba(244,215,114,0.7), 0 0 32px rgba(244,215,114,0.4); }
     .ts-lbl { font-size: 10px; color: rgba(244,215,114,0.8); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 6px rgba(244,215,114,0.4); }
     .ts-div { width: 40px; height: 1.5px; background: #f4d772; box-shadow: 0 0 8px rgba(244,215,114,0.8); }
     
@@ -64,14 +64,14 @@
     .tree-main-area { position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 24px 0; }
     
     .ct-row { display: flex; align-items: flex-start; justify-content: center; margin-bottom: 16px; gap: 12px; position: relative; width: 100%; }
-    .ct-gen { position: absolute; left: 20px; top: 10px; font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; color: #1a0406; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #dcb381, #a67c52); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 2px solid #fff; }
+    .ct-gen { position: absolute; left: 20px; top: 10px; font-family: 'Lora', serif; font-size: 13px; font-weight: 700; color: #1a0406; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #dcb381, #a67c52); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 2px solid #fff; }
     .ct-node { display: flex; flex-direction: column; align-items: center; gap: 8px; width: auto; position: relative; z-index: 2; text-decoration: none; padding: 4px; background: transparent; border: none; box-shadow: none; transition: all 0.3s; }
     .ct-node:hover { transform: translateY(-4px); }
     .ct-node:hover .ct-ava { box-shadow: 0 0 24px rgba(220,179,129,0.9); border-color: #fff; }
-    .ct-ava { width: 48px; height: 48px; border-radius: 50%; border: 2.5px solid #dcb381; background-size: cover; background-position: center; background-color: #3c1218; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; font-family: 'Playfair Display', serif; color: #dcb381; box-shadow: 0 0 12px rgba(220,179,129,0.5); flex-shrink: 0; transition: all 0.3s; }
+    .ct-ava { width: 48px; height: 48px; border-radius: 50%; border: 2.5px solid #dcb381; background-size: cover; background-position: center; background-color: #3c1218; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; font-family: 'Lora', serif; color: #dcb381; box-shadow: 0 0 12px rgba(220,179,129,0.5); flex-shrink: 0; transition: all 0.3s; }
     .ct-ava.female { border-color: #fca5a5; box-shadow: 0 0 12px rgba(252,165,165,0.4); }
     .ct-ava.deceased { border-color: #a18a7a; opacity: 0.7; box-shadow: 0 0 8px rgba(161,138,122,0.3); }
-    .ct-name { font-size: 11px; font-weight: 800; color: #fff; text-align: center; white-space: nowrap; font-family: 'Playfair Display', serif; letter-spacing: 0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.9); }
+    .ct-name { font-size: 11px; font-weight: 800; color: #fff; text-align: center; white-space: nowrap; font-family: 'Lora', serif; letter-spacing: 0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.9); }
     
     .tree-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; font-size: 12px; color: rgba(255,255,255,0.8); font-weight: 600; }
     .leg-item { display: flex; align-items: center; gap: 8px; }
@@ -89,10 +89,10 @@
     .fc-img-box { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #f4d772 0%, #a67c52 100%); display: flex; align-items: center; justify-content: center; color: #fff; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(166,124,82,0.4), inset 0 2px 4px rgba(255,255,255,0.4); transition: transform 0.3s; }
     .feature-card:hover .fc-img-box { transform: scale(1.05); }
     .fc-img-box svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3)); }
-    .fc-title { font-family: 'Playfair Display', serif; font-size: 11px; font-weight: 800; color: #3c1218; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-    .fc-val { font-size: 24px; font-weight: 800; font-family: 'Playfair Display', serif; color: #3c1218; line-height: 1; margin-bottom: 6px; display: flex; align-items: baseline; gap: 6px; text-shadow: 0 1px 2px rgba(60, 18, 24, 0.1); }
-    .fc-sub { font-size: 11px; color: #7c4c3a; line-height: 1.5; margin-bottom: 20px; flex: 1; font-family: 'Montserrat', sans-serif; font-weight: 500; }
-    .fc-link { font-size: 11px; font-weight: 700; color: #a67c52; display: flex; align-items: center; gap: 6px; margin-top: auto; transition: color 0.2s; font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; }
+    .fc-title { font-family: 'Lora', serif; font-size: 11px; font-weight: 800; color: #3c1218; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .fc-val { font-size: 24px; font-weight: 800; font-family: 'Lora', serif; color: #3c1218; line-height: 1; margin-bottom: 6px; display: flex; align-items: baseline; gap: 6px; text-shadow: 0 1px 2px rgba(60, 18, 24, 0.1); }
+    .fc-sub { font-size: 11px; color: #7c4c3a; line-height: 1.5; margin-bottom: 20px; flex: 1; font-family: 'Outfit', sans-serif; font-weight: 500; }
+    .fc-link { font-size: 11px; font-weight: 700; color: #a67c52; display: flex; align-items: center; gap: 6px; margin-top: auto; transition: color 0.2s; font-family: 'Outfit', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; }
     .feature-card:hover .fc-link { color: #3c1218; }
     
     /* ── CHARTS ROW ── */
@@ -101,12 +101,12 @@
     .donut-chart { position: relative; width: 80px; height: 80px; flex-shrink: 0; margin: 0 auto; }
     .donut-chart svg { transform: rotate(-90deg); width: 100%; height: 100%; filter: drop-shadow(0 4px 8px rgba(60, 18, 24, 0.15)); }
     .donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .donut-val { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #3c1218; line-height: 1; }
+    .donut-val { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; color: #3c1218; line-height: 1; }
     .donut-lbl { font-size: 7px; color: #7c4c3a; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
     .insights-stats { display: flex; width: 100%; justify-content: space-around; gap: 8px; position: relative; }
     .is-item { display: flex; flex-direction: column; gap: 2px; }
     .is-lbl { font-size: 9px; color: #7c4c3a; display: flex; align-items: center; gap: 4px; justify-content: center; }
-    .is-val { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #dcb381; }
+    .is-val { font-family: 'Lora', serif; font-size: 18px; font-weight: 700; color: #dcb381; }
     .map-bg { position: absolute; right: 0; bottom: 0; width: 120px; height: 80px; background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg"><path d="M10 20 Q 20 10 30 20 T 50 20" fill="none" stroke="%23ebdcc6" stroke-width="2"/></svg>') no-repeat right bottom/contain; opacity: 0.5; pointer-events: none; }
     
     .area-chart-container { height: 140px; width: 100%; margin-top: 20px; position: relative; display: flex; align-items: flex-end; filter: drop-shadow(0 10px 20px rgba(60, 18, 24, 0.15)); }
@@ -126,7 +126,7 @@
     }
     .hc-bg { display: none; }
     .hc-top { padding: 16px 12px 10px; display: flex; justify-content: center; position: relative; z-index: 2; }
-    .hc-crown { font-size: 11px; color: #dcb381; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 2px; }
+    .hc-crown { font-size: 11px; color: #dcb381; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Lora', serif; font-weight: 700; letter-spacing: 2px; }
     
     .hc-ava-wrap { position: relative; width: 90px; height: 90px; margin: 0 auto 28px; z-index: 2; }
     .hc-ava-wrap::before { content:''; position:absolute; inset:-4px; border-radius:50%; border:2px solid #dcb381; z-index:1; box-shadow: 0 0 12px rgba(220,179,129,0.2); }
@@ -135,7 +135,7 @@
     
     .hc-shield { position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%); width: 24px; height: 28px; background: #1a0406; border: 1.5px solid #dcb381; border-radius: 2px 2px 14px 14px; display: flex; align-items: center; justify-content: center; color: #dcb381; font-size: 12px; z-index: 4; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
     
-    .hc-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,0.8); margin-bottom: 4px; position: relative; z-index: 2; letter-spacing: 1.5px; text-transform: uppercase; }
+    .hc-name { font-family: 'Lora', serif; font-size: 18px; font-weight: 700; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,0.8); margin-bottom: 4px; position: relative; z-index: 2; letter-spacing: 1.5px; text-transform: uppercase; }
     .hc-role { font-size: 12px; color: #d5bba8; margin-bottom: 24px; position: relative; z-index: 2; font-weight: 400; }
     
     .hc-badges { display: flex; justify-content: center; gap: 12px; position: relative; z-index: 2; }
@@ -192,7 +192,7 @@
                 <div style="font-size:10px; color:#7c4c3a; margin-bottom:12px;">
                   Vansh / <span style="font-weight:700; color:#3c1218;">Dashboard</span>
                 </div>
-                <h1 style="font-family:'Playfair Display', serif; font-size:32px; font-weight:700; color:#3c1218; margin-top:0; margin-bottom:6px;">Welcome back, <span id="welcomeName">Anand</span></h1>
+                <h1 style="font-family:'Lora', serif; font-size:32px; font-weight:700; color:#3c1218; margin-top:0; margin-bottom:6px;">Welcome back, <span id="welcomeName">Anand</span></h1>
                 <div style="font-size:12px; color:#a18a7a; display:flex; align-items:center; gap:8px;">
                   <svg width="24" height="8" viewBox="0 0 24 8" fill="none"><path d="M0 4h20m0 0l-3-3m3 3l-3 3" stroke="#ebdcc6" stroke-width="1.5"/></svg>
                   Guardians of our past. Stewards of our future.
@@ -205,7 +205,7 @@
                 <div class="dash-card-header">
                   <div class="dash-card-title">
                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dcb381" stroke-width="2"><path d="M12 21v-8m0 0l-5-5m5 5l5-5m-8 3v4m6-4v4"></path></svg>
-                     ANCESTRAL HERITAGE
+                     My Family Tree
                   </div>
                   <div class="tree-actions">
                      <a href="tree.html" class="btn-tree">
@@ -257,7 +257,7 @@
                 <a href="events.html" class="feature-card">
                   <div class="fc-img-box"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
                   <div class="fc-title">UPCOMING CEREMONIES</div>
-                  <div class="fc-val"><span id="fcEventCount">0</span> <span style="font-size:9px; color:#7c4c3a; font-family:'Montserrat'; font-weight:600; text-transform:uppercase; margin-left:6px;">Upcoming</span></div>
+                  <div class="fc-val"><span id="fcEventCount">0</span> <span style="font-size:9px; color:#7c4c3a; font-family:'Outfit'; font-weight:600; text-transform:uppercase; margin-left:6px;">Upcoming</span></div>
                   <div class="fc-sub" id="fcEventText" style="margin-bottom:2px;">No upcoming events</div>
                   <div class="fc-sub" id="fcEventDate"></div>
                   <div class="fc-link">View Calendar ➔</div>
@@ -549,7 +549,7 @@
              <a href="tree.html?id=${r.id}" class="ct-node" id="ctn-${r.id}" style="position:relative; width:auto;">
                 <div class="ct-ava ${r.gender==='F'?'female':''} ${r.deceased?'deceased':''}" style="width:64px; height:64px; font-size:22px; ${avaStyleRoot}">${r.imageUrl ? '' : getInitials(r)}</div>
                 <div style="position:absolute; left:calc(100% + 16px); top:50%; transform:translateY(-50%); display:flex; flex-direction:column; align-items:flex-start; text-align:left; width:max-content; pointer-events:none;">
-                     <div style="font-family:'Playfair Display', serif; font-size:14px; font-weight:700; color:#f4d772; text-shadow: 0 0 10px rgba(244,215,114,0.6); text-transform:uppercase;">${r.firstName} ${r.lastName||''}</div>
+                     <div style="font-family:'Lora', serif; font-size:14px; font-weight:700; color:#f4d772; text-shadow: 0 0 10px rgba(244,215,114,0.6); text-transform:uppercase;">${r.firstName} ${r.lastName||''}</div>
                      <div style="font-size:10px; color:#f4d772; opacity: 0.8; text-shadow: 0 0 6px rgba(244,215,114,0.4);">Family Administrator</div>
                  </div>
              </a>
@@ -628,6 +628,8 @@
        };
        window.treeResizeObserver = new ResizeObserver(() => drawTreeLines());
        window.treeResizeObserver.observe(nodesContainer);
+       window.addEventListener('resize', drawTreeLines);
+       document.addEventListener('fullscreenchange', () => setTimeout(drawTreeLines, 200));
        setTimeout(drawTreeLines, 100);
     }
     
