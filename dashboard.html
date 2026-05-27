@@ -68,10 +68,10 @@
     .ts-lbl { font-size: 10px; color: #7c4c3a; font-weight: 700; letter-spacing: 0.5px; }
     .ts-div { width: 40px; height: 1px; background: #ebdcc6; }
     
-    .tree-layout-box { display: flex; flex: 1; min-height: 400px; position: relative; padding-top: 40px; padding-bottom: 80px; }
+    .tree-layout-box { display: flex; flex: 1; min-height: 280px; position: relative; padding-top: 24px; padding-bottom: 60px; }
     .tree-main-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding-left: 140px; } /* pad left to clear sidebar */
     
-    .ct-row { display: flex; align-items: flex-start; justify-content: center; margin-bottom: 48px; gap: 64px; position: relative; width: 100%; }
+    .ct-row { display: flex; align-items: flex-start; justify-content: center; margin-bottom: 32px; gap: 48px; position: relative; width: 100%; }
     .ct-gen { position: absolute; left: 20px; top: 10px; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #7c4c3a; width: 36px; height: 36px; border-radius: 50%; background: #f5eedf; display: flex; align-items: center; justify-content: center; }
     .ct-node { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 80px; position: relative; z-index: 2; text-decoration: none; }
     .ct-ava { width: 56px; height: 56px; border-radius: 50%; border: 3px solid #ebdcc6; background-size: cover; background-position: center; background-color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #dcb381; box-shadow: 0 4px 12px rgba(60, 10, 14, 0.1); }
@@ -558,10 +558,12 @@
        if(rootMembers.length === 0) return;
        let r = rootMembers[0];
        
+       const avaStyleRoot = r.imageUrl ? `background-image:url('${r.imageUrl}');color:transparent;` : '';
+       
        rootContainer.innerHTML = `
-          <div style="position:relative; display:flex; justify-content:center; width:100%; margin-bottom:32px;">
+          <div style="position:relative; display:flex; justify-content:center; width:100%; margin-bottom:24px;">
              <a href="tree.html?id=${r.id}" class="ct-node" id="ctn-${r.id}" style="position:relative; width:auto;">
-                <div class="ct-ava ${r.gender==='F'?'female':''} ${r.deceased?'deceased':''}" style="width:64px; height:64px; font-size:22px;">${getInitials(r)}</div>
+                <div class="ct-ava ${r.gender==='F'?'female':''} ${r.deceased?'deceased':''}" style="width:64px; height:64px; font-size:22px; ${avaStyleRoot}">${r.imageUrl ? '' : getInitials(r)}</div>
                 <div style="position:absolute; left:calc(100% + 16px); top:50%; transform:translateY(-50%); display:flex; flex-direction:column; align-items:flex-start; text-align:left; width:max-content; pointer-events:none;">
                     <div style="font-size:10px; font-weight:700; color:#3c1218;">Late Shri</div>
                     <div style="font-family:'Cinzel', serif; font-size:14px; font-weight:700; color:#3c1218; text-transform:uppercase;">${r.firstName} ${r.lastName||''}</div>
