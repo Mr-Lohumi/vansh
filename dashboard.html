@@ -210,49 +210,6 @@
         </div>
 
         <div class="dash-wrapper anim">
-          <!-- ── 1. TOP STAT STRIP ── -->
-          <div class="top-stats-row">
-            <div class="stat-card">
-              <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
-              <div class="stat-info">
-                <div class="stat-label">Total Members</div>
-                <div class="stat-value" id="stMem">0</div>
-                <div class="stat-sub">Across 24 branches</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg></div>
-              <div class="stat-info">
-                <div class="stat-label">Generations</div>
-                <div class="stat-value" id="stGen">0</div>
-                <div class="stat-sub">Known generations</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg></div>
-              <div class="stat-info">
-                <div class="stat-label">Verified Profiles</div>
-                <div class="stat-value" id="stVer">0</div>
-                <div class="stat-sub" id="stVerSub">0% Verified</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></div>
-              <div class="stat-info">
-                <div class="stat-label">Branches</div>
-                <div class="stat-value" id="stBra">0</div>
-                <div class="stat-sub">Active branches</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M14.5 9h5v5"></path><polyline points="19.5 9 14.5 14 11 10.5 4.5 17"></path></svg></div>
-              <div class="stat-info">
-                <div class="stat-label">Alliances</div>
-                <div class="stat-value" id="stAll">0</div>
-                <div class="stat-sub">Family alliances</div>
-              </div>
-            </div>
-          </div>
 
           <div class="dash-main-grid">
             <!-- ── LEFT COLUMN ── -->
@@ -499,14 +456,14 @@
       
       // Calculate Stats
       const totalMembers = familyMembers.length;
-      document.getElementById('stMem').textContent = totalMembers;
+      if (document.getElementById('stMem')) document.getElementById('stMem').textContent = totalMembers;
       if (document.getElementById('tsMem')) document.getElementById('tsMem').textContent = totalMembers;
       if (document.getElementById('fcDir')) document.getElementById('fcDir').textContent = totalMembers;
       
       const verified = familyMembers.filter(m => m.verified).length;
       const verPct = totalMembers > 0 ? Math.round((verified / totalMembers) * 100) : 0;
-      document.getElementById('stVer').textContent = verified;
-      document.getElementById('stVerSub').textContent = `${verPct}% Verified`;
+      if (document.getElementById('stVer')) document.getElementById('stVer').textContent = verified;
+      if (document.getElementById('stVerSub')) document.getElementById('stVerSub').textContent = `${verPct}% Verified`;
       
       let marriages = 0, under18 = 0, above40 = 0;
       familyMembers.forEach(m => {
@@ -516,13 +473,13 @@
           if (m.age > 40) above40++;
         }
       });
-      document.getElementById('stAll').textContent = Math.floor(marriages / 2);
-      document.getElementById('stUnder18').textContent = under18;
-      document.getElementById('stAbove40').textContent = above40;
+      if (document.getElementById('stAll')) document.getElementById('stAll').textContent = Math.floor(marriages / 2);
+      if (document.getElementById('stUnder18')) document.getElementById('stUnder18').textContent = under18;
+      if (document.getElementById('stAbove40')) document.getElementById('stAbove40').textContent = above40;
       
       const surnames = new Set(familyMembers.map(m => m.lastName).filter(n => n));
       const branchCount = Math.max(1, surnames.size);
-      document.getElementById('stBra').textContent = branchCount;
+      if (document.getElementById('stBra')) document.getElementById('stBra').textContent = branchCount;
       
       const net = getBloodlineNetwork(myId);
       const validNet = net.filter(m => m.gen !== undefined && !isNaN(m.gen));
@@ -530,7 +487,7 @@
       const minG = validNet.length > 0 ? Math.min(...validNet.map(m => m.gen)) : 1;
       const totalGen = (maxG - minG) + 1;
       
-      document.getElementById('stGen').textContent = totalGen;
+      if (document.getElementById('stGen')) document.getElementById('stGen').textContent = totalGen;
       if (document.getElementById('tsGen')) document.getElementById('tsGen').textContent = totalGen;
       if (document.getElementById('fcTime')) document.getElementById('fcTime').textContent = totalGen;
       
