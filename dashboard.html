@@ -43,36 +43,40 @@
     .dash-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
     .dash-card-title { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: #3c1218; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 12px; }
     
-    /* ── TREE OVERVIEW ── */
-    .tree-overview-card { min-height: 240px; padding: 0; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-    .tree-overview-card .dash-card-header { padding: 20px 24px 0; margin-bottom: 0; z-index: 10; position: relative; }
+    /* ── TREE OVERVIEW (PREMIUM DARK) ── */
+    .tree-overview-card { min-height: 240px; padding: 0; display: flex; flex-direction: column; overflow: hidden; position: relative; background: linear-gradient(180deg, #320a0e 0%, #1a0406 100%), url('royal_family_bg.png') center top/cover no-repeat; border: 1px solid rgba(212, 165, 116, 0.4); box-shadow: 0 0 20px rgba(212, 165, 116, 0.1), inset 0 0 40px rgba(0,0,0,0.5); border-radius: 12px; }
+    .tree-overview-card .dash-card-header { padding: 20px 24px 0; margin-bottom: 0; z-index: 10; position: relative; border-bottom: 1px solid rgba(212, 165, 116, 0.15); padding-bottom: 20px; }
+    .tree-overview-card .dash-card-title { color: #dcb381; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
     .tree-actions { display: flex; gap: 10px; }
-    .btn-tree { padding: 8px 16px; border-radius: 8px; border: 1px solid #ebdcc6; font-size: 11px; font-weight: 700; color: #3c1218; cursor: pointer; display: flex; align-items: center; gap: 8px; background: #fff; text-decoration: none; }
-    .btn-icon { padding: 8px; width: 34px; height: 34px; border-radius: 8px; border: 1px solid #ebdcc6; background: #fff; display: flex; align-items: center; justify-content: center; color: #7c4c3a; }
+    .btn-tree { padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(212, 165, 116, 0.4); font-size: 11px; font-weight: 700; color: #dcb381; cursor: pointer; display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.4); text-decoration: none; backdrop-filter: blur(4px); transition: all 0.3s; }
+    .btn-tree:hover { background: rgba(212, 165, 116, 0.1); border-color: #dcb381; }
+    .btn-icon { padding: 8px; width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(212, 165, 116, 0.4); background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; color: #dcb381; backdrop-filter: blur(4px); transition: all 0.3s; cursor: pointer; }
+    .btn-icon:hover { background: rgba(212, 165, 116, 0.1); border-color: #dcb381; }
     
-    .tree-sidebar-static { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 32px; border-right: 1px solid #f4eade; background: linear-gradient(180deg, transparent, rgba(244,234,222,0.1) 50%, transparent); }
+    .tree-sidebar-static { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 32px; border-right: 1px solid rgba(212, 165, 116, 0.2); background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, transparent 100%); }
     .ts-item { text-align: center; }
-    .ts-val { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 700; color: #4a151b; line-height: 1; margin-bottom: 8px; }
-    .ts-lbl { font-size: 10px; color: #7c4c3a; font-weight: 700; letter-spacing: 0.5px; }
-    .ts-div { width: 40px; height: 1px; background: #ebdcc6; }
+    .ts-val { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 700; color: #dcb381; line-height: 1; margin-bottom: 8px; text-shadow: 0 2px 8px rgba(220,179,129,0.4); }
+    .ts-lbl { font-size: 10px; color: rgba(255,255,255,0.7); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+    .ts-div { width: 40px; height: 1px; background: linear-gradient(90deg, transparent, #dcb381, transparent); }
     
     .tree-layout-box { display: grid; grid-template-columns: 140px 1fr; flex: 1; position: relative; }
     .tree-main-area { position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 24px 0; }
     
     .ct-row { display: flex; align-items: flex-start; justify-content: center; margin-bottom: 16px; gap: 12px; position: relative; width: 100%; }
-    .ct-gen { position: absolute; left: 20px; top: 10px; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #7c4c3a; width: 36px; height: 36px; border-radius: 50%; background: #f5eedf; display: flex; align-items: center; justify-content: center; }
+    .ct-gen { position: absolute; left: 20px; top: 10px; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #1a0406; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #dcb381, #a67c52); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 2px solid #fff; }
     .ct-node { display: flex; flex-direction: column; align-items: center; gap: 8px; width: auto; position: relative; z-index: 2; text-decoration: none; padding: 4px; background: transparent; border: none; box-shadow: none; transition: all 0.3s; }
     .ct-node:hover { transform: translateY(-4px); }
-    .ct-node:hover .ct-ava { box-shadow: 0 0 20px rgba(220,179,129,0.8); border-color: var(--royal-red); }
-    .ct-ava { width: 48px; height: 48px; border-radius: 50%; border: 2.5px solid #dcb381; background-size: cover; background-position: center; background-color: #f5eedf; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; font-family: 'Cinzel', serif; color: #7c4c3a; box-shadow: 0 0 12px rgba(220,179,129,0.5); flex-shrink: 0; transition: all 0.3s; }
+    .ct-node:hover .ct-ava { box-shadow: 0 0 24px rgba(220,179,129,0.9); border-color: #fff; }
+    .ct-ava { width: 48px; height: 48px; border-radius: 50%; border: 2.5px solid #dcb381; background-size: cover; background-position: center; background-color: #3c1218; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; font-family: 'Cinzel', serif; color: #dcb381; box-shadow: 0 0 12px rgba(220,179,129,0.5); flex-shrink: 0; transition: all 0.3s; }
     .ct-ava.female { border-color: #fca5a5; box-shadow: 0 0 12px rgba(252,165,165,0.4); }
     .ct-ava.deceased { border-color: #a18a7a; opacity: 0.7; box-shadow: 0 0 8px rgba(161,138,122,0.3); }
-    .ct-name { font-size: 11px; font-weight: 800; color: #4a151b; text-align: center; white-space: nowrap; font-family: 'Cinzel', serif; letter-spacing: 0.5px; text-shadow: 0 1px 2px rgba(255,255,255,0.8); }
+    .ct-name { font-size: 11px; font-weight: 800; color: #fff; text-align: center; white-space: nowrap; font-family: 'Cinzel', serif; letter-spacing: 0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.9); }
     
-    .tree-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; font-size: 12px; color: #7c4c3a; font-weight: 600; }
+    .tree-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; font-size: 12px; color: rgba(255,255,255,0.8); font-weight: 600; }
     .leg-item { display: flex; align-items: center; gap: 8px; }
-    .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .leg-link { font-size: 12px; font-weight: 700; color: #946941; text-decoration: none; display: flex; align-items: center; gap: 4px; white-space: nowrap; flex-shrink: 0; }
+    .leg-dot { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 4px rgba(0,0,0,0.5); }
+    .leg-link { font-size: 12px; font-weight: 700; color: #dcb381; text-decoration: none; display: flex; align-items: center; gap: 4px; white-space: nowrap; flex-shrink: 0; transition: color 0.2s; }
+    .leg-link:hover { color: #fff; }
     .compact-tree-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
     
     /* ── FEATURE ROW ── */
