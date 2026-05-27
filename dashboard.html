@@ -500,8 +500,8 @@
       // Calculate Stats
       const totalMembers = familyMembers.length;
       document.getElementById('stMem').textContent = totalMembers;
-      document.getElementById('tsMem').textContent = totalMembers;
-      document.getElementById('fcDir').textContent = totalMembers;
+      if (document.getElementById('tsMem')) document.getElementById('tsMem').textContent = totalMembers;
+      if (document.getElementById('fcDir')) document.getElementById('fcDir').textContent = totalMembers;
       
       const verified = familyMembers.filter(m => m.verified).length;
       const verPct = totalMembers > 0 ? Math.round((verified / totalMembers) * 100) : 0;
@@ -531,8 +531,8 @@
       const totalGen = (maxG - minG) + 1;
       
       document.getElementById('stGen').textContent = totalGen;
-      document.getElementById('tsGen').textContent = totalGen;
-      document.getElementById('fcTime').textContent = totalGen;
+      if (document.getElementById('tsGen')) document.getElementById('tsGen').textContent = totalGen;
+      if (document.getElementById('fcTime')) document.getElementById('fcTime').textContent = totalGen;
       
       // Render Tree
       renderExactTree(validNet, minG, maxG);
