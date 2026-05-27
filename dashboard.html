@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vansh (वंश) — Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=22">
+  <link rel="stylesheet" href="css/shared.css?v=23">
   <style>
     /* ── PRECISE BACKGROUNDS & LAYOUT ── */
-    body, .page-content { background-color: #fdfbf7 !important; }
+    body, .page-content { background-color: #fcf9f5 !important; }
     .dash-wrapper { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; padding-bottom: 60px; }
     
     /* ── OVERRIDE SIDEBAR ── */
@@ -53,35 +53,36 @@
     
     .dash-card { background: #fdfbf7; border-radius: 12px; border: 1px solid #ebdcc6; padding: 24px; position: relative; }
     .dash-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .dash-card-title { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #3c1218; text-transform: uppercase; letter-spacing: 1.5px; display: flex; align-items: center; gap: 8px; }
+    .dash-card-title { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: #3c1218; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 12px; }
     
     /* ── TREE OVERVIEW ── */
-    .tree-overview-card { min-height: 480px; padding: 0; display: flex; flex-direction: column; overflow: hidden; }
-    .tree-overview-card .dash-card-header { padding: 20px 24px 0; margin-bottom: 0; }
-    .tree-actions { display: flex; gap: 8px; }
-    .btn-tree { padding: 6px 12px; border-radius: 6px; border: 1px solid #ebdcc6; font-size: 11px; font-weight: 600; color: #3c1218; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #fff; text-decoration: none; }
-    .btn-icon { padding: 6px; width: 30px; height: 30px; border-radius: 6px; border: 1px solid #ebdcc6; background: #fff; display: flex; align-items: center; justify-content: center; color: #7c4c3a; }
+    .tree-overview-card { min-height: 480px; padding: 0; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+    .tree-overview-card .dash-card-header { padding: 20px 24px 0; margin-bottom: 0; z-index: 10; position: relative; }
+    .tree-actions { display: flex; gap: 10px; }
+    .btn-tree { padding: 8px 16px; border-radius: 8px; border: 1px solid #ebdcc6; font-size: 11px; font-weight: 700; color: #3c1218; cursor: pointer; display: flex; align-items: center; gap: 8px; background: #fff; text-decoration: none; }
+    .btn-icon { padding: 8px; width: 34px; height: 34px; border-radius: 8px; border: 1px solid #ebdcc6; background: #fff; display: flex; align-items: center; justify-content: center; color: #7c4c3a; }
     
-    .tree-layout-box { display: flex; flex: 1; min-height: 400px; position: relative; }
-    .tree-sidebar { width: 100px; border-right: 1px solid #ebdcc6; padding: 30px 0; display: flex; flex-direction: column; gap: 40px; align-items: center; background: #faf7f2; }
+    .tree-sidebar-floating { position: absolute; top: 80px; left: 24px; background: #fdfbf7; padding: 30px 20px; border-radius: 12px; border: 1px solid #f4eade; z-index: 10; display: flex; flex-direction: column; gap: 30px; align-items: center; box-shadow: 0 4px 12px rgba(107,21,34,0.02); }
     .ts-item { text-align: center; }
-    .ts-val { font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; color: #946941; line-height: 1; margin-bottom: 4px; }
-    .ts-lbl { font-size: 9px; color: #7c4c3a; text-transform: uppercase; letter-spacing: 0.5px; }
+    .ts-val { font-family: 'Cinzel', serif; font-size: 28px; font-weight: 700; color: #7c2d33; line-height: 1; margin-bottom: 6px; }
+    .ts-lbl { font-size: 9px; color: #7c4c3a; font-weight: 600; letter-spacing: 0.5px; }
+    .ts-div { width: 40px; height: 1px; background: #ebdcc6; }
     
-    .tree-main-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding-top: 20px; }
-    .ct-row { display: flex; align-items: center; justify-content: center; margin-bottom: 40px; gap: 60px; position: relative; width: 100%; }
-    .ct-gen { position: absolute; left: 20px; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #dcb381; }
-    .ct-node { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 60px; position: relative; z-index: 2; text-decoration: none; }
-    .ct-ava { width: 44px; height: 44px; border-radius: 50%; border: 2px solid #dcb381; background-size: cover; background-position: center; background-color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #dcb381; }
+    .tree-layout-box { display: flex; flex: 1; min-height: 400px; position: relative; padding-top: 40px; padding-bottom: 80px; }
+    .tree-main-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding-left: 140px; } /* pad left to clear sidebar */
+    
+    .ct-row { display: flex; align-items: center; justify-content: center; margin-bottom: 48px; gap: 64px; position: relative; width: 100%; }
+    .ct-gen { position: absolute; left: 20px; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #7c4c3a; width: 36px; height: 36px; border-radius: 50%; background: #f5eedf; display: flex; align-items: center; justify-content: center; }
+    .ct-node { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 80px; position: relative; z-index: 2; text-decoration: none; }
+    .ct-ava { width: 56px; height: 56px; border-radius: 50%; border: 3px solid #ebdcc6; background-size: cover; background-position: center; background-color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #dcb381; box-shadow: 0 4px 12px rgba(60, 10, 14, 0.1); }
     .ct-ava.female { border-color: #8a2226; color: #8a2226; }
-    .ct-ava.deceased { border-color: #ebdcc6; opacity: 0.6; }
-    .ct-name { font-size: 9px; font-weight: 600; color: #3c1218; text-align: center; white-space: nowrap; }
-    .ct-dates { font-size: 8px; color: #7c4c3a; }
+    .ct-ava.deceased { border-color: #f4eade; opacity: 0.6; }
+    .ct-name { font-size: 10px; font-weight: 700; color: #3c1218; text-align: center; white-space: nowrap; }
     
-    .tree-legend { position: absolute; bottom: 20px; left: 140px; display: flex; gap: 16px; font-size: 9px; color: #7c4c3a; font-weight: 600; }
-    .leg-item { display: flex; align-items: center; gap: 6px; }
-    .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .leg-link { position: absolute; bottom: 20px; right: 24px; font-size: 11px; font-weight: 700; color: #946941; text-decoration: none; }
+    .tree-legend { position: absolute; bottom: 24px; left: 160px; display: flex; gap: 24px; font-size: 10px; color: #7c4c3a; font-weight: 600; z-index: 10; }
+    .leg-item { display: flex; align-items: center; gap: 8px; }
+    .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .leg-link { position: absolute; bottom: 24px; right: 32px; font-size: 12px; font-weight: 700; color: #946941; text-decoration: none; z-index: 10; display: flex; align-items: center; gap: 4px; }
     .compact-tree-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
     
     /* ── FEATURE ROW ── */
@@ -145,11 +146,11 @@
 <body style="display:none;">
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=22"></script>
-  <script src="js/shared-auth.js?v=22"></script>
-  <script src="js/shared-data.js?v=22"></script>
-  <script src="js/shared-tree.js?v=22"></script>
-  <script src="js/shared-nav.js?v=22"></script>
+  <script src="js/supabase-config.js?v=23"></script>
+  <script src="js/shared-auth.js?v=23"></script>
+  <script src="js/shared-data.js?v=23"></script>
+  <script src="js/shared-tree.js?v=23"></script>
+  <script src="js/shared-nav.js?v=23"></script>
   <script>
     if (!requireAuth()) throw '';
     document.body.style.display = '';
@@ -242,20 +243,34 @@
               <!-- Family Tree Overview -->
               <div class="dash-card tree-overview-card">
                 <div class="dash-card-header">
-                  <div class="dash-card-title">🌳 FAMILY TREE OVERVIEW</div>
+                  <div class="dash-card-title">
+                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dcb381" stroke-width="2"><path d="M12 21v-8m0 0l-5-5m5 5l5-5m-8 3v4m6-4v4"></path></svg>
+                     FAMILY TREE OVERVIEW
+                  </div>
                   <div class="tree-actions">
-                     <a href="tree.html" class="btn-tree">⤢ Expand Tree</a>
-                     <div class="btn-icon">🔲</div>
-                     <div class="btn-icon">Y</div>
-                     <div class="btn-icon">...</div>
+                     <a href="tree.html" class="btn-tree">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                        Expand Tree
+                     </a>
+                     <div class="btn-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                     </div>
+                     <div class="btn-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                     </div>
+                     <div class="btn-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                     </div>
                   </div>
                 </div>
                 
+                <div class="tree-sidebar-floating">
+                  <div class="ts-item"><div class="ts-val" id="tsGen">0</div><div class="ts-lbl">Generations</div></div>
+                  <div class="ts-div"></div>
+                  <div class="ts-item"><div class="ts-val" id="tsMem">0</div><div class="ts-lbl">Members</div></div>
+                </div>
+
                 <div class="tree-layout-box">
-                  <div class="tree-sidebar">
-                    <div class="ts-item"><div class="ts-val" id="tsGen">0</div><div class="ts-lbl">Generations</div></div>
-                    <div class="ts-item"><div class="ts-val" id="tsMem">0</div><div class="ts-lbl">Members</div></div>
-                  </div>
                   <div class="tree-main-area" id="compactTreeContainer">
                      <svg class="compact-tree-svg" id="ctSvg"><g id="ctPaths"></g></svg>
                      <!-- ROOT NODE (Centered) -->
@@ -542,16 +557,20 @@
        let r = rootMembers[0];
        
        rootContainer.innerHTML = `
-          <a href="tree.html?id=${r.id}" class="ct-node" id="ctn-${r.id}" style="margin-bottom:20px;">
-             <div class="ct-ava ${r.gender==='F'?'female':''} ${r.deceased?'deceased':''}">${getInitials(r)}</div>
-             <div class="ct-name" style="font-weight:700;">${r.firstName} ${r.lastName||''}</div>
+          <a href="tree.html?id=${r.id}" class="ct-node" id="ctn-${r.id}" style="margin-bottom:32px; width:auto; display:flex; flex-direction:row; align-items:center; gap:16px;">
+             <div class="ct-ava ${r.gender==='F'?'female':''} ${r.deceased?'deceased':''}" style="width:64px; height:64px; font-size:22px;">${getInitials(r)}</div>
+             <div style="display:flex; flex-direction:column; align-items:flex-start; text-align:left;">
+                 <div style="font-size:10px; font-weight:700; color:#3c1218;">Late Shri</div>
+                 <div style="font-family:'Cinzel', serif; font-size:13px; font-weight:700; color:#3c1218;">${r.firstName} ${r.lastName||''}</div>
+                 <div style="font-size:9px; color:#a18a7a;">1920 - 1998</div>
+             </div>
           </a>
        `;
        
        let html = '';
        const renderMax = Math.min(maxG, minG + 3);
        for(let g = minG + 1; g <= renderMax; g++) {
-         let members = net.filter(m => m.gen === g).slice(0, 7); 
+         let members = net.filter(m => m.gen === g).slice(0, 8); 
          if(members.length === 0) continue;
          let rowHtml = `<div class="ct-row"><div class="ct-gen">${toRoman(g - minG + 1)}</div>`;
          members.forEach(m => {
@@ -559,7 +578,7 @@
             rowHtml += `
               <a href="tree.html?id=${m.id}" class="ct-node" id="ctn-${m.id}">
                 <div class="ct-ava ${m.gender==='F'?'female':''} ${m.deceased?'deceased':''}" style="${avaStyle}">${m.imageUrl ? '' : getInitials(m)}</div>
-                <div class="ct-name">${m.firstName}</div>
+                <div class="ct-name">${m.firstName} ${m.lastName||''}</div>
               </a>
             `;
          });
@@ -568,7 +587,7 @@
        }
        nodesContainer.innerHTML = html;
        
-       // Draw exact orthogonal lines (L) instead of curves
+       // Draw exact orthogonal lines with dots
        setTimeout(() => {
           const svgPaths = document.getElementById('ctPaths');
           const svgBox = document.getElementById('ctSvg');
@@ -578,26 +597,38 @@
           const sRect = svgBox.getBoundingClientRect();
           
           for(let g = minG; g < renderMax; g++) {
-             let parents = net.filter(m => m.gen === g).slice(0, 7);
-             let children = net.filter(m => m.gen === g + 1).slice(0, 7);
+             let parents = net.filter(m => m.gen === g).slice(0, 8);
+             let children = net.filter(m => m.gen === g + 1).slice(0, 8);
              
              parents.forEach(p => {
                 const pEl = document.getElementById(`ctn-${p.id}`);
                 if(!pEl) return;
                 const pr = pEl.getBoundingClientRect();
-                const pX = pr.left - sRect.left + (pr.width/2);
-                const pY = pr.top - sRect.top + 44; 
+                
+                // For root, the avatar is the first child (flex-row)
+                const avaRect = pEl.querySelector('.ct-ava').getBoundingClientRect();
+                
+                const pX = avaRect.left - sRect.left + (avaRect.width/2);
+                const pY = avaRect.top - sRect.top + avaRect.height; 
                 
                 const myChildren = children.filter(c => c.parents && c.parents.includes(p.id));
                 myChildren.forEach(c => {
                    const cEl = document.getElementById(`ctn-${c.id}`);
                    if(!cEl) return;
                    const cr = cEl.getBoundingClientRect();
-                   const cX = cr.left - sRect.left + (cr.width/2);
-                   const cY = cr.top - sRect.top - 6; // slightly above child
+                   const cAvaRect = cEl.querySelector('.ct-ava').getBoundingClientRect();
+                   
+                   const cX = cAvaRect.left - sRect.left + (cAvaRect.width/2);
+                   const cY = cAvaRect.top - sRect.top - 6; // slightly above child
                    const midY = (pY + cY) / 2;
                    
                    pathHtml += `<path d="M${pX},${pY} L${pX},${midY} L${cX},${midY} L${cX},${cY}" fill="none" stroke="#ebdcc6" stroke-width="1.5" />`;
+                   
+                   // The joint dots
+                   pathHtml += `<circle cx="${pX}" cy="${pY}" r="2" fill="#dcb381" />`;
+                   pathHtml += `<circle cx="${cX}" cy="${cY}" r="2" fill="#dcb381" />`;
+                   // Middle joint dot (for aesthetics)
+                   pathHtml += `<circle cx="${cX}" cy="${midY}" r="2.5" fill="#fdfbf7" stroke="#dcb381" stroke-width="1.5" />`;
                 });
              });
           }
