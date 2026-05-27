@@ -192,7 +192,12 @@ function getBloodlineNetwork(currentPOV) {
   if (minTempGen === Infinity) minTempGen = 10;
   
   network.forEach(m => {
-    if (m._tempGen !== undefined) m.gen = m._tempGen - minTempGen + 1;
+    if (m._tempGen !== undefined) {
+      m.gen = m._tempGen - minTempGen + 1;
+    } else {
+      // Fallback for orphaned/disconnected nodes caught in the visible set
+      m.gen = 10 - minTempGen + 1;
+    }
   });
   
   return network;
@@ -214,17 +219,18 @@ function renderTreeToContainer(containerId, canvasId, currentPOV, onNodeClickNam
   container.style.margin = '0 auto';
   
   const visibleMembers = getBloodlineNetwork(currentPOV);
-  if(visibleMembers.length === 0) {
-    container.innerHTML = '<div class="text-muted">No network found.</div>';
+  const validMembers = visibleMembers.filter(m => m.gen !== undefined && !isNaN(m.gen));
+  if(validMembers.length === 0) {
+    container.innerHTML = '<div class="text-muted">No valid network found.</div>';
     return;
   }
   
   let html = '';
-  const maxGen = Math.max(...visibleMembers.map(m => m.gen));
-  const minGen = Math.min(...visibleMembers.map(m => m.gen));
+  const maxGen = Math.max(...validMembers.map(m => m.gen));
+  const minGen = Math.min(...validMembers.map(m => m.gen));
   
   for(let g = minGen; g <= maxGen; g++) {
-    const genMembers = visibleMembers.filter(m => m.gen === g);
+    const genMembers = validMembers.filter(m => m.gen === g);
     if(genMembers.length === 0) continue;
     
     let processed = new Set();
