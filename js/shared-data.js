@@ -25,10 +25,10 @@ function loadFamilyData() {
           changed = true;
         }
         if (m.firstName === 'Unknown' && (m.lastName === 'Father' || m.lastName === 'Mother' || m.lastName === 'Parent')) {
-          if (!m.isPlaceholder) {
-            m.isPlaceholder = true;
-            changed = true;
-          }
+          m.firstName = m.lastName;
+          m.lastName = '';
+          if (!m.isPlaceholder) m.isPlaceholder = true;
+          changed = true;
         }
       });
       if (changed) saveFamilyData(parsed);
@@ -149,8 +149,8 @@ function acceptInvite(inviteId) {
     if (!parent) {
       parent = {
         id: 'u_' + Date.now() + Math.floor(Math.random()*1000),
-        firstName: 'Unknown',
-        lastName: label,
+        firstName: label,
+        lastName: '',
         gender: gender,
         age: (user.age || 20) + 25,
         parents: [],
@@ -255,8 +255,8 @@ async function processCloudInvite(invite, action) {
     if (!parent) {
       parent = {
         id: 'P' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2,6).toUpperCase(),
-        firstName: 'Unknown',
-        lastName: label,
+        firstName: label,
+        lastName: '',
         gender: gender,
         age: (user.age || 20) + 25,
         parents: [],

@@ -329,8 +329,8 @@ async function processCloudInvite(invite, action) {
         if (!parent) {
           parent = {
             id: 'u_' + Date.now() + Math.floor(Math.random()*1000),
-            firstName: 'Unknown',
-            lastName: label,
+            firstName: label,
+            lastName: '',
             gender: gender,
             age: (user.age || 20) + 25,
             parents: [],
