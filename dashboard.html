@@ -62,14 +62,14 @@
     .btn-tree { padding: 8px 16px; border-radius: 8px; border: 1px solid #ebdcc6; font-size: 11px; font-weight: 700; color: #3c1218; cursor: pointer; display: flex; align-items: center; gap: 8px; background: #fff; text-decoration: none; }
     .btn-icon { padding: 8px; width: 34px; height: 34px; border-radius: 8px; border: 1px solid #ebdcc6; background: #fff; display: flex; align-items: center; justify-content: center; color: #7c4c3a; }
     
-    .tree-sidebar-floating { position: absolute; top: 80px; left: 24px; background: #fdfbf7; padding: 20px 16px; border-radius: 12px; border: 1px solid #f4eade; z-index: 10; display: flex; flex-direction: column; gap: 20px; align-items: center; box-shadow: 0 4px 12px rgba(107,21,34,0.02); }
+    .tree-sidebar-static { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 32px; border-right: 1px solid #f4eade; background: linear-gradient(180deg, transparent, rgba(244,234,222,0.1) 50%, transparent); }
     .ts-item { text-align: center; }
     .ts-val { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 700; color: #4a151b; line-height: 1; margin-bottom: 8px; }
     .ts-lbl { font-size: 10px; color: #7c4c3a; font-weight: 700; letter-spacing: 0.5px; }
     .ts-div { width: 40px; height: 1px; background: #ebdcc6; }
     
-    .tree-layout-box { display: flex; flex: 1; min-height: 180px; position: relative; padding-top: 16px; padding-bottom: 24px; }
-    .tree-main-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
+    .tree-layout-box { display: grid; grid-template-columns: 22% 78%; flex: 1; position: relative; }
+    .tree-main-area { position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 24px 0; }
     
     .ct-row { display: flex; align-items: flex-start; justify-content: center; margin-bottom: 16px; gap: 32px; position: relative; width: 100%; }
     .ct-gen { position: absolute; left: 20px; top: 10px; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #7c4c3a; width: 36px; height: 36px; border-radius: 50%; background: #f5eedf; display: flex; align-items: center; justify-content: center; }
@@ -147,8 +147,8 @@
        .dash-main-grid { grid-template-columns: 1fr; }
        .dash-right-col { position: static; }
        .charts-row { grid-template-columns: 1fr; }
-       .tree-main-area { padding-left: 20px; }
-       .tree-sidebar-floating { position: static; margin-bottom: 24px; flex-direction: row; justify-content: center; width: 100%; box-sizing: border-box; }
+       .tree-layout-box { grid-template-columns: 1fr; }
+       .tree-sidebar-static { flex-direction: row; border-right: none; border-bottom: 1px solid #f4eade; padding: 16px 0; gap: 40px; }
        .ts-div { width: 1px; height: 40px; }
     }
   </style>
@@ -274,29 +274,29 @@
                   </div>
                 </div>
                 
-                <div class="tree-sidebar-floating">
-                  <div class="ts-item"><div class="ts-val" id="tsGen">0</div><div class="ts-lbl">Generations</div></div>
-                  <div class="ts-div"></div>
-                  <div class="ts-item"><div class="ts-val" id="tsMem">0</div><div class="ts-lbl">Members</div></div>
-                </div>
-
                 <div class="tree-layout-box">
+                  <div class="tree-sidebar-static">
+                    <div class="ts-item"><div class="ts-val" id="tsGen">0</div><div class="ts-lbl">Generations</div></div>
+                    <div class="ts-div"></div>
+                    <div class="ts-item"><div class="ts-val" id="tsMem">0</div><div class="ts-lbl">Members</div></div>
+                  </div>
+
                   <div class="tree-main-area" id="compactTreeContainer">
                      <svg class="compact-tree-svg" id="ctSvg"><g id="ctPaths"></g></svg>
                      <!-- ROOT NODE (Centered) -->
                      <div class="ct-row" id="ctRootRow"></div>
                      <div id="ctNodes" style="width: 100%;"></div>
-                     
-                     <div style="width:100%; display:flex; justify-content:space-between; align-items:center; padding: 20px 32px 0 32px; box-sizing: border-box; z-index:10; margin-top:auto;">
-                       <div class="tree-legend">
-                          <div class="leg-item"><div class="leg-dot" style="background:#dcb381;"></div> Male</div>
-                          <div class="leg-item"><div class="leg-dot" style="background:#8a2226;"></div> Female</div>
-                          <div class="leg-item"><div class="leg-dot" style="background:#ebdcc6;"></div> Deceased</div>
-                          <div class="leg-item"><div class="leg-dot" style="background:#f5eedf;"></div> Unverified</div>
-                       </div>
-                       <a href="tree.html" class="leg-link">View Full Tree ➔</a>
-                     </div>
                   </div>
+                </div>
+                
+                <div style="width:100%; display:flex; justify-content:space-between; align-items:center; padding: 20px 32px 24px 32px; box-sizing: border-box; border-top: 1px solid #f4eade; margin-top:auto;">
+                   <div class="tree-legend">
+                      <div class="leg-item"><div class="leg-dot" style="background:#dcb381;"></div> Male</div>
+                      <div class="leg-item"><div class="leg-dot" style="background:#8a2226;"></div> Female</div>
+                      <div class="leg-item"><div class="leg-dot" style="background:#ebdcc6;"></div> Deceased</div>
+                      <div class="leg-item"><div class="leg-dot" style="background:#f5eedf;"></div> Unverified</div>
+                   </div>
+                   <a href="tree.html" class="leg-link">View Full Tree ➔</a>
                 </div>
               </div>
               
