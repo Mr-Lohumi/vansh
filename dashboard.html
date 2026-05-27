@@ -73,11 +73,12 @@
     
     .ct-row { display: flex; align-items: flex-start; justify-content: center; margin-bottom: 16px; gap: 32px; position: relative; width: 100%; }
     .ct-gen { position: absolute; left: 20px; top: 10px; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #7c4c3a; width: 36px; height: 36px; border-radius: 50%; background: #f5eedf; display: flex; align-items: center; justify-content: center; }
-    .ct-node { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 80px; position: relative; z-index: 2; text-decoration: none; }
-    .ct-ava { width: 56px; height: 56px; border-radius: 50%; border: 3px solid #ebdcc6; background-size: cover; background-position: center; background-color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #dcb381; box-shadow: 0 4px 12px rgba(60, 10, 14, 0.1); }
-    .ct-ava.female { border-color: #8a2226; color: #8a2226; }
-    .ct-ava.deceased { border-color: #f4eade; opacity: 0.6; }
-    .ct-name { font-size: 10px; font-weight: 700; color: #3c1218; text-align: center; white-space: nowrap; }
+    .ct-node { display: flex; flex-direction: row; align-items: center; gap: 8px; width: auto; position: relative; z-index: 2; text-decoration: none; padding: 4px 16px 4px 6px; background: linear-gradient(135deg, rgba(139, 22, 32, 0.9) 0%, rgba(94, 13, 19, 0.9) 100%); border: 1px solid rgba(220,179,129,0.3); border-radius: 30px; box-shadow: 0 4px 12px rgba(139, 22, 32, 0.3); transition: all 0.3s; }
+    .ct-node:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(139, 22, 32, 0.5); border-color: #dcb381; }
+    .ct-ava { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #ebdcc6; background-size: cover; background-position: center; background-color: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 14px; color: #dcb381; box-shadow: none; flex-shrink: 0; }
+    .ct-ava.female { border-color: #fca5a5; color: #fca5a5; }
+    .ct-ava.deceased { border-color: #a18a7a; opacity: 0.7; }
+    .ct-name { font-size: 11px; font-weight: 700; color: #fdfbf7; text-align: left; white-space: nowrap; font-family: 'Cinzel', serif; letter-spacing: 0.5px; }
     
     .tree-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; font-size: 12px; color: #7c4c3a; font-weight: 600; }
     .leg-item { display: flex; align-items: center; gap: 8px; }
@@ -178,13 +179,14 @@
     <aside class="sidebar" id="sidebar"></aside>
     <div class="main-area">
       <!-- TOPBAR OVERRIDE TO MATCH SCREENSHOT -->
-      <header class="topbar">
-         <div class="tb-content">
-            <div class="tb-search">
-               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-               <input type="text" placeholder="Search members, branches, events...">
-               <span style="font-size:10px; color:#ebdcc6;">/</span>
-            </div>
+      <header class="topbar custom-topbar" id="topbar">
+        <div class="tb-content">
+           <div class="tb-search" style="position:relative;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="universalSearchInput" placeholder="Search members, branches, events...">
+              <div id="universalSearchResults" style="position:absolute;top:calc(100% + 6px);left:0;width:340px;background:var(--bg-card);border:1px solid #ebdcc6;border-radius:16px;box-shadow:0 16px 40px rgba(107,21,34,0.12);max-height:400px;overflow-y:auto;display:none;z-index:200;"></div>
+              <span style="font-size:10px; color:#ebdcc6;">/</span>
+           </div>
             <div class="tb-actions">
                <div class="tb-bell">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
@@ -581,21 +583,20 @@
                 if(!pEl) return;
                 const pr = pEl.getBoundingClientRect();
                 
-                // For root, the avatar is the first child (flex-row)
-                const avaRect = pEl.querySelector('.ct-ava').getBoundingClientRect();
+                // Connect to the center of the pill
+                const pRect = pEl.getBoundingClientRect();
                 
-                const pX = avaRect.left - sRect.left + (avaRect.width/2);
-                const pY = avaRect.top - sRect.top + avaRect.height; 
+                const pX = pRect.left - sRect.left + (pRect.width/2);
+                const pY = pRect.top - sRect.top + pRect.height; 
                 
                 const myChildren = children.filter(c => c.parents && c.parents.includes(p.id));
                 myChildren.forEach(c => {
                    const cEl = document.getElementById(`ctn-${c.id}`);
                    if(!cEl) return;
                    const cr = cEl.getBoundingClientRect();
-                   const cAvaRect = cEl.querySelector('.ct-ava').getBoundingClientRect();
                    
-                   const cX = cAvaRect.left - sRect.left + (cAvaRect.width/2);
-                   const cY = cAvaRect.top - sRect.top - 6; // slightly above child
+                   const cX = cr.left - sRect.left + (cr.width/2);
+                   const cY = cr.top - sRect.top - 6; // slightly above child
                    const midY = (pY + cY) / 2;
                    
                    if (Math.abs(pX - cX) < 2) {

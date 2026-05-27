@@ -81,8 +81,9 @@ function authenticateUser(loginKey, password) {
     const firstOnly = fName.toLowerCase();
     const mobileNo = m.mobile ? m.mobile.toString().trim() : "";
     const email = m.email ? m.email.toString().toLowerCase().trim() : "";
+    const username = m.username ? m.username.toString().toLowerCase().trim() : "";
     
-    return fullName === cleanKey || firstOnly === cleanKey || mobileNo === cleanKey || email === cleanKey;
+    return fullName === cleanKey || firstOnly === cleanKey || mobileNo === cleanKey || email === cleanKey || username === cleanKey;
   });
 
   if (!matched) {
