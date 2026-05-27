@@ -107,31 +107,29 @@
     
     /* ── PREMIUM PROFILE CARD ── */
     .head-card {
-      background: linear-gradient(135deg, rgba(26,4,6,0.75) 0%, rgba(26,4,6,0.95) 50%, #1a0406 100%), url('royal_family_bg.png') center right/cover no-repeat;
+      background: linear-gradient(180deg, rgba(26,4,6,0.75) 0%, rgba(26,4,6,0.95) 50%, #1a0406 100%), url('royal_family_bg.png') center top/cover no-repeat;
       background-color: #320a0e;
       border-radius: 12px; overflow: hidden;
-      position: relative; text-align: left;
-      padding: 24px 32px;
+      position: relative; text-align: center;
+      padding-bottom: 24px;
       border: 1px solid rgba(212, 165, 116, 0.4);
       box-shadow: 0 0 20px rgba(212, 165, 116, 0.3), 0 0 40px rgba(212, 165, 116, 0.15), 0 8px 24px rgba(0,0,0,0.4);
-      display: flex; align-items: center; gap: 32px; margin-bottom: 24px;
     }
     .hc-bg { display: none; }
-    .hc-top { display: none; }
-    .hc-crown { font-size: 11px; color: #dcb381; display: inline-flex; align-items: center; gap: 8px; font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; }
+    .hc-top { padding: 16px 12px 10px; display: flex; justify-content: center; position: relative; z-index: 2; }
+    .hc-crown { font-size: 11px; color: #dcb381; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 2px; }
     
-    .hc-ava-wrap { position: relative; width: 100px; height: 100px; flex-shrink: 0; z-index: 2; margin-bottom: 0; }
+    .hc-ava-wrap { position: relative; width: 90px; height: 90px; margin: 0 auto 28px; z-index: 2; }
     .hc-ava-wrap::before { content:''; position:absolute; inset:-4px; border-radius:50%; border:2px solid #dcb381; z-index:1; box-shadow: 0 0 12px rgba(220,179,129,0.2); }
     .hc-ava-wrap::after { content:''; position:absolute; inset:-8px; border-radius:50%; border:1px solid rgba(220,179,129,0.15); z-index:1; }
     .hc-ava { width: 100%; height: 100%; border-radius: 50%; border: 3px solid transparent; box-shadow: 0 0 0 4px #1a0406; background-size: cover; background-position: center; background-color: #3c1218; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #dcb381; position: relative; z-index: 2; }
     
     .hc-shield { position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%); width: 24px; height: 28px; background: #1a0406; border: 1.5px solid #dcb381; border-radius: 2px 2px 14px 14px; display: flex; align-items: center; justify-content: center; color: #dcb381; font-size: 12px; z-index: 4; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
     
-    .hc-info-wrap { display: flex; flex-direction: column; align-items: flex-start; z-index: 2; flex: 1; justify-content: center; }
-    .hc-name { font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,0.8); margin-bottom: 4px; position: relative; z-index: 2; letter-spacing: 1.5px; text-transform: uppercase; }
-    .hc-role { font-size: 13px; color: #d5bba8; margin-bottom: 16px; position: relative; z-index: 2; font-weight: 400; }
+    .hc-name { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,0.8); margin-bottom: 4px; position: relative; z-index: 2; letter-spacing: 1.5px; text-transform: uppercase; }
+    .hc-role { font-size: 12px; color: #d5bba8; margin-bottom: 24px; position: relative; z-index: 2; font-weight: 400; }
     
-    .hc-badges { display: flex; justify-content: flex-start; gap: 12px; position: relative; z-index: 2; }
+    .hc-badges { display: flex; justify-content: center; gap: 12px; position: relative; z-index: 2; }
     .hc-badge { padding: 6px 16px; border-radius: 30px; border: 1px solid rgba(220,179,129,0.3); background: rgba(0,0,0,0.4); font-size: 11px; color: #dcb381; letter-spacing: 0.5px; }
     
     /* ── LISTS ── */
@@ -193,24 +191,6 @@
           <div class="dash-main-grid">
             <!-- ── LEFT COLUMN ── -->
             <div class="dash-left-col">
-              
-              <!-- Premium Profile Card (Moved to Left Top) -->
-              <div class="head-card" id="headCard">
-                 <div class="hc-ava-wrap">
-                    <div class="hc-ava" id="hcAva"></div>
-                    <div class="hc-shield">☫</div>
-                 </div>
-                 <div class="hc-info-wrap">
-                    <div class="hc-crown">👑 FAMILY HEAD</div>
-                    <div class="hc-name" id="hcName">Loading...</div>
-                    <div class="hc-role" id="hcRole">Family Administrator</div>
-                    <div class="hc-badges" id="hcBadges">
-                       <div class="hc-badge">Brahmin</div>
-                       <div class="hc-badge">Kashyap Gotra</div>
-                    </div>
-                 </div>
-              </div>
-
               
               <!-- Family Tree Overview -->
               <div class="dash-card tree-overview-card">
@@ -347,7 +327,24 @@
             <!-- ── RIGHT COLUMN ── -->
             <div class="dash-right-col">
               
-
+              <!-- Premium Profile Card -->
+              <div class="head-card" id="headCard">
+                 <div class="hc-bg"></div>
+                 <div class="hc-top">
+                    <div class="hc-crown">👑 FAMILY HEAD</div>
+                 </div>
+                 <div class="hc-ava-wrap">
+                    <div class="hc-ava" id="hcAva"></div>
+                    <div class="hc-shield">☫</div>
+                 </div>
+                 <div class="hc-name" id="hcName">Loading...</div>
+                 <div class="hc-role" id="hcRole">Family Administrator</div>
+                 <div class="hc-badges" id="hcBadges">
+                    <div class="hc-badge">Brahmin</div>
+                    <div class="hc-badge">Kashyap Gotra</div>
+                 </div>
+              </div>
+              
               <!-- Recent Additions -->
               <div class="dash-card">
                  <div class="dash-card-header">
