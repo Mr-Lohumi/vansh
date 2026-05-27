@@ -457,7 +457,7 @@
       }
       
       // Calculate Stats
-      const realMembers = familyMembers.filter(m => !m.isPlaceholder);
+      const realMembers = getMyFamilyNetwork();
       const totalMembers = realMembers.length;
       if (document.getElementById('stMem')) document.getElementById('stMem').textContent = totalMembers;
       if (document.getElementById('tsMem')) document.getElementById('tsMem').textContent = totalMembers;
@@ -502,7 +502,7 @@
       setTimeout(() => { document.getElementById('donutPath').setAttribute('stroke-dasharray', `${verPct}, 100`); }, 500);
       
       // Recent Additions
-      const recent = [...familyMembers].reverse().slice(0, 3);
+      const recent = [...realMembers].reverse().slice(0, 3);
       let rHtml = '';
       recent.forEach(m => {
         const avaStyle = m.imageUrl ? `background-image:url('${m.imageUrl}');color:transparent;` : '';

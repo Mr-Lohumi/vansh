@@ -24,7 +24,14 @@ function loadFamilyData() {
           m.username = newUsername;
           changed = true;
         }
+        if (m.firstName === 'Unknown' && (m.lastName === 'Father' || m.lastName === 'Mother' || m.lastName === 'Parent')) {
+          if (!m.isPlaceholder) {
+            m.isPlaceholder = true;
+            changed = true;
+          }
+        }
       });
+      if (changed) saveFamilyData(parsed);
       return parsed;
     }
   } catch(e) {}
@@ -52,6 +59,35 @@ function getInitials(m) {
 }
 function getCasteLine(m) { return `${m.caste}${m.subCaste ? ' (' + m.subCaste + ')' : ''}`; }
 function getVerifiedMembers() { return familyMembers.filter(m => m.verified); }
+
+function getMyFamilyNetwork() {
+  const auth = typeof getAuthData === 'function' ? getAuthData() : null;
+  if (!auth || !auth.userId) return [];
+  
+  const myId = auth.userId;
+  if (!getMemberById(myId)) return [];
+
+  const visited = new Set();
+  const queue = [myId];
+  
+  while(queue.length > 0) {
+    const currId = queue.shift();
+    if (visited.has(currId)) continue;
+    visited.add(currId);
+    
+    const curr = getMemberById(currId);
+    if (!curr) continue;
+    
+    if (curr.spouse && !visited.has(curr.spouse)) queue.push(curr.spouse);
+    if (curr.parents) curr.parents.forEach(p => { if (!visited.has(p)) queue.push(p); });
+    
+    familyMembers.forEach(m => {
+      if (m.parents && m.parents.includes(currId) && !visited.has(m.id)) queue.push(m.id);
+    });
+  }
+  
+  return familyMembers.filter(m => visited.has(m.id) && !m.isPlaceholder);
+}
 
 // --- RELATIONSHIP INVITE SYSTEM ---
 const INVITES_DATA_KEY = 'vansh_invites_v1';
