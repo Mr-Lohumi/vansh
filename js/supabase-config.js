@@ -52,10 +52,11 @@ async function cloudAuthenticateUser(loginKey, password) {
   if (!window.supabaseClient) return null;
   try {
     const cleanKey = loginKey.trim().toLowerCase();
+    const safeKey = cleanKey.replace(/"/g, ''); // prevent injection in .or string
     const { data, error } = await window.supabaseClient
       .from('vansh_members')
       .select('*')
-      .or(`email.ilike.${cleanKey},username.ilike.${cleanKey},first_name.ilike.${cleanKey}`)
+      .or(`email.eq."${safeKey}",username.eq."${safeKey}",first_name.ilike."${safeKey}"`)
       .limit(10);
     if (error || !data || data.length === 0) return null;
 
@@ -300,6 +301,76 @@ async function updateCloudInviteStatus(inviteId, status) {
     return false;
   }
 }
+
+async function processCloudInvite(invite, action) {
+  if (!window.supabaseClient) return false;
+  
+  // 1. Update cloud status
+  const success = await updateCloudInviteStatus(invite.id, action);
+  if (!success) return false;
+
+  // 2. Update local connections if accepted
+  if (action === 'accepted') {
+    let pool = [];
+    try {
+      const saved = localStorage.getItem('vansh_family_data_v2');
+      if (saved) pool = JSON.parse(saved);
+      if (!Array.isArray(pool)) pool = [];
+    } catch(e) { pool = []; }
+
+    const fromUser = pool.find(u => u.id === invite.fromUserId);
+    const toUser = pool.find(u => u.id === invite.toUserId);
+
+    if (fromUser && toUser) {
+      function ensureParent(userId, gender, label) {
+        let user = pool.find(u => u.id === userId);
+        if (!user.parents) user.parents = [];
+        let parent = user.parents.map(pid => pool.find(u => u.id === pid)).find(p => p && p.gender === gender);
+        if (!parent) {
+          parent = {
+            id: 'u_' + Date.now() + Math.floor(Math.random()*1000),
+            firstName: 'Unknown',
+            lastName: label,
+            gender: gender,
+            age: (user.age || 20) + 25,
+            parents: [],
+            isPlaceholder: true
+          };
+          pool.push(parent);
+          user.parents.push(parent.id);
+        }
+        return parent;
+      }
+
+      const rel = invite.relationType;
+      
+      if (rel === 'papa' || rel === 'mummy' || rel === 'parent') {
+        toUser.gender = (rel === 'papa') ? 'M' : 'F';
+        if (!fromUser.parents) fromUser.parents = [];
+        if (!fromUser.parents.includes(toUser.id)) fromUser.parents.push(toUser.id);
+      } else if (rel === 'beta' || rel === 'beti' || rel === 'child') {
+        toUser.gender = (rel === 'beta') ? 'M' : 'F';
+        if (!toUser.parents) toUser.parents = [];
+        if (!toUser.parents.includes(fromUser.id)) toUser.parents.push(fromUser.id);
+      } else if (rel === 'spouse') {
+        fromUser.spouse = toUser.id;
+        toUser.spouse = fromUser.id;
+      } else if (rel === 'sibling') {
+        if (!fromUser.parents) fromUser.parents = [];
+        if (!toUser.parents) toUser.parents = [];
+        if (fromUser.parents.length === 0) ensureParent(fromUser.id, 'M', 'Father');
+        fromUser.parents.forEach(p => { if (!toUser.parents.includes(p)) toUser.parents.push(p); });
+        toUser.parents.forEach(p => { if (!fromUser.parents.includes(p)) fromUser.parents.push(p); });
+      }
+
+      localStorage.setItem('vansh_family_data_v2', JSON.stringify(pool));
+    }
+  }
+
+  return true;
+}
+
+window.processCloudInvite = processCloudInvite;
 
 async function getCloudMemberById(userId) {
   if (!window.supabaseClient || !userId) return null;

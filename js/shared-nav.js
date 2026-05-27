@@ -421,18 +421,25 @@ async function initNav(pageName) {
       const merged = [];
 
       // Cloud results first (they're richer, from real table)
-      cloudResults.forEach(m => {
+      (cloudResults || []).forEach(m => {
+        if (!m || !m.id) return;
         if (!seenIds.has(m.id)) { seenIds.add(m.id); merged.push(m); }
       });
 
       // Add local results that aren't in cloud yet (just registered, sync pending)
-      localResults.forEach(m => {
+      (localResults || []).forEach(m => {
+        if (!m || !m.id) return;
         if (!seenIds.has(m.id)) { seenIds.add(m.id); merged.push({ ...m, _fromCloud: false }); }
       });
 
       merged.sort((a, b) => (getFullName(a) || '').localeCompare(getFullName(b) || ''));
 
-      renderSearchResults(merged, query);
+      try {
+        renderSearchResults(merged, query);
+      } catch (renderErr) {
+        console.error('Error rendering search results:', renderErr);
+        searchResults.innerHTML = `<div style="padding:16px;text-align:center;color:red;font-size:13px;">Error displaying results</div>`;
+      }
     }, 300); // 300ms debounce
   });
 
