@@ -155,10 +155,11 @@ async function initNav(pageName) {
       }
     }
 
-    topbar.innerHTML = `
-      <div class="topbar-left" style="display:flex; align-items:center; gap:20px; flex:1; min-width:0;">
-        <button class="topbar-hamburger" onclick="toggleSidebar()">${NAV_ICONS.hamburger}</button>
-        <div class="topbar-breadcrumb">Vansh / <b>${title}</b></div>
+    if (!topbar.classList.contains('custom-topbar')) {
+      topbar.innerHTML = `
+        <div class="topbar-left" style="display:flex; align-items:center; gap:20px; flex:1; min-width:0;">
+          <button class="topbar-hamburger" onclick="toggleSidebar()">${NAV_ICONS.hamburger}</button>
+          <div class="topbar-breadcrumb">Vansh / <b>${title}</b></div>
 
         <div style="display:flex; gap:10px; align-items:center; flex-shrink:0;">
           <button onclick="openInviteExternalModal()" title="Invite Family" style="display:flex;align-items:center;gap:6px;padding:8px 20px;background:linear-gradient(135deg,var(--royal-red-dark),var(--royal-red));color:#fff;border:none;border-radius:30px;font-family:'Cinzel',serif;font-weight:700;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all 0.3s;box-shadow:0 4px 14px rgba(107,21,34,0.25);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 22px rgba(107,21,34,0.35)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 14px rgba(107,21,34,0.25)'">
@@ -198,13 +199,49 @@ async function initNav(pageName) {
         </div>
       </div>
     `;
+    } else {
+      // Wire up the custom topbar
+      const badgeEl = topbar.querySelector('.tb-bell-badge');
+      if (badgeEl) {
+        if (invites.length > 0) {
+          badgeEl.textContent = invites.length;
+          badgeEl.style.display = 'flex';
+        } else {
+          badgeEl.style.display = 'none';
+        }
+      }
+      
+      const bellEl = topbar.querySelector('.tb-bell');
+      if (bellEl) {
+        bellEl.style.cursor = 'pointer';
+        bellEl.onclick = () => {
+          let dropdown = document.getElementById('notifDropdown');
+          if (!dropdown) {
+            dropdown = document.createElement('div');
+            dropdown.id = 'notifDropdown';
+            dropdown.className = 'notif-dropdown';
+            // Align dropdown properly for custom topbar
+            dropdown.style.right = '24px';
+            dropdown.style.top = '60px';
+            topbar.appendChild(dropdown);
+          }
+          dropdown.innerHTML = `
+            <div style="padding:14px 16px;border-bottom:1px solid var(--border-light);font-weight:700;font-family:'Cinzel',serif;font-size:14px;color:var(--text);">
+              Relationship Requests
+            </div>
+            ${invitesHtml}
+          `;
+          dropdown.classList.toggle('active');
+        };
+      }
+    }
     
     // Add CSS for dropdown
     if (!document.getElementById('notifCss')) {
       const style = document.createElement('style');
       style.id = 'notifCss';
       style.innerHTML = `
-        .notif-dropdown { position: absolute; top: 100%; right: 0; width: 320px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-hover); margin-top: 16px; opacity: 0; pointer-events: none; transform: translateY(10px); transition: all 0.2s; z-index: 100; }
+        .notif-dropdown { position: absolute; top: 100%; right: 0; width: 320px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-hover); margin-top: 16px; opacity: 0; pointer-events: none; transform: translateY(10px); transition: all 0.2s; z-index: 100; text-align: left; }
         .notif-dropdown.active { opacity: 1; pointer-events: all; transform: translateY(0); }
       `;
       document.head.appendChild(style);
