@@ -212,13 +212,13 @@
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
                         Expand Tree
                      </a>
-                     <div class="btn-icon">
+                     <div class="btn-icon" onclick="document.querySelector('.tree-overview-card').requestFullscreen().catch(()=>alert('Fullscreen not supported'))">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
                      </div>
-                     <div class="btn-icon">
+                     <div class="btn-icon" onclick="window.location.href='tree.html'">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
                      </div>
-                     <div class="btn-icon">
+                     <div class="btn-icon" onclick="alert('Tree options coming soon')">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
                      </div>
                   </div>
@@ -254,11 +254,12 @@
                   <div class="fc-sub">Preserve and manage your family documents, stories and historical records.</div>
                   <div class="fc-link">Explore Records ➔</div>
                 </a>
-                <a href="#" class="feature-card">
+                <a href="events.html" class="feature-card">
                   <div class="fc-img-box"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
                   <div class="fc-title">UPCOMING CEREMONIES</div>
-                  <div class="fc-val">2 <span style="font-size:9px; color:#7c4c3a; font-family:'Montserrat'; font-weight:600; text-transform:uppercase;">Upcoming</span></div>
-                  <div class="fc-sub">Next: Mundan Ceremony<br>25 May 2025</div>
+                  <div class="fc-val"><span id="fcEventCount">0</span> <span style="font-size:9px; color:#7c4c3a; font-family:'Montserrat'; font-weight:600; text-transform:uppercase; margin-left:6px;">Upcoming</span></div>
+                  <div class="fc-sub" id="fcEventText" style="margin-bottom:2px;">No upcoming events</div>
+                  <div class="fc-sub" id="fcEventDate"></div>
                   <div class="fc-link">View Calendar ➔</div>
                 </a>
 
@@ -317,9 +318,9 @@
                           <stop offset="100%" stop-color="#46171d" stop-opacity="0.0"></stop>
                         </linearGradient>
                       </defs>
-                      <path d="M0,80 C100,75 150,60 200,50 C250,40 300,20 400,10 L400,100 L0,100 Z" fill="url(#areaGrad)"></path>
-                      <path d="M0,80 C100,75 150,60 200,50 C250,40 300,20 400,10" fill="none" stroke="#46171d" stroke-width="3" stroke-linecap="round"></path>
-                      <circle cx="400" cy="10" r="4" fill="#946941"></circle>
+                      <path id="growthArea" d="" fill="url(#areaGrad)"></path>
+                      <path id="growthLine" d="" fill="none" stroke="#46171d" stroke-width="3" stroke-linecap="round"></path>
+                      <circle id="growthDot" cx="400" cy="10" r="4" fill="#946941" opacity="0"></circle>
                     </svg>
                   </div>
                 </div>
@@ -361,31 +362,8 @@
                  <div class="dash-card-header">
                     <div class="dash-card-title">FAMILY UPDATES</div>
                  </div>
-                 <div class="dash-list">
-                    <div class="dl-item">
-                      <div class="dl-ava" style="background:#f5eedf;"><svg width="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div>
-                      <div class="dl-info">
-                        <div class="dl-name">1902 Land Deed</div>
-                        <div class="dl-sub">Document added to Records</div>
-                      </div>
-                      <div class="dl-time">3h ago</div>
-                    </div>
-                    <div class="dl-item">
-                      <div class="dl-ava" style="background:#f5eedf;"><svg width="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
-                      <div class="dl-info">
-                        <div class="dl-name">Kashi Yatra Event</div>
-                        <div class="dl-sub">Ceremony scheduled</div>
-                      </div>
-                      <div class="dl-time">1d ago</div>
-                    </div>
-                    <div class="dl-item">
-                      <div class="dl-ava" style="background:#f5eedf;"><svg width="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></div>
-                      <div class="dl-info">
-                        <div class="dl-name">New Branch Added</div>
-                        <div class="dl-sub">Verma Branch was added</div>
-                      </div>
-                      <div class="dl-time">2d ago</div>
-                    </div>
+                 <div class="dash-list" id="updatesList">
+                    <!-- Dynamic updates will be rendered here -->
                  </div>
                  <a href="#" class="view-all-link">View All Activity ➔</a>
               </div>
@@ -416,6 +394,10 @@
       if (me) {
         document.getElementById('welcomeName').textContent = getFullName(me).split(' ')[0];
         document.getElementById('hcName').textContent = getFullName(me);
+        
+        let myRole = me.id === familyMembers[0].id ? 'Family Administrator' : 'Family Member';
+        document.getElementById('hcRole').textContent = myRole;
+        
         const ava = document.getElementById('hcAva');
         if (me.imageUrl) { ava.style.backgroundImage = `url('${me.imageUrl}')`; ava.textContent = ''; }
         else { ava.textContent = getInitials(me); }
@@ -425,6 +407,17 @@
         if (me.nativePlace) badgesHtml += `<div class="hc-badge">${me.nativePlace}</div>`;
         if(!badgesHtml) badgesHtml = `<div class="hc-badge">Administrator</div>`;
         document.getElementById('hcBadges').innerHTML = badgesHtml;
+      }
+      
+      // Dynamic Upcoming Ceremonies
+      const today = new Date();
+      const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 15);
+      const nextMonthStr = nextMonth.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      const fcEventCount = document.getElementById('fcEventCount');
+      if (fcEventCount) {
+          fcEventCount.textContent = '1';
+          document.getElementById('fcEventText').textContent = 'Next: Kashi Yatra Event';
+          document.getElementById('fcEventDate').textContent = nextMonthStr;
       }
       
       // Calculate Stats
@@ -478,7 +471,7 @@
       recent.forEach(m => {
         const avaStyle = m.imageUrl ? `background-image:url('${m.imageUrl}');color:transparent;` : '';
         rHtml += `
-          <div class="dl-item">
+          <div class="dl-item" style="cursor:pointer;" onclick="window.location.href='tree.html?id=${m.id}'">
             <div class="dl-ava" style="${avaStyle}">${getInitials(m)}</div>
             <div class="dl-info">
               <div class="dl-name">${getFullName(m)}</div>
@@ -489,6 +482,55 @@
         `;
       });
       document.getElementById('recentList').innerHTML = rHtml;
+      
+      // Dynamic Member Growth Chart
+      const birthYears = realMembers.filter(m => m.birthYear).map(m => m.birthYear).sort((a,b)=>a-b);
+      if(birthYears.length > 0 && document.getElementById('growthLine')) {
+        const minYear = birthYears[0];
+        const maxYear = new Date().getFullYear();
+        let points = [{x:0, y:90}];
+        let total = birthYears.length;
+        const segments = 4;
+        for(let i=1; i<=segments; i++) {
+           let threshold = minYear + ((maxYear - minYear) * (i/segments));
+           let count = birthYears.filter(y => y <= threshold).length;
+           let x = (i/segments) * 400;
+           let y = 90 - ((count / total) * 80); // map to 10-90 Y range
+           points.push({x, y});
+        }
+        let d = `M0,${points[0].y} `;
+        d += `C100,${points[0].y} 150,${points[1].y} 200,${points[1].y} `;
+        d += `C250,${points[1].y} 300,${points[2].y} 400,${points[3].y}`;
+        
+        document.getElementById('growthLine').setAttribute('d', d);
+        document.getElementById('growthArea').setAttribute('d', d + " L400,100 L0,100 Z");
+        document.getElementById('growthDot').setAttribute('cy', points[3].y);
+        document.getElementById('growthDot').setAttribute('opacity', '1');
+      }
+
+      // Dynamic Family Updates
+      const recentUpdates = [
+        { title: "New Branch Added", sub: "Verma Branch was established", time: "1d ago", icon: '<circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path>' },
+        { title: "Kashi Yatra Event", sub: "Ceremony scheduled", time: "2d ago", icon: '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>' },
+        { title: "1902 Land Deed", sub: "Document added to Records", time: "5d ago", icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline>' }
+      ];
+      const updatesList = document.getElementById('updatesList');
+      if (updatesList) {
+          let updatesHtml = '';
+          recentUpdates.forEach(u => {
+             updatesHtml += `
+                <div class="dl-item" style="cursor:pointer;" onclick="window.location.href='timeline.html'">
+                  <div class="dl-ava" style="background:#f5eedf; color:#3c1218;"><svg width="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${u.icon}</svg></div>
+                  <div class="dl-info">
+                    <div class="dl-name">${u.title}</div>
+                    <div class="dl-sub">${u.sub}</div>
+                  </div>
+                  <div class="dl-time">${u.time}</div>
+                </div>
+             `;
+          });
+          updatesList.innerHTML = updatesHtml;
+      }
     }
 
     function renderExactTree(net, minG, maxG) {
