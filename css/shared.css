@@ -354,7 +354,7 @@ img { max-width: 100%; display: block; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
-  .sidebar { transform: translateX(-100%); }
+  .sidebar { transform: translateX(calc(-100% - 16px)); }
   .sidebar.open { transform: translateX(0); }
   .main-area { margin-left: 0; }
   .topbar-hamburger { display: block; }
