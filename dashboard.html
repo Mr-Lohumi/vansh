@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/shared.css?v=23">
   <style>
     /* ── PRECISE BACKGROUNDS & LAYOUT ── */
-    body, .page-content { background-color: #fcf9f5 !important; }
+    body, .page-content { background-color: #fcf9f5 !important; padding: 24px 24px 0 24px !important; }
     .dash-wrapper { width: 100%; box-sizing: border-box; padding: 0 0 60px; margin: 0; display: flex; flex-direction: column; gap: 24px; }
     
     /* ── OVERRIDE SIDEBAR ── */
@@ -26,7 +26,7 @@
     .sf-role { color: #dcb381 !important; }
     
     /* ── OVERRIDE TOPBAR ── */
-    .topbar { background: transparent !important; border-bottom: none !important; box-shadow: none !important; padding: 24px 40px 0 !important; }
+    .topbar { background: transparent !important; border-bottom: none !important; box-shadow: none !important; padding: 0 24px !important; }
     .tb-content { justify-content: flex-end; width: 100%; display: flex; gap: 24px; align-items: center; }
     .tb-search { background: #fdfbf7; border: 1px solid #ebdcc6; border-radius: 30px; padding: 8px 16px; width: 300px; display: flex; align-items: center; gap: 8px; color: #7c4c3a; font-size: 13px; }
     .tb-search input { border: none; background: transparent; flex: 1; outline: none; color: #3c1218; font-family: 'Inter'; }
@@ -49,7 +49,7 @@
     .stat-sub { font-size: 10px; color: #a18a7a; }
     
     /* ── MAIN GRID ── */
-    .dash-main-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start; }
+    .dash-main-grid { display: grid; grid-template-columns: minmax(0, 68fr) minmax(320px, 32fr); gap: 24px; align-items: start; }
     
     .dash-card { background: #fdfbf7; border-radius: 12px; border: 1px solid #ebdcc6; padding: 24px; position: relative; }
     .dash-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
@@ -62,14 +62,14 @@
     .btn-tree { padding: 8px 16px; border-radius: 8px; border: 1px solid #ebdcc6; font-size: 11px; font-weight: 700; color: #3c1218; cursor: pointer; display: flex; align-items: center; gap: 8px; background: #fff; text-decoration: none; }
     .btn-icon { padding: 8px; width: 34px; height: 34px; border-radius: 8px; border: 1px solid #ebdcc6; background: #fff; display: flex; align-items: center; justify-content: center; color: #7c4c3a; }
     
-    .tree-sidebar-floating { position: absolute; top: 80px; left: 24px; background: #fdfbf7; padding: 30px 20px; border-radius: 12px; border: 1px solid #f4eade; z-index: 10; display: flex; flex-direction: column; gap: 30px; align-items: center; box-shadow: 0 4px 12px rgba(107,21,34,0.02); }
+    .tree-sidebar-floating { position: absolute; top: 80px; left: 24px; background: #fdfbf7; padding: 20px 16px; border-radius: 12px; border: 1px solid #f4eade; z-index: 10; display: flex; flex-direction: column; gap: 20px; align-items: center; box-shadow: 0 4px 12px rgba(107,21,34,0.02); }
     .ts-item { text-align: center; }
     .ts-val { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 700; color: #4a151b; line-height: 1; margin-bottom: 8px; }
     .ts-lbl { font-size: 10px; color: #7c4c3a; font-weight: 700; letter-spacing: 0.5px; }
     .ts-div { width: 40px; height: 1px; background: #ebdcc6; }
     
     .tree-layout-box { display: flex; flex: 1; min-height: 180px; position: relative; padding-top: 16px; padding-bottom: 24px; }
-    .tree-main-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding-left: 140px; } /* pad left to clear sidebar */
+    .tree-main-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
     
     .ct-row { display: flex; align-items: flex-start; justify-content: center; margin-bottom: 16px; gap: 32px; position: relative; width: 100%; }
     .ct-gen { position: absolute; left: 20px; top: 10px; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #7c4c3a; width: 36px; height: 36px; border-radius: 50%; background: #f5eedf; display: flex; align-items: center; justify-content: center; }
@@ -79,7 +79,7 @@
     .ct-ava.deceased { border-color: #f4eade; opacity: 0.6; }
     .ct-name { font-size: 10px; font-weight: 700; color: #3c1218; text-align: center; white-space: nowrap; }
     
-    .tree-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; color: #7c4c3a; font-weight: 600; }
+    .tree-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; font-size: 12px; color: #7c4c3a; font-weight: 600; }
     .leg-item { display: flex; align-items: center; gap: 8px; }
     .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
     .leg-link { font-size: 12px; font-weight: 700; color: #946941; text-decoration: none; display: flex; align-items: center; gap: 4px; white-space: nowrap; flex-shrink: 0; }
