@@ -67,7 +67,7 @@
   --ruby:           #c41e3a;
   --emerald-bright: #2a9d8f;
 
-  --sidebar-w: clamp(220px, 20vw, 280px);
+  --sidebar-w: 280px;
   --content-max: 1400px;
   --space-xs: clamp(0.25rem, 1vw, 0.5rem);
   --space-sm: clamp(0.5rem, 2vw, 1rem);
@@ -133,7 +133,11 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 .page-content { flex: 1; width: 100%; padding: var(--space-md) var(--space-lg); }
 
 /* ── SIDEBAR (Premium Floating Glass) ── */
-.sidebar-wrapper { position: sticky; top: 0; height: 100vh; padding: 16px 8px 16px 16px; z-index: 40; display: flex; flex-direction: column; }
+.sidebar-wrapper { 
+  position: sticky; top: 0; height: 100vh; padding: 16px 8px 16px 16px; z-index: 40; 
+  display: flex; flex-direction: column;
+  width: var(--sidebar-w); min-width: var(--sidebar-w); max-width: var(--sidebar-w); flex-shrink: 0;
+}
 .sidebar {
   width: 100%; height: 100%;
   background: linear-gradient(160deg, var(--royal-red-dark), var(--royal-red));
