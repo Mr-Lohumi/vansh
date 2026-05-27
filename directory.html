@@ -78,7 +78,8 @@
     
     function renderDirectory() {
       const q = searchInput.value.toLowerCase();
-      const filtered = familyMembers.filter(m => {
+      const realMembers = familyMembers.filter(m => !m.isPlaceholder);
+      const filtered = realMembers.filter(m => {
         const text = `${m.name} ${m.lastName || 'Sharma'} ${m.occupation || ''} Gen ${m.gen}`.toLowerCase();
         return text.includes(q);
       });

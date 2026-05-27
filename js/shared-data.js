@@ -117,7 +117,8 @@ function acceptInvite(inviteId) {
         lastName: label,
         gender: gender,
         age: (user.age || 20) + 25,
-        parents: []
+        parents: [],
+        isPlaceholder: true
       };
       familyMembers.push(parent);
       user.parents.push(parent.id);
@@ -222,7 +223,8 @@ async function processCloudInvite(invite, action) {
         lastName: label,
         gender: gender,
         age: (user.age || 20) + 25,
-        parents: []
+        parents: [],
+        isPlaceholder: true
       };
       familyMembers.push(parent);
       user.parents.push(parent.id);

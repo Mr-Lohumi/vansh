@@ -457,18 +457,19 @@
       }
       
       // Calculate Stats
-      const totalMembers = familyMembers.length;
+      const realMembers = familyMembers.filter(m => !m.isPlaceholder);
+      const totalMembers = realMembers.length;
       if (document.getElementById('stMem')) document.getElementById('stMem').textContent = totalMembers;
       if (document.getElementById('tsMem')) document.getElementById('tsMem').textContent = totalMembers;
       if (document.getElementById('fcDir')) document.getElementById('fcDir').textContent = totalMembers;
       
-      const verified = familyMembers.filter(m => m.verified).length;
+      const verified = realMembers.filter(m => m.verified).length;
       const verPct = totalMembers > 0 ? Math.round((verified / totalMembers) * 100) : 0;
       if (document.getElementById('stVer')) document.getElementById('stVer').textContent = verified;
       if (document.getElementById('stVerSub')) document.getElementById('stVerSub').textContent = `${verPct}% Verified`;
       
       let marriages = 0, under18 = 0, above40 = 0;
-      familyMembers.forEach(m => {
+      realMembers.forEach(m => {
         if (m.spouse) marriages++;
         if (m.age) {
           if (m.age < 18) under18++;
@@ -479,7 +480,7 @@
       if (document.getElementById('stUnder18')) document.getElementById('stUnder18').textContent = under18;
       if (document.getElementById('stAbove40')) document.getElementById('stAbove40').textContent = above40;
       
-      const surnames = new Set(familyMembers.map(m => m.lastName).filter(n => n));
+      const surnames = new Set(realMembers.map(m => m.lastName).filter(n => n));
       const branchCount = Math.max(1, surnames.size);
       if (document.getElementById('stBra')) document.getElementById('stBra').textContent = branchCount;
       

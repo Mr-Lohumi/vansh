@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Vansh (वंश) — Dynasty Feed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css?v=16">
+  <style>
+    /* ── DASHBOARD LAYOUT ── */
+    .dashboard-layout { display: flex; gap: 32px; align-items: flex-start; max-width: 1060px; margin: 0 auto; }
+    .feed-column { flex: 1 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+    .profile-column { flex: 0 0 320px; position: sticky; top: 88px; display: flex; flex-direction: column; gap: 16px; max-height: calc(100vh - 100px); overflow-y: auto; scrollbar-width: none; }
+    .profile-column::-webkit-scrollbar { display: none; }
+    @media (max-width: 1080px) { .dashboard-layout { flex-direction: column; } .profile-column { width: 100%; max-width: 100%; position: static; max-height: none; overflow-y: visible; } }
+
+    /* ── STORIES STRIP ── */
+    .stories-wrap { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+    .stories-wrap::-webkit-scrollbar { display: none; }
+    .story-pill {
+      flex-shrink: 0; width: 96px; height: 156px; border-radius: 16px; position: relative;
+      overflow: hidden; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;
+      border: 2px solid transparent; background: var(--bg-elevated);
+    }
+    .story-pill:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(107,21,34,0.15); border-color: var(--gold); }
+    .story-pill .sp-bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+    .story-pill .sp-grad { position: absolute; inset: 0; background: linear-gradient(to top, rgba(66,10,18,0.88) 0%, transparent 55%); }
+    .story-pill .sp-name { position: absolute; bottom: 10px; left: 0; right: 0; text-align: center; font-size: 10px; font-weight: 700; color: #fff; letter-spacing: 0.5px; text-transform: uppercase; padding: 0 6px; }
+    .story-pill .sp-avatar { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--gold); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--royal-red-dark); }
+    .add-story-pill { background: linear-gradient(160deg, var(--bg-card) 0%, var(--bg-elevated) 100%); border: 2px dashed var(--gold-border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+    .add-story-pill .asp-circle { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--royal-red-dark), #AB2330); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; font-weight: 300; box-shadow: 0 4px 12px rgba(107,21,34,0.3); }
+    .add-story-pill .asp-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+    .add-story-pill:hover { border-color: var(--royal-red); background: rgba(107,21,34,0.03); }
+
+    /* ── CREATE POST BOX ── */
+    .compose-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: 0 2px 12px rgba(107,21,34,0.04); }
+    .compose-top { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
+    .compose-ava { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; background-size: cover; background-position: center; border: 2px solid var(--gold-border); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: var(--royal-red); background-color: var(--bg-elevated); }
+    .compose-input { flex: 1; background: var(--bg-elevated); border: 1.5px solid transparent; border-radius: 30px; padding: 12px 20px; font-family: inherit; font-size: 14px; color: var(--text); outline: none; transition: all 0.25s; cursor: pointer; }
+    .compose-input:focus { background: #fff; border-color: var(--gold-border); box-shadow: 0 0 0 3px var(--gold-dim); cursor: text; }
+    .compose-input::placeholder { color: var(--text-muted); }
+    .compose-divider { height: 1px; background: var(--border-light); margin-bottom: 14px; }
+    .compose-actions { display: flex; gap: 4px; align-items: center; }
+    .compose-btn { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; color: var(--text-secondary); background: none; border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .compose-btn:hover { background: var(--bg-elevated); color: var(--royal-red); }
+    .compose-btn span { font-size: 16px; }
+    .compose-post-btn { margin-left: auto; padding: 10px 24px; background: linear-gradient(135deg, var(--royal-red-dark), #AB2330); color: #fff; border: none; border-radius: 10px; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; gap: 8px; }
+    .compose-post-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107,21,34,0.3); }
+
+    /* ── FEED SECTION LABEL ── */
+    .feed-label { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; }
+    .feed-label::after { content: ''; flex: 1; height: 1px; background: var(--border-light); }
+
+    /* ── POST CARD ── */
+    .post-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
+      overflow: hidden; box-shadow: 0 2px 12px rgba(107,21,34,0.04);
+      transition: box-shadow 0.3s, border-color 0.3s, transform 0.25s;
+    }
+    .post-card:hover { box-shadow: 0 8px 28px rgba(107,21,34,0.09); border-color: var(--gold-border); transform: translateY(-2px); }
+    .post-inner { padding: 20px 24px; }
+    .post-hd { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .post-ava { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--gold-border); background-size: cover; background-position: center; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: var(--royal-red); background-color: var(--bg-elevated); }
+    .post-author { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 700; color: var(--text); }
+    .post-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .post-more { margin-left: auto; background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: background 0.2s; line-height: 1; }
+    .post-more:hover { background: var(--bg-elevated); color: var(--text); }
+    .post-body { font-size: 14px; line-height: 1.7; color: var(--text); margin-bottom: 0; }
+    .post-img { width: 100%; max-height: 360px; object-fit: cover; display: block; border-top: 1px solid var(--border-light); margin-top: 14px; }
+    .post-reactions { display: flex; align-items: center; gap: 6px; padding: 12px 24px; border-top: 1px solid var(--border-light); }
+    .reaction-pill { display: flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 30px; font-size: 13px; font-weight: 600; color: var(--text-secondary); background: none; border: 1px solid transparent; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .reaction-pill:hover { background: var(--bg-elevated); color: var(--royal-red); border-color: rgba(107,21,34,0.15); }
+    .reaction-pill.liked { color: var(--royal-red); background: var(--royal-red-dim); border-color: rgba(107,21,34,0.2); }
+    .reaction-pill svg { width: 16px; height: 16px; }
+    .comment-divider { flex: 1; }
+    .comment-area { padding: 12px 20px; border-top: 1px solid var(--border-light); background: var(--bg-elevated); display: none; }
+    .comment-area.open { display: block; }
+    .comment-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+    .comment-bubble { flex: 1; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 14px; padding: 10px 14px; }
+    .comment-author { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .comment-text { font-size: 13px; color: var(--text-secondary); }
+    .comment-input-row { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
+    .comment-input { flex: 1; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 20px; padding: 9px 16px; font-family: inherit; font-size: 13px; outline: none; color: var(--text); }
+    .comment-input:focus { border-color: var(--gold-border); }
+    .comment-send { background: var(--royal-red-dark); color: #fff; border: none; border-radius: 10px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Cinzel', serif; }
+
+    /* ── EMPTY FEED ── */
+    .empty-feed { text-align: center; padding: 48px 32px; background: var(--bg-card); border: 1px dashed var(--border); border-radius: 20px; }
+    .empty-feed .ef-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-feed .ef-title { font-family: 'Cinzel', serif; font-size: 18px; color: var(--text); margin-bottom: 8px; }
+    .empty-feed .ef-sub { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── PROFILE WIDGET ── */
+    .profile-widget { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: 0 2px 12px rgba(107,21,34,0.04); }
+    .pw-cover { height: 120px; background: linear-gradient(135deg, #420A12 0%, #6B1522 50%, #AB2330 100%); position: relative; }
+    .pw-cover::after { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4A843' fill-opacity='0.08'%3E%3Ccircle cx='30' cy='30' r='15'/%3E%3Ccircle cx='30' cy='30' r='25'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+    .pw-ava-wrap { display: flex; justify-content: center; margin-top: -60px; position: relative; z-index: 2; margin-bottom: 12px; }
+    .pw-ava { width: 120px; height: 120px; border-radius: 28px; border: 4px solid var(--bg-card); box-shadow: 0 8px 24px rgba(107,21,34,0.25); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 700; color: var(--royal-red); background-color: var(--bg-elevated); }
+    .pw-body { padding: 0 20px 20px; text-align: center; }
+    .pw-name { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .pw-handle { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+    .pw-lineage { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
+    .pw-badge { display: inline-block; background: rgba(107,21,34,0.06); color: var(--royal-red); border: 1px solid rgba(107,21,34,0.15); border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; font-family: 'Cinzel', serif; letter-spacing: 0.5px; }
+    .pw-stats { display: flex; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); margin: 14px 0; }
+    .pw-stat { flex: 1; padding: 12px 8px; text-align: center; }
+    .pw-stat:not(:last-child) { border-right: 1px solid var(--border-light); }
+    .pw-stat-num { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: var(--text); }
+    .pw-stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+
+    /* ── DYNASTY GROWTH WIDGET ── */
+    .growth-widget {
+      background: linear-gradient(135deg, rgba(138,28,36,0.9) 0%, rgba(74,12,16,0.95) 100%);
+      border: 1.5px solid var(--gold-bright);
+      border-radius: 20px; padding: 20px;
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.15), 0 10px 30px rgba(0,0,0,0.3);
+      position: relative; overflow: hidden;
+    }
+    .gw-header { text-align: center; margin-bottom: 20px; }
+    .gw-title { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: var(--gold-bright); text-transform: uppercase; letter-spacing: 1px; }
+    .gw-subtitle { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .gw-tree-container { position: relative; height: 160px; display: flex; align-items: flex-end; justify-content: center; }
+    
+    .gw-svg { width: 100%; height: 220px; overflow: visible; margin-top: 10px; }
+    .growth-widget.animate .gw-svg { animation: pulseGlow 4s infinite alternate ease-in-out 3s; }
+    @keyframes pulseGlow {
+      0% { filter: drop-shadow(0 0 2px rgba(212,175,55,0.3)); }
+      100% { filter: drop-shadow(0 0 12px rgba(212,175,55,0.8)); }
+    }
+    
+    .gw-draw { stroke-dasharray: 400; stroke-dashoffset: 400; }
+    /* Dynamic inline animations take over here */
+    @keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+    .gw-node { opacity: 0; transform: scale(0); transform-origin: center; }
+    .growth-widget.animate .gw-node { animation: popNode 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    @keyframes popNode { to { opacity: 1; transform: scale(1); } }
+    
+    .gw-details-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;
+      opacity: 0; transform: translateY(10px); transition: all 1s;
+    }
+    .growth-widget.animate .gw-details-grid { opacity: 1; transform: translateY(0); transition-delay: 1.5s; }
+    
+    .gw-detail-item {
+      background: rgba(0,0,0,0.3); border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 12px; padding: 10px; text-align: center;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .gw-detail-item:hover { background: rgba(0,0,0,0.5); border-color: var(--gold); }
+    .gwd-lbl { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .gwd-val { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: var(--gold-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
+    .pw-info-list { text-align: left; margin-bottom: 16px; }
+    .pw-info-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px dashed var(--border-light); font-size: 12px; }
+    .pw-info-row:last-child { border-bottom: none; }
+    .pw-info-icon { font-size: 14px; width: 18px; text-align: center; }
+    .pw-info-val { color: var(--text); font-weight: 500; }
+    .pw-edit-btn { width: 100%; padding: 11px; background: linear-gradient(135deg, var(--royal-red-dark), #AB2330); color: #fff; border: none; border-radius: 12px; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+    .pw-edit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107,21,34,0.3); }
+
+
+  </style>
+</head>
+<body style="display:none;">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js?v=18"></script>
+  <script src="js/shared-auth.js?v=18"></script>
+  <script src="js/shared-data.js?v=18"></script>
+  <script src="js/shared-tree.js?v=18"></script>
+  <script src="js/shared-nav.js?v=18"></script>
+  <script>
+    if (!localStorage.getItem('rootd_auth')) {
+      window.location.href = 'login.html';
+      throw new Error('Not authenticated');
+    }
+    document.body.style.display = '';
+  </script>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main-area">
+      <header class="topbar" id="topbar"></header>
+      <div class="page-content">
+        <div class="dashboard-layout">
+
+          <!-- ══ LEFT: FEED ══ -->
+          <div class="feed-column">
+
+            <!-- Stories -->
+            <div>
+              <div class="feed-label" style="margin-bottom:12px;">📸 Stories</div>
+              <div class="stories-wrap" id="storiesContainer"></div>
+            </div>
+
+            <!-- Compose Box -->
+            <div class="compose-box anim anim-delay-1">
+              <div class="compose-top">
+                <div class="compose-ava" id="createPostAvatar"></div>
+                <input type="text" id="postInput" class="compose-input" placeholder="Share a royal announcement with your dynasty...">
+              </div>
+              <div class="compose-divider"></div>
+              <div class="compose-actions">
+                <input type="file" id="postImageUpload" accept="image/*" style="display:none;" onchange="handlePostImageUpload(event)">
+                <button class="compose-btn" onclick="document.getElementById('postImageUpload').click()">
+                  <span>📸</span> Photo
+                </button>
+                <button class="compose-btn" onclick="addFamilyEvent()">
+                  <span>📅</span> Event
+                </button>
+                <button class="compose-btn" onclick="addMilestone()">
+                  <span>🎉</span> Milestone
+                </button>
+                <div id="postImagePreviewContainer" style="display:none; align-items:center; gap:6px; background:var(--bg-elevated); padding:5px 12px; border-radius:20px; font-size:12px; color:var(--text-muted); border:1px solid var(--border-light);">
+                  📎 <span id="postImagePreviewName">Image attached</span>
+                  <button onclick="removePostImage()" style="background:none;border:none;color:var(--royal-red);cursor:pointer;font-weight:bold;">✕</button>
+                </div>
+                <button class="compose-post-btn" onclick="publishPost()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  Post
+                </button>
+              </div>
+            </div>
+
+            <!-- Feed Section Label -->
+            <div class="feed-label anim anim-delay-2">📣 Dynasty Feed</div>
+
+            <!-- Posts -->
+            <div id="feedContainer"></div>
+
+          </div>
+
+          <!-- ══ RIGHT: WIDGETS ══ -->
+          <div class="profile-column anim anim-delay-2">
+
+            <!-- Profile Widget -->
+            <div class="profile-widget" id="userWidget"></div>
+
+            <!-- Dynasty Growth Widget -->
+            <div class="growth-widget" id="dynastyGrowthWidget">
+              <div class="gw-header">
+                <div class="gw-title">Dynasty Ascending</div>
+                <div class="gw-subtitle" id="gwGenCount">Analyzing lineage...</div>
+              </div>
+              <div class="gw-tree-container">
+                <svg class="gw-svg" viewBox="0 0 200 200" preserveAspectRatio="xMidYMax meet">
+                  <defs>
+                    <linearGradient id="treeGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                      <stop offset="0%" stop-color="var(--gold-dark)" />
+                      <stop offset="50%" stop-color="var(--gold)" />
+                      <stop offset="100%" stop-color="var(--gold-bright)" />
+                    </linearGradient>
+                    <filter id="glow">
+                      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                      <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <g class="gw-paths" id="gwDynamicPaths" stroke="url(#treeGrad)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  </g>
+                  
+                  <g class="gw-nodes" id="gwDynamicNodes" fill="var(--gold-bright)" filter="url(#glow)">
+                  </g>
+                </svg>
+              </div>
+              <div class="gw-details-grid">
+                <div class="gw-detail-item">
+                  <div class="gwd-lbl">Total Members</div>
+                  <div class="gwd-val" id="gwTotalMem">0</div>
+                </div>
+                <div class="gw-detail-item">
+                  <div class="gwd-lbl">Alliances</div>
+                  <div class="gwd-val" id="gwMarriages">0</div>
+                </div>
+                <div class="gw-detail-item">
+                  <div class="gwd-lbl">Eldest Root</div>
+                  <div class="gwd-val" id="gwEldest" style="font-size:12px;">--</div>
+                </div>
+                <div class="gw-detail-item">
+                  <div class="gwd-lbl">Youngest</div>
+                  <div class="gwd-val" id="gwYoungest" style="font-size:12px;">--</div>
+                </div>
+              </div>
+            </div>          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Story Viewer -->
+  <div id="storyViewer" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:9999; align-items:center; justify-content:center; flex-direction:column;">
+    <button onclick="closeStory()" style="position:absolute; top:20px; right:24px; background:rgba(255,255,255,0.1); border:none; color:#fff; font-size:28px; cursor:pointer; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;">×</button>
+    <div id="storyViewerName" style="color:#fff; font-family:'Cinzel',serif; font-size:18px; margin-bottom:16px; font-weight:700;"></div>
+    <div id="storyViewerImage" style="width:360px; max-width:90vw; aspect-ratio:9/16; border-radius:20px; background-size:cover; background-position:center; box-shadow:0 20px 60px rgba(0,0,0,0.6);"></div>
+  </div>
+
+  <!-- Add Story Modal -->
+  <div id="addStoryModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9998; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+    <div style="background:var(--bg-card); width:90%; max-width:420px; border-radius:20px; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,0.2); border:1px solid var(--border);">
+      <h3 style="font-family:'Cinzel',serif; font-size:18px; color:var(--text); margin-bottom:20px;">Create Story</h3>
+      <input type="text" id="newStoryTitle" placeholder="Story title or caption..." style="width:100%; padding:12px 16px; border:1.5px solid var(--border); border-radius:12px; font-family:inherit; font-size:14px; outline:none; color:var(--text); background:var(--bg-elevated); margin-bottom:16px;">
+      <input type="file" id="storyImageUpload" accept="image/*" style="display:none;" onchange="handleStoryImageUpload(event)">
+      <div id="storyImagePreview" style="display:none; width:100%; height:140px; border-radius:12px; background-size:cover; background-position:center; margin-bottom:12px; position:relative; border:1px solid var(--border);">
+        <button onclick="removeStoryImage()" style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.5); color:#fff; border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; font-size:16px; line-height:1; display:flex; align-items:center; justify-content:center;">×</button>
+      </div>
+      <button onclick="document.getElementById('storyImageUpload').click()" style="width:100%; padding:12px; border:1.5px dashed var(--border); border-radius:12px; background:var(--bg-elevated); color:var(--text-muted); font-family:inherit; cursor:pointer; font-weight:600; margin-bottom:20px;">📸 Upload Photo</button>
+      <div style="display:flex; gap:12px; justify-content:flex-end;">
+        <button onclick="closeAddStoryModal()" style="padding:10px 20px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:10px; cursor:pointer; font-family:inherit; font-weight:600; color:var(--text);">Cancel</button>
+        <button onclick="submitNewStory()" style="padding:10px 24px; background:linear-gradient(135deg, var(--royal-red-dark), #AB2330); color:#fff; border:none; border-radius:10px; cursor:pointer; font-family:'Cinzel',serif; font-weight:700; font-size:13px;">Share Story</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    if (!requireAuth()) throw '';
+    initNav('dashboard');
+
+    const auth = getAuthData();
+    const userId = auth ? auth.userId : null;
+    const authMember = getMemberById(userId);
+
+    if (!authMember) {
+      alert('Session invalid. Please log in again.');
+      logout();
+      throw new Error('No authMember');
+    }
+
+    // ── Avatar styles ──
+    const avaStyle = authMember.imageUrl ? `background-image:url('${authMember.imageUrl}'); background-size:cover; background-position:center;` : getAvatarStyle(authMember);
+    const avaTxt   = authMember.imageUrl ? '' : getInitials(authMember);
+
+    // ── Network stats ──
+    let netCount = 0, verCount = 0;
+    familyMembers.forEach(m => {
+      if (m.id === authMember.id) return;
+      const rel = getSmartIndianRelation(familyMembers, authMember.id, m.id);
+      if (rel) { netCount++; if (m.verified) verCount++; }
+    });
+    netCount += 1;
+    verCount += (authMember.verified ? 1 : 0);
+    const verPct = netCount > 0 ? Math.round((verCount / netCount) * 100) : 0;
+
+    // ── Render Profile Widget ──
+    document.getElementById('userWidget').innerHTML = `
+      <div class="pw-cover"></div>
+      <div class="pw-ava-wrap">
+        <div class="pw-ava" style="${avaStyle}">${avaTxt}</div>
+      </div>
+      <div class="pw-body">
+        <div class="pw-name">${getFullName(authMember)}</div>
+        <div class="pw-handle">@${authMember.username || 'user'}</div>
+        <div class="pw-lineage">
+          <span class="pw-badge">${authMember.caste || 'Brahmin'}</span>
+          <span style="color:var(--text-muted)">•</span>
+          <span class="pw-badge">${authMember.gotra || 'Kashyap'} Gotra</span>
+        </div>
+        <div class="pw-stats">
+          <div class="pw-stat">
+            <div class="pw-stat-num">${netCount}</div>
+            <div class="pw-stat-label">Network</div>
+          </div>
+          <div class="pw-stat">
+            <div class="pw-stat-num">${verPct}%</div>
+            <div class="pw-stat-label">Verified</div>
+          </div>
+          <div class="pw-stat">
+            <div class="pw-stat-num">${authMember.age || '—'}</div>
+            <div class="pw-stat-label">Age</div>
+          </div>
+        </div>
+        <div class="pw-info-list">
+          ${authMember.occupation ? `<div class="pw-info-row"><span class="pw-info-icon">💼</span><span class="pw-info-val">${authMember.occupation}</span></div>` : ''}
+          ${authMember.education ? `<div class="pw-info-row"><span class="pw-info-icon">🎓</span><span class="pw-info-val">${authMember.education}</span></div>` : ''}
+          ${authMember.nativePlace ? `<div class="pw-info-row"><span class="pw-info-icon">📍</span><span class="pw-info-val">${authMember.nativePlace}</span></div>` : ''}
+          <div class="pw-info-row"><span class="pw-info-icon">${authMember.gender === 'F' ? '👩' : '👨'}</span><span class="pw-info-val">${authMember.gender === 'F' ? 'Female' : 'Male'} · ${authMember.spouse ? '<span style="color:var(--royal-red)">Married</span>' : 'Single'}</span></div>
+        </div>
+        <a href="profile.html?id=${authMember.id}" class="pw-edit-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit Profile
+        </a>
+      </div>
+    `;
+
+    // ── Set compose avatar ──
+    const cpa = document.getElementById('createPostAvatar');
+    if (authMember.imageUrl) {
+      cpa.style.backgroundImage = `url('${authMember.imageUrl}')`;
+      cpa.style.backgroundSize = 'cover';
+    } else {
+      Object.assign(cpa.style, { background: getAvatarStyle(authMember).replace('background:', '') });
+      cpa.textContent = avaTxt;
+    }
+
+    function timeAgo(ts) {
+      if (!ts) return 'Just now';
+      const diff = Date.now() - ts;
+      if (diff < 60000) return 'Just now';
+      if (diff < 3600000) return Math.floor(diff/60000) + ' min ago';
+      if (diff < 86400000) return Math.floor(diff/3600000) + ' hr ago';
+      return Math.floor(diff/86400000) + ' days ago';
+    }
+
+    async function loadFeed() {
+      const auth = getAuthData();
+      if (!auth) return;
+
+      const network = getBloodlineNetwork(auth.userId);
+      const networkIds = network.map(m => m.id);
+      
+      let posts = [];
+      let interactions = { respects: [], comments: [] };
+      if (typeof fetchNetworkPosts === 'function') {
+        posts = await fetchNetworkPosts(networkIds);
+        if (posts.length && typeof fetchPostInteractions === 'function') {
+          interactions = await fetchPostInteractions(posts.map(p => p.id));
+        }
+      }
+      
+      renderFeed(posts, interactions);
+    }
+
+    function renderFeed(posts, interactions = { respects: [], comments: [] }) {
+      const container = document.getElementById('feedContainer');
+      const auth = getAuthData();
+      if (!posts || !posts.length) {
+        container.innerHTML = `
+          <div class="empty-feed">
+            <div class="ef-icon">📣</div>
+            <div class="ef-title">No Royal Announcements Yet</div>
+            <div class="ef-sub">Be the first to share a milestone, event, or update with your dynasty network!</div>
+          </div>`;
+        return;
+      }
+      container.innerHTML = posts.map((post, idx) => {
+        const localAuthor = getMemberById(post.user_id);
+        const displayName = post.author_name || (localAuthor ? getFullName(localAuthor) : 'Unknown Member');
+        const displayAvatar = post.author_avatar || (localAuthor ? localAuthor.imageUrl : '');
+        const localInitials = localAuthor ? getInitials(localAuthor) : (displayName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2));
+        const localStyle = localAuthor ? getAvatarStyle(localAuthor) : 'background: linear-gradient(135deg, #6B1522, #AB2330); color: #fff;';
+        
+        const hasImg = !!displayAvatar;
+        const avatarInline = hasImg ? `background-image:url('${displayAvatar}'); background-size:cover; background-position:center; color:transparent;` : localStyle;
+        const dateStr = timeAgo(new Date(post.created_at).getTime());
+        
+        const isOwnPost = auth && auth.userId === post.user_id;
+        
+        const postRespects = interactions.respects.filter(r => r.post_id === post.id);
+        const postComments = interactions.comments.filter(c => c.post_id === post.id);
+        const hasRespected = auth && postRespects.some(r => r.user_id === auth.userId);
+        
+        const respectsCount = postRespects.length > 0 ? `<span style="margin-left:4px;font-size:12px;">${postRespects.length}</span>` : '';
+        const commentsCount = postComments.length > 0 ? `<span style="margin-left:4px;font-size:12px;">${postComments.length}</span>` : '';
+
+        // Generate FB style respect text
+        const respectNames = postRespects.map(r => {
+          const m = getMemberById(r.user_id);
+          return m ? m.firstName : 'A member';
+        });
+        let respectTextHtml = '';
+        if (respectNames.length > 0) {
+          let rText = '';
+          if (respectNames.length === 1) rText = `<strong>${respectNames[0]}</strong> respects this.`;
+          else if (respectNames.length === 2) rText = `<strong>${respectNames[0]}</strong> and <strong>${respectNames[1]}</strong> respect this.`;
+          else rText = `<strong>${respectNames[0]}</strong>, <strong>${respectNames[1]}</strong> and ${respectNames.length - 2} others respect this.`;
+          
+          respectTextHtml = `
+            <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+              <div style="background:var(--gold); color:#fff; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
+              </div>
+              ${rText}
+            </div>
+          `;
+        }
+
+        return `
+        <div class="post-card anim" style="animation-delay:${idx * 0.05}s;" id="post-${post.id}">
+          <div class="post-inner">
+            <div class="post-hd">
+              <div class="post-ava" style="${avatarInline} cursor:pointer;" onclick="window.location.href='profile.html?id=${post.user_id}'">${hasImg ? '' : localInitials}</div>
+              <div style="flex:1; min-width:0;">
+                <div class="post-author" style="cursor:pointer;" onclick="window.location.href='profile.html?id=${post.user_id}'">${displayName}</div>
+                <div class="post-meta">${dateStr}</div>
+              </div>
+              ${isOwnPost ? `
+              <div style="position:relative;">
+                <button class="post-more" onclick="this.classList.toggle('active')">···</button>
+                <div class="post-dropdown">
+                  <div class="post-dropdown-item" style="color:var(--royal-red);" onclick="handleDeletePost('${post.id}')">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    Delete Post
+                  </div>
+                </div>
+              </div>
+              ` : ''}
+            </div>
+            <div class="post-body" style="white-space:pre-wrap;">${post.content || ''}</div>
+          </div>
+          ${post.image_url ? `<img src="${post.image_url}" alt="Post image" class="post-img">` : ''}
+          ${respectTextHtml}
+          <div class="post-reactions">
+            <button class="reaction-pill ${hasRespected ? 'active' : ''}" style="${hasRespected ? 'color:var(--gold);' : ''}" onclick="handleToggleRespectUI('${post.id}', this)">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
+              Respect ${respectsCount}
+            </button>
+            <button class="reaction-pill" onclick="document.getElementById('comments-${post.id}').classList.toggle('active')">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+              Comment ${commentsCount}
+            </button>
+            <button class="reaction-pill" style="margin-left:auto;" onclick="alert('Share link copied to clipboard!')">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+              Share
+            </button>
+          </div>
+          
+          <!-- Expandable Comment Section -->
+          <div class="post-comments-section" id="comments-${post.id}">
+            <div style="display:flex; gap:12px; margin-bottom: 16px;">
+              <div class="post-ava" style="width:32px; height:32px; font-size:12px; ${authMember.imageUrl ? `background-image:url('${authMember.imageUrl}'); background-size:cover; color:transparent;` : 'background:var(--bg-elevated); border:1px solid var(--border);'}">${authMember.imageUrl ? '' : getInitials(authMember)}</div>
+              <div style="flex:1; display:flex; background:var(--bg-elevated); border:1px solid var(--border); border-radius:20px; padding:4px 16px; align-items:center;">
+                <input type="text" id="cmt-input-${post.id}" placeholder="Write a comment..." style="flex:1; border:none; background:transparent; outline:none; font-size:14px; padding:6px 0;" onkeypress="if(event.key==='Enter') submitCommentUI('${post.id}')">
+                <button style="background:none; border:none; color:var(--gold); font-weight:600; font-size:13px; cursor:pointer;" onclick="submitCommentUI('${post.id}')">Post</button>
+              </div>
+            </div>
+            ${postComments.map(c => `
+              <div style="display:flex; gap:10px; margin-bottom:12px;">
+                <div class="post-ava" style="width:28px; height:28px; font-size:10px; ${c.author_avatar ? `background-image:url('${c.author_avatar}'); background-size:cover; color:transparent;` : 'background:var(--bg-hover); color:var(--gold);'}">${c.author_avatar ? '' : c.author_name.charAt(0).toUpperCase()}</div>
+                <div style="background:var(--bg-elevated); padding:8px 12px; border-radius:14px; font-size:13px;">
+                  <strong>${c.author_name || 'Member'}</strong>
+                  <div style="color:var(--text-secondary); margin-top:2px;">${c.content}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+      }).join('');
+    }
+    
+    async function publishPost() {
+      const input = document.getElementById('postInput');
+      const text = input.value.trim();
+      if (!text && !currentPostImage) return;
+      
+      const auth = getAuthData();
+      if (!auth) return;
+      
+      // Embed author name + avatar into post so all viewers can display them
+      const authorName = getFullName(authMember);
+      const authorAvatar = authMember.imageUrl || '';
+      
+      const success = await createPost(auth.userId, text, currentPostImage, authorName, authorAvatar);
+      if (success) {
+        input.value = '';
+        removePostImage();
+        showToast('Success', 'Royal announcement published to dynasty!', 'ok');
+        loadFeed();
+      } else {
+        alert("Failed to publish post.");
+      }
+    }
+
+    async function handleDeletePost(postId) {
+      if (!confirm('Are you sure you want to delete this post?')) return;
+      const auth = getAuthData();
+      if (!auth) return;
+      
+      const res = await deletePost(postId, auth.userId);
+      if (res && res.success) {
+        showToast('Deleted', 'Your post was removed from the dynasty feed.', 'ok');
+        loadFeed();
+      } else {
+        alert("Failed to delete post: " + (res && res.error ? res.error : "Unknown error"));
+      }
+    }
+
+    async function handleToggleRespectUI(postId, btnEl) {
+      const auth = getAuthData();
+      if (!auth) return;
+      
+      const isNowActive = btnEl.classList.toggle('active');
+      btnEl.style.color = isNowActive ? 'var(--gold)' : '';
+      
+      const res = await toggleRespect(postId, auth.userId);
+      if (!res || !res.success) {
+        // Revert UI if failed
+        btnEl.classList.toggle('active');
+        btnEl.style.color = !isNowActive ? 'var(--gold)' : '';
+        alert("Failed to toggle respect: " + (res && res.error ? res.error : "Unknown error"));
+      } else {
+        loadFeed(); // Reload counts
+      }
+    }
+
+    async function submitCommentUI(postId) {
+      const input = document.getElementById(`cmt-input-${postId}`);
+      const text = input.value.trim();
+      if (!text) return;
+      
+      const auth = getAuthData();
+      if (!auth) return;
+      
+      input.disabled = true;
+      const authorName = getFullName(authMember);
+      const authorAvatar = authMember.imageUrl || '';
+      
+      const res = await addComment(postId, auth.userId, text, authorName, authorAvatar);
+      if (res && res.success) {
+        input.value = '';
+        // Reload feed to show new comment, and ensure the comments section stays active
+        await loadFeed();
+        const cmtSection = document.getElementById(`comments-${postId}`);
+        if (cmtSection) cmtSection.classList.add('active');
+      } else {
+        alert("Failed to post comment: " + (res && res.error ? res.error : "Unknown error"));
+      }
+      input.disabled = false;
+    }
+
+    // Refresh member profile pics from cloud, then load feed with fresh data
+    refreshMembersFromCloud().then(() => { 
+      loadFeed(); 
+      initDynastyGrowth();
+    });
+
+    // ── Stories ──
+    let mockStories = [];
+    try { const s = localStorage.getItem('vansh_stories_v1'); if (s) { const p = JSON.parse(s); if (Array.isArray(p)) mockStories = p; } } catch(e) {}
+
+    function renderStories() {
+      const c = document.getElementById('storiesContainer');
+      let html = `<div class="story-pill add-story-pill" onclick="openAddStoryModal()"><div class="asp-circle">+</div><div class="asp-lbl">Create Story</div></div>`;
+      mockStories.forEach(st => {
+        html += `<div class="story-pill" onclick="viewStory('${st.name}', '${st.img}')">
+          <div class="sp-bg" style="background-image:url('${st.img}')"></div>
+          <div class="sp-grad"></div>
+          <div class="sp-avatar" style="background-image:url('${st.img}')"></div>
+          <div class="sp-name">${st.name}</div>
+        </div>`;
+      });
+      c.innerHTML = html;
+    }
+    renderStories();
+
+    // ── Feed interactions ──
+    function toggleRespect(postId) {
+      const post = feedPosts.find(p => p.id === postId);
+      if (!post) return;
+      if (!post.respects) post.respects = 0;
+      if (post.hasRespected) { post.respects = Math.max(0, post.respects - 1); post.hasRespected = false; }
+      else { post.respects++; post.hasRespected = true; }
+      localStorage.setItem('vansh_feed_v2', JSON.stringify(feedPosts));
+      renderFeed();
+    }
+
+    function toggleComments(postId) {
+      const area = document.getElementById(`commentArea-${postId}`);
+      if (!area) return;
+      area.classList.toggle('open');
+      if (area.classList.contains('open')) {
+        const inp = document.getElementById(`commentInput-${postId}`);
+        if (inp) inp.focus();
+      }
+    }
+
+    function submitComment(postId) {
+      const post = feedPosts.find(p => p.id === postId);
+      const input = document.getElementById(`commentInput-${postId}`);
+      if (!post || !input || !input.value.trim()) return;
+      if (!post.comments) post.comments = [];
+      post.comments.push({ author: getFullName(authMember), text: input.value.trim() });
+      localStorage.setItem('vansh_feed_v2', JSON.stringify(feedPosts));
+      renderFeed();
+      const area = document.getElementById(`commentArea-${postId}`);
+      if (area) area.classList.add('open');
+    }
+
+    function sharePost(postId) {
+      if (navigator.share) {
+        navigator.share({ title: 'Vansh Dynasty', text: 'Check out this post on Vansh!', url: window.location.href });
+      } else {
+        navigator.clipboard.writeText(window.location.href).then(() => showToast('Link Copied', 'Post link copied to clipboard.', 'ok'));
+      }
+    }
+
+    // ── Publish post ──
+    let currentPostImage = null;
+    function handlePostImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        currentPostImage = e.target.result;
+        document.getElementById('postImagePreviewContainer').style.display = 'flex';
+      };
+      reader.readAsDataURL(file);
+    }
+    function removePostImage() {
+      currentPostImage = null;
+      document.getElementById('postImageUpload').value = '';
+      document.getElementById('postImagePreviewContainer').style.display = 'none';
+    }
+    function addFamilyEvent() {
+      const n = prompt('Enter family event name (e.g. Annual Gathering):');
+      if (n) document.getElementById('postInput').value = `📅 [Event: ${n}] ` + document.getElementById('postInput').value;
+    }
+    function addMilestone() {
+      const n = prompt('What milestone to celebrate? (e.g. Birth, Graduation):');
+      if (n) document.getElementById('postInput').value = `🎉 Milestone: ${n}! ` + document.getElementById('postInput').value;
+    }
+
+
+    // ── Stories modals ──
+    let currentStoryImage = null;
+    function openAddStoryModal() { document.getElementById('addStoryModal').style.display = 'flex'; }
+    function handleStoryImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        currentStoryImage = ev.target.result;
+        const prev = document.getElementById('storyImagePreview');
+        prev.style.backgroundImage = `url('${currentStoryImage}')`;
+        prev.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+    function removeStoryImage() { currentStoryImage = null; document.getElementById('storyImagePreview').style.display = 'none'; }
+    function closeAddStoryModal() { document.getElementById('addStoryModal').style.display = 'none'; document.getElementById('newStoryTitle').value = ''; removeStoryImage(); }
+    function submitNewStory() {
+      const name = document.getElementById('newStoryTitle').value.trim();
+      if (!name) { alert('Please enter a story title.'); return; }
+      let img = currentStoryImage || 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&q=80';
+      mockStories.unshift({ id: Date.now(), name, img });
+      localStorage.setItem('vansh_stories_v1', JSON.stringify(mockStories));
+      renderStories();
+      closeAddStoryModal();
+    }
+    function viewStory(name, img) {
+      document.getElementById('storyViewerName').textContent = name;
+      document.getElementById('storyViewerImage').style.backgroundImage = `url('${img}')`;
+      document.getElementById('storyViewer').style.display = 'flex';
+    }
+    function closeStory() { document.getElementById('storyViewer').style.display = 'none'; }
+
+    // ── Data center ──
+    function exportVanshData() {
+      const a = document.createElement('a');
+      a.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(familyMembers, null, 2)));
+      a.setAttribute('download', 'vansh_family_backup.json');
+      document.body.appendChild(a); a.click(); a.remove();
+      showToast('Exported', 'Family tree JSON downloaded successfully.', 'ok');
+    }
+    function importVanshData(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        try {
+          const data = JSON.parse(ev.target.result);
+          if (Array.isArray(data) && data.length && data[0].id) {
+            saveFamilyData(data);
+            showToast('Imported', 'Backup loaded! Reloading...', 'ok');
+            setTimeout(() => window.location.reload(), 1500);
+          } else { alert('Invalid backup file.'); }
+        } catch(err) { alert('Error reading JSON file.'); }
+      };
+      reader.readAsText(file);
+    }
+
+    function showToast(title, msg, type) {
+      const t = document.querySelector('.toast-container');
+      if (!t) return;
+      t.querySelector('.toast-title').textContent = title;
+      t.querySelector('.toast-msg').textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3200);
+    }
+    
+    // ── Dynasty Growth Widget Logic ──
+    function initDynastyGrowth() {
+      const widget = document.getElementById('dynastyGrowthWidget');
+      if(!widget) return;
+      
+      const total = familyMembers.length;
+      document.getElementById('gwTotalMem').innerText = total;
+      
+      let maxGen = 1;
+      let marriages = 0;
+      let eldest = null;
+      let youngest = null;
+      
+      familyMembers.forEach(m => {
+        if(m.spouse) marriages++;
+        if(m.age) {
+          if(!eldest || m.age > eldest.age) eldest = m;
+          if(!youngest || m.age < youngest.age) youngest = m;
+        }
+      });
+      
+      document.getElementById('gwMarriages').innerText = Math.floor(marriages / 2);
+      document.getElementById('gwEldest').innerText = eldest ? eldest.firstName : '--';
+      document.getElementById('gwYoungest').innerText = youngest ? youngest.firstName : '--';
+      
+      function getDepth(id, currentDepth) {
+        if(currentDepth > maxGen) maxGen = currentDepth;
+        const children = familyMembers.filter(m => (m.parents && m.parents.includes(id)));
+        children.forEach(c => getDepth(c.id, currentDepth + 1));
+      }
+      
+      const roots = familyMembers.filter(m => !m.parents || m.parents.length === 0);
+      roots.forEach(r => getDepth(r.id, 1));
+      
+      document.getElementById('gwGenCount').innerText = `${maxGen} Generations Spanned`;
+      
+      // --- ALGORITHMIC FRACTAL TREE GENERATION ---
+      const pathsGroup = document.getElementById('gwDynamicPaths');
+      const nodesGroup = document.getElementById('gwDynamicNodes');
+      if (pathsGroup && nodesGroup) {
+        // Ensure at least 1, map up to 100 leaves for visual sanity
+        const targetNodes = Math.max(1, Math.min(total, 100)); 
+        
+        // Dynamically scale base length so small trees fill the height gracefully
+        const baseLength = 30 + (80 / Math.max(1.5, Math.sqrt(targetNodes)));
+        
+        const branches = [];
+        // Root trunk
+        branches.push({ x: 100, y: 195, angle: 0, length: baseLength, width: 2.5, depth: 1 });
+        
+        let activeBranches = [0];
+        
+
+        // Breadth-First generation to ensure balanced canopy
+        while (branches.length < targetNodes && activeBranches.length > 0) {
+           let newActive = [];
+           for(let i=0; i<activeBranches.length; i++) {
+              if (branches.length >= targetNodes) break;
+              
+              let p = branches[activeBranches[i]];
+              
+              // Base angle spread narrows as depth increases
+              let spread = Math.max(0.2, 0.6 - (p.depth * 0.05));
+              
+              // Generate left child
+              branches.push({
+                x: p.x + p.length * Math.sin(p.angle),
+                y: p.y - p.length * Math.cos(p.angle),
+                angle: p.angle - spread - (Math.random()*0.1),
+                length: p.length * (0.75 + Math.random()*0.1),
+                width: p.width * 0.75,
+                depth: p.depth + 1
+              });
+              newActive.push(branches.length - 1);
+              
+              if (branches.length >= targetNodes) break;
+              
+              // Generate right child
+              branches.push({
+                x: p.x + p.length * Math.sin(p.angle),
+                y: p.y - p.length * Math.cos(p.angle),
+                angle: p.angle + spread + (Math.random()*0.1),
+                length: p.length * (0.75 + Math.random()*0.1),
+                width: p.width * 0.75,
+                depth: p.depth + 1
+              });
+              newActive.push(branches.length - 1);
+           }
+           activeBranches = newActive;
+        }
+        
+        let pathsHtml = '';
+        let nodesHtml = '';
+        
+        branches.forEach(b => {
+          let endX = b.x + b.length * Math.sin(b.angle);
+          let endY = b.y - b.length * Math.cos(b.angle);
+          // Add slight organic curve
+          let cpX = b.x + (b.length/2) * Math.sin(b.angle + (Math.random()-0.5)*0.5);
+          let cpY = b.y - (b.length/2) * Math.cos(b.angle + (Math.random()-0.5)*0.5);
+          
+          let animDelay = (b.depth * 0.25);
+          
+          pathsHtml += `<path class="gw-draw" style="animation: drawLine 1s forwards ${animDelay}s ease-out;" d="M${b.x} ${b.y} Q${cpX} ${cpY} ${endX} ${endY}" stroke-width="${Math.max(0.5, b.width)}"/>`;
+          
+          if (b.depth > 1 || targetNodes === 1) {
+            let r = Math.max(1.5, 4 - b.depth*0.3);
+            nodesHtml += `<circle cx="${endX}" cy="${endY}" r="${r}" class="gw-node" style="animation-delay: ${animDelay + 0.4}s;" />`;
+          }
+        });
+        
+        pathsGroup.innerHTML = pathsHtml;
+        nodesGroup.innerHTML = nodesHtml;
+      }
+      
+      setTimeout(() => {
+        widget.classList.add('animate');
+      }, 500);
+    }
+  </script>
+</body>
+</html>
