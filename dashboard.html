@@ -3,27 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title>Vansh (वंश) — Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=20">
+  <link rel="stylesheet" href="css/shared.css?v=21">
   <style>
-    .dash-wrapper { max-width: 1300px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; padding-bottom: 60px; }
+    /* ── BASE & WRAPPER ── */
+    body, .page-content { background-color: #fdfbf7; } /* exact cream background */
+    .dash-wrapper { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; padding-bottom: 60px; }
     
     /* ── TOP STAT STRIP ── */
     .top-stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
     .stat-card {
-      background: linear-gradient(135deg, var(--maroon-deepest) 0%, #3a0a10 100%);
-      border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 16px;
-      box-shadow: 0 8px 24px rgba(60, 10, 14, 0.25); border: 1px solid var(--gold-dark);
-      transition: transform 0.3s, box-shadow 0.3s;
+      background: linear-gradient(135deg, #3c1218 0%, #260a0d 100%);
+      border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px;
+      box-shadow: 0 4px 12px rgba(60, 10, 14, 0.15); border: none;
+      transition: transform 0.3s;
     }
-    .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(60, 10, 14, 0.4); border-color: var(--gold); }
-    .stat-icon { width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--gold-dark); display: flex; align-items: center; justify-content: center; color: var(--gold-bright); font-size: 20px; flex-shrink: 0; background: rgba(212, 175, 55, 0.05); }
+    .stat-card:hover { transform: translateY(-4px); }
+    .stat-icon { width: 44px; height: 44px; border-radius: 50%; border: 1px solid #946941; display: flex; align-items: center; justify-content: center; color: #b0875b; font-size: 20px; flex-shrink: 0; }
+    .stat-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.5; }
     .stat-info { flex: 1; }
-    .stat-label { font-size: 10px; font-weight: 700; color: rgba(255, 255, 255, 0.65); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
+    .stat-label { font-size: 10px; font-weight: 700; color: rgba(255, 255, 255, 0.6); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
     .stat-value { font-family: 'Cinzel', serif; font-size: 26px; font-weight: 700; color: #fff; line-height: 1; margin-bottom: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-    .stat-sub { font-size: 11px; color: var(--gold-bright); opacity: 0.8; }
+    .stat-sub { font-size: 11px; color: #b0875b; opacity: 0.9; }
     
     /* ── MAIN GRID ── */
     .dash-main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
@@ -31,90 +33,105 @@
     @media (max-width: 768px) { .top-stats-row { grid-template-columns: 1fr 1fr; } }
     
     .dash-card {
-      background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border);
-      box-shadow: 0 4px 24px rgba(107, 21, 34, 0.04); padding: 24px; position: relative;
+      background: #fdfbf7; border-radius: 12px; border: 1px solid #ebdcc6;
+      box-shadow: 0 4px 20px rgba(107, 21, 34, 0.03); padding: 24px; position: relative;
     }
     .dash-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .dash-card-title { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: var(--text); text-transform: uppercase; letter-spacing: 1.5px; display: flex; align-items: center; gap: 8px; }
+    .dash-card-title { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #3c1218; text-transform: uppercase; letter-spacing: 1.5px; display: flex; align-items: center; gap: 8px; }
     
     /* ── TREE OVERVIEW ── */
     .tree-overview-card { min-height: 480px; padding: 0; display: flex; flex-direction: column; overflow: hidden; }
     .tree-overview-card .dash-card-header { padding: 24px 24px 0; margin-bottom: 0; }
-    .expand-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border-light); font-size: 12px; font-weight: 600; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none; transition: all 0.2s; }
-    .expand-btn:hover { background: var(--bg-elevated); color: var(--royal-red); border-color: var(--gold-border); }
-    .tree-inner-scroll { flex: 1; position: relative; overflow: auto; text-align: center; padding: 20px; scrollbar-width: thin; min-height: 400px; }
+    .expand-btn { padding: 8px 16px; border-radius: 6px; border: 1px solid #ebdcc6; font-size: 11px; font-weight: 600; color: #7c4c3a; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none; transition: all 0.2s; background: #fff; }
+    .expand-btn:hover { background: #fdfbf7; border-color: #dcb381; }
+    
+    .tree-layout-box { display: flex; flex: 1; min-height: 400px; }
+    .tree-sidebar { width: 120px; border-right: 1px solid #ebdcc6; padding: 40px 20px; display: flex; flex-direction: column; gap: 40px; align-items: center; }
+    .ts-item { text-align: center; }
+    .ts-val { font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; color: #946941; line-height: 1; margin-bottom: 4px; }
+    .ts-lbl { font-size: 10px; color: #7c4c3a; text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    .tree-main-area { flex: 1; position: relative; overflow: auto; padding: 20px 40px; }
+    .ct-row { display: flex; align-items: center; margin-bottom: 40px; gap: 40px; position: relative; }
+    .ct-gen { width: 30px; font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: #dcb381; }
+    .ct-nodes { display: flex; justify-content: space-around; flex: 1; position: relative; }
+    .ct-node { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 60px; text-decoration: none; position: relative; z-index: 2; }
+    .ct-ava { width: 44px; height: 44px; border-radius: 50%; border: 2px solid #dcb381; background-size: cover; background-position: center; background-color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #dcb381; }
+    .ct-name { font-size: 9px; font-weight: 600; color: #3c1218; text-align: center; white-space: nowrap; }
     
     /* ── FEATURE ROW ── */
     .feature-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
-    .feature-card { background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border); padding: 20px; box-shadow: 0 2px 12px rgba(107,21,34,0.04); text-decoration: none; display: flex; flex-direction: column; transition: transform 0.3s, border-color 0.3s; }
-    .feature-card:hover { transform: translateY(-3px); border-color: var(--gold-border); box-shadow: 0 8px 24px rgba(107,21,34,0.08); }
-    .fc-icon { width: 44px; height: 44px; margin-bottom: 16px; border-radius: 12px; background: linear-gradient(135deg, rgba(212,175,55,0.1), transparent); border: 1px solid var(--gold-dim); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--gold-dark); }
-    .fc-title { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; color: var(--text); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-    .fc-val { font-size: 24px; font-weight: 700; font-family: 'Cinzel', serif; color: var(--royal-red-dark); line-height: 1; margin-bottom: 6px; }
-    .fc-sub { font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-bottom: 14px; flex: 1; }
-    .fc-link { font-size: 11px; font-weight: 600; color: var(--gold-dark); display: flex; align-items: center; gap: 4px; margin-top: auto; }
-    @media (max-width: 900px) { .feature-row { grid-template-columns: 1fr 1fr; } }
+    .feature-card { background: #fcfbf8; border-radius: 12px; border: 1px solid #ebdcc6; padding: 24px 20px; box-shadow: 0 2px 8px rgba(107,21,34,0.02); text-decoration: none; display: flex; flex-direction: column; transition: transform 0.3s, border-color 0.3s; }
+    .feature-card:hover { transform: translateY(-3px); border-color: #dcb381; }
+    .fc-icon { font-size: 32px; margin-bottom: 16px; display: inline-block; }
+    .fc-title { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700; color: #3c1218; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .fc-val { font-size: 24px; font-weight: 700; font-family: 'Cinzel', serif; color: #46171d; line-height: 1; margin-bottom: 6px; }
+    .fc-sub { font-size: 11px; color: #7c4c3a; line-height: 1.5; margin-bottom: 16px; flex: 1; }
+    .fc-link { font-size: 11px; font-weight: 700; color: #946941; display: flex; align-items: center; gap: 4px; margin-top: auto; }
     
     /* ── CHARTS ROW ── */
-    .charts-row { display: grid; grid-template-columns: 320px 1fr; gap: 24px; margin-top: 24px; }
+    .charts-row { display: grid; grid-template-columns: 360px 1fr; gap: 24px; margin-top: 24px; }
     @media (max-width: 800px) { .charts-row { grid-template-columns: 1fr; } }
-    .donut-wrap { display: flex; align-items: center; gap: 24px; margin-top: 10px; }
-    .donut-chart { position: relative; width: 120px; height: 120px; flex-shrink: 0; }
+    .donut-wrap { display: flex; align-items: center; gap: 24px; margin-top: 20px; }
+    .donut-chart { position: relative; width: 100px; height: 100px; flex-shrink: 0; }
     .donut-chart svg { transform: rotate(-90deg); width: 100%; height: 100%; }
     .donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .donut-val { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 700; color: var(--royal-red-dark); line-height: 1; }
-    .donut-lbl { font-size: 9px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; letter-spacing: 1px; }
+    .donut-val { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: #3c1218; line-height: 1; }
+    .donut-lbl { font-size: 8px; color: #7c4c3a; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
     .insights-stats { display: flex; flex-direction: column; gap: 16px; flex: 1; }
     .is-item { display: flex; align-items: center; justify-content: space-between; }
-    .is-lbl { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
-    .is-lbl::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--royal-red); display: inline-block; }
-    .is-lbl.lbl-2::before { background: var(--gold); }
-    .is-val { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: var(--text); }
+    .is-lbl { font-size: 11px; color: #7c4c3a; display: flex; align-items: center; gap: 8px; }
+    .is-lbl::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #946941; display: inline-block; }
+    .is-lbl.lbl-2::before { background: #dcb381; }
+    .is-val { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: #dcb381; }
     
-    .area-chart-container { height: 160px; width: 100%; margin-top: 20px; position: relative; display: flex; align-items: flex-end; }
+    .area-chart-container { height: 140px; width: 100%; margin-top: 20px; position: relative; display: flex; align-items: flex-end; }
     
     /* ── RIGHT COLUMN ── */
     .dash-right-col { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 88px; }
     
     /* ── PREMIUM PROFILE CARD ── */
     .head-card {
-      background: linear-gradient(135deg, var(--maroon-deepest) 0%, var(--maroon-dark) 100%);
-      border-radius: 20px; border: 1px solid var(--gold-dark); overflow: hidden;
-      position: relative; box-shadow: 0 12px 32px rgba(60, 10, 14, 0.4); text-align: center;
+      background: linear-gradient(135deg, #46171d 0%, #2a080c 100%);
+      border-radius: 12px; overflow: hidden;
+      position: relative; box-shadow: 0 12px 24px rgba(60, 10, 14, 0.2); text-align: center;
       padding-bottom: 24px;
     }
     .hc-bg { position: absolute; inset: 0; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L80 40 L80 90 L20 90 L20 40 Z" fill="%23d4af37"/></svg>'); background-size: cover; background-position: center; pointer-events: none; }
-    .hc-top { padding: 20px; display: flex; justify-content: center; position: relative; z-index: 2; margin-bottom: 10px; }
-    .hc-crown { font-size: 16px; color: var(--gold-bright); display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 2px; }
-    .hc-ava-wrap { position: relative; width: 110px; height: 110px; margin: 0 auto 16px; z-index: 2; }
-    .hc-ava { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--gold-bright); box-shadow: 0 0 24px rgba(212,175,55,0.3); background-size: cover; background-position: center; background-color: var(--maroon-deepest); display: flex; align-items: center; justify-content: center; font-size: 32px; color: var(--gold); }
-    .hc-shield { position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 26px; height: 30px; background: var(--maroon-deepest); border: 1.5px solid var(--gold-bright); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: var(--gold-bright); font-size: 12px; z-index: 3; }
+    .hc-top { padding: 20px; display: flex; justify-content: center; position: relative; z-index: 2; margin-bottom: 6px; }
+    .hc-crown { font-size: 16px; color: #dcb381; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 2px; }
+    .hc-ava-wrap { position: relative; width: 100px; height: 100px; margin: 0 auto 12px; z-index: 2; }
+    .hc-ava { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #dcb381; box-shadow: 0 0 20px rgba(212,175,55,0.2); background-size: cover; background-position: center; background-color: #3c1218; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #dcb381; }
+    .hc-shield { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 24px; height: 28px; background: #2a080c; border: 1.5px solid #dcb381; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #dcb381; font-size: 11px; z-index: 3; }
     .hc-name { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); margin-bottom: 4px; position: relative; z-index: 2; }
-    .hc-role { font-size: 12px; color: var(--gold-bright); margin-bottom: 20px; position: relative; z-index: 2; font-family: 'Inter', sans-serif; }
-    .hc-badges { display: flex; justify-content: center; gap: 10px; position: relative; z-index: 2; }
-    .hc-badge { padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(212,175,55,0.3); background: rgba(0,0,0,0.3); font-size: 11px; color: #fff; letter-spacing: 0.5px; }
+    .hc-role { font-size: 11px; color: rgba(255,255,255,0.7); margin-bottom: 16px; position: relative; z-index: 2; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; }
+    .hc-badges { display: flex; justify-content: center; gap: 8px; position: relative; z-index: 2; }
+    .hc-badge { padding: 5px 14px; border-radius: 20px; border: 1px solid #7c4c3a; background: rgba(0,0,0,0.2); font-size: 10px; color: #dcb381; letter-spacing: 0.5px; }
     
     /* ── LISTS ── */
     .dash-list { display: flex; flex-direction: column; gap: 16px; }
     .dl-item { display: flex; align-items: center; gap: 12px; }
-    .dl-ava { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-elevated); border: 1px solid var(--border-light); flex-shrink: 0; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text-muted); }
+    .dl-ava { width: 36px; height: 36px; border-radius: 50%; background: #f5eedf; flex-shrink: 0; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #7c4c3a; }
     .dl-info { flex: 1; }
-    .dl-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
-    .dl-sub { font-size: 11px; color: var(--text-muted); }
-    .dl-time { font-size: 11px; color: var(--text-secondary); text-align: right; }
+    .dl-name { font-size: 12px; font-weight: 700; color: #3c1218; margin-bottom: 2px; }
+    .dl-sub { font-size: 10px; color: #7c4c3a; }
+    .dl-time { font-size: 10px; color: #a18a7a; text-align: right; }
     
-    .view-all-link { display: block; text-align: center; margin-top: 20px; font-size: 12px; font-weight: 600; color: var(--royal-red); text-decoration: none; padding-top: 16px; border-top: 1px solid var(--border-light); transition: color 0.2s; }
-    .view-all-link:hover { color: var(--royal-red-dark); }
+    .view-all-link { display: block; text-align: center; margin-top: 20px; font-size: 11px; font-weight: 700; color: #946941; text-decoration: none; padding-top: 16px; border-top: 1px solid #ebdcc6; transition: color 0.2s; }
+    .view-all-link:hover { color: #dcb381; }
+    
+    /* ── TREE SVGS ── */
+    .compact-tree-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
   </style>
 </head>
 <body style="display:none;">
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=20"></script>
-  <script src="js/shared-auth.js?v=20"></script>
-  <script src="js/shared-data.js?v=20"></script>
-  <script src="js/shared-tree.js?v=20"></script>
-  <script src="js/shared-nav.js?v=20"></script>
+  <script src="js/supabase-config.js?v=21"></script>
+  <script src="js/shared-auth.js?v=21"></script>
+  <script src="js/shared-data.js?v=21"></script>
+  <script src="js/shared-tree.js?v=21"></script>
+  <script src="js/shared-nav.js?v=21"></script>
   <script>
     if (!requireAuth()) throw '';
     document.body.style.display = '';
@@ -131,7 +148,9 @@
           <!-- ── 1. TOP STAT STRIP ── -->
           <div class="top-stats-row">
             <div class="stat-card anim anim-delay-1">
-              <div class="stat-icon">👤</div>
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </div>
               <div class="stat-info">
                 <div class="stat-label">Total Members</div>
                 <div class="stat-value" id="stMem">0</div>
@@ -139,7 +158,9 @@
               </div>
             </div>
             <div class="stat-card anim anim-delay-2">
-              <div class="stat-icon">⚯</div>
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              </div>
               <div class="stat-info">
                 <div class="stat-label">Generations</div>
                 <div class="stat-value" id="stGen">0</div>
@@ -147,7 +168,9 @@
               </div>
             </div>
             <div class="stat-card anim anim-delay-3">
-              <div class="stat-icon">🛡️</div>
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>
+              </div>
               <div class="stat-info">
                 <div class="stat-label">Verified Profiles</div>
                 <div class="stat-value" id="stVer">0</div>
@@ -155,19 +178,23 @@
               </div>
             </div>
             <div class="stat-card anim anim-delay-4">
-              <div class="stat-icon">🌿</div>
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+              </div>
               <div class="stat-info">
                 <div class="stat-label">Branches</div>
                 <div class="stat-value" id="stBra">0</div>
-                <div class="stat-sub">Active family lines</div>
+                <div class="stat-sub">Active branches</div>
               </div>
             </div>
             <div class="stat-card anim anim-delay-5">
-              <div class="stat-icon">🤝</div>
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24"><path d="M14.5 9h5v5"></path><polyline points="19.5 9 14.5 14 11 10.5 4.5 17"></path></svg>
+              </div>
               <div class="stat-info">
                 <div class="stat-label">Alliances</div>
                 <div class="stat-value" id="stAll">0</div>
-                <div class="stat-sub">Family marriages</div>
+                <div class="stat-sub">Family alliances</div>
               </div>
             </div>
           </div>
@@ -180,14 +207,19 @@
               <!-- Family Tree Overview -->
               <div class="dash-card tree-overview-card anim anim-delay-2">
                 <div class="dash-card-header">
-                  <div class="dash-card-title">🌳 Family Tree Overview</div>
+                  <div class="dash-card-title">🌳 FAMILY TREE OVERVIEW</div>
                   <a href="tree.html" class="expand-btn">⤢ Expand Tree</a>
                 </div>
-                <div class="tree-inner-scroll" id="dashTreeWrapper">
-                  <svg class="connections" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1;">
-                     <g id="conn-group"></g>
-                  </svg>
-                  <div id="dynamicTreeNodes" style="position:relative; z-index:2; display:inline-block; transform: scale(0.65); transform-origin: top center; margin-top:20px; padding-bottom:100px;"></div>
+                
+                <div class="tree-layout-box">
+                  <div class="tree-sidebar">
+                    <div class="ts-item"><div class="ts-val" id="tsGen">0</div><div class="ts-lbl">Generations</div></div>
+                    <div class="ts-item"><div class="ts-val" id="tsMem">0</div><div class="ts-lbl">Members</div></div>
+                  </div>
+                  <div class="tree-main-area" id="compactTreeContainer">
+                     <svg class="compact-tree-svg" id="ctSvg"><g id="ctPaths"></g></svg>
+                     <div id="ctNodes"></div>
+                  </div>
                 </div>
               </div>
               
@@ -196,29 +228,30 @@
                 <a href="vault.html" class="feature-card">
                   <div class="fc-icon">📜</div>
                   <div class="fc-title">Heritage Records</div>
-                  <div class="fc-val" id="fcVault">0</div>
-                  <div class="fc-sub">Preserve your family documents and history.</div>
+                  <div class="fc-sub">Preserve and manage your family documents, stories and historical records.</div>
                   <div class="fc-link">Explore Records ➔</div>
                 </a>
                 <a href="#" class="feature-card">
                   <div class="fc-icon">🏺</div>
-                  <div class="fc-title">Ceremonies</div>
-                  <div class="fc-val">2</div>
-                  <div class="fc-sub">Upcoming: Mundan Ceremony</div>
+                  <div class="fc-title">Upcoming Ceremonies</div>
+                  <div class="fc-val">2 <span style="font-size:10px; font-weight:600; color:#7c4c3a; font-family:'Inter', sans-serif;">Upcoming</span></div>
+                  <div class="fc-sub">Next: Mundan Ceremony<br>25 May 2025</div>
                   <div class="fc-link">View Calendar ➔</div>
                 </a>
                 <a href="directory.html" class="feature-card">
                   <div class="fc-icon">👥</div>
                   <div class="fc-title">Family Directory</div>
                   <div class="fc-val" id="fcDir">0</div>
-                  <div class="fc-sub">Members across all known branches.</div>
+                  <div class="fc-sub" style="margin-bottom:4px; font-weight:600;">Members</div>
+                  <div class="fc-sub" id="fcDirBra">0 Branches</div>
                   <div class="fc-link">View Directory ➔</div>
                 </a>
                 <a href="timeline.html" class="feature-card">
                   <div class="fc-icon">⏳</div>
                   <div class="fc-title">Legacy Timeline</div>
                   <div class="fc-val" id="fcTime">7</div>
-                  <div class="fc-sub">Generations from past to present.</div>
+                  <div class="fc-sub" style="margin-bottom:4px; font-weight:600;">Generations</div>
+                  <div class="fc-sub">From 1920 to Present</div>
                   <div class="fc-link">Explore Timeline ➔</div>
                 </a>
               </div>
@@ -227,17 +260,17 @@
               <div class="charts-row anim anim-delay-4">
                 <div class="dash-card">
                   <div class="dash-card-header">
-                    <div class="dash-card-title">📊 Family Insights</div>
+                    <div class="dash-card-title">FAMILY INSIGHTS</div>
                   </div>
                   <div class="donut-wrap">
                     <div class="donut-chart">
                       <svg viewBox="0 0 36 36">
-                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(107,21,34,0.1)" stroke-width="3"></path>
-                        <path id="donutPath" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--royal-red)" stroke-width="3" style="transition: stroke-dasharray 1.5s ease-out;"></path>
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f5eedf" stroke-width="4"></path>
+                        <path id="donutPath" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#46171d" stroke-width="4" stroke-linecap="round" style="transition: stroke-dasharray 1.5s ease-out;"></path>
                       </svg>
                       <div class="donut-center">
                         <div class="donut-val" id="donutVal">0%</div>
-                        <div class="donut-lbl">Verified</div>
+                        <div class="donut-lbl">Profiles Verified</div>
                       </div>
                     </div>
                     <div class="insights-stats">
@@ -255,20 +288,19 @@
                 
                 <div class="dash-card">
                   <div class="dash-card-header">
-                    <div class="dash-card-title">📈 Member Growth</div>
+                    <div class="dash-card-title">MEMBER GROWTH</div>
                   </div>
                   <div class="area-chart-container">
-                    <svg viewBox="0 0 400 120" preserveAspectRatio="none" style="width:100%; height:100%; overflow:visible;">
+                    <svg viewBox="0 0 400 100" preserveAspectRatio="none" style="width:100%; height:100%; overflow:visible;">
                       <defs>
                         <linearGradient id="areaGrad" x1="0" x2="0" y1="0" y2="1">
-                          <stop offset="0%" stop-color="var(--royal-red)" stop-opacity="0.3"></stop>
-                          <stop offset="100%" stop-color="var(--royal-red)" stop-opacity="0.0"></stop>
+                          <stop offset="0%" stop-color="#46171d" stop-opacity="0.4"></stop>
+                          <stop offset="100%" stop-color="#46171d" stop-opacity="0.0"></stop>
                         </linearGradient>
                       </defs>
-                      <!-- Smooth bezier curve simulating growth -->
-                      <path d="M0,100 C100,90 150,70 200,60 C250,50 300,30 400,20 L400,120 L0,120 Z" fill="url(#areaGrad)"></path>
-                      <path d="M0,100 C100,90 150,70 200,60 C250,50 300,30 400,20" fill="none" stroke="var(--royal-red)" stroke-width="3" stroke-linecap="round"></path>
-                      <circle cx="400" cy="20" r="4" fill="var(--gold-bright)"></circle>
+                      <path d="M0,80 C100,75 150,60 200,50 C250,40 300,20 400,10 L400,100 L0,100 Z" fill="url(#areaGrad)"></path>
+                      <path d="M0,80 C100,75 150,60 200,50 C250,40 300,20 400,10" fill="none" stroke="#46171d" stroke-width="3" stroke-linecap="round"></path>
+                      <circle cx="400" cy="10" r="4" fill="#946941"></circle>
                     </svg>
                   </div>
                 </div>
@@ -300,7 +332,7 @@
               <!-- Recent Additions -->
               <div class="dash-card">
                  <div class="dash-card-header">
-                    <div class="dash-card-title">Recent Additions</div>
+                    <div class="dash-card-title">RECENT ADDITIONS</div>
                  </div>
                  <div class="dash-list" id="recentList">
                     <!-- Populated by JS -->
@@ -311,22 +343,22 @@
               <!-- Family Updates -->
               <div class="dash-card">
                  <div class="dash-card-header">
-                    <div class="dash-card-title">Family Updates</div>
+                    <div class="dash-card-title">FAMILY UPDATES</div>
                  </div>
                  <div class="dash-list">
                     <div class="dl-item">
                       <div class="dl-ava">📜</div>
                       <div class="dl-info">
                         <div class="dl-name">1902 Land Deed</div>
-                        <div class="dl-sub">Document added to Vault</div>
+                        <div class="dl-sub">Document added to Records</div>
                       </div>
                       <div class="dl-time">3h ago</div>
                     </div>
                     <div class="dl-item">
-                      <div class="dl-ava" style="color:var(--gold-dark);">🏺</div>
+                      <div class="dl-ava">🏺</div>
                       <div class="dl-info">
-                        <div class="dl-name">Mundan Ceremony</div>
-                        <div class="dl-sub">Event scheduled</div>
+                        <div class="dl-name">Kashi Yatra Event</div>
+                        <div class="dl-sub">Ceremony scheduled</div>
                       </div>
                       <div class="dl-time">1d ago</div>
                     </div>
@@ -334,7 +366,7 @@
                       <div class="dl-ava">🌿</div>
                       <div class="dl-info">
                         <div class="dl-name">New Branch Added</div>
-                        <div class="dl-sub">Verma Branch registered</div>
+                        <div class="dl-sub">Verma Branch was added</div>
                       </div>
                       <div class="dl-time">2d ago</div>
                     </div>
@@ -385,6 +417,7 @@
       // 2. Compute Top Stats
       const totalMembers = familyMembers.length;
       document.getElementById('stMem').textContent = totalMembers;
+      document.getElementById('tsMem').textContent = totalMembers;
       document.getElementById('fcDir').textContent = totalMembers;
       
       const verified = familyMembers.filter(m => m.verified).length;
@@ -411,10 +444,9 @@
       const surnames = new Set(familyMembers.map(m => m.lastName).filter(n => n));
       const branchCount = Math.max(1, surnames.size);
       document.getElementById('stBra').textContent = branchCount;
-      document.getElementById('stMemSub').textContent = `Across ${branchCount} branches`;
+      document.getElementById('fcDirBra').textContent = `${branchCount} Branches`;
       
       // Calculate Generations
-      // Generate network for current user to find max generation span
       const net = getBloodlineNetwork(myId);
       const validNet = net.filter(m => m.gen !== undefined && !isNaN(m.gen));
       const maxG = validNet.length > 0 ? Math.max(...validNet.map(m => m.gen)) : 1;
@@ -422,22 +454,19 @@
       const totalGen = (maxG - minG) + 1;
       
       document.getElementById('stGen').textContent = totalGen;
+      document.getElementById('tsGen').textContent = totalGen;
       document.getElementById('fcTime').textContent = totalGen;
       
-      // 3. Render Tree Overview
-      // We use the shared-tree.js renderer!
-      renderTreeToContainer('dynamicTreeNodes', 'dashTreeWrapper', myId, 'openProfileModal');
+      // 3. Render Custom Compact Dashboard Tree
+      renderCompactDashboardTree(validNet, minG, maxG);
       
       // 4. Update Donut Chart
       document.getElementById('donutVal').textContent = `${verPct}%`;
-      // stroke-dasharray is "value, 100" for SVG circle with pathLength="100" (which we don't have). 
-      // Circle circumference is ~100 with r=15.9155
       setTimeout(() => {
         document.getElementById('donutPath').setAttribute('stroke-dasharray', `${verPct}, 100`);
       }, 500);
       
       // 5. Populate Recent Additions
-      // Sort by id descending (assuming newer IDs sort higher, or just reverse array)
       const recent = [...familyMembers].reverse().slice(0, 3);
       let rHtml = '';
       recent.forEach(m => {
@@ -455,10 +484,75 @@
         `;
       });
       document.getElementById('recentList').innerHTML = rHtml;
-      
-      // Vault count pseudo logic
-      const vaultData = JSON.parse(localStorage.getItem('vansh_vault') || '[]');
-      document.getElementById('fcVault').textContent = vaultData.length || 3;
+    }
+
+    function renderCompactDashboardTree(net, minG, maxG) {
+       const container = document.getElementById('ctNodes');
+       if(!container) return;
+       let html = '';
+       
+       // Limit to max 4 generations for dashboard summary space
+       const renderMax = Math.min(maxG, minG + 3);
+       
+       for(let g = minG; g <= renderMax; g++) {
+         let members = net.filter(m => m.gen === g).slice(0, 8); // Max 8 per row
+         if(members.length === 0) continue;
+         
+         let rowHtml = `<div class="ct-row"><div class="ct-gen">${toRoman(g)}</div><div class="ct-nodes">`;
+         members.forEach(m => {
+            const avaStyle = m.imageUrl ? `background-image:url('${m.imageUrl}');color:transparent;` : '';
+            rowHtml += `
+              <a href="tree.html?id=${m.id}" class="ct-node" id="ctn-${m.id}">
+                <div class="ct-ava" style="${avaStyle}">${getInitials(m)}</div>
+                <div class="ct-name">${m.firstName} ${m.lastName || ''}</div>
+              </a>
+            `;
+         });
+         rowHtml += `</div></div>`;
+         html += rowHtml;
+       }
+       container.innerHTML = html;
+       
+       // Simple straight lines connecting rows
+       setTimeout(() => {
+          const svgPaths = document.getElementById('ctPaths');
+          const svgBox = document.getElementById('ctSvg');
+          if(!svgPaths || !svgBox) return;
+          
+          let pathHtml = '';
+          const sRect = svgBox.getBoundingClientRect();
+          
+          for(let g = minG; g < renderMax; g++) {
+             let parents = net.filter(m => m.gen === g).slice(0,8);
+             let children = net.filter(m => m.gen === g + 1).slice(0,8);
+             
+             parents.forEach(p => {
+                const pEl = document.getElementById(`ctn-${p.id}`);
+                if(!pEl) return;
+                const pr = pEl.getBoundingClientRect();
+                const pX = pr.left - sRect.left + (pr.width/2);
+                const pY = pr.top - sRect.top + 44; // bottom of avatar
+                
+                // Find children of this parent
+                const myChildren = children.filter(c => c.parents && c.parents.includes(p.id));
+                myChildren.forEach(c => {
+                   const cEl = document.getElementById(`ctn-${c.id}`);
+                   if(!cEl) return;
+                   const cr = cEl.getBoundingClientRect();
+                   const cX = cr.left - sRect.left + (cr.width/2);
+                   const cY = cr.top - sRect.top;
+                   
+                   pathHtml += `<path d="M${pX},${pY} C${pX},${(pY+cY)/2} ${cX},${(pY+cY)/2} ${cX},${cY}" fill="none" stroke="#ebdcc6" stroke-width="1.5" />`;
+                });
+             });
+          }
+          svgPaths.innerHTML = pathHtml;
+       }, 300);
+    }
+    
+    function toRoman(num) {
+      const roman = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+      return roman[num] || num;
     }
   </script>
 </body>
