@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@supabase/supabase-js": "^2.106.2",
     "jsdom": "^29.1.1",
     "playwright": "^1.60.0"
   }

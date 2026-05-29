@@ -347,6 +347,19 @@ async function processCloudInvite(invite, action) {
       if (rel === 'FATHER' || rel === 'MOTHER') {
         toUser.gender = (rel === 'FATHER') ? 'M' : 'F';
         if (!fromUser.parents) fromUser.parents = [];
+        
+        // Remove placeholder parent of the same gender if it exists
+        const placeholderIdx = fromUser.parents.findIndex(pid => {
+          const p = pool.find(u => u.id === pid);
+          return p && p.isPlaceholder && p.gender === toUser.gender;
+        });
+        if (placeholderIdx !== -1) {
+          const pId = fromUser.parents[placeholderIdx];
+          fromUser.parents.splice(placeholderIdx, 1);
+          const poolIdx = pool.findIndex(u => u.id === pId);
+          if (poolIdx !== -1) pool.splice(poolIdx, 1);
+        }
+
         if (!fromUser.parents.includes(toUser.id)) fromUser.parents.push(toUser.id);
       } else if (rel === 'SON' || rel === 'DAUGHTER') {
         toUser.gender = (rel === 'SON') ? 'M' : 'F';
@@ -565,3 +578,49 @@ async function addComment(postId, userId, content, authorName, authorAvatar) {
     return { success: true };
   } catch (err) { return { success: false, error: err.message }; }
 }
+
+async function removeRelationship(userA, userB) {
+  if (!window.supabaseClient) return { success: false, error: 'Cloud disconnected' };
+  try {
+    // Delete invite records connecting these two users
+    const { error: err1 } = await window.supabaseClient.from('vansh_invites').delete().eq('from_user_id', userA).eq('to_user_id', userB);
+    const { error: err2 } = await window.supabaseClient.from('vansh_invites').delete().eq('from_user_id', userB).eq('to_user_id', userA);
+    
+    // Remove edges locally
+    let pool = [];
+    try { pool = JSON.parse(localStorage.getItem('vansh_family_data_v2') || '[]'); } catch(e){}
+    
+    const uA = pool.find(u => u.id === userA);
+    const uB = pool.find(u => u.id === userB);
+    
+    if (uA && uB) {
+      if (uA.parents) uA.parents = uA.parents.filter(id => id !== userB);
+      if (uB.parents) uB.parents = uB.parents.filter(id => id !== userA);
+      if (uA.spouse === userB) delete uA.spouse;
+      if (uB.spouse === userA) delete uB.spouse;
+      
+      localStorage.setItem('vansh_family_data_v2', JSON.stringify(pool));
+    }
+    
+    return { success: true };
+  } catch(err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// Ensure all are exposed globally
+window.searchMembersCloud = searchMembersCloud;
+window.getCloudMemberById = getCloudMemberById;
+window.sendCloudInvite = sendCloudInvite;
+window.fetchCloudInvites = fetchCloudInvites;
+window.fetchOutboundAcceptedInvites = fetchOutboundAcceptedInvites;
+window.updateCloudInviteStatus = updateCloudInviteStatus;
+window.processCloudInvite = processCloudInvite;
+window.fetchCloudPosts = fetchCloudPosts;
+window.createCloudPost = createCloudPost;
+window.deleteCloudPost = deleteCloudPost;
+window.fetchCloudMessages = fetchCloudMessages;
+window.createCloudMessage = createCloudMessage;
+window.toggleRespect = toggleRespect;
+window.addComment = addComment;
+window.removeRelationship = removeRelationship;

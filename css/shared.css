@@ -280,9 +280,9 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 .uf-avatar::after { content: ''; position: absolute; inset: 1.5px; border-radius: 50%; border: 1px dashed rgba(139, 105, 20, 0.35); }
 .uf-avatar .initials { font-family: 'Cinzel', serif; font-weight: 700; font-size: 14px; color: var(--maroon); letter-spacing: 0.05em; text-shadow: 0 1px 0 rgba(255,255,255,0.6); }
 .patriarch-info { flex: 1; color: var(--cream-text); z-index: 2; }
-.patriarch-info .name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 11px; color: #2a0608; letter-spacing: 0.02em; margin-bottom: 1px; line-height: 1.1; }
-.patriarch-info .role { font-family: 'Cinzel', serif; font-weight: 600; font-size: 8px; letter-spacing: 0.1em; color: #b08820; margin-bottom: 4px; }
-.patriarch-info .meta { font-size: 9px; font-weight: 500; line-height: 1.2; color: #5a3018; }
+.patriarch-info .name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; color: #2a0608; letter-spacing: 0.02em; margin-bottom: 1px; line-height: 1.1; }
+.patriarch-info .role { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #8b6914; margin-bottom: 2px; }
+.patriarch-info .meta { font-size: 11px; font-weight: 500; line-height: 1.2; color: #5a3018; }
 
 /* ── CHILD CARD ── */
 .child-card { position: relative; width: 170px; padding: 2px; border-radius: 10px; background: linear-gradient(135deg, #f0c75a 0%, #d4af37 30%, #8b6914 55%, #d4af37 80%, #f4d772 100%); box-shadow: 0 6px 16px rgba(0,0,0,0.55); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }
@@ -302,13 +302,13 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 .photo-frame .photo-inner svg { width: 100%; height: 100%; }
 
 .child-info { flex: 1; }
-.child-name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 10px; color: var(--gold-bright); letter-spacing: 0.01em; text-shadow: 0 1px 2px rgba(0,0,0,0.55); margin-bottom: 1px; display: flex; align-items: center; gap: 3px; line-height: 1.1; }
-.child-name .check { color: var(--emerald-bright); font-size: 9px; }
-.child-role { font-family: 'Cinzel', serif; font-weight: 600; font-size: 7px; letter-spacing: 0.1em; color: #d4a880; margin-bottom: 4px; }
+.child-name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 12px; color: var(--gold-bright); letter-spacing: 0.01em; text-shadow: 0 1px 2px rgba(0,0,0,0.55); margin-bottom: 1px; display: flex; align-items: center; gap: 3px; line-height: 1.1; }
+.child-name .check { color: var(--emerald-bright); font-size: 11px; }
+.child-role { font-family: 'Cinzel', serif; font-weight: 600; font-size: 9px; letter-spacing: 0.1em; color: #d4a880; margin-bottom: 4px; }
 .child-meta { display: flex; gap: 4px; }
 .child-icons { display: flex; flex-direction: column; gap: 4px; padding-top: 1px; display: none; }
 .child-icon { width: 10px; height: 10px; color: var(--gold-bright); opacity: 0.85; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.4)); }
-.child-fields { font-size: 8px; font-weight: 500; line-height: 1.2; color: #f0d8b0; }
+.child-fields { font-size: 10px; font-weight: 500; line-height: 1.2; color: #f0d8b0; }
 
 .pc-view-btn { position: absolute; top: 4px; right: 4px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); color: var(--gold); border: 1px solid var(--gold-dark); opacity: 0; transition: all 0.2s; z-index: 10; }
 .child-card:hover .pc-view-btn, .patriarch:hover .pc-view-btn { opacity: 1; transform: scale(1); }

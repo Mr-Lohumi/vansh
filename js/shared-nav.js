@@ -292,6 +292,12 @@ async function initNav(pageName) {
     const avatar = m.imageUrl ? `<div style="width: 80px; height: 80px; border-radius: 50%; background: url('${m.imageUrl}') center/cover; margin: 0 auto 16px; border: 2px solid var(--gold);"></div>` 
                               : `<div style="width: 80px; height: 80px; border-radius: 50%; background: var(--bg-hover); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-family: Cinzel, serif; color: var(--gold); border: 2px solid var(--gold);">${(m.firstName[0]||'')+(m.lastName[0]||'')}</div>`;
                               
+    let disconnectBtn = '';
+    const authData = getAuthData();
+    if (authData && authData.userId !== userId && getMemberById(userId)) {
+      disconnectBtn = `<button class="btn btn-outline btn-sm" style="width: 100%; color: #dc3545; border-color: rgba(220,53,69,0.3); font-weight: bold; background: rgba(220,53,69,0.05);" onclick="triggerDisconnect('${userId}')">Sever Relationship</button>`;
+    }
+
     modal.innerHTML = `
       <div class="modal-box" style="text-align: center; max-width: 320px;">
         <button class="modal-close" onclick="document.getElementById('previewModalOverlay').remove()">×</button>
@@ -305,9 +311,28 @@ async function initNav(pageName) {
           <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;"><b>Occupation:</b> ${m.occupation || 'N/A'}</div>
           <div style="font-size: 12px; color: var(--text-secondary);"><b>Location:</b> ${m.nativePlace || 'N/A'}</div>
         </div>
+        ${disconnectBtn}
       </div>
     `;
     document.body.appendChild(modal);
+  };
+
+  window.triggerDisconnect = async function(userId) {
+    if (!confirm("Are you sure you want to completely sever your relationship with this person? This cannot be undone.")) return;
+    const authData = getAuthData();
+    if (!authData || !authData.userId) return;
+    
+    if (typeof removeRelationship === 'function') {
+      const res = await removeRelationship(authData.userId, userId);
+      if (res.success) {
+        alert("Relationship severed successfully.");
+        window.location.reload();
+      } else {
+        alert("Error: " + res.error);
+      }
+    } else {
+      alert("Cloud features are not active.");
+    }
   };
 
   // Universal Search Logic
@@ -479,22 +504,14 @@ function ensureAddRelativeModal() {
       <input type="hidden" id="relativeTargetId">
       <select id="relativeTypeSelect" class="form-select" style="margin-bottom: 24px;">
         <option value="">Select Relationship</option>
-        <option value="papa">Papa (Father)</option>
-        <option value="mummy">Mummy (Mother)</option>
-        <option value="bhai">Bhai (Brother)</option>
-        <option value="behen">Behen (Sister)</option>
-        <option value="pati">Pati (Husband)</option>
-        <option value="patni">Patni (Wife)</option>
-        <option value="beta">Beta (Son)</option>
-        <option value="beti">Beti (Daughter)</option>
-        <option value="dada">Dada (Paternal Grandfather)</option>
-        <option value="dadi">Dadi (Paternal Grandmother)</option>
-        <option value="nana">Nana (Maternal Grandfather)</option>
-        <option value="nani">Nani (Maternal Grandmother)</option>
-        <option value="chacha">Chacha (Paternal Uncle)</option>
-        <option value="bua">Bua (Paternal Aunt)</option>
-        <option value="mama">Mama (Maternal Uncle)</option>
-        <option value="masi">Masi (Maternal Aunt)</option>
+        <option value="FATHER">Father</option>
+        <option value="MOTHER">Mother</option>
+        <option value="BROTHER">Brother</option>
+        <option value="SISTER">Sister</option>
+        <option value="HUSBAND">Husband</option>
+        <option value="WIFE">Wife</option>
+        <option value="SON">Son</option>
+        <option value="DAUGHTER">Daughter</option>
       </select>
       <div style="display:flex; justify-content:flex-end; gap:12px;">
         <button class="btn btn-outline" onclick="closeAddRelativeModal()">Cancel</button>
