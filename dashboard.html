@@ -552,7 +552,7 @@
              <a href="tree.html?id=${r.id}" class="ct-node" id="ctn-${r.id}" style="position:relative; width:auto; text-decoration:none; display:flex; flex-direction:column; align-items:center;">
                 <div class="ct-ava ${r.gender==='F'?'female':''} ${r.deceased?'deceased':''}" style="width:64px; height:64px; font-size:22px; ${avaStyle}; border:2px solid var(--gold); border-radius:50%; display:flex; justify-content:center; align-items:center; background-color:var(--bg-elevated); color:var(--royal-red); box-shadow:0 4px 10px rgba(0,0,0,0.2); z-index:2;">${r.imageUrl ? '' : getInitials(r)}</div>
                 <div style="margin-top:8px; font-family:'Cinzel', serif; font-size:13px; font-weight:700; color:#f4d772; text-shadow: 0 0 10px rgba(244,215,114,0.6); text-transform:uppercase; text-align:center;">${r.firstName} ${r.lastName||''}</div>
-                <div style="font-size:10px; color:#f4d772; opacity:0.8; text-shadow: 0 0 6px rgba(244,215,114,0.4); text-transform:uppercase;">${myId ? calculateDerivedRelation(r.id, myId) : 'Member'}</div>
+                <div style="font-size:10px; color:#f4d772; opacity:0.8; text-shadow: 0 0 6px rgba(244,215,114,0.4); text-transform:uppercase;">${myId ? (getSmartIndianRelation(familyMembers, myId, r.id)?.english || 'Member') : 'Member'}</div>
              </a>
          `;
        }
@@ -590,7 +590,7 @@
               <a href="tree.html?id=${m.id}" class="ct-node" id="ctn-${m.id}" style="text-decoration:none; display:flex; flex-direction:column; align-items:center;">
                 <div class="ct-ava ${m.gender==='F'?'female':''} ${m.deceased?'deceased':''}" style="${avaStyle}">${m.imageUrl ? '' : getInitials(m)}</div>
                 <div class="ct-name" style="margin-top:4px;">${m.firstName} ${m.lastName||''}</div>
-                <div style="font-size:9px; color:rgba(255,255,255,0.7); text-transform:uppercase; margin-top:2px;">${myId ? calculateDerivedRelation(m.id, myId) : 'Member'}</div>
+                <div style="font-size:9px; color:rgba(255,255,255,0.7); text-transform:uppercase; margin-top:2px;">${myId ? (getSmartIndianRelation(familyMembers, myId, m.id)?.english || 'Member') : 'Member'}</div>
               </a>
             `;
          });
