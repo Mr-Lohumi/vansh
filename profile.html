@@ -569,19 +569,35 @@
       showToast('Profile Saved', 'Your personal details have been updated and synced to dynasty cloud.', 'ok');
     }
 
-    function promptSendInvite(toUserId) {
-      const relation = prompt("What is your relationship to this person?\n(Enter: brother, sister, spouse, parent, or child)");
+    async function promptSendInvite(toUserId) {
+      if (loggedInId === toUserId) {
+        alert("You cannot send a relationship invite to yourself.");
+        return;
+      }
+
+      let relation = prompt("What is your relationship to this person?\n(Enter: Father, Mother, Brother, Sister, Husband, Wife, Son, or Daughter)");
       if (!relation) return;
       
-      const validRelations = ['brother', 'sister', 'spouse', 'parent', 'child'];
-      if (!validRelations.includes(relation.toLowerCase())) {
-        alert("Invalid relationship type. Please try again.");
+      relation = relation.trim().toUpperCase();
+      const validRelations = ['FATHER', 'MOTHER', 'BROTHER', 'SISTER', 'HUSBAND', 'WIFE', 'SON', 'DAUGHTER'];
+      
+      if (!validRelations.includes(relation)) {
+        alert("Invalid relationship type. Please strictly enter one of: Father, Mother, Brother, Sister, Husband, Wife, Son, Daughter.");
         return;
       }
       
-      const res = sendInvite(loggedInId, toUserId, relation.toLowerCase());
+      // Prevent duplicate pending requests could be handled here or in sendCloudInvite, 
+      // but sendCloudInvite handles DB insertion constraints.
+      
+      let res;
+      if (typeof sendCloudInvite === 'function') {
+        res = await sendCloudInvite(loggedInId, toUserId, relation);
+      } else {
+        res = sendInvite(loggedInId, toUserId, relation);
+      }
+      
       if (res && res.success) {
-        showToast('Invite Sent', res.message, 'ok');
+        showToast('Invite Sent', 'Relationship request sent successfully. They will be notified.', 'ok');
       } else {
         alert(res ? res.message : "Failed to send invite.");
       }

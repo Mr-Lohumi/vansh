@@ -342,23 +342,27 @@ async function processCloudInvite(invite, action) {
         return parent;
       }
 
-      const rel = invite.relationType;
+      const rel = invite.relationType ? invite.relationType.toUpperCase() : '';
       
-      if (rel === 'papa' || rel === 'mummy' || rel === 'parent') {
-        toUser.gender = (rel === 'papa') ? 'M' : 'F';
+      if (rel === 'FATHER' || rel === 'MOTHER') {
+        toUser.gender = (rel === 'FATHER') ? 'M' : 'F';
         if (!fromUser.parents) fromUser.parents = [];
         if (!fromUser.parents.includes(toUser.id)) fromUser.parents.push(toUser.id);
-      } else if (rel === 'beta' || rel === 'beti' || rel === 'child') {
-        toUser.gender = (rel === 'beta') ? 'M' : 'F';
+      } else if (rel === 'SON' || rel === 'DAUGHTER') {
+        toUser.gender = (rel === 'SON') ? 'M' : 'F';
         if (!toUser.parents) toUser.parents = [];
         if (!toUser.parents.includes(fromUser.id)) toUser.parents.push(fromUser.id);
-      } else if (rel === 'spouse') {
+      } else if (rel === 'HUSBAND' || rel === 'WIFE') {
+        toUser.gender = (rel === 'HUSBAND') ? 'M' : 'F';
         fromUser.spouse = toUser.id;
         toUser.spouse = fromUser.id;
-      } else if (rel === 'sibling') {
+      } else if (rel === 'BROTHER' || rel === 'SISTER') {
+        toUser.gender = (rel === 'BROTHER') ? 'M' : 'F';
         if (!fromUser.parents) fromUser.parents = [];
         if (!toUser.parents) toUser.parents = [];
-        if (fromUser.parents.length === 0) ensureParent(fromUser.id, 'M', 'Father');
+        if (fromUser.parents.length === 0 && toUser.parents.length === 0) {
+           ensureParent(fromUser.id, 'M', 'Father');
+        }
         fromUser.parents.forEach(p => { if (!toUser.parents.includes(p)) toUser.parents.push(p); });
         toUser.parents.forEach(p => { if (!fromUser.parents.includes(p)) fromUser.parents.push(p); });
       }
