@@ -271,25 +271,25 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 .gold-joint-orb { fill: #ffffff; stroke: var(--gold-bright); stroke-width: 1.5; filter: drop-shadow(0 0 8px var(--gold-bright)); }
 
 /* ── PATRIARCH CARD ── */
-.patriarch { position: relative; width: 190px; padding: 2px; border-radius: 10px; background: linear-gradient(135deg, #f0c75a 0%, #d4af37 25%, #8b6914 50%, #d4af37 75%, #f4d772 100%); box-shadow: 0 0 0 1px var(--gold-deepest), 0 8px 20px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55, 0.2); cursor: pointer; }
+.patriarch { position: relative; width: 200px; min-height: 110px; padding: 2px; border-radius: 10px; background: linear-gradient(135deg, #f0c75a 0%, #d4af37 25%, #8b6914 50%, #d4af37 75%, #f4d772 100%); box-shadow: 0 0 0 1px var(--gold-deepest), 0 8px 20px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55, 0.2); cursor: pointer; display: flex; flex-direction: column; }
 .patriarch::before { content: ''; position: absolute; inset: 1.5px; border-radius: 8.5px; border: 1px solid rgba(139, 105, 20, 0.6); pointer-events: none; z-index: 3; }
-.patriarch-inner { position: relative; display: flex; gap: 6px; padding: 8px; background: radial-gradient(ellipse at top left, #fbf3dd 0%, #f5e6c0 80%); border-radius: 8px; overflow: hidden; align-items: center; }
+.patriarch-inner { position: relative; flex: 1; display: flex; gap: 8px; padding: 12px; background: radial-gradient(ellipse at top left, #fbf3dd 0%, #f5e6c0 80%); border-radius: 8px; overflow: hidden; align-items: center; }
 .patriarch-arch-bg { position: absolute; left: 2px; top: 10px; width: 60px; height: 80px; opacity: 0.95; pointer-events: none; }
 .crown { position: absolute; top: -14px; left: 12px; width: 35px; height: 25px; z-index: 5; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.55)); }
 .uf-avatar { position: relative; width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fdf6e0 0%, #f5e6c0 70%, #e8d49a 100%); display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--gold); box-shadow: inset 0 0 0 1px var(--gold-bright), inset 0 0 6px rgba(139, 105, 20, 0.25), 0 0 0 1px var(--gold-deepest), 0 2px 4px rgba(0,0,0,0.25); z-index: 4; align-self: center; background-size: cover; background-position: center; }
 .uf-avatar::after { content: ''; position: absolute; inset: 1.5px; border-radius: 50%; border: 1px dashed rgba(139, 105, 20, 0.35); }
 .uf-avatar .initials { font-family: 'Cinzel', serif; font-weight: 700; font-size: 14px; color: var(--maroon); letter-spacing: 0.05em; text-shadow: 0 1px 0 rgba(255,255,255,0.6); }
 .patriarch-info { flex: 1; color: var(--cream-text); z-index: 2; }
-.patriarch-info .name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; color: #2a0608; letter-spacing: 0.02em; margin-bottom: 1px; line-height: 1.1; }
-.patriarch-info .role { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #8b6914; margin-bottom: 2px; }
-.patriarch-info .meta { font-size: 11px; font-weight: 500; line-height: 1.2; color: #5a3018; }
+.patriarch-info .name { font-family: 'Cinzel', serif; font-weight: 800; font-size: 14px; color: #1a0406; letter-spacing: 0.02em; margin-bottom: 2px; line-height: 1.1; }
+.patriarch-info .role { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(139, 105, 20, 0.9); margin-bottom: 4px; }
+.patriarch-info .meta { font-size: 12px; font-weight: 500; line-height: 1.5; color: #3c1218; }
 
 /* ── CHILD CARD ── */
-.child-card { position: relative; width: 170px; padding: 2px; border-radius: 10px; background: linear-gradient(135deg, #f0c75a 0%, #d4af37 30%, #8b6914 55%, #d4af37 80%, #f4d772 100%); box-shadow: 0 6px 16px rgba(0,0,0,0.55); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }
+.child-card { position: relative; width: 180px; min-height: 105px; padding: 2px; border-radius: 10px; background: linear-gradient(135deg, #f0c75a 0%, #d4af37 30%, #8b6914 55%, #d4af37 80%, #f4d772 100%); box-shadow: 0 6px 16px rgba(0,0,0,0.55); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; display: flex; flex-direction: column; }
 .child-card.jeweled { box-shadow: 0 6px 16px rgba(0,0,0,0.55), 0 0 15px rgba(228, 60, 80, 0.4); animation: structuralPulse 4s infinite alternate; }
 .child-card:hover { transform: translateY(-2px); }
 .child-card::before { content: ''; position: absolute; inset: 1.5px; border-radius: 8.5px; border: 1px solid rgba(139, 105, 20, 0.55); pointer-events: none; z-index: 3; }
-.child-inner { position: relative; display: flex; gap: 6px; padding: 8px; background: linear-gradient(135deg, #6e1a1f 0%, #5c1418 60%, #4a0e12 100%); border-radius: 8px; overflow: hidden; z-index: 2; align-items: center; }
+.child-inner { position: relative; flex: 1; display: flex; gap: 8px; padding: 12px; background: linear-gradient(135deg, #6e1a1f 0%, #5c1418 60%, #4a0e12 100%); border-radius: 8px; overflow: hidden; z-index: 2; align-items: center; }
 .child-inner::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 0%, rgba(212, 175, 55, 0.08), transparent 60%); pointer-events: none; }
 .jeweled .gems { position: absolute; inset: 1.5px; border-radius: 8.5px; pointer-events: none; z-index: 4; overflow: hidden; }
 .gem { position: absolute; width: 4px; height: 4px; border-radius: 50%; box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), inset 0 -1px 1px rgba(0,0,0,0.4), 0 0 2px rgba(0,0,0,0.5); }
@@ -302,13 +302,13 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 .photo-frame .photo-inner svg { width: 100%; height: 100%; }
 
 .child-info { flex: 1; }
-.child-name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 12px; color: var(--gold-bright); letter-spacing: 0.01em; text-shadow: 0 1px 2px rgba(0,0,0,0.55); margin-bottom: 1px; display: flex; align-items: center; gap: 3px; line-height: 1.1; }
+.child-name { font-family: 'Cinzel', serif; font-weight: 800; font-size: 13px; color: var(--gold-bright); letter-spacing: 0.01em; text-shadow: 0 1px 2px rgba(0,0,0,0.55); margin-bottom: 2px; display: flex; align-items: center; gap: 3px; line-height: 1.1; }
 .child-name .check { color: var(--emerald-bright); font-size: 11px; }
-.child-role { font-family: 'Cinzel', serif; font-weight: 600; font-size: 9px; letter-spacing: 0.1em; color: #d4a880; margin-bottom: 4px; }
+.child-role { font-family: 'Cinzel', serif; font-weight: 600; font-size: 10px; letter-spacing: 0.1em; color: #d4a880; opacity: 0.9; margin-bottom: 6px; }
 .child-meta { display: flex; gap: 4px; }
 .child-icons { display: flex; flex-direction: column; gap: 4px; padding-top: 1px; display: none; }
 .child-icon { width: 10px; height: 10px; color: var(--gold-bright); opacity: 0.85; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.4)); }
-.child-fields { font-size: 10px; font-weight: 500; line-height: 1.2; color: #f0d8b0; }
+.child-fields { font-size: 11px; font-weight: 500; line-height: 1.5; color: #fdfbf7; }
 
 .pc-view-btn { position: absolute; top: 4px; right: 4px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); color: var(--gold); border: 1px solid var(--gold-dark); opacity: 0; transition: all 0.2s; z-index: 10; }
 .child-card:hover .pc-view-btn, .patriarch:hover .pc-view-btn { opacity: 1; transform: scale(1); }
