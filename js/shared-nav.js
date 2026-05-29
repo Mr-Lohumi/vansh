@@ -504,14 +504,56 @@ function ensureAddRelativeModal() {
       <input type="hidden" id="relativeTargetId">
       <select id="relativeTypeSelect" class="form-select" style="margin-bottom: 24px;">
         <option value="">Select Relationship</option>
-        <option value="FATHER">Father</option>
-        <option value="MOTHER">Mother</option>
-        <option value="BROTHER">Brother</option>
-        <option value="SISTER">Sister</option>
-        <option value="HUSBAND">Husband</option>
-        <option value="WIFE">Wife</option>
-        <option value="SON">Son</option>
-        <option value="DAUGHTER">Daughter</option>
+        <optgroup label="Direct Family">
+          <option value="father">Father</option>
+          <option value="mother">Mother</option>
+          <option value="son">Son</option>
+          <option value="daughter">Daughter</option>
+          <option value="brother">Brother</option>
+          <option value="sister">Sister</option>
+          <option value="husband">Husband</option>
+          <option value="wife">Wife</option>
+        </optgroup>
+        <optgroup label="Grandparents">
+          <option value="dada">Dada (Father's Father)</option>
+          <option value="dadi">Dadi (Father's Mother)</option>
+          <option value="nana">Nana (Mother's Father)</option>
+          <option value="nani">Nani (Mother's Mother)</option>
+        </optgroup>
+        <optgroup label="Paternal Uncles / Aunts">
+          <option value="chacha">Chacha (Father's Brother)</option>
+          <option value="chachi">Chachi (Chacha's Wife)</option>
+          <option value="bua">Bua (Father's Sister)</option>
+          <option value="phupha">Phupha (Bua's Husband)</option>
+        </optgroup>
+        <optgroup label="Maternal Uncles / Aunts">
+          <option value="mama">Mama (Mother's Brother)</option>
+          <option value="mami">Mami (Mama's Wife)</option>
+          <option value="mausi">Mausi (Mother's Sister)</option>
+          <option value="mausa">Mausa (Mausi's Husband)</option>
+        </optgroup>
+        <optgroup label="Cousins">
+          <option value="cousin_brother_pat">Cousin Brother (paternal)</option>
+          <option value="cousin_sister_pat">Cousin Sister (paternal)</option>
+          <option value="cousin_brother_mat">Cousin Brother (maternal)</option>
+          <option value="cousin_sister_mat">Cousin Sister (maternal)</option>
+        </optgroup>
+        <optgroup label="Nieces / Nephews">
+          <option value="bhatija">Bhatija (Brother's Son)</option>
+          <option value="bhatiji">Bhatiji (Brother's Daughter)</option>
+          <option value="bhanja">Bhanja (Sister's Son)</option>
+          <option value="bhanji">Bhanji (Sister's Daughter)</option>
+        </optgroup>
+        <optgroup label="In-Laws">
+          <option value="sasur">Sasur (Father-in-law)</option>
+          <option value="saas">Saas (Mother-in-law)</option>
+          <option value="saala">Saala (Wife's Brother)</option>
+          <option value="saali">Saali (Wife's Sister)</option>
+          <option value="devar_jeth">Devar / Jeth (Husband's Brother)</option>
+          <option value="nanad">Nanad (Husband's Sister)</option>
+          <option value="bahu">Bahu (Son's Wife)</option>
+          <option value="damaad">Damaad (Daughter's Husband)</option>
+        </optgroup>
       </select>
       <div style="display:flex; justify-content:flex-end; gap:12px;">
         <button class="btn btn-outline" onclick="closeAddRelativeModal()">Cancel</button>
