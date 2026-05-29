@@ -182,6 +182,15 @@
           <option value="Heirloom">Heirloom</option>
         </select>
       </div>
+
+      <div class="form-group">
+        <label class="form-label">Visibility</label>
+        <select id="artVis" class="form-select">
+          <option value="family">Everyone in family network</option>
+          <option value="close">Close family only</option>
+          <option value="me">Only me</option>
+        </select>
+      </div>
       
       <div class="form-group">
         <label class="form-label">Year / Era</label>
@@ -218,9 +227,24 @@
 
     // Make title dynamic
     const authData = getAuthData();
-    const currentUser = getMemberById(authData.userId);
-    if (currentUser && currentUser.firstName) {
-      document.getElementById('museumDynamicTitle').innerText = currentUser.firstName + "'s Heritage Museum";
+    const loggedInId = authData.userId;
+    const params = new URLSearchParams(location.search);
+    const targetId = params.get('id') || loggedInId;
+    const targetUser = getMemberById(targetId);
+    
+    const tier = getRelationshipTier(loggedInId, targetId);
+    if (tier === 'STRANGER') {
+      document.querySelector('.page-content').innerHTML = '<div style="text-align:center;padding:60px">This museum is outside your family network. Access Denied.</div>';
+      throw new Error('Access Denied');
+    }
+
+    if (targetUser && targetUser.firstName) {
+      document.getElementById('museumDynamicTitle').innerText = targetUser.firstName + "'s Heritage Museum";
+    }
+    
+    if (tier !== 'SELF') {
+      const addBtn = document.querySelector('.museum-header-card .btn-royal');
+      if (addBtn) addBtn.style.display = 'none';
     }
 
     const MUSEUM_KEY = 'vansh_museum_db';
@@ -231,15 +255,19 @@
         // Seed initial data if empty
         data = [
           {
+            userId: loggedInId,
             title: "The First Homestead",
             type: "Photograph",
+            visibility: "family",
             year: "Circa 1950",
             imgUrl: "https://images.unsplash.com/photo-1549420084-5f564f1c97a8?q=80&w=600&auto=format&fit=crop",
             desc: "The original family home built in the native village. This structure served as the gathering place for the first generation."
           },
           {
+            userId: loggedInId,
             title: "Ancestral Land Deed",
             type: "Document",
+            visibility: "close",
             year: "1971",
             imgUrl: "https://images.unsplash.com/photo-1579724128912-70b9ebef5a2e?q=80&w=600&auto=format&fit=crop",
             desc: "The original handwritten property deed registered during the early days, officially establishing the family estate."
@@ -253,17 +281,29 @@
     }
 
     function renderMuseum() {
-      const artifacts = loadMuseum();
+      let artifacts = loadMuseum();
+      
+      // Filter by targetId and visibility
+      artifacts = artifacts.filter(art => {
+        const owner = art.userId || loggedInId; // legacy support
+        if (owner !== targetId) return false;
+        
+        if (tier === 'SELF') return true;
+        if (art.visibility === 'me') return false;
+        if (art.visibility === 'close' && tier !== 'CLOSE_FAMILY') return false;
+        return true;
+      });
+
       const grid = document.getElementById('museumGrid');
       
       if(artifacts.length === 0) {
-        grid.innerHTML = '<div style="color:var(--text-muted); padding:20px;">The museum is currently empty. Upload your first artifact to begin the archive.</div>';
+        grid.innerHTML = '<div style="color:var(--text-muted); padding:20px;">The museum is currently empty.</div>';
         return;
       }
 
       grid.innerHTML = artifacts.map((art, idx) => `
         <div class="museum-frame">
-          <button class="btn-remove-art" onclick="deleteArtifact(${idx})" title="Remove Artifact">✕</button>
+          ${tier === 'SELF' ? `<button class="btn-remove-art" onclick="deleteArtifact('${art.id || idx}')" title="Remove Artifact">✕</button>` : ''}
 
           
           <div class="museum-img-wrapper">
@@ -279,12 +319,16 @@
       `).join('');
     }
 
-    function deleteArtifact(index) {
+    function deleteArtifact(idStr) {
       if(!confirm("Are you sure you want to permanently remove this artifact from the Royal Collection?")) return;
       const artifacts = loadMuseum();
-      artifacts.splice(index, 1);
-      localStorage.setItem(MUSEUM_KEY, JSON.stringify(artifacts));
-      renderMuseum();
+      // find index
+      let idx = typeof idStr === 'string' && idStr.startsWith('art_') ? artifacts.findIndex(a => a.id === idStr) : parseInt(idStr);
+      if (idx > -1) {
+        artifacts.splice(idx, 1);
+        localStorage.setItem(MUSEUM_KEY, JSON.stringify(artifacts));
+        renderMuseum();
+      }
     }
 
     function openUploadModal() {
@@ -338,8 +382,11 @@
       
       const finalizeSave = (imgUrl) => {
         const newArt = {
+          id: 'art_' + Date.now(),
+          userId: loggedInId,
           title: title,
           type: document.getElementById('artType').value,
+          visibility: document.getElementById('artVis').value,
           year: document.getElementById('artYear').value.trim() || 'Unknown',
           imgUrl: imgUrl,
           desc: document.getElementById('artDesc').value.trim() || 'No description provided.'

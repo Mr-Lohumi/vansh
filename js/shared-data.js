@@ -360,10 +360,11 @@ async function syncOutboundInvites() {
 // ----------------------------------
 
 function getAvatarStyle(m) {
+  const base = "background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; ";
   if (m.imageUrl) {
-    return `background-image: url('${m.imageUrl}'); color: transparent;`;
+    return base + `background-image: url('${m.imageUrl}'); color: transparent;`;
   }
-  return `background-color: var(--bg-hover); color: var(--gold); border-color: var(--border);`;
+  return base + `background-color: var(--bg-hover); color: var(--gold); border-color: var(--border);`;
 }
 
 function addFamilyMember(memberData) {
@@ -666,3 +667,71 @@ function showToast(title, msg, type = 'info') {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
+
+// ── PROFILE VISIBILITY TIERS ──
+function isConnected(startId, targetId) {
+  if (startId === targetId) return true;
+  const visited = new Set();
+  const queue = [startId];
+  visited.add(startId);
+  
+  while (queue.length > 0) {
+    const currId = queue.shift();
+    if (currId === targetId) return true;
+    
+    const curr = getMemberById(currId);
+    if (!curr) continue;
+    
+    // Add parents
+    if (curr.parents) {
+      curr.parents.forEach(p => {
+        if (!visited.has(p)) { visited.add(p); queue.push(p); }
+      });
+    }
+    
+    // Add children
+    const childs = familyMembers.filter(m => m.parents && m.parents.includes(currId)).map(m => m.id);
+    childs.forEach(c => {
+      if (!visited.has(c)) { visited.add(c); queue.push(c); }
+    });
+    
+    // Add spouse
+    if (curr.spouse && !visited.has(curr.spouse)) {
+      visited.add(curr.spouse); queue.push(curr.spouse);
+    }
+  }
+  return false;
+}
+
+function getRelationshipTier(meId, targetId) {
+  if (meId === targetId) return 'SELF';
+  
+  const myData = getMemberById(meId);
+  if (!myData) return 'STRANGER';
+  
+  const myParents = myData.parents || [];
+  const myChildren = familyMembers.filter(m => m.parents && m.parents.includes(meId)).map(m => m.id);
+  
+  // Siblings: share at least one parent
+  const mySiblings = new Set();
+  myParents.forEach(pId => {
+    const parentChildren = familyMembers.filter(m => m.parents && m.parents.includes(pId)).map(m => m.id);
+    parentChildren.forEach(c => {
+      if (c !== meId) mySiblings.add(c);
+    });
+  });
+  
+  if (myParents.includes(targetId) || 
+      myChildren.includes(targetId) || 
+      mySiblings.has(targetId) || 
+      myData.spouse === targetId) {
+    return 'CLOSE_FAMILY';
+  }
+  
+  if (isConnected(meId, targetId)) {
+    return 'FAMILY_NETWORK';
+  }
+  
+  return 'STRANGER';
+}
+

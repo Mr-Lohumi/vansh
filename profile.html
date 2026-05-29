@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Vansh (वंश) — Member Profile</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Outfit:wght@300..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=100">
+  <link rel="stylesheet" href="css/shared.css?v=101">
   <style>
     .main-area { background: transparent; }
 
@@ -271,7 +271,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js?v=12"></script>
   <script src="js/shared-auth.js?v=12"></script>
-  <script src="js/shared-data.js?v=12"></script>
+  <script src="js/shared-data.js?v=13"></script>
   <script src="js/shared-nav.js?v=12"></script>
   <script src="js/shared-tree.js"></script>
   <script>
@@ -288,10 +288,16 @@
         document.getElementById('profileContent').innerHTML = '<div style="text-align:center;padding:60px">Member not found.</div>';
         return;
       }
+      const tier = getRelationshipTier(loggedInId, member.id);
+      if (tier === 'STRANGER') {
+        document.getElementById('profileContent').innerHTML = '<div style="text-align:center;padding:60px">This profile is outside your family network. Access Denied.</div>';
+        return;
+      }
+
       const relToViewer = getSmartIndianRelation(familyMembers, loggedInId, member.id);
       
       const verifiedIcon = member.verified ? '<span class="text-green" style="font-size:20px; border-radius:50%; background:var(--green-dim); width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center;">✓</span>' : '';
-      const badgeHTML = relToViewer ? `<div class="pc-badge ${relToViewer.badge}" style="position:static;display:inline-block">${relToViewer.latin}</div>` : '';
+      const badgeHTML = relToViewer ? `<div class="pc-badge ${relToViewer.badge}" style="position:static;display:inline-block">${relToViewer.english}</div>` : '';
       
       let statusText = 'Single';
       if (member.spouse) {
@@ -299,24 +305,25 @@
         statusText = spouse ? `Married to ${spouse.firstName}` : 'Married';
       }
 
-      // Check if already connected
-      let isConnected = false;
+      // Check if directly connected for severing
+      let isConnectedDirectly = false;
       let me = getMemberById(loggedInId);
-      if (me && me.parents && me.parents.includes(member.id)) isConnected = true;
-      if (me && me.spouse === member.id) isConnected = true;
-      if (member.parents && member.parents.includes(loggedInId)) isConnected = true;
+      if (me && me.parents && me.parents.includes(member.id)) isConnectedDirectly = true;
+      if (me && me.spouse === member.id) isConnectedDirectly = true;
+      if (member.parents && member.parents.includes(loggedInId)) isConnectedDirectly = true;
       
       // Determine what buttons to show
       let actionButtons = '';
-      if (member.id === loggedInId) {
+      if (tier === 'SELF') {
         actionButtons = '<button class="btn" style="background:var(--royal-red);color:#fff;border:none;" onclick="openEditModal()">Edit My Profile</button>';
       } else {
-        let connectBtn = isConnected ? 
+        let connectBtn = isConnectedDirectly ? 
           `<button class="btn btn-outline" style="border-color:var(--text-muted);color:var(--text-muted);" onclick="if(confirm('Are you sure you want to sever this connection?')) { removeRelationshipLocally('${member.id}'); window.location.reload(); }">Sever Connection</button>` 
-          : `<button class="btn" style="background:var(--royal-red);color:#fff;border:none;" onclick="promptSendInvite('${member.id}')">Connect Relationship</button>`;
+          : `<button class="btn" style="background:var(--royal-red);color:#fff;border:none;" onclick="promptSendInvite('${member.id}')">Connect</button>`;
         
-        let msgBtn = `<button class="btn btn-gold" onclick="window.location.href='inbox.html?to=${member.id}'">Message</button>`;
-        actionButtons = `<div style="display:flex;gap:12px;">${connectBtn}${msgBtn}</div>`;
+        let msgBtn = `<button class="btn btn-gold" onclick="window.location.href='inbox.html?to=${member.id}'">Send Message</button>`;
+        let treeBtn = `<button class="btn btn-outline" onclick="window.location.href='tree.html?id=${member.id}'">View Tree</button>`;
+        actionButtons = `<div style="display:flex;gap:12px;flex-wrap:wrap;">${connectBtn}${msgBtn}${treeBtn}</div>`;
       }
       
       const heroHTML = `
@@ -382,6 +389,22 @@
                     <div class="info-val">${member.age} Yrs · ${member.gender}</div>
                   </div>
                 </div>
+                ${(tier === 'CLOSE_FAMILY' || tier === 'SELF') ? `
+                <div class="info-item">
+                  <svg class="info-icon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                  <div>
+                    <div class="info-label">Phone</div>
+                    <div class="info-val">${member.phone || 'Not specified'}</div>
+                  </div>
+                </div>
+                <div class="info-item">
+                  <svg class="info-icon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                  <div>
+                    <div class="info-label">Email</div>
+                    <div class="info-val">${member.email || 'Not specified'}</div>
+                  </div>
+                </div>
+                ` : ''}
               </div>
             </div>
 
@@ -533,7 +556,33 @@
       if (file) {
         const reader = new FileReader();
         reader.onload = function(evt) {
-          base64EditAvatarData = evt.target.result;
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 400;
+            const MAX_HEIGHT = 400;
+            let width = img.width;
+            let height = img.height;
+            
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            base64EditAvatarData = canvas.toDataURL('image/jpeg', 0.8);
+          };
+          img.src = evt.target.result;
         };
         reader.readAsDataURL(file);
       }

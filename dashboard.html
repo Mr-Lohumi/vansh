@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vansh (वंश) — Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Outfit:wght@300..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/shared.css?v=100">
+  <link rel="stylesheet" href="css/shared.css?v=101">
   <style>
     /* ── PRECISE BACKGROUNDS & LAYOUT ── */
     body { background-color: #fcf9f5 !important; margin: 0 !important; padding: 0 !important; }
@@ -256,7 +256,7 @@
                 </a>
                 <a href="events.html" class="feature-card">
                   <div class="fc-img-box"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
-                  <div class="fc-title">UPCOMING CEREMONIES</div>
+                  <div class="fc-title">UPCOMING CEREMONIES & EVENTS</div>
                   <div class="fc-val"><span id="fcEventCount">0</span> <span style="font-size:9px; color:#7c4c3a; font-family:'Outfit'; font-weight:600; text-transform:uppercase; margin-left:6px;">Upcoming</span></div>
                   <div class="fc-sub" id="fcEventText" style="margin-bottom:2px;">No upcoming events</div>
                   <div class="fc-sub" id="fcEventDate"></div>
@@ -409,15 +409,11 @@
         document.getElementById('hcBadges').innerHTML = badgesHtml;
       }
       
-      // Dynamic Upcoming Ceremonies
-      const today = new Date();
-      const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 15);
-      const nextMonthStr = nextMonth.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
       const fcEventCount = document.getElementById('fcEventCount');
       if (fcEventCount) {
-          fcEventCount.textContent = '1';
-          document.getElementById('fcEventText').textContent = 'Next: Kashi Yatra Event';
-          document.getElementById('fcEventDate').textContent = nextMonthStr;
+          fcEventCount.textContent = '0';
+          document.getElementById('fcEventText').textContent = 'No upcoming events';
+          document.getElementById('fcEventDate').textContent = '';
       }
       
       // Calculate Stats
@@ -484,7 +480,7 @@
       document.getElementById('recentList').innerHTML = rHtml;
       
       // Dynamic Member Growth Chart
-      const birthYears = realMembers.filter(m => m.birthYear).map(m => m.birthYear).sort((a,b)=>a-b);
+      const birthYears = realMembers.filter(m => m.age).map(m => new Date().getFullYear() - m.age).sort((a,b)=>a-b);
       if(birthYears.length > 0 && document.getElementById('growthLine')) {
         const minYear = birthYears[0];
         const maxYear = new Date().getFullYear();
@@ -509,11 +505,19 @@
       }
 
       // Dynamic Family Updates
-      const recentUpdates = [
-        { title: "New Branch Added", sub: "Verma Branch was established", time: "1d ago", icon: '<circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path>' },
-        { title: "Kashi Yatra Event", sub: "Ceremony scheduled", time: "2d ago", icon: '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>' },
-        { title: "1902 Land Deed", sub: "Document added to Records", time: "5d ago", icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline>' }
-      ];
+      const recentUpdates = [];
+      const latestMembers = [...realMembers].reverse().slice(0, 3);
+      latestMembers.forEach((m, idx) => {
+        recentUpdates.push({
+          title: "New Member",
+          sub: `${getFullName(m)} was added to the family`,
+          time: `Recent`,
+          icon: '<circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path>'
+        });
+      });
+      if (recentUpdates.length === 0) {
+        recentUpdates.push({ title: "Welcome to Vansh", sub: "Start building your family dynasty", time: "Just now", icon: '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>' });
+      }
       const updatesList = document.getElementById('updatesList');
       if (updatesList) {
           let updatesHtml = '';

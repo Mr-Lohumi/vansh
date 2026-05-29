@@ -125,11 +125,30 @@
   <script>
     if (!requireAuth()) throw '';
     
+    const authData = getAuthData();
+    const loggedInId = authData.userId;
+    const params = new URLSearchParams(location.search);
+    const targetId = params.get('id') || loggedInId;
+    
+    const tier = getRelationshipTier(loggedInId, targetId);
+    if (tier === 'STRANGER') {
+      document.querySelector('.dna-container').innerHTML = '<div style="text-align:center;padding:60px;color:var(--gold-bright);">This timeline is outside your family network. Access Denied.</div>';
+      throw new Error('Access Denied');
+    }
+    
+    const targetUser = getMemberById(targetId);
+    if (targetUser) {
+      document.querySelector('.dna-header h1').innerText = targetUser.firstName + "'s Lineage Helix";
+    }
+
     const currentYear = new Date().getFullYear();
     let events = [];
     
     // Add births
     familyMembers.forEach(m => {
+      // Filter for target user if viewing specific profile
+      if (params.has('id') && m.id !== targetId && (!m.parents || !m.parents.includes(targetId)) && m.spouse !== targetId) return;
+      
       if (m.age) {
         const birthYear = currentYear - m.age;
         events.push({
@@ -145,6 +164,8 @@
     // Add marriages (deduplicate)
     const processedMarriages = new Set();
     familyMembers.forEach(m => {
+      if (params.has('id') && m.id !== targetId && m.spouse !== targetId) return;
+      
       if (m.spouse && !processedMarriages.has(m.id)) {
         const spouse = getMemberById(m.spouse);
         if (spouse) {
