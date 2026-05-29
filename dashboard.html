@@ -275,58 +275,7 @@
                 </a>
               </div>
               
-              <!-- Charts Row -->
-              <div class="charts-row">
-                <div class="dash-card">
-                  <div class="dash-card-header" style="margin-bottom:0;">
-                    <div class="dash-card-title">FAMILY INSIGHTS</div>
-                  </div>
-                  <div style="height:1px; background: linear-gradient(90deg, rgba(220,179,129,0.6), transparent); margin: 12px 0 24px;"></div>
-                  <div class="donut-wrap">
-                    <div class="donut-chart">
-                      <svg viewBox="0 0 36 36">
-                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f5eedf" stroke-width="4"></path>
-                        <path id="donutPath" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#46171d" stroke-width="4" stroke-linecap="round" style="transition: stroke-dasharray 1.5s ease-out;"></path>
-                      </svg>
-                      <div class="donut-center">
-                        <div class="donut-val" id="donutVal">0%</div>
-                      </div>
-                    </div>
-                    <div class="donut-lbl">Profiles Verified</div>
-                    <div class="insights-stats">
-                      <div class="is-item">
-                        <div class="is-val" id="stUnder18">0</div>
-                        <div class="is-lbl">Under 18 Years</div>
-                      </div>
-                      <div class="is-item">
-                        <div class="is-val" id="stAbove40" style="color:#7c4c3a;">0</div>
-                        <div class="is-lbl">Above 40 Years</div>
-                      </div>
-                      <div class="map-bg"></div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="dash-card">
-                  <div class="dash-card-header" style="margin-bottom:0;">
-                    <div class="dash-card-title">MEMBER GROWTH</div>
-                  </div>
-                  <div style="height:1px; background: linear-gradient(90deg, rgba(220,179,129,0.6), transparent); margin: 12px 0 24px;"></div>
-                  <div class="area-chart-container">
-                    <svg viewBox="0 0 400 100" preserveAspectRatio="none" style="width:100%; height:100%; overflow:visible;">
-                      <defs>
-                        <linearGradient id="areaGrad" x1="0" x2="0" y1="0" y2="1">
-                          <stop offset="0%" stop-color="#46171d" stop-opacity="0.6"></stop>
-                          <stop offset="100%" stop-color="#46171d" stop-opacity="0.0"></stop>
-                        </linearGradient>
-                      </defs>
-                      <path id="growthArea" d="" fill="url(#areaGrad)"></path>
-                      <path id="growthLine" d="" fill="none" stroke="#46171d" stroke-width="3" stroke-linecap="round"></path>
-                      <circle id="growthDot" cx="400" cy="10" r="4" fill="#946941" opacity="0"></circle>
-                    </svg>
-                  </div>
-                </div>
-              </div>
+
             </div>
             
             <!-- ── RIGHT COLUMN ── -->
@@ -450,17 +399,11 @@
       if (document.getElementById('stVer')) document.getElementById('stVer').textContent = verified;
       if (document.getElementById('stVerSub')) document.getElementById('stVerSub').textContent = `${verPct}% Verified`;
       
-      let marriages = 0, under18 = 0, above40 = 0;
+      let marriages = 0;
       realMembers.forEach(m => {
         if (m.spouse) marriages++;
-        if (m.age) {
-          if (m.age < 18) under18++;
-          if (m.age > 40) above40++;
-        }
       });
       if (document.getElementById('stAll')) document.getElementById('stAll').textContent = Math.floor(marriages / 2);
-      if (document.getElementById('stUnder18')) document.getElementById('stUnder18').textContent = under18;
-      if (document.getElementById('stAbove40')) document.getElementById('stAbove40').textContent = above40;
       
       const surnames = new Set(realMembers.map(m => m.lastName).filter(n => n));
       const branchCount = Math.max(1, surnames.size);
@@ -499,10 +442,6 @@
       
       // Render Tree
       renderExactTree(validNet, minG, maxG);
-      
-      // Update Donut
-      document.getElementById('donutVal').textContent = `${verPct}%`;
-      setTimeout(() => { document.getElementById('donutPath').setAttribute('stroke-dasharray', `${verPct}, 100`); }, 500);
       
       // Recent Additions
       const recent = [...realMembers].reverse().slice(0, 3);
