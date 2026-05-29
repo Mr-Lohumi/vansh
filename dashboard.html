@@ -575,7 +575,7 @@
 
        // 1. Pending Relationship Requests
        if (typeof loadInvites === 'function') {
-         const invites = loadInvites().filter(i => i.status === 'pending' && i.targetUserId === myId);
+         const invites = loadInvites().filter(i => i.status === 'pending' && i.toUserId === myId);
          invites.forEach(inv => {
             feedItems.push({
                type: 'invite',

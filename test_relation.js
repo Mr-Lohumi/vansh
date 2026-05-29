@@ -19,17 +19,12 @@ familyMembers.push(user1, user2);
 
 global.getAuthData = () => ({ userId: 'u1' });
 
-const inviteRes = sendInvite('u1', 'u2', 'father');
-console.log("Invite sent:", inviteRes);
-
+sendInvite('u1', 'u2', 'father');
 const invites = JSON.parse(storage['vansh_invites_v1'] || '[]');
+acceptInvite(invites[0].id);
 
-if (invites.length > 0) {
-    const invite = invites[0];
-    const success = acceptInvite(invite.id);
-    console.log("Accept invite success:", success);
-    
-    console.log("After accept:");
-    console.log("Sender (u1):", familyMembers.find(f => f.id === 'u1'));
-    console.log("Receiver (u2):", familyMembers.find(f => f.id === 'u2'));
-}
+const rel1 = getSmartIndianRelation(familyMembers, 'u1', 'u2');
+console.log("u1 to u2 relation:", rel1);
+
+const rel2 = getSmartIndianRelation(familyMembers, 'u2', 'u1');
+console.log("u2 to u1 relation:", rel2);

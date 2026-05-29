@@ -455,9 +455,26 @@ async function processCloudInvite(invite, action) {
   }
 
   
+  
   saveFamilyData(familyMembers);
   
+  // Create a system post so it shows in the feed!
+  try {
+     const posts = JSON.parse(localStorage.getItem('vansh_posts_db') || '[]');
+     posts.unshift({
+        id: 'POST_' + Date.now() + Math.random().toString(36).substr(2,5),
+        owner_id: fromUser.id,
+        authorName: 'Family System',
+        content: `🌟 ${fromUser.firstName} and ${toUser.firstName} are now connected in the Family Tree!`,
+        created_at: Date.now(),
+        likes: [],
+        comments: []
+     });
+     localStorage.setItem('vansh_posts_db', JSON.stringify(posts));
+  } catch(e) {}
+  
   // Sync the updated users to cloud
+
   if (typeof syncMemberToCloud === 'function') {
     syncMemberToCloud(fromUser);
     syncMemberToCloud(toUser);

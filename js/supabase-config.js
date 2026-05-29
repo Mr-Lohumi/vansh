@@ -302,7 +302,7 @@ async function updateCloudInviteStatus(inviteId, status) {
   }
 }
 
-async function processCloudInvite(invite, action) {
+async function oldProcessCloudInvite_UNUSED(invite, action) {
   if (!window.supabaseClient) return false;
   
   // 1. Update cloud status
@@ -387,7 +387,7 @@ async function processCloudInvite(invite, action) {
   return true;
 }
 
-window.processCloudInvite = processCloudInvite;
+
 
 async function getCloudMemberById(userId) {
   if (!window.supabaseClient || !userId) return null;
@@ -615,7 +615,7 @@ window.sendCloudInvite = sendCloudInvite;
 window.fetchCloudInvites = fetchCloudInvites;
 window.fetchOutboundAcceptedInvites = fetchOutboundAcceptedInvites;
 window.updateCloudInviteStatus = updateCloudInviteStatus;
-window.processCloudInvite = processCloudInvite;
+
 window.fetchUserPosts = fetchUserPosts;
 window.fetchNetworkPosts = fetchNetworkPosts;
 window.createPost = createPost;
