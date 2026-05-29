@@ -735,3 +735,49 @@ function getRelationshipTier(meId, targetId) {
   return 'STRANGER';
 }
 
+// --- SCHEMA MIGRATION SCRIPT ---
+(function runSchemaMigration() {
+  const auth = typeof getAuthData === 'function' ? getAuthData() : null;
+  const myId = auth ? auth.userId : null;
+  if (!myId) return;
+
+  function migrateTable(key) {
+    let data = [];
+    try {
+      const saved = localStorage.getItem(key);
+      if (saved) data = JSON.parse(saved);
+    } catch(e) {}
+    
+    if (!Array.isArray(data) || data.length === 0) return;
+    
+    let changed = false;
+    data.forEach(item => {
+      if (!item.owner_id) {
+        item.owner_id = item.userId || myId; // Fallback to userId or current user
+        changed = true;
+      }
+      if (!item.created_at && item.id) {
+        // Extract timestamp from id like art_1734567890
+        const parts = item.id.split('_');
+        if (parts.length === 2 && !isNaN(parseInt(parts[1]))) {
+          item.created_at = parseInt(parts[1]);
+        } else {
+          item.created_at = Date.now(); // Fallback
+        }
+        changed = true;
+      }
+    });
+
+    if (changed) {
+      localStorage.setItem(key, JSON.stringify(data));
+      console.log(`[Migration] Backfilled owner_id and created_at in ${key}`);
+    }
+  }
+
+  // Run on startup
+  setTimeout(() => {
+    migrateTable('vansh_museum_db');
+    migrateTable('vansh_events_db');
+    migrateTable('vansh_traditions_v1');
+  }, 1000);
+})();

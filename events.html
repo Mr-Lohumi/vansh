@@ -392,8 +392,13 @@
       const btn = document.getElementById('saveEvBtn');
       
       const finalizeSave = (imgUrl) => {
+        const auth = typeof getAuthData === 'function' ? getAuthData() : null;
+        const loggedInId = auth ? auth.userId : 'unknown';
+        
         const newEv = {
           id: 'ev_' + Date.now(),
+          owner_id: loggedInId,
+          created_at: Date.now(),
           title: title,
           dateStr: dateStr,
           time: document.getElementById('evTime').value || "00:00",

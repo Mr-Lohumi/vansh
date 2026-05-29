@@ -383,7 +383,9 @@
       const finalizeSave = (imgUrl) => {
         const newArt = {
           id: 'art_' + Date.now(),
-          userId: loggedInId,
+          owner_id: loggedInId,
+          created_at: Date.now(),
+          userId: loggedInId, // keeping userId for backwards compatibility
           title: title,
           type: document.getElementById('artType').value,
           visibility: document.getElementById('artVis').value,
