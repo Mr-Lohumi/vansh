@@ -275,7 +275,14 @@
                 </a>
               </div>
               
-
+              <!-- Dynamic Family Activity Feed -->
+              <div class="activity-feed-header" style="margin-top: 32px; margin-bottom: 16px;">
+                <h3 style="font-family: 'Cinzel', serif; font-size: 20px; color: #3c1218; margin: 0; text-transform: uppercase;">Family Activity Stream</h3>
+                <div style="height:1px; background: linear-gradient(90deg, rgba(220,179,129,0.6), transparent); margin-top: 12px;"></div>
+              </div>
+              <div id="dynamicActivityFeed" class="activity-feed-container" style="display: flex; flex-direction: column; gap: 16px; padding-bottom: 40px;">
+                <!-- Feed Cards Go Here -->
+              </div>
             </div>
             
             <!-- ── RIGHT COLUMN ── -->
@@ -437,6 +444,78 @@
               fcVaultCount.textContent = artifacts.length.toString();
           } catch(e) {
               fcVaultCount.textContent = '0';
+          }
+      }
+      
+      // Render Activity Stream
+      const feedContainer = document.getElementById('dynamicActivityFeed');
+      if (feedContainer) {
+          let feedItems = [];
+          
+          // 1. Get recent members
+          const recentMem = [...realMembers].reverse().slice(0, 3);
+          recentMem.forEach(m => {
+             feedItems.push({
+                 type: 'member',
+                 title: `New Family Member`,
+                 desc: `${getFullName(m)} was recently added to the family network.`,
+                 icon: '👤',
+                 link: `profile.html?id=${m.id}`,
+                 timestamp: Date.now() - Math.random() * 86400000 // random time in last 24h
+             });
+          });
+          
+          // 2. Get recent artifacts
+          try {
+             let museumData = localStorage.getItem('vansh_museum_db');
+             let artifacts = museumData ? JSON.parse(museumData) : [];
+             artifacts.slice(0, 3).forEach(art => {
+                 feedItems.push({
+                     type: 'museum',
+                     title: `New Heritage Record`,
+                     desc: `A new ${art.type.toLowerCase()} "${art.title}" was deposited in the museum.`,
+                     icon: '🏛️',
+                     link: 'museum.html',
+                     timestamp: parseInt(art.id.split('_')[1]) || (Date.now() - Math.random() * 86400000)
+                 });
+             });
+          } catch(e) {}
+          
+          // 3. Get upcoming events
+          try {
+             let eventsData = localStorage.getItem('vansh_events_db');
+             let evs = eventsData ? JSON.parse(eventsData) : [];
+             evs.slice(0, 2).forEach(ev => {
+                 feedItems.push({
+                     type: 'event',
+                     title: `Upcoming Event Announcement`,
+                     desc: `The royal gathering "${ev.title}" is scheduled for ${ev.dateStr}.`,
+                     icon: '📅',
+                     link: 'events.html',
+                     timestamp: parseInt(ev.id.split('_')[1]) || (Date.now() - Math.random() * 86400000)
+                 });
+             });
+          } catch(e) {}
+          
+          // Sort items randomly or pseudo-chronologically
+          feedItems.sort((a,b) => b.timestamp - a.timestamp);
+          
+          if (feedItems.length === 0) {
+              feedContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted);">No recent activity in your network.</div>`;
+          } else {
+              let html = '';
+              feedItems.forEach(item => {
+                  html += `
+                    <div class="dash-card" style="display:flex; flex-direction:row; align-items:center; gap:16px; padding:20px; cursor:pointer; transition:transform 0.2s;" onclick="window.location.href='${item.link}'" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                      <div style="width:48px; height:48px; background:var(--royal-red-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0;">${item.icon}</div>
+                      <div>
+                        <div style="font-family:'Cinzel', serif; font-weight:700; color:var(--text); font-size:16px; margin-bottom:4px;">${item.title}</div>
+                        <div style="font-size:13px; color:var(--text-secondary); line-height:1.4;">${item.desc}</div>
+                      </div>
+                    </div>
+                  `;
+              });
+              feedContainer.innerHTML = html;
           }
       }
       
