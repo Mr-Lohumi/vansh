@@ -248,11 +248,13 @@
               
               <!-- Feature Cards Row -->
               <div class="feature-row">
-                <a href="vault.html" class="feature-card">
+                <a href="museum.html" class="feature-card">
                   <div class="fc-img-box"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>
                   <div class="fc-title">HERITAGE RECORDS</div>
-                  <div class="fc-sub">Preserve and manage your family documents, stories and historical records.</div>
-                  <div class="fc-link">Explore Records ➔</div>
+                  <div class="fc-val"><span id="fcVaultCount">0</span></div>
+                  <div class="fc-sub" style="margin-bottom:2px;">Artifacts preserved</div>
+                  <div class="fc-sub">Explore your family history</div>
+                  <div class="fc-link">Explore Museum ➔</div>
                 </a>
                 <a href="events.html" class="feature-card">
                   <div class="fc-img-box"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
@@ -266,9 +268,9 @@
                 <a href="timeline.html" class="feature-card">
                   <div class="fc-img-box"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
                   <div class="fc-title">LEGACY TIMELINE</div>
-                  <div class="fc-val" id="fcTime">7</div>
+                  <div class="fc-val" id="fcTime">0</div>
                   <div class="fc-sub" style="margin-bottom:2px;">Generations</div>
-                  <div class="fc-sub">From 1920 to Present</div>
+                  <div class="fc-sub" id="fcTimeRange">From Present to Present</div>
                   <div class="fc-link">Explore Timeline ➔</div>
                 </a>
               </div>
@@ -473,6 +475,27 @@
       if (document.getElementById('stGen')) document.getElementById('stGen').textContent = totalGen;
       if (document.getElementById('tsGen')) document.getElementById('tsGen').textContent = totalGen;
       if (document.getElementById('fcTime')) document.getElementById('fcTime').textContent = totalGen;
+      
+      const fcTimeRange = document.getElementById('fcTimeRange');
+      if (fcTimeRange) {
+          const birthYearsCalc = realMembers.filter(m => m.age).map(m => new Date().getFullYear() - m.age).sort((a,b)=>a-b);
+          if (birthYearsCalc.length > 0) {
+              fcTimeRange.textContent = `From ${birthYearsCalc[0]} to Present`;
+          } else {
+              fcTimeRange.textContent = `From Present to Present`;
+          }
+      }
+      
+      const fcVaultCount = document.getElementById('fcVaultCount');
+      if (fcVaultCount) {
+          try {
+              let museumData = localStorage.getItem('vansh_museum_db');
+              let artifacts = museumData ? JSON.parse(museumData) : [];
+              fcVaultCount.textContent = artifacts.length.toString();
+          } catch(e) {
+              fcVaultCount.textContent = '0';
+          }
+      }
       
       // Render Tree
       renderExactTree(validNet, minG, maxG);
