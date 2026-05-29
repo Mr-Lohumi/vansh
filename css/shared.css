@@ -389,7 +389,7 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 
 /* ── MARRIAGE CONNECTOR ── */
 .marriage-link { display: flex; align-items: center; height: 60px; }
-.marriage-line { width: 50px; height: 2px; background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-dim)); position: relative; }
+.marriage-line { width: 60px; height: 2px; background: var(--gold); position: relative; }
 .marriage-line::after {
   content: '💍'; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-size: 14px; background: var(--bg-card); padding: 4px; border-radius: 50%; border: 1px solid var(--gold-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }

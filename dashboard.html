@@ -538,23 +538,44 @@
        const nodesContainer = document.getElementById('ctNodes');
        if(!nodesContainer) return;
        
-       let rootMembers = net.filter(m => m.gen === minG).slice(0, 1); // 1 root for layout
+       let rootMembers = net.filter(m => m.gen === minG);
        if(rootMembers.length === 0) return;
-       let r = rootMembers[0];
        
-       const avaStyleRoot = r.imageUrl ? `background-image:url('${r.imageUrl}');color:transparent;` : '';
+       // Try to find the logged-in user or the primary patriarch
+       const auth = getAuthData();
+       let primary = rootMembers.find(m => m.id === auth?.userId) || rootMembers[0];
+       let spouse = primary.spouse ? rootMembers.find(m => m.id === primary.spouse) : null;
        
-       rootContainer.innerHTML = `
-          <div style="position:relative; display:flex; justify-content:center; width:100%; margin-bottom:16px;">
-             <a href="tree.html?id=${r.id}" class="ct-node" id="ctn-${r.id}" style="position:relative; width:auto;">
-                <div class="ct-ava ${r.gender==='F'?'female':''} ${r.deceased?'deceased':''}" style="width:64px; height:64px; font-size:22px; ${avaStyleRoot}">${r.imageUrl ? '' : getInitials(r)}</div>
-                <div style="position:absolute; left:calc(100% + 16px); top:50%; transform:translateY(-50%); display:flex; flex-direction:column; align-items:flex-start; text-align:left; width:max-content; pointer-events:none;">
-                     <div style="font-family:'Cinzel', serif; font-size:14px; font-weight:700; color:#f4d772; text-shadow: 0 0 10px rgba(244,215,114,0.6); text-transform:uppercase;">${r.firstName} ${r.lastName||''}</div>
-                     <div style="font-size:10px; color:#f4d772; opacity: 0.8; text-shadow: 0 0 6px rgba(244,215,114,0.4);">Family Administrator</div>
-                 </div>
+       function buildMiniCard(r) {
+         const avaStyle = r.imageUrl ? `background-image:url('${r.imageUrl}');color:transparent;` : '';
+         return `
+             <a href="tree.html?id=${r.id}" class="ct-node" id="ctn-${r.id}" style="position:relative; width:auto; text-decoration:none; display:flex; flex-direction:column; align-items:center;">
+                <div class="ct-ava ${r.gender==='F'?'female':''} ${r.deceased?'deceased':''}" style="width:64px; height:64px; font-size:22px; ${avaStyle}; border:2px solid var(--gold); border-radius:50%; display:flex; justify-content:center; align-items:center; background-color:var(--bg-elevated); color:var(--royal-red); box-shadow:0 4px 10px rgba(0,0,0,0.2); z-index:2;">${r.imageUrl ? '' : getInitials(r)}</div>
+                <div style="margin-top:8px; font-family:'Cinzel', serif; font-size:13px; font-weight:700; color:#f4d772; text-shadow: 0 0 10px rgba(244,215,114,0.6); text-transform:uppercase; text-align:center;">${r.firstName} ${r.lastName||''}</div>
              </a>
-          </div>
-       `;
+         `;
+       }
+       
+       let rootHtml = `<div style="position:relative; display:flex; justify-content:center; align-items:center; width:100%; margin-bottom:24px;">`;
+       
+       if (spouse) {
+         // Render as a couple
+         const m1 = primary.gender === 'M' ? primary : spouse;
+         const m2 = primary.gender === 'M' ? spouse : primary;
+         rootHtml += `
+            <div style="display:flex; align-items:center; gap:0;">
+              ${buildMiniCard(m1)}
+              <div style="width:40px; height:2px; background:var(--gold); position:relative; margin-top:-20px;">
+                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:#2a0608; border:1px solid var(--gold); border-radius:50%; padding:2px; font-size:10px;">💍</div>
+              </div>
+              ${buildMiniCard(m2)}
+            </div>
+         `;
+       } else {
+         rootHtml += buildMiniCard(primary);
+       }
+       rootHtml += `</div>`;
+       rootContainer.innerHTML = rootHtml;
        
        let html = '';
        const renderMax = Math.min(maxG, minG + 3);
