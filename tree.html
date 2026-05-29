@@ -292,61 +292,63 @@
             <select id="addRelation" class="form-select" onchange="onRelationChange(this.value)">
               <option value="">— Select Relation —</option>
               <optgroup label="Direct Family">
-                <option value="papa">Papa (Father)</option>
-                <option value="mummy">Mummy (Mother)</option>
-                <option value="bhai">Bhai (Brother)</option>
-                <option value="behen">Behen (Sister)</option>
-                <option value="beta">Beta (Son)</option>
-                <option value="beti">Beti (Daughter)</option>
-                <option value="pati">Pati (Husband)</option>
-                <option value="patni">Patni (Wife)</option>
+                <option value="father">Father</option>
+                <option value="mother">Mother</option>
+                <option value="son">Son</option>
+                <option value="daughter">Daughter</option>
+                <option value="brother">Brother</option>
+                <option value="sister">Sister</option>
+                <option value="husband">Husband</option>
+                <option value="wife">Wife</option>
               </optgroup>
               <optgroup label="Grandparents">
-                <option value="dada">Dada (Paternal Grandfather)</option>
-                <option value="dadi">Dadi (Paternal Grandmother)</option>
-                <option value="nana">Nana (Maternal Grandfather)</option>
-                <option value="nani">Nani (Maternal Grandmother)</option>
+                <option value="dada">Dada (Father's Father)</option>
+                <option value="dadi">Dadi (Father's Mother)</option>
+                <option value="nana">Nana (Mother's Father)</option>
+                <option value="nani">Nani (Mother's Mother)</option>
               </optgroup>
-              <optgroup label="Paternal Side">
-                <option value="chacha">Chacha (Paternal Uncle)</option>
-                <option value="chachi">Chachi (Paternal Aunt-in-law)</option>
-                <option value="bua">Bua (Paternal Aunt)</option>
-                <option value="fufa">Fufa (Bua's Husband)</option>
-                <option value="chachera_bhai">Chachera Bhai (Paternal Cousin Brother)</option>
-                <option value="chacheri_behen">Chacheri Behen (Paternal Cousin Sister)</option>
+              <optgroup label="Paternal Uncles / Aunts">
+                <option value="chacha">Chacha (Father's Brother)</option>
+                <option value="chachi">Chachi (Chacha's Wife)</option>
+                <option value="bua">Bua (Father's Sister)</option>
+                <option value="phupha">Phupha (Bua's Husband)</option>
               </optgroup>
-              <optgroup label="Maternal Side">
-                <option value="mama">Mama (Maternal Uncle)</option>
-                <option value="mami">Mami (Maternal Aunt-in-law)</option>
-                <option value="masi">Masi (Maternal Aunt)</option>
-                <option value="masad">Masad (Masi's Husband)</option>
-                <option value="mamere_bhai">Mamere Bhai (Maternal Cousin Brother)</option>
-                <option value="masere_behen">Masere Behen (Maternal Cousin Sister)</option>
+              <optgroup label="Maternal Uncles / Aunts">
+                <option value="mama">Mama (Mother's Brother)</option>
+                <option value="mami">Mami (Mama's Wife)</option>
+                <option value="mausi">Mausi (Mother's Sister)</option>
+                <option value="mausa">Mausa (Mausi's Husband)</option>
+              </optgroup>
+              <optgroup label="Cousins">
+                <option value="cousin_brother_pat">Cousin Brother (paternal)</option>
+                <option value="cousin_sister_pat">Cousin Sister (paternal)</option>
+                <option value="cousin_brother_mat">Cousin Brother (maternal)</option>
+                <option value="cousin_sister_mat">Cousin Sister (maternal)</option>
+              </optgroup>
+              <optgroup label="Nieces / Nephews">
+                <option value="bhatija">Bhatija (Brother's Son)</option>
+                <option value="bhatiji">Bhatiji (Brother's Daughter)</option>
+                <option value="bhanja">Bhanja (Sister's Son)</option>
+                <option value="bhanji">Bhanji (Sister's Daughter)</option>
               </optgroup>
               <optgroup label="In-Laws">
                 <option value="sasur">Sasur (Father-in-law)</option>
                 <option value="saas">Saas (Mother-in-law)</option>
-                <option value="devar">Devar (Husband's Brother)</option>
-                <option value="jethani">Jethani (Husband's Elder Brother's Wife)</option>
-                <option value="sala">Sala (Wife's Brother)</option>
-                <option value="sali">Sali (Wife's Sister)</option>
+                <option value="saala">Saala (Wife's Brother)</option>
+                <option value="saali">Saali (Wife's Sister)</option>
+                <option value="devar_jeth">Devar / Jeth (Husband's Brother)</option>
+                <option value="nanad">Nanad (Husband's Sister)</option>
+                <option value="bahu">Bahu (Son's Wife)</option>
+                <option value="damaad">Damaad (Daughter's Husband)</option>
               </optgroup>
             </select>
           </div>
-          <div class="form-row" id="parentSpouseRow">
-            <div class="form-group">
-              <label class="form-label">Parent / Connected To</label>
-              <select id="addParent" class="form-select">
-                <option value="">None</option>
-              </select>
-            </div>
-            <div class="form-group" id="spouseGroup">
-              <label class="form-label">Spouse (if applicable)</label>
-              <select id="addSpouse" class="form-select">
-                <option value="">None</option>
-              </select>
-            </div>
+          <div id="addRelationContext" style="display:none; margin-top:16px; padding:12px; background:rgba(212,175,55,0.05); border:1px dashed var(--gold); border-radius:8px;">
+            <!-- Dynamic Context (prerequisite warnings or selection dropdowns) injected here -->
           </div>
+          <!-- Hidden inputs for legacy compatibility -->
+          <input type="hidden" id="addParent" value="">
+          <input type="hidden" id="addSpouse" value="">
         </div>
 
         <!-- Section 4: Verification Status -->
@@ -439,6 +441,16 @@
     function openAddModal() {
       document.getElementById('addModalOverlay').classList.add('active');
     }
+    function openAddModalWithPreselect(relationVal, relatedToId) {
+      document.getElementById('addRelation').value = relationVal;
+      onRelationChange(relationVal);
+      // If it opened an ambiguous selection dropdown, select the target!
+      setTimeout(() => {
+         const ambig = document.getElementById('addAmbiguousSelection');
+         if (ambig && relatedToId) ambig.value = relatedToId;
+      }, 50);
+      openAddModal();
+    }
     function closeAddModal() {
       document.getElementById('addModalOverlay').classList.remove('active');
       document.getElementById('addFn').value = '';
@@ -466,19 +478,43 @@
       document.getElementById('addAgeDisplay').textContent = '(' + age + ' yrs)';
     }
 
-    // ── Relation change: auto-suggest parent slot ──
+    // ── Relation change: auto-suggest context ──
     function onRelationChange(val) {
       const auth = getAuthData();
       const myId = auth ? auth.userId : null;
-
-      // For spouse-type relations, pre-select spouse slot
-      if (['pati', 'patni'].includes(val)) {
-        document.getElementById('addParent').value = '';
-        document.getElementById('addSpouse').value = myId || '';
-      } else if (['beta', 'beti'].includes(val)) {
-        document.getElementById('addParent').value = myId || '';
-      } else if (['papa', 'mummy', 'dada', 'dadi', 'nana', 'nani'].includes(val)) {
-        document.getElementById('addParent').value = '';
+      if (!myId || !val) {
+         document.getElementById('addRelationContext').style.display = 'none';
+         return;
+      }
+      
+      const ctxContainer = document.getElementById('addRelationContext');
+      if (typeof checkRelationPrerequisites === 'function') {
+         const result = checkRelationPrerequisites(myId, val);
+         if (result.status === 'missing') {
+             ctxContainer.style.display = 'block';
+             ctxContainer.innerHTML = `
+                 <div style="font-size:13px; color:var(--royal-red); font-weight:600; font-family:'Outfit', sans-serif;">
+                     ⚠️ Please add your ${result.missingLabel} first.
+                 </div>
+                 <button type="button" class="fc-btn" style="margin-top:8px;" onclick="document.getElementById('addRelation').value='${result.quickAddVal}'; onRelationChange('${result.quickAddVal}');">
+                     + Add ${result.missingLabel}
+                 </button>
+             `;
+         } else if (result.status === 'ambiguous') {
+             ctxContainer.style.display = 'block';
+             let opts = result.options.map(o => `<option value="${o.id}">${o.label}</option>`).join('');
+             ctxContainer.innerHTML = `
+                 <div style="font-size:12px; color:var(--text); font-weight:600; margin-bottom:6px; font-family:'Outfit', sans-serif;">
+                     ${result.message}
+                 </div>
+                 <select id="addAmbiguousSelection" class="form-select" style="background:#fff;">
+                     ${opts}
+                 </select>
+             `;
+         } else {
+             ctxContainer.style.display = 'none';
+             ctxContainer.innerHTML = '';
+         }
       }
     }
 
@@ -512,10 +548,12 @@
       const caste    = document.getElementById('addCaste').value;
       const native   = document.getElementById('addNative').value.trim();
       const occ      = document.getElementById('addOccupation').value.trim();
-      const parent   = document.getElementById('addParent').value;
-      const spouse   = document.getElementById('addSpouse').value;
       const verified = document.getElementById('addVerified').value === 'true';
       const imageUrl = window._addMemberAvatarData || '';
+
+      const ambiguousSelect = document.getElementById('addAmbiguousSelection');
+      const auth = getAuthData();
+      const relatedTo = ambiguousSelect ? ambiguousSelect.value : (auth ? auth.userId : null);
 
       addFamilyMember({
         firstName:   fn,
@@ -527,10 +565,9 @@
         caste:       caste,
         nativePlace: native,
         occupation:  occ || 'Family Member',
-        parents:     parent ? [parent] : [],
-        spouse:      spouse || null,
         verified:    verified,
         relation:    relation,
+        relatedTo:   relatedTo,
         imageUrl:    imageUrl,
         bio:         verified ? 'Dynasty member — verified.' : 'Dynasty member — awaiting verification.',
       });
