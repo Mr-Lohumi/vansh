@@ -411,9 +411,29 @@
       
       const fcEventCount = document.getElementById('fcEventCount');
       if (fcEventCount) {
-          fcEventCount.textContent = '0';
-          document.getElementById('fcEventText').textContent = 'No upcoming events';
-          document.getElementById('fcEventDate').textContent = '';
+          try {
+              let eventsData = localStorage.getItem('vansh_events_db');
+              let events = eventsData ? JSON.parse(eventsData) : [];
+              events = events.filter(e => new Date(e.dateStr) >= new Date(new Date().setHours(0,0,0,0)));
+              events.sort((a,b) => new Date(a.dateStr) - new Date(b.dateStr));
+              
+              if (events.length > 0) {
+                  fcEventCount.textContent = events.length.toString();
+                  document.getElementById('fcEventText').textContent = 'Next: ' + events[0].title;
+                  
+                  const d = new Date(events[0].dateStr);
+                  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                  document.getElementById('fcEventDate').textContent = d.getDate() + ' ' + monthNames[d.getMonth()] + ' ' + d.getFullYear();
+              } else {
+                  fcEventCount.textContent = '0';
+                  document.getElementById('fcEventText').textContent = 'No upcoming events';
+                  document.getElementById('fcEventDate').textContent = '';
+              }
+          } catch(e) {
+              fcEventCount.textContent = '0';
+              document.getElementById('fcEventText').textContent = 'No upcoming events';
+              document.getElementById('fcEventDate').textContent = '';
+          }
       }
       
       // Calculate Stats
