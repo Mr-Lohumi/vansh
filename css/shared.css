@@ -88,9 +88,8 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: 'Cormorant Garamond', sans-serif;
-  font-weight: 500;
-  font-size: 17px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400; font-size: 14px;
   background: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
@@ -187,7 +186,7 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
   box-shadow: 0 2px 10px var(--gold);
   border-radius: 2px;
 }
-.sidebar-brand .sub { font-size: 10px; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 4px; font-family: 'Cormorant Garamond', sans-serif; }
+.sidebar-brand .sub { font-size: 10px; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 4px; font-family: 'Outfit', sans-serif; }
 
 .sidebar-nav { flex: 1; padding: 16px; overflow-y: auto; }
 .nav-group-card {
@@ -247,7 +246,7 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 }
 .topbar-left { display: flex; align-items: center; gap: 16px; }
 .topbar-hamburger { display: none; background: none; border: none; color: var(--text-secondary); padding: 6px; cursor: pointer; }
-.topbar-breadcrumb { font-size: 14px; color: var(--text-muted); font-family: 'Cormorant Garamond', sans-serif; letter-spacing: 0.5px; }
+.topbar-breadcrumb { font-size: 14px; color: var(--text-muted); font-family: 'Outfit', sans-serif; letter-spacing: 0.5px; }
 .topbar-breadcrumb b { color: var(--royal-red-dark); font-weight: 700; font-family: 'Cinzel', serif; letter-spacing: 1px; }
 .topbar-right { display: flex; align-items: center; gap: 12px; }
 .topbar-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--royal-red); animation: pulse 2s infinite; box-shadow: 0 0 8px var(--royal-red-glow); }
@@ -331,7 +330,7 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 /* ── UI COMPONENTS ── */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  font-family: 'Cormorant Garamond', sans-serif; font-size: 14px; font-weight: 500;
+  font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 500;
   padding: 10px 24px; border-radius: var(--radius-sm); border: 1px solid transparent;
   cursor: pointer; transition: all .3s; white-space: nowrap; text-decoration: none;
 }
