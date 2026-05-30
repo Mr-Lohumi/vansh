@@ -111,7 +111,7 @@ function buildMarriageHTML(m1, m2, currentPOV, onNodeClickName, isHead = false) 
      if (!rel || !rel.english) return false;
      return directs.some(d => rel.english.toLowerCase().includes(d.toLowerCase()));
   }
-  const isSolid = isDirect(m1.id) && isDirect(m2.id);
+  const isSolid = true;
   const lineStyle = isSolid ? 'border-top: 2px solid var(--gold);' : 'border-top: 1.5px dashed var(--gold); opacity: 0.8;';
 
   return `
@@ -123,97 +123,75 @@ function buildMarriageHTML(m1, m2, currentPOV, onNodeClickName, isHead = false) 
   `;
 }
 
-function getBloodlineNetwork(currentPOV) {
-  const pov = getMemberById(currentPOV);
-  if (!pov) return [];
+function findRootAncestor(startId) {
+  let curr = getMemberById(startId);
+  if (!curr) return null;
+  let visited = new Set();
   
-  // Bloodline: Self, Parents, Siblings, Children, Grandchildren (if applicable), and Spouses of these.
-  // CRITICAL FIX: Do NOT include in-laws' parents in the main view to keep the hierarchy clean.
-  
-  const visible = new Set();
-  visible.add(currentPOV);
-  if (pov.spouse) visible.add(pov.spouse);
-  
-  // Add Parents
-  if (pov.parents) {
-    pov.parents.forEach(pid => {
-      visible.add(pid);
-      const p = getMemberById(pid);
-      if(p && p.spouse) visible.add(p.spouse);
-    });
-  }
-  
-  // Add Siblings (shared parents)
-  familyMembers.forEach(m => {
-    if (m.id === currentPOV) return;
-    if (!m.parents || !pov.parents) return;
-    const isSibling = m.parents.some(pid => pov.parents.includes(pid));
-    if (isSibling) {
-      visible.add(m.id);
-      if (m.spouse) visible.add(m.spouse);
+  while (curr && curr.parents && curr.parents.length > 0) {
+    if (visited.has(curr.id)) break;
+    visited.add(curr.id);
+    let parentNode = curr.parents.map(id => getMemberById(id)).find(p => p && p.gender === 'M');
+    if (!parentNode) {
+      parentNode = getMemberById(curr.parents[0]);
     }
-  });
-  
-  // Add Children
-  familyMembers.forEach(m => {
-    if (m.parents && (m.parents.includes(currentPOV) || (pov.spouse && m.parents.includes(pov.spouse)))) {
-      visible.add(m.id);
-      if (m.spouse) visible.add(m.spouse);
-    }
-  });
-  
-  let network = Array.from(visible).map(id => getMemberById(id)).filter(m => m);
-  
-  // Dynamically assign correct generations relative to POV
-  network.forEach(m => m._tempGen = undefined);
-  pov._tempGen = 10; // Start at 10 to avoid negative generations
-  
-  let queue = [pov];
-  while(queue.length > 0) {
-    let curr = queue.shift();
-    
-    // Parents
-    if (curr.parents) {
-      curr.parents.forEach(pid => {
-        let p = network.find(m => m.id === pid);
-        if (p && p._tempGen === undefined) {
-          p._tempGen = curr._tempGen - 1;
-          queue.push(p);
-        }
-      });
-    }
-    
-    // Children
-    let children = network.filter(m => m.parents && m.parents.includes(curr.id));
-    children.forEach(c => {
-      if (c._tempGen === undefined) {
-        c._tempGen = curr._tempGen + 1;
-        queue.push(c);
-      }
-    });
-    
-    // Spouse
-    if (curr.spouse) {
-      let s = network.find(m => m.id === curr.spouse);
-      if (s && s._tempGen === undefined) {
-        s._tempGen = curr._tempGen;
-        queue.push(s);
-      }
-    }
-  }
-  
-  let minTempGen = Math.min(...network.map(m => m._tempGen !== undefined ? m._tempGen : Infinity));
-  if (minTempGen === Infinity) minTempGen = 10;
-  
-  network.forEach(m => {
-    if (m._tempGen !== undefined) {
-      m.gen = m._tempGen - minTempGen + 1;
+    if (parentNode) {
+      curr = parentNode;
     } else {
-      // Fallback for orphaned/disconnected nodes caught in the visible set
-      m.gen = 10 - minTempGen + 1;
+      break;
     }
-  });
+  }
+  return curr;
+}
+
+function getBloodlineNetwork(currentPOV) {
+  const root = findRootAncestor(currentPOV);
+  if (!root) return [];
   
+  const queue = [{ id: root.id, gen: 1 }];
+  const processed = new Set();
+  let network = [];
+  
+  while (queue.length > 0) {
+    const { id, gen } = queue.shift();
+    if (processed.has(id)) continue;
+    processed.add(id);
+    
+    const m = getMemberById(id);
+    if (!m) continue;
+    
+    m.gen = gen;
+    network.push(m);
+    
+    if (m.spouse) {
+      const sp = getMemberById(m.spouse);
+      if (sp && !processed.has(sp.id)) {
+        sp.gen = gen;
+        network.push(sp);
+        processed.add(sp.id);
+      }
+    }
+    // Also check reciprocal spouses in case DB link is 1-way
+    const reciprocalSpouses = familyMembers.filter(f => f.spouse === m.id);
+    reciprocalSpouses.forEach(sp => {
+      if (!processed.has(sp.id)) {
+        sp.gen = gen;
+        network.push(sp);
+        processed.add(sp.id);
+      }
+    });
+    
+    const children = familyMembers.filter(child => {
+       if (!child.parents) return false;
+       return child.parents.includes(m.id) || (m.spouse && child.parents.includes(m.spouse));
+    });
+    
+    children.forEach(c => {
+       if (!processed.has(c.id)) {
+          queue.push({ id: c.id, gen: gen + 1 });
+       }
+    });
+  }
   return network;
 }
 
@@ -364,7 +342,7 @@ function drawTreeConnections(containerId, canvasId, visibleMembers, currentPOV) 
     targetCenters.forEach(t => {
       // If source is direct AND target child is direct -> solid. Else -> dotted.
       const isTargetDirect = isDirect(t.id);
-      const isSolid = sourceDirect && isTargetDirect;
+      const isSolid = true; // Vanshavali uses solid lines for all direct descendants
       
       let pString = '';
 
