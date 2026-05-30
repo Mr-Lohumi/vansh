@@ -108,7 +108,8 @@ function buildMarriageHTML(m1, m2, currentPOV, onNodeClickName, isHead = false) 
      const rel = getSmartIndianRelation(familyMembers, currentPOV, id);
      if (!rel) return false;
      const directs = ['Father', 'Mother', 'Son', 'Daughter', 'Brother', 'Sister', 'Husband', 'Wife', 'Self', 'Parent', 'Child', 'Spouse', 'Sibling'];
-     return directs.includes(rel.english);
+     if (!rel || !rel.english) return false;
+     return directs.some(d => rel.english.toLowerCase().includes(d.toLowerCase()));
   }
   const isSolid = isDirect(m1.id) && isDirect(m2.id);
   const lineStyle = isSolid ? 'border-top: 2px solid var(--gold);' : 'border-top: 1.5px dashed var(--gold); opacity: 0.8;';
@@ -324,7 +325,8 @@ function drawTreeConnections(containerId, canvasId, visibleMembers, currentPOV) 
      const rel = getSmartIndianRelation(familyMembers, currentPOV, id);
      if (!rel) return false;
      const directs = ['Father', 'Mother', 'Son', 'Daughter', 'Brother', 'Sister', 'Husband', 'Wife', 'Self', 'Parent', 'Child', 'Spouse', 'Sibling'];
-     return directs.includes(rel.english);
+     if (!rel || !rel.english) return false;
+     return directs.some(d => rel.english.toLowerCase().includes(d.toLowerCase()));
   }
   
   function getCenter(id, anchor='top') {
@@ -424,7 +426,7 @@ function drawTreeConnections(containerId, canvasId, visibleMembers, currentPOV) 
     <path d="${solidPathString}" class="glow-pulse-overlay" />
     
     <!-- Dotted Indirect Lines -->
-    <path d="${dottedPathString}" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="3, 4" opacity="0.8" />
+    <path d="${dottedPathString}" fill="none" stroke="#f4d772" stroke-width="2.5" stroke-dasharray="6, 6" opacity="0.95" filter="drop-shadow(0 0 4px rgba(244,215,114,0.6))" />
     
     ${orbsString}
   `;
