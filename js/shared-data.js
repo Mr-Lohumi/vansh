@@ -970,49 +970,53 @@ function getSmartIndianRelation(allMembers, activeNodeId, targetNodeId) {
 
   // Direct paths
   const pA = parents(activeNodeId);
-  if (pA.includes(targetNodeId)) return bg === 'M' ? R('पिताजी','Pitaji','Father','parent','badge-parent') : R('माताजी','Mataji','Mother','parent','badge-maternal');
+  if (pA.includes(targetNodeId)) return bg === 'M' ? R('पिताजी','Pitaji','Father','parent','badge-parent') : (bg === 'F' ? R('माताजी','Mataji','Mother','parent','badge-maternal') : R('माता-पिता','Parent','Parent','parent','badge-parent'));
   
   const cA = children(activeNodeId);
-  if (cA.includes(targetNodeId)) return bg === 'M' ? R('बेटा','Beta','Son','child','badge-child') : R('बेटी','Beti','Daughter','child','badge-child');
+  if (cA.includes(targetNodeId)) return bg === 'M' ? R('बेटा','Beta','Son','child','badge-child') : (bg === 'F' ? R('बेटी','Beti','Daughter','child','badge-child') : R('बच्चा','Child','Child','child','badge-child'));
   
   const sA = spouse(activeNodeId);
-  if (sA === targetNodeId) return bg === 'M' ? R('पति','Pati','Husband','spouse','badge-spouse') : R('पत्नी','Patni','Wife','spouse','badge-spouse');
+  if (sA === targetNodeId) return bg === 'M' ? R('पति','Pati','Husband','spouse','badge-spouse') : (bg === 'F' ? R('पत्नी','Patni','Wife','spouse','badge-spouse') : R('जीवनसाथी','Spouse','Spouse','spouse','badge-spouse'));
   
   const sibA = siblings(activeNodeId);
-  if (sibA.includes(targetNodeId)) return bg === 'M' ? R('भाई','Bhai','Brother','sibling','badge-sibling') : R('बहन','Behen','Sister','sibling','badge-sibling');
+  if (sibA.includes(targetNodeId)) return bg === 'M' ? R('भाई','Bhai','Brother','sibling','badge-sibling') : (bg === 'F' ? R('बहन','Behen','Sister','sibling','badge-sibling') : R('सहोदर','Sibling','Sibling','sibling','badge-sibling'));
 
   const fatherId = pA.find(p => M.get(p).gender === 'M');
   const motherId = pA.find(p => M.get(p).gender === 'F');
   
   // Grandparents
-  if (fatherId && parents(fatherId).includes(targetNodeId)) return bg === 'M' ? R('दादा','Dada','Grandfather','parent','badge-parent') : R('दादी','Dadi','Grandmother','parent','badge-parent');
-  if (motherId && parents(motherId).includes(targetNodeId)) return bg === 'M' ? R('नाना','Nana','Grandfather (M)','parent','badge-maternal') : R('नानी','Nani','Grandmother (M)','parent','badge-maternal');
+  if (fatherId && parents(fatherId).includes(targetNodeId)) return bg === 'M' ? R('दादा','Dada','Grandfather','parent','badge-parent') : (bg === 'F' ? R('दादी','Dadi','Grandmother','parent','badge-parent') : R('Grandparent','Grandparent','Grandparent','parent','badge-parent'));
+  if (motherId && parents(motherId).includes(targetNodeId)) return bg === 'M' ? R('नाना','Nana','Grandfather (M)','parent','badge-maternal') : (bg === 'F' ? R('नानी','Nani','Grandmother (M)','parent','badge-maternal') : R('Grandparent','Grandparent','Grandparent','parent','badge-maternal'));
   
   // Aunts & Uncles (Paternal)
   if (fatherId) {
      const fSibs = siblings(fatherId);
-     if (fSibs.includes(targetNodeId)) return bg === 'M' ? R('चाचा/ताऊ','Chacha','Paternal Uncle','parent','badge-parent') : R('बुआ','Bua','Paternal Aunt','parent','badge-parent');
-     // Chachi & Phupha
-     const sp = spouse(targetNodeId);
-     if (sp && fSibs.includes(sp)) return bg === 'M' ? R('फूफा','Phupha','Uncle (Bua\'s Husband)','parent','badge-parent') : R('चाची/ताई','Chachi','Aunt (Chacha\'s Wife)','parent','badge-parent');
+     if (fSibs.includes(targetNodeId)) return bg === 'M' ? R('चाचा/ताऊ','Chacha','Paternal Uncle','parent','badge-parent') : (bg === 'F' ? R('बुआ','Bua','Paternal Aunt','parent','badge-parent') : R('Relative','Relative','Relative','parent','badge-parent'));
      
-     // Pat Cousins
+     // Chachi & Phupha
      for (const fSib of fSibs) {
-       if (children(fSib).includes(targetNodeId)) return bg === 'M' ? R('चचेरा भाई','Cousin Brother','Paternal Cousin','sibling','badge-sibling') : R('चचेरी बहन','Cousin Sister','Paternal Cousin','sibling','badge-sibling');
+       const sp = spouse(fSib);
+       if (sp === targetNodeId) {
+         if (M.get(fSib).gender === 'M' && bg === 'F') return R('चाची/ताई','Chachi','Aunt (Chacha\'s Wife)','parent','badge-parent');
+         if (M.get(fSib).gender === 'F' && bg === 'M') return R('फूफा','Phupha','Uncle (Bua\'s Husband)','parent','badge-parent');
+       }
+       if (children(fSib).includes(targetNodeId)) return bg === 'M' ? R('चचेरा भाई','Cousin Brother','Paternal Cousin','sibling','badge-sibling') : (bg === 'F' ? R('चचेरी बहन','Cousin Sister','Paternal Cousin','sibling','badge-sibling') : R('Cousin','Cousin','Cousin','sibling','badge-sibling'));
      }
   }
   
   // Aunts & Uncles (Maternal)
   if (motherId) {
      const mSibs = siblings(motherId);
-     if (mSibs.includes(targetNodeId)) return bg === 'M' ? R('मामा','Mama','Maternal Uncle','parent','badge-maternal') : R('मौसी','Mausi','Maternal Aunt','parent','badge-maternal');
-     // Mami & Mausa
-     const sp = spouse(targetNodeId);
-     if (sp && mSibs.includes(sp)) return bg === 'M' ? R('मौसा','Mausa','Uncle (Mausi\'s Husband)','parent','badge-maternal') : R('मामी','Mami','Aunt (Mama\'s Wife)','parent','badge-maternal');
+     if (mSibs.includes(targetNodeId)) return bg === 'M' ? R('मामा','Mama','Maternal Uncle','parent','badge-maternal') : (bg === 'F' ? R('मौसी','Mausi','Maternal Aunt','parent','badge-maternal') : R('Relative','Relative','Relative','parent','badge-maternal'));
      
-     // Mat Cousins
+     // Mami & Mausa
      for (const mSib of mSibs) {
-       if (children(mSib).includes(targetNodeId)) return bg === 'M' ? R('ममेरा भाई','Cousin Brother','Maternal Cousin','sibling','badge-sibling') : R('मौसेरी बहन','Cousin Sister','Maternal Cousin','sibling','badge-sibling');
+       const sp = spouse(mSib);
+       if (sp === targetNodeId) {
+         if (M.get(mSib).gender === 'F' && bg === 'M') return R('मौसा','Mausa','Uncle (Mausi\'s Husband)','parent','badge-maternal');
+         if (M.get(mSib).gender === 'M' && bg === 'F') return R('मामी','Mami','Aunt (Mama\'s Wife)','parent','badge-maternal');
+       }
+       if (children(mSib).includes(targetNodeId)) return bg === 'M' ? R('ममेरा भाई','Cousin Brother','Maternal Cousin','sibling','badge-sibling') : (bg === 'F' ? R('मौसेरी बहन','Cousin Sister','Maternal Cousin','sibling','badge-sibling') : R('Cousin','Cousin','Cousin','sibling','badge-sibling'));
      }
   }
   
@@ -1020,27 +1024,37 @@ function getSmartIndianRelation(allMembers, activeNodeId, targetNodeId) {
   for (const sib of sibA) {
     if (children(sib).includes(targetNodeId)) {
        const sibGender = M.get(sib).gender;
-       if (sibGender === 'M') return bg === 'M' ? R('भतीजा','Bhatija','Nephew','child','badge-child') : R('भतीजी','Bhatiji','Niece','child','badge-child');
-       if (sibGender === 'F') return bg === 'M' ? R('भांजा','Bhanja','Nephew','child','badge-child') : R('भांजी','Bhanji','Niece','child','badge-child');
+       if (sibGender === 'M') return bg === 'M' ? R('भतीजा','Bhatija','Nephew','child','badge-child') : (bg === 'F' ? R('भतीजी','Bhatiji','Niece','child','badge-child') : R('Niece/Nephew','Niece/Nephew','Niece/Nephew','child','badge-child'));
+       if (sibGender === 'F') return bg === 'M' ? R('भांजा','Bhanja','Nephew','child','badge-child') : (bg === 'F' ? R('भांजी','Bhanji','Niece','child','badge-child') : R('Niece/Nephew','Niece/Nephew','Niece/Nephew','child','badge-child'));
     }
     // Sister-in-law (Bhabhi) / Brother-in-law (Jija)
     const sp = spouse(sib);
     if (sp === targetNodeId) {
        const sibGender = M.get(sib).gender;
-       if (sibGender === 'M') return R('भाभी','Bhabhi','Sister-in-law','sibling','badge-sibling');
-       if (sibGender === 'F') return R('जीजा','Jija','Brother-in-law','sibling','badge-sibling');
+       if (sibGender === 'M' && bg === 'F') return R('भाभी','Bhabhi','Sister-in-law','sibling','badge-sibling');
+       if (sibGender === 'F' && bg === 'M') return R('जीजा','Jija','Brother-in-law','sibling','badge-sibling');
     }
   }
 
   // In-laws
   if (sA) {
      const pSA = parents(sA);
-     if (pSA.includes(targetNodeId)) return bg === 'M' ? R('ससुर','Sasur','Father-in-law','parent','badge-parent') : R('सास','Saas','Mother-in-law','parent','badge-parent');
+     if (pSA.includes(targetNodeId)) return bg === 'M' ? R('ससुर','Sasur','Father-in-law','parent','badge-parent') : (bg === 'F' ? R('सास','Saas','Mother-in-law','parent','badge-parent') : R('Parent-in-law','Parent-in-law','Parent-in-law','parent','badge-parent'));
      
      const sibSA = siblings(sA);
      if (sibSA.includes(targetNodeId)) {
-        if (A.gender === 'M') return bg === 'M' ? R('साला','Saala','Brother-in-law','sibling','badge-sibling') : R('साली','Saali','Sister-in-law','sibling','badge-sibling');
-        if (A.gender === 'F') return bg === 'M' ? R('देवर/जेठ','Devar/Jeth','Brother-in-law','sibling','badge-sibling') : R('ननद','Nanad','Sister-in-law','sibling','badge-sibling');
+        if (A.gender === 'M') {
+           return bg === 'M' ? R('साला','Saala','Brother-in-law','sibling','badge-sibling') : (bg === 'F' ? R('साली','Saali','Sister-in-law','sibling','badge-sibling') : R('In-law','In-law','Sibling-in-law','sibling','badge-sibling'));
+        }
+        if (A.gender === 'F') {
+           if (bg === 'M') {
+             const hAge = M.get(sA).age || 0;
+             const bAge = B.age || 0;
+             return (bAge > hAge) ? R('जेठ','Jeth','Brother-in-law','sibling','badge-sibling') : R('देवर','Devar','Brother-in-law','sibling','badge-sibling');
+           }
+           if (bg === 'F') return R('ननद','Nanad','Sister-in-law','sibling','badge-sibling');
+           return R('In-law','In-law','Sibling-in-law','sibling','badge-sibling');
+        }
      }
   }
   
@@ -1049,8 +1063,8 @@ function getSmartIndianRelation(allMembers, activeNodeId, targetNodeId) {
      const sp = spouse(c);
      if (sp === targetNodeId) {
         const cGender = M.get(c).gender;
-        if (cGender === 'M') return R('बहू','Bahu','Daughter-in-law','child','badge-child');
-        if (cGender === 'F') return R('दामाद','Damaad','Son-in-law','child','badge-child');
+        if (cGender === 'M' && bg === 'F') return R('बहू','Bahu','Daughter-in-law','child','badge-child');
+        if (cGender === 'F' && bg === 'M') return R('दामाद','Damaad','Son-in-law','child','badge-child');
      }
   }
 
