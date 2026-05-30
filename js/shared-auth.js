@@ -56,13 +56,17 @@ function getActiveDatabase() {
     const saved = localStorage.getItem(DATABASE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) {
+      if (Array.isArray(parsed) && parsed.length > 0) {
         return parsed;
       }
     }
   } catch(e) {}
   
-  // Return empty array for production (no demo data)
+  // Fallback to initial seed data if local storage is empty
+  if (typeof familyMembers !== 'undefined' && Array.isArray(familyMembers)) {
+    localStorage.setItem(DATABASE_KEY, JSON.stringify(familyMembers));
+    return familyMembers;
+  }
   return [];
 }
 
