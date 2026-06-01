@@ -37,7 +37,7 @@
     .stat-sub { font-size: 9px; color: #d5bba8; }
     
     /* ── MAIN GRID ── */
-    .dash-main-grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: start; }
+    .dash-main-grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: start; min-width: 900px; }
     
     .dash-card { background: linear-gradient(135deg, #ffffff 0%, #fdfbf7 100%); border-radius: 16px; border: 1px solid rgba(220,179,129,0.3); padding: 24px; position: relative; box-shadow: 0 10px 30px rgba(60, 18, 24, 0.04), inset 0 2px 4px rgba(255,255,255,0.8); overflow: hidden; }
     .dash-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
@@ -180,23 +180,10 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 1200px) {
-       .dash-main-grid { grid-template-columns: 1fr; display: flex; flex-direction: column; }
-       .dash-left-col { order: 2; }
-       .dash-right-col { position: static; order: 1; width: 100%; }
        .charts-row { grid-template-columns: 1fr; }
        .tree-layout-box { grid-template-columns: 1fr; }
        .tree-sidebar-static { flex-direction: row; border-right: none; border-bottom: 1px solid #f4eade; padding: 16px 0; gap: 40px; }
        .ts-div { width: 1px; height: 40px; }
-    }
-    @media (max-width: 768px) {
-       .dash-welcome-header h1 { font-size: 24px; }
-       .feed-card { padding: 16px; }
-       .fc-actions { padding-left: 0; margin-top: 16px; }
-       .fc-content { padding-left: 0; margin-top: 12px; }
-       .dash-left-col, .dash-right-col { gap: 16px; }
-       .tree-overview-card .btn-icon { display: none; }
-       .tree-actions .btn-tree { padding: 6px 12px; font-size: 11px; }
-       .fc-media { max-height: 200px; }
     }
   </style>
 </head>
