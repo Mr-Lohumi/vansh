@@ -180,8 +180,9 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 1200px) {
-       .dash-main-grid { grid-template-columns: 1fr; }
-       .dash-right-col { position: static; }
+       .dash-main-grid { grid-template-columns: 1fr; display: flex; flex-direction: column; }
+       .dash-left-col { order: 2; }
+       .dash-right-col { position: static; order: 1; width: 100%; }
        .charts-row { grid-template-columns: 1fr; }
        .tree-layout-box { grid-template-columns: 1fr; }
        .tree-sidebar-static { flex-direction: row; border-right: none; border-bottom: 1px solid #f4eade; padding: 16px 0; gap: 40px; }
