@@ -231,9 +231,9 @@
     .feed-card-inner.accent-red    { border-left-color: #8a2226; }
     .feed-card-inner.accent-gold   { border-left-color: #dcb381; }
     .feed-card-inner.accent-green  { border-left-color: #2a9d6f; }
-    .feed-card-inner.accent-blue   { border-left-color: #2563eb; }
-    .feed-card-inner.accent-purple { border-left-color: #7c3aed; }
-    .feed-card-inner.accent-rose   { border-left-color: #e11d48; }
+    .feed-card-inner.accent-amber  { border-left-color: #b8860b; }
+    .feed-card-inner.accent-brown  { border-left-color: #6b3a2a; }
+    .feed-card-inner.accent-rose   { border-left-color: #c4475b; }
 
     /* ── CARD HEADER ROW ── */
     .fc-top { display: flex; gap: 14px; align-items: center; }
@@ -258,12 +258,12 @@
       font-family: 'Outfit', sans-serif; border: 1px solid transparent;
     }
     .fc-badge.badge-heritage { background: rgba(139,34,38,0.1); color: #8a2226; border-color: rgba(139,34,38,0.25); }
-    .fc-badge.badge-event    { background: rgba(37,99,235,0.1);  color: #1d4ed8;  border-color: rgba(37,99,235,0.25); }
-    .fc-badge.badge-tradition{ background: rgba(124,58,237,0.1); color: #6d28d9;  border-color: rgba(124,58,237,0.25); }
+    .fc-badge.badge-event    { background: rgba(184,134,11,0.1); color: #8b6914; border-color: rgba(184,134,11,0.25); }
+    .fc-badge.badge-tradition{ background: rgba(107,58,42,0.1);  color: #6b3a2a; border-color: rgba(107,58,42,0.25); }
     .fc-badge.badge-update   { background: rgba(220,179,129,0.15); color: #946941; border-color: rgba(220,179,129,0.3); }
     .fc-badge.badge-memory   { background: rgba(60,18,24,0.08);  color: #3c1218;  border-color: rgba(60,18,24,0.15); }
     .fc-badge.badge-request  { background: rgba(42,157,111,0.1); color: #1d6b4f;  border-color: rgba(42,157,111,0.25); }
-    .fc-badge.badge-birthday { background: rgba(225,29,72,0.1);  color: #be123c;  border-color: rgba(225,29,72,0.25); }
+    .fc-badge.badge-birthday { background: rgba(196,71,91,0.1);  color: #9e2a3d;  border-color: rgba(196,71,91,0.25); }
     .fc-time { font-size: 11px; color: #a18a7a; margin-top: 3px; font-weight: 500; }
     .fc-icon { color: var(--gold); flex-shrink: 0; }
 
@@ -881,7 +881,7 @@
               const yesCount = rsvps.filter(r => r.status === 'yes').length;
               html += `
                 <div class="feed-card">
-                  <div class="feed-card-inner accent-blue">
+                  <div class="feed-card-inner accent-amber">
                     <div class="fc-top">
                       <div class="fc-img-box" style="margin-bottom:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
                       <div class="fc-meta">
@@ -907,7 +907,7 @@
            else if (item.type === 'tradition') {
               html += `
                 <div class="feed-card">
-                  <div class="feed-card-inner accent-purple">
+                  <div class="feed-card-inner accent-brown">
                     <div class="fc-top">
                       <div class="fc-img-box" style="margin-bottom:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>
                       <div class="fc-meta">
