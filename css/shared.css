@@ -261,7 +261,7 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 .card-footer { padding: 20px 24px; border-top: 1px solid var(--border-light); background: var(--bg-elevated); }
 
 /* ── BLOODLINE TREE LAYOUT ── */
-.tree-row { display: flex; align-items: center; gap: 20px; position: relative; z-index: 2; width: fit-content; margin: 0 auto; }
+.tree-row { display: flex; align-items: stretch; gap: 20px; position: relative; z-index: 2; width: fit-content; margin: 0 auto; }
 .gl { position: absolute; left: 0px; top: -25px; font-size: 11px; font-weight: 800; color: #f4d772; text-transform: uppercase; letter-spacing: 2px; font-family: 'Cinzel', serif; white-space: nowrap; text-shadow: 0 0 10px rgba(244, 215, 114, 0.8), 0 2px 4px rgba(0,0,0,0.8); }
 
 /* ── CONNECTIONS (SVG) ── */
@@ -272,7 +272,7 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 .gold-joint-orb { fill: #ffffff; stroke: var(--gold-bright); stroke-width: 1.5; filter: drop-shadow(0 0 8px var(--gold-bright)); }
 
 /* ── PATRIARCH CARD ── */
-.patriarch { position: relative; width: 200px; min-height: 110px; padding: 2px; border-radius: 10px; background: linear-gradient(135deg, #f0c75a 0%, #d4af37 25%, #8b6914 50%, #d4af37 75%, #f4d772 100%); box-shadow: 0 0 0 1px var(--gold-deepest), 0 8px 20px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55, 0.2); cursor: pointer; display: flex; flex-direction: column; }
+.patriarch { position: relative; width: 240px; min-height: 120px; padding: 2px; border-radius: 10px; background: linear-gradient(135deg, #f0c75a 0%, #d4af37 25%, #8b6914 50%, #d4af37 75%, #f4d772 100%); box-shadow: 0 0 0 1px var(--gold-deepest), 0 8px 20px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55, 0.2); cursor: pointer; display: flex; flex-direction: column; }
 .patriarch::before { content: ''; position: absolute; inset: 1.5px; border-radius: 8.5px; border: 1px solid rgba(139, 105, 20, 0.6); pointer-events: none; z-index: 3; }
 .patriarch-inner { position: relative; flex: 1; display: flex; gap: 8px; padding: 12px; background: radial-gradient(ellipse at top left, #fbf3dd 0%, #f5e6c0 80%); border-radius: 8px; overflow: hidden; align-items: center; }
 .patriarch-arch-bg { position: absolute; left: 2px; top: 10px; width: 60px; height: 80px; opacity: 0.95; pointer-events: none; }
@@ -286,7 +286,7 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 .patriarch-info .meta { font-size: 12px; font-weight: 500; line-height: 1.5; color: #3c1218; }
 
 /* ── CHILD CARD ── */
-.child-card { position: relative; width: 180px; min-height: 105px; padding: 2px; border-radius: 10px; background: linear-gradient(135deg, #f0c75a 0%, #d4af37 30%, #8b6914 55%, #d4af37 80%, #f4d772 100%); box-shadow: 0 6px 16px rgba(0,0,0,0.55); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; display: flex; flex-direction: column; }
+.child-card { position: relative; width: 240px; min-height: 120px; padding: 2px; border-radius: 10px; background: linear-gradient(135deg, #f0c75a 0%, #d4af37 30%, #8b6914 55%, #d4af37 80%, #f4d772 100%); box-shadow: 0 6px 16px rgba(0,0,0,0.55); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; display: flex; flex-direction: column; }
 .child-card.jeweled { box-shadow: 0 6px 16px rgba(0,0,0,0.55), 0 0 15px rgba(228, 60, 80, 0.4); animation: structuralPulse 4s infinite alternate; }
 .child-card:hover { transform: translateY(-2px); }
 .child-card::before { content: ''; position: absolute; inset: 1.5px; border-radius: 8.5px; border: 1px solid rgba(139, 105, 20, 0.55); pointer-events: none; z-index: 3; }
