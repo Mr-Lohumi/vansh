@@ -1020,8 +1020,8 @@
          rootHtml += `
             <div style="display:flex; align-items:center; gap:0;">
               ${buildMiniCard(m1)}
-              <div style="width:40px; height:2px; background:var(--gold); position:relative; margin-top:-20px;">
-                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:#2a0608; border:1px solid var(--gold); border-radius:50%; padding:2px; font-size:10px;">💍</div>
+              <div style="width:40px; height:2px; background:transparent; position:relative; margin-top:-20px;">
+                <div style="display:none;">💍</div>
               </div>
               ${buildMiniCard(m2)}
             </div>
@@ -1067,18 +1067,50 @@
              let parents = net.filter(m => m.gen === g).slice(0, 8);
              let children = net.filter(m => m.gen === g + 1).slice(0, 8);
              
+             let processedParents = new Set();
              parents.forEach(p => {
+                if (processedParents.has(p.id)) return;
+                
                 const pEl = document.getElementById(`ctn-${p.id}`);
                 if(!pEl) return;
-                const pr = pEl.getBoundingClientRect();
-                
-                // Connect to the center of the pill
                 const pRect = pEl.getBoundingClientRect();
-                
                 const pX = pRect.left - sRect.left + (pRect.width/2);
-                const pY = pRect.top - sRect.top + pRect.height; 
+                const pY = pRect.top - sRect.top + pRect.height;
                 
-                const myChildren = children.filter(c => c.parents && c.parents.includes(p.id));
+                // Check if spouse is also in the parents list of this generation
+                const spouseId = p.spouse;
+                const spouse = spouseId ? parents.find(sp => sp.id === spouseId) : null;
+                const spEl = spouse ? document.getElementById(`ctn-${spouse.id}`) : null;
+                
+                let startX = pX;
+                let startY = pY;
+                let myChildren = [];
+                
+                if (spouse && spEl) {
+                   processedParents.add(p.id);
+                   processedParents.add(spouse.id);
+                   
+                   const spRect = spEl.getBoundingClientRect();
+                   const spX = spRect.left - sRect.left + (spRect.width/2);
+                   startX = (pX + spX) / 2;
+                   
+                   // Draw horizontal marriage line and ring in SVG
+                   const pCenterY = pRect.top - sRect.top + (pRect.height / 2);
+                   startY = pCenterY; // Vertical drop starts from center-center of couple
+                   
+                   pathHtml += `<path d="M${pX},${pCenterY} L${spX},${pCenterY}" fill="none" stroke="#ebdcc6" stroke-width="1.5" />`;
+                   pathHtml += `
+                     <circle cx="${startX}" cy="${pCenterY}" r="7" fill="#2a0608" stroke="#dcb381" stroke-width="1.2" />
+                     <circle cx="${startX}" cy="${pCenterY}" r="5.5" fill="none" stroke="#dcb381" stroke-width="1" />
+                     <text x="${startX}" y="${pCenterY + 2.5}" font-size="6" text-anchor="middle" fill="#dcb381">💍</text>
+                   `;
+                   
+                   myChildren = children.filter(c => c.parents && (c.parents.includes(p.id) || c.parents.includes(spouse.id)));
+                } else {
+                   processedParents.add(p.id);
+                   myChildren = children.filter(c => c.parents && c.parents.includes(p.id));
+                }
+                
                 myChildren.forEach(c => {
                    const cEl = document.getElementById(`ctn-${c.id}`);
                    if(!cEl) return;
@@ -1086,15 +1118,15 @@
                    
                    const cX = cr.left - sRect.left + (cr.width/2);
                    const cY = cr.top - sRect.top - 6; // slightly above child
-                   const midY = (pY + cY) / 2;
+                   const midY = (startY + cY) / 2;
                    
-                   if (Math.abs(pX - cX) < 2) {
-                     pathHtml += `<path d="M${pX},${pY} L${cX},${cY}" fill="none" stroke="#ebdcc6" stroke-width="1.5" />`;
-                     pathHtml += `<circle cx="${pX}" cy="${pY}" r="2" fill="#dcb381" />`;
+                   if (Math.abs(startX - cX) < 2) {
+                     pathHtml += `<path d="M${startX},${startY} L${cX},${cY}" fill="none" stroke="#ebdcc6" stroke-width="1.5" />`;
+                     pathHtml += `<circle cx="${startX}" cy="${startY}" r="2" fill="#dcb381" />`;
                      pathHtml += `<circle cx="${cX}" cy="${cY}" r="2" fill="#dcb381" />`;
                    } else {
-                     pathHtml += `<path d="M${pX},${pY} L${pX},${midY} L${cX},${midY} L${cX},${cY}" fill="none" stroke="#ebdcc6" stroke-width="1.5" />`;
-                     pathHtml += `<circle cx="${pX}" cy="${pY}" r="2" fill="#dcb381" />`;
+                     pathHtml += `<path d="M${startX},${startY} L${startX},${midY} L${cX},${midY} L${cX},${cY}" fill="none" stroke="#ebdcc6" stroke-width="1.5" />`;
+                     pathHtml += `<circle cx="${startX}" cy="${startY}" r="2" fill="#dcb381" />`;
                      pathHtml += `<circle cx="${cX}" cy="${cY}" r="2" fill="#dcb381" />`;
                      pathHtml += `<circle cx="${cX}" cy="${midY}" r="2.5" fill="#fdfbf7" stroke="#dcb381" stroke-width="1.5" />`;
                    }

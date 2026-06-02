@@ -68,8 +68,9 @@ async function cloudAuthenticateUser(loginKey, password) {
     });
     if (!matched) return null;
 
-    const correctPassword = matched.password || 'vansh2025';
-    if (password !== correctPassword) return { found: true, wrongPassword: true };
+    const correctPassword = matched.password ? matched.password.toString() : 'vansh2025';
+    const inputPassword = password ? password.toString() : '';
+    if (inputPassword !== correctPassword) return { found: true, wrongPassword: true };
 
     // Pull their full member record into local storage so the app works
     const localMember = {

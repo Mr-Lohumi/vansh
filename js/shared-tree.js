@@ -111,8 +111,7 @@ function buildMarriageHTML(m1, m2, currentPOV, onNodeClickName, isHead = false) 
      if (!rel || !rel.english) return false;
      return directs.some(d => rel.english.toLowerCase().includes(d.toLowerCase()));
   }
-  const isSolid = isDirect(m1.id) && isDirect(m2.id);
-  const lineStyle = isSolid ? 'border-top: 2px solid var(--gold);' : 'border-top: 1.5px dashed var(--gold); opacity: 0.8;';
+  const lineStyle = 'border: none !important; background: transparent !important;';
 
   return `
     <div class="flex items-center gap-4" id="pair-${m1.id}-${m2.id}">
@@ -341,11 +340,11 @@ function drawTreeConnections(containerId, canvasId, visibleMembers, currentPOV) 
     return { x, y, id: id };
   }
   
-  function getPairCenterBottom(id1, id2) {
-    const c1 = getCenter(id1, 'bottom');
-    const c2 = getCenter(id2, 'bottom');
+  function getPairCenter(id1, id2) {
+    const c1 = getCenter(id1, 'center');
+    const c2 = getCenter(id2, 'center');
     if(!c1 || !c2) return null;
-    return { x: (c1.x + c2.x)/2, y: c1.y };
+    return { x: (c1.x + c2.x)/2, y: c1.y + 12 };
   }
 
   function appendForkPath(startPt, pIds, targets) {
@@ -355,32 +354,55 @@ function drawTreeConnections(containerId, canvasId, visibleMembers, currentPOV) 
     
     const startX = startPt.x;
     const startY = startPt.y;
-    const midY = startY + 50; 
-    const radius = 18;
+    
+    // Bottom level of parent card (so that we always align midY relative to parent bottom)
+    const parentBottomY = getCenter(pIds[0], 'bottom').y;
+    const midY = parentBottomY + 20; 
     
     // Check if the source parent(s) are ALL direct
     const sourceDirect = pIds.every(pid => isDirect(pid));
 
+    // If there are 2 parents, draw the horizontal marriage connection line and ring in SVG
+    if (pIds.length === 2) {
+      const c1 = getCenter(pIds[0], 'center');
+      const c2 = getCenter(pIds[1], 'center');
+      if (c1 && c2) {
+         const isM1Direct = isDirect(pIds[0]);
+         const isM2Direct = isDirect(pIds[1]);
+         const isMarriageSolid = isM1Direct && isM2Direct;
+         
+         const marriagePath = ` M ${c1.x} ${c1.y} L ${c2.x} ${c2.y} `;
+         if (isMarriageSolid) {
+            solidPathString += marriagePath;
+         } else {
+            dottedPathString += marriagePath;
+         }
+         
+         const midX = (c1.x + c2.x) / 2;
+         const midY_m = c1.y;
+         orbsString += `
+           <circle cx="${midX}" cy="${midY_m}" r="12" class="gold-marriage-ring-bg" style="fill: var(--bg-card, #1a0406); stroke: var(--gold); stroke-width: 1.5;" />
+           <circle cx="${midX}" cy="${midY_m}" r="9" class="gold-marriage-ring" style="fill: none; stroke: var(--gold); stroke-width: 1.5; filter: drop-shadow(0 0 4px var(--gold));" />
+           <text x="${midX}" y="${midY_m + 3.5}" font-size="10" text-anchor="middle" style="fill: var(--gold); font-family: sans-serif;">💍</text>
+         `;
+      }
+    }
+
     targetCenters.forEach(t => {
-      // If source is direct AND target child is direct -> solid. Else -> dotted.
       const isTargetDirect = isDirect(t.id);
       const isSolid = sourceDirect && isTargetDirect;
       
       let pString = '';
-
       const dx = t.x - startX;
       
       if (Math.abs(dx) < 5) {
+        // Straight vertical drop
         pString += ` M ${startX} ${startY} L ${t.x} ${t.y} `;
       } else {
-        const rDir = dx > 0 ? radius : -radius;
-        pString += ` M ${startX} ${startY} L ${startX} ${midY - radius} `;
-        pString += ` Q ${startX} ${midY} ${startX + rDir} ${midY} `;
-        pString += ` L ${t.x - rDir} ${midY} `;
-        pString += ` Q ${t.x} ${midY} ${t.x} ${midY + radius} `;
-        pString += ` L ${t.x} ${t.y} `;
+        // Orthogonal T-shaped connector
+        pString += ` M ${startX} ${startY} L ${startX} ${midY} L ${t.x} ${midY} L ${t.x} ${t.y} `;
         
-        orbsString += `<circle cx="${startX}" cy="${midY - radius}" r="4" class="gold-joint-orb" />`;
+        orbsString += `<circle cx="${startX}" cy="${midY}" r="4" class="gold-joint-orb" />`;
         orbsString += `<circle cx="${t.x}" cy="${midY}" r="4" class="gold-joint-orb" />`;
       }
       
@@ -396,7 +418,18 @@ function drawTreeConnections(containerId, canvasId, visibleMembers, currentPOV) 
   visibleMembers.forEach(m => {
     if(!document.getElementById(`pc-${m.id}`)) return;
     if(m.parents && m.parents.length > 0) {
-      const visibleParents = m.parents.filter(pid => document.getElementById(`pc-${pid}`));
+      const visibleParentsSet = new Set();
+      m.parents.forEach(pid => {
+        if (document.getElementById(`pc-${pid}`)) {
+          visibleParentsSet.add(pid);
+        }
+        // Force-pair with spouse if spouse is also visible
+        const spouse = (typeof getSpouse === 'function') ? getSpouse(pid) : null;
+        if (spouse && document.getElementById(`pc-${spouse.id}`)) {
+          visibleParentsSet.add(spouse.id);
+        }
+      });
+      const visibleParents = Array.from(visibleParentsSet);
       if(visibleParents.length > 0) {
         const key = [...visibleParents].sort().join('+');
         if(!parentGroups[key]) parentGroups[key] = [];
@@ -411,7 +444,7 @@ function drawTreeConnections(containerId, canvasId, visibleMembers, currentPOV) 
     
     let startPt = null;
     if(pIds.length === 2) {
-      startPt = getPairCenterBottom(pIds[0], pIds[1]);
+      startPt = getPairCenter(pIds[0], pIds[1]);
     } else if(pIds.length === 1) {
       startPt = getCenter(pIds[0], 'bottom');
     }
