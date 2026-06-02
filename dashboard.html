@@ -63,7 +63,7 @@
     .tree-layout-box { display: grid; grid-template-columns: 140px 1fr; flex: 1; position: relative; }
     .tree-main-area { position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 24px 0; }
     
-    .ct-row { display: flex; align-items: flex-start; justify-content: center; margin-bottom: 16px; gap: 12px; position: relative; width: 100%; }
+    .ct-row { display: flex; align-items: flex-start; justify-content: center; margin-bottom: 16px; gap: 32px; position: relative; width: 100%; }
     .ct-gen { position: absolute; left: 20px; top: 10px; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #1a0406; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #dcb381, #a67c52); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 2px solid #fff; }
     .ct-node { display: flex; flex-direction: column; align-items: center; gap: 8px; width: auto; position: relative; z-index: 2; text-decoration: none; padding: 4px; background: transparent; border: none; box-shadow: none; transition: all 0.3s; }
     .ct-node:hover { transform: translateY(-4px); }
@@ -1073,7 +1073,8 @@
                 
                 const pEl = document.getElementById(`ctn-${p.id}`);
                 if(!pEl) return;
-                const pRect = pEl.getBoundingClientRect();
+                const pAva = pEl.querySelector('.ct-ava');
+                const pRect = (pAva || pEl).getBoundingClientRect();
                 const pX = pRect.left - sRect.left + (pRect.width/2);
                 const pY = pRect.top - sRect.top + pRect.height;
                 
@@ -1090,7 +1091,8 @@
                    processedParents.add(p.id);
                    processedParents.add(spouse.id);
                    
-                   const spRect = spEl.getBoundingClientRect();
+                   const spAva = spEl.querySelector('.ct-ava');
+                   const spRect = (spAva || spEl).getBoundingClientRect();
                    const spX = spRect.left - sRect.left + (spRect.width/2);
                    startX = (pX + spX) / 2;
                    
@@ -1114,11 +1116,15 @@
                 myChildren.forEach(c => {
                    const cEl = document.getElementById(`ctn-${c.id}`);
                    if(!cEl) return;
-                   const cr = cEl.getBoundingClientRect();
+                   const cAva = cEl.querySelector('.ct-ava');
+                   const cr = (cAva || cEl).getBoundingClientRect();
                    
                    const cX = cr.left - sRect.left + (cr.width/2);
-                   const cY = cr.top - sRect.top - 6; // slightly above child
-                   const midY = (startY + cY) / 2;
+                   const cY = cr.top - sRect.top - 6; // slightly above child avatar
+                   
+                   // Get the bottom of the whole parent node (including text) to avoid line overlapping text
+                   const pBottomY = pEl.getBoundingClientRect().bottom - sRect.top;
+                   const midY = pBottomY + Math.max(12, (cY - pBottomY) / 2);
                    
                    if (Math.abs(startX - cX) < 2) {
                      pathHtml += `<path d="M${startX},${startY} L${cX},${cY}" fill="none" stroke="#ebdcc6" stroke-width="1.5" />`;

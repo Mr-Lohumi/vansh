@@ -227,7 +227,7 @@ function renderTreeToContainer(containerId, canvasId, currentPOV, onNodeClickNam
   
   container.style.display = 'inline-flex';
   container.style.flexDirection = 'column';
-  container.style.gap = '40px';
+  container.style.gap = '80px';
   container.style.alignItems = 'center';
   container.style.margin = '0 auto';
   
@@ -357,7 +357,7 @@ function drawTreeConnections(containerId, canvasId, visibleMembers, currentPOV) 
     
     // Bottom level of parent card (so that we always align midY relative to parent bottom)
     const parentBottomY = getCenter(pIds[0], 'bottom').y;
-    const midY = parentBottomY + 20; 
+    const midY = parentBottomY + 40; 
     
     // Check if the source parent(s) are ALL direct
     const sourceDirect = pIds.every(pid => isDirect(pid));
