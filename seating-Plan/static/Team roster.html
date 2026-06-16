@@ -103,8 +103,13 @@ select.cell-sel.leave { color: #c0392b; font-weight: 700; }
       </div>
       <button class="btn green" onclick="addEmp()">+ Add to Roster</button>
     </div>
-    <div style="margin-top:16px;">
+    <div style="margin-top:16px; display:flex; gap:16px;">
        <button class="btn ghost" onclick="configStatuses()" style="font-size:11px;">⚙️ Configure Dropdown Options</button>
+       <div style="border-left: 1px solid var(--line); padding-left:16px; display:flex; gap:8px; align-items:center;">
+          <label style="margin:0;">📅 Yearly Holiday Calendar (PDF)</label>
+          <input type="file" id="calendarUpload" accept="application/pdf" style="font-size:11px;">
+          <button class="btn green" onclick="uploadCalendar()" style="padding:4px 8px; font-size:11px;">Upload</button>
+       </div>
     </div>
     <p style="font-size:12px; color:var(--muted); margin:12px 0 0;">
     Select an existing team from the dropdown, or click "+ Create New Team" to add a brand new one. Removing people is done via the ✕ next to their name in the grid.
@@ -376,12 +381,26 @@ async function configStatuses() {
          method:'POST', headers:{'Content-Type':'application/json'},
          body: JSON.stringify({ pin: '250237', statuses: newStatuses })
        });
-       if((await res.json()).ok) {
-         showToast('Statuses updated!');
-         fetchState();
-       }
-     } catch(e) { showToast('Error saving statuses', 'error'); }
+       if(res.ok) { showToast('Statuses updated. Refresh to see changes.'); }
+     } catch(e) {}
   }
+}
+
+async function uploadCalendar() {
+  const fileInput = document.getElementById('calendarUpload');
+  if(!fileInput.files.length) { showToast('Please select a PDF file first.', 'error'); return; }
+  
+  const formData = new FormData();
+  formData.append('calendar_pdf', fileInput.files[0]);
+  
+  try {
+    const res = await fetch('/api/upload_calendar', { method: 'POST', body: formData });
+    const data = await res.json();
+    if(data.ok) {
+       showToast(data.msg);
+       fileInput.value = '';
+    } else showToast(data.msg, 'error');
+  } catch(e) { showToast('Upload failed.', 'error'); }
 }
 
 function exportMonth() {

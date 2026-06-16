@@ -2751,6 +2751,25 @@ def roster_save_settings():
     conn.close()
     return jsonify({'ok': True})
 
+@app.route('/api/upload_calendar', methods=['POST'])
+def upload_calendar():
+    if 'calendar_pdf' not in request.files:
+        return jsonify({'ok': False, 'msg': 'No file uploaded.'}), 400
+        
+    file = request.files['calendar_pdf']
+    if file.filename == '':
+        return jsonify({'ok': False, 'msg': 'No file selected.'}), 400
+        
+    if not file.filename.lower().endswith('.pdf'):
+        return jsonify({'ok': False, 'msg': 'Only PDF files are allowed.'}), 400
+        
+    save_path = os.path.join(BASE, 'static', 'holiday_calendar.pdf')
+    try:
+        file.save(save_path)
+        return jsonify({'ok': True, 'msg': 'Holiday calendar successfully uploaded.'})
+    except Exception as e:
+        return jsonify({'ok': False, 'msg': f'Error saving file: {str(e)}'}), 500
+
 @app.route('/api/roster/migrate', methods=['POST'])
 def roster_migrate():
     data = request.json or {}
