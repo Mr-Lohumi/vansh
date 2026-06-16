@@ -796,6 +796,11 @@ def calculate_hours(t_in, t_out):
         return None
 
 
+######################################################################
+## Dashboard API
+# Endpoints to supply aggregated data for the dashboard charts and stats #
+######################################################################
+
 @app.route('/api/dashboard/stats')
 def dashboard_stats():
     month = request.args.get('month', '')
@@ -842,6 +847,11 @@ def dashboard_stats():
         'leaves': leave_list,
         'total_people': len(people)
     })
+
+######################################################################
+## Seating Planner API
+# Core endpoints for reading and writing to the master seating plan grid #
+######################################################################
 
 @app.route('/api/state')
 def state():
@@ -1400,6 +1410,11 @@ def cancel_vacation():
         conn.close()
     return jsonify({'ok': True, 'msg': 'Vacation deleted successfully.'})
 
+
+######################################################################
+## Contractors API
+# Endpoints for contractor management, attendance, and manager approvals #
+######################################################################
 
 @app.route('/api/contractors/state')
 def contractors_state():
@@ -1990,6 +2005,11 @@ def contractors_approve():
     return jsonify({'ok': True, 'msg': f'Record {status} successfully.'})
 
 
+######################################################################
+## Frontend Page Routes
+# Endpoints serving the actual HTML pages to the user browser #
+######################################################################
+
 @app.route('/vacations')
 def vacations_page():
     return send_from_directory(BASE, 'vacations.html')
@@ -2209,6 +2229,11 @@ def check_dba_auth(data):
     super_pass = (data.get('super_pass') or '').strip()
     return check_dba_auth_db(super_user, super_pass)
 
+
+######################################################################
+## Database Management API
+# Low-level admin endpoints for database backups, queries, and schema #
+######################################################################
 
 @app.route('/api/db/login', methods=['POST'])
 def db_login():
@@ -2615,6 +2640,11 @@ def db_restore():
         return jsonify({'ok': False, 'msg': f'Restore failed: {str(e)}'}), 500
 
 # --- TEAM ROSTER ROUTES ---
+
+######################################################################
+## Team Roster API
+# Endpoints for managing workforce rosters, employees, and team configs #
+######################################################################
 
 @app.route('/api/roster/state', methods=['GET'])
 def roster_state():
