@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FCTG GCC Techlab — Seating Planner</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0f172a; --navy2: #1e293b; --ink: #0b1d2e; --paper: #f4f7fa; --card: #ffffff; 
+  --line: #d7dee5; --muted: #5b6b7b; --green: #55AF31; --green-l: #eaf6e4; 
+  --gold: #e4b53b; --gold-l: #fbf1d6; --purple: #7b5ea7; --purple-l: #efe9f6; 
+  --red: #c0392b; --shadow: 0 4px 12px rgba(16,42,67,.06);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; line-height: 1.5; }
+.mono { font-family: 'IBM Plex Mono', monospace; }
+h1, h2, h3 { font-family: 'Bricolage Grotesque', sans-serif; margin: 0; letter-spacing: -.01em; }
+header { background: linear-gradient(135deg, var(--navy), var(--navy2)); color: #fff; padding: 20px 26px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; box-shadow: var(--shadow); }
+header h1 { font-size: 24px; font-weight: 800; }
+header .sub { color: #9fb3c8; font-size: 12.5px; margin-top: 3px; }
+.stats { display: flex; gap: 9px; flex-wrap: wrap; }
+.stat { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); border-radius: 11px; padding: 9px 14px; min-width: 74px; }
+.stat .n { font-family: 'Bricolage Grotesque'; font-size: 22px; font-weight: 800; line-height: 1; }
+.stat .l { font-size: 10px; color: #9fb3c8; margin-top: 4px; text-transform: uppercase; letter-spacing: .05em; }
+.wrap { max-width: 1340px; margin: 0 auto; padding: 24px; }
+.tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.tabs button { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 10px 18px; font-family: 'Bricolage Grotesque'; font-weight: 700; font-size: 13px; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+.tabs button.on { background: var(--green); color: #fff; border-color: var(--green); box-shadow: 0 4px 10px rgba(31, 157, 107, 0.3); }
+.toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+.days { display: inline-flex; background: var(--card); border: 1px solid var(--line); border-radius: 11px; padding: 4px; box-shadow: var(--shadow); }
+.days button { border: 0; background: transparent; font-family: 'Bricolage Grotesque'; font-weight: 700; font-size: 13px; color: var(--muted); padding: 7px 14px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+.days button.on { background: var(--navy); color: #fff; }
+.spacer { flex: 1; }
+.btn { border: 0; border-radius: 10px; padding: 9px 15px; font-family: 'Bricolage Grotesque'; font-weight: 700; font-size: 12.5px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 7px; box-shadow: var(--shadow); transition: 0.2s; }
+.btn:hover { transform: translateY(-1px); }
+.btn.green { background: var(--green); color: #fff; }
+.btn.ghost { background: var(--card); color: var(--navy); border: 1px solid var(--line); }
+.btn.red { background: var(--red); color: #fff; }
+.search { padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; font-family: inherit; font-size: 13px; min-width: 200px; transition: 0.2s; }
+.search:focus { outline: 2px solid var(--green); border-color: transparent; }
+.layout { display: grid; grid-template-columns: 1fr 340px; gap: 24px; }
+@media(max-width:980px) { .layout { grid-template-columns: 1fr; } }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
+.panel h2 { font-size: 14.5px; font-weight: 700; padding: 15px 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; background: #fafbfc; }
+.panel .body { padding: 18px; }
+.legend { font-size: 11px; color: var(--muted); font-weight: 500; font-family: 'IBM Plex Sans'; letter-spacing: 0; }
+.bay { padding: 18px; }
+.pod { margin-bottom: 24px; }
+.pod-h { font-family: 'Bricolage Grotesque'; font-weight: 700; font-size: 13px; color: var(--navy); text-transform: uppercase; letter-spacing: .05em; margin: 0 0 10px 2px; border-bottom: 2px solid var(--line); padding-bottom: 6px; display: inline-block;}
+.row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 8px; }
+.row.r5 { grid-template-columns: repeat(5, 1fr); }
+.desk { border-radius: 10px; border: 1.5px solid var(--line); background: #f7f9fb; padding: 8px; min-height: 60px; cursor: pointer; position: relative; transition: .15s ease; overflow: hidden; }
+.desk:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(16,42,67,.12); border-color: var(--navy); }
+.desk .dn { font-family: 'IBM Plex Mono'; font-size: 11px; font-weight: 700; color: var(--muted); }
+.desk .who { font-size: 11.5px; font-weight: 600; margin-top: 4px; line-height: 1.2; color: var(--ink); }
+.desk .tm { font-size: 10px; margin-top: 2px; opacity: .8; line-height: 1.1; }
+.desk.free { background: #f0f2f4; border-style: dashed; color: #9aa7b4; }
+.desk.free .who { color: #9aa7b4; font-weight: 500; }
+.desk.locked { border-color: var(--gold); background: var(--gold-l); }
+.desk.hot { border-color: var(--purple); border-style: dashed; }
+.desk.dim { opacity: .25; filter: grayscale(50%); }
+.desk.hit { outline: 3px solid var(--green); outline-offset: 2px; }
+.desk .act { position: absolute; bottom: 5px; right: 5px; width: 22px; height: 22px; border-radius: 6px; border: 0; font-size: 14px; font-weight: 700; cursor: pointer; display: none; align-items: center; justify-content: center; line-height: 1; transition: 0.2s; }
+.desk:hover .act { display: flex; }
+.act.add { background: var(--green); color: #fff; }
+.act.add:hover { background: #157952; }
+.act.rem { background: var(--red); color: #fff; }
+.act.rem:hover { background: #962c21; }
+.desk .tag { position: absolute; top: 5px; right: 5px; font-size: 9px; font-weight: 700; padding: 2px 5px; border-radius: 4px; text-transform: uppercase; }
+.tag.lock { background: var(--gold); color: #5a4410; }
+.tag.hot { background: var(--purple); color: #fff; }
+.tag.tf { background: #2b7fbf; color: #fff; }
+.teamlist { display: flex; flex-direction: column; gap: 4px; max-height: 350px; overflow: auto; padding-right: 5px; }
+.teamlist::-webkit-scrollbar { width: 6px; }
+.teamlist::-webkit-scrollbar-thumb { background: var(--line); border-radius: 10px; }
+.teamrow { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; transition: 0.15s; }
+.teamrow:hover { background: var(--paper); transform: translateX(2px); }
+.teamrow.on { background: var(--navy); color: #fff; }
+.dot { width: 12px; height: 12px; border-radius: 4px; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.teamrow .ct { margin-left: auto; font-family: 'IBM Plex Mono'; font-size: 12px; color: var(--muted); font-weight: 600; }
+.teamrow.on .ct { color: #9fb3c8; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+select, input[type=text], input[type=number] { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; font-family: inherit; font-size: 13px; background: #fff; color: var(--ink); transition: 0.2s; }
+select:focus, input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(28, 61, 90, 0.1); }
+.daypick { display: flex; gap: 6px; }
+.daypick button { flex: 1; border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 8px 0; font-family: 'IBM Plex Mono'; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--muted); transition: 0.2s; }
+.daypick button.on { background: var(--green); color: #fff; border-color: var(--green); }
+.result { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 16px; font-size: 13px; }
+.sugg { background: var(--green-l); border: 1px solid #bfe6d3; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; line-height: 1.4; }
+.sugg b { font-family: 'Bricolage Grotesque'; font-size: 13.5px; }
+.sugg.warn { background: #fdeede; border-color: #f3d3a7; }
+.sugg.bad { background: #fde8e8; border-color: #f3bcbc; }
+.sugg.info { background: #e8f0fa; border-color: #c2d8ef; }
+.mini { font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+.kbd { font-family: 'IBM Plex Mono'; background: var(--paper); border: 1px solid var(--line); border-radius: 5px; padding: 2px 6px; font-size: 11px; color: var(--ink); font-weight: 600; }
+.modal { position: fixed; inset: 0; background: rgba(11,29,46,.6); display: none; align-items: center; justify-content: center; z-index: 50; backdrop-filter: blur(4px); }
+.modal.on { display: flex; animation: fadeIn 0.2s ease-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal .box { background: #fff; border-radius: 16px; padding: 26px; width: 400px; max-width: 92vw; box-shadow: 0 24px 60px rgba(0,0,0,.2); transform: translateY(0); }
+.modal h3 { font-size: 18px; margin-bottom: 16px; color: var(--navy); }
+.foot { text-align: center; color: var(--muted); font-size: 12px; padding: 24px; }
+.bar { height: 10px; border-radius: 5px; background: var(--line); overflow: hidden; margin-top: 6px; }
+.bar i { display: block; height: 100%; background: var(--green); border-radius: 5px; }
+
+/* Employee Ticket UI */
+.ticket { background: #f7f9fb; border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-top: 16px; }
+.ticket-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+.ticket-row:last-child { border: 0; }
+.ticket-label { color: var(--muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.ticket-val { font-weight: 600; color: var(--ink); font-size: 13.5px; }
+.grid-days { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 10px; text-align: center; }
+.grid-day { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 8px 4px; }
+.grid-day .d-name { font-size: 10.5px; color: var(--muted); font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
+.grid-day .d-desk { font-family: 'IBM Plex Mono'; font-weight: 700; font-size: 14px; color: var(--navy); }
+.grid-day.wfh { background: transparent; border-style: dashed; }
+.grid-day.wfh .d-desk { color: #9aa7b4; font-size: 11px; margin-top: 3px; }
+
+/* Toast Notifications */
+#toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
+.toast { background: var(--navy); color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 13.5px; font-weight: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: translateX(120%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 10px; }
+.toast.show { transform: translateX(0); }
+.toast.success { border-left: 4px solid var(--green); }
+.toast.error { border-left: 4px solid var(--red); }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>FCTG GCC Techlab — Seating Planner</h1>
+    <div class="sub">Extreme Right Bay 281–354 · Editable · Auto-Saving · Smart Routing</div>
+  </div>
+  <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+    <a href="/" class="btn" style="background: rgba(255,255,255,0.12); color: #fff; font-size: 13.5px; border: 1px solid rgba(255,255,255,0.2); text-decoration: none; padding: 9px 15px; border-radius: 10px; font-family: 'Bricolage Grotesque'; font-weight: 700;">← Back to Portal</a>
+    <button class="btn" style="background: rgba(255,255,255,0.95); color: var(--navy); font-size: 13.5px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);" onclick="openPortal()">🔍 Find My Seat</button>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+<div class="wrap">
+ <div class="tabs">
+  <button class="on" data-tab="map">Seat Map</button>
+  <button data-tab="join">New Joiner</button>
+  <button data-tab="move">Move / What-if</button>
+  <button data-tab="team">Move a Team</button>
+  <button data-tab="report">Occupancy</button>
+  <button data-tab="middle">Middle Bay</button>
+  <div style="flex:1;"></div>
+  <a href="/static/dashboard.html" class="btn" style="margin-left:4px; text-decoration:none;">📊 Dashboard</a>
+  <a href="/static/Team%20roster.html" class="btn green" style="margin-left:4px; text-decoration:none;">📋 Team Roster</a>
+ </div>
+
+ <div id="tab-map">
+  <div class="toolbar">
+   <div class="days" id="days"></div>
+   <input class="search" id="search" placeholder="🔍 Search a name or team…" oninput="doSearch()">
+   <span class="legend">＋ add · ✕ remove · click a desk = edit / rename</span>
+   <div class="spacer"></div>
+   <button class="btn ghost" onclick="resetState()">↺ Reset Defaults</button>
+   <input type="file" id="excelUpload" accept=".xlsx, .xls, .csv" style="display:none" onchange="importExcel(event)">
+   <button class="btn ghost" style="border-color:var(--navy); color:var(--navy)" onclick="document.getElementById('excelUpload').click()">⬆ Import Excel</button>
+   <button class="btn green" onclick="exportExcel()">⬇ Export Excel</button>
+   <button class="btn green" onclick="saveToServer()">💾 Save to Server</button>
+   <button class="btn" style="background:var(--navy);color:#fff" onclick="saveToFile()">Download Backup</button>
+   <a href="/booking" class="btn" style="background:var(--gold);color:#fff;text-decoration:none">🔖 Hot-Desk Booking</a>
+  </div>
+  <div class="layout">
+   <div class="panel"><h2>Bay Layout <span class="legend" id="dayLabel"></span></h2><div class="bay" id="bay"></div></div>
+   <div>
+    <div class="panel" style="margin-bottom:24px"><h2>Teams <span class="legend">click = highlight</span></h2><div class="body"><div class="teamlist" id="teams"></div></div></div>
+    <div class="panel"><h2>Middle Bay</h2><div class="body"><div style="font-size:13px"><b>Reserved for Pooja Modi</b><br>Desks <span class="kbd">165–176</span> · <b>12 seats</b><div class="mini" style="margin-top:6px">Separate section — not part of the rota workflow.</div></div></div></div>
+   </div>
+  </div>
+ </div>
+
+ <div id="tab-join" style="display:none"><div class="layout">
+  <div class="panel"><h2>Suggest seats for new joiner(s)</h2><div class="body">
+    <div class="field"><label>Team</label><select id="jteam"></select></div>
+    <div class="field"><label>Headcount</label><input type="number" id="jnum" value="1" min="1" max="20"></div>
+    <div class="field"><label>Office Days (up to 3)</label><div class="daypick" id="jdays"></div></div>
+    <button class="btn green" style="width:100%;margin-top:10px" onclick="suggest()">💡 Find Smart Placement</button>
+    <div class="result" id="jresult"><div class="mini">Checks internal pod capacity, adjacent physical pods, then flex desks.</div></div>
+  </div></div>
+  <div class="panel"><h2>Spatial Routing Rules</h2><div class="body" style="font-size:13px;color:var(--muted);line-height:1.6">
+    <p><b style="color:var(--ink)">1. Within Pod (Primary)</b> — Calculates free slots inside the team's primary physical pod.</p>
+    <p><b style="color:var(--ink)">2. Adjacent Pods (Spillover)</b> — Finds the closest physical desks in neighboring pods across the required days.</p>
+    <p><b style="color:var(--ink)">3. Hot-Desk Pool</b> — Fallback to flex desks 347–354.</p>
+  </div></div>
+ </div></div>
+
+ <div id="tab-move" style="display:none"><div class="layout">
+  <div class="panel"><h2>Move one person (what-if + apply)</h2><div class="body">
+    <div class="field"><label>Person</label><select id="mperson"></select></div>
+    <div class="field"><label>What do you want to do?</label><select id="mscenario" onchange="moveScenarioUI()">
+        <option value="desk">Move to a specific desk</option>
+        <option value="best">Suggest best free desks (near team)</option>
+        <option value="swap">Swap seats with another person</option>
+    </select></div>
+    <div class="field" id="mdeskWrap"><label>Target desk</label><input type="number" id="mdesk" placeholder="281–354" min="281" max="354"></div>
+    <div class="field" id="mp2Wrap" style="display:none"><label>Swap with</label><select id="mperson2"></select></div>
+    <div class="field" id="mscopeWrap"><label>Apply to</label><select id="mscope">
+        <option value="one">Selected day only</option>
+        <option value="all">All their office days</option>
+    </select></div>
+    <div class="field" id="mdaysWrap"><label>Day</label><div class="daypick" id="mdays"></div></div>
+    <div style="display:flex;gap:10px;margin-top:10px">
+      <button class="btn ghost" style="flex:1" onclick="whatif()">🔎 Check Feasibility</button>
+      <button class="btn green" style="flex:1" onclick="applyMove()">✓ Apply Move</button>
+    </div>
+    <div class="result" id="mresult"><div class="mini">Pick a scenario above. "Suggest best free desks" gives you several ranked options to choose from with one-click apply.</div></div>
+  </div></div>
+  <div class="panel"><h2>100% Empty Desks</h2><div class="body"><div class="mini">Empty across all 5 days: <br><br><span id="emptyd" class="kbd"></span></div></div></div>
+ </div></div>
+
+ <div id="tab-team" style="display:none"><div class="layout">
+  <div class="panel"><h2>Relocate an entire team</h2><div class="body">
+    <div class="field"><label>Team to relocate</label><select id="tteam"></select></div>
+    <div class="field"><label>Move to — target Pod (with seats)</label><select id="tpod"></select></div>
+    <button class="btn green" style="width:100%;margin-top:10px" onclick="relocateAnalyze()">🧩 Analyze &amp; show move options</button>
+    <div class="result" id="tresult"><div class="mini">Pick a team and a target Pod (seat range shown). Each landing spot shows its Pod, the bay, who is already there, who gets displaced — and a one-click <b>Move Team Here</b> button.</div></div>
+  </div></div>
+  <div class="panel"><h2>How to read the analysis</h2><div class="body" style="font-size:13px;color:var(--muted);line-height:1.7">
+    <p><b style="color:var(--navy)">Location</b> — every option names its Pod and the bay (Extreme Right Bay) so you instantly know where the block sits.</p>
+    <p><b style="color:var(--green)">Green / Recommended</b> — a fully vacant block. The team can move in with zero downstream moves.</p>
+    <p><b style="color:#b06a00">Amber</b> — partly occupied. It lists how many people are currently there, the peak same-day crowding, and exactly which teams (and counts) would have to be relocated.</p>
+    <p><b style="color:var(--navy)">Suggestion</b> — the single lowest-impact move, with next steps.</p>
+  </div></div>
+ </div></div>
+
+ <div id="tab-report" style="display:none"><div class="panel"><h2>Platform Health & Occupancy</h2><div class="body" id="report"></div></div></div>
+
+ <div id="tab-middle" style="display:none"><div class="layout">
+  <div class="panel"><h2>Middle Bay — Reserved <span class="legend" id="midStat"></span></h2><div class="body"><div class="bay" id="midbay"></div></div></div>
+  <div class="panel"><h2>About this area</h2><div class="body" style="font-size:13px;color:var(--muted);line-height:1.7">
+   <b style="color:var(--navy)">Desks 165–176 · 12 seats</b><br>Reserved block kept for <b>Pooja Modi</b>, separate from the Extreme Right Bay (281–354) rota.<br><br>
+   Tap <b>＋</b> on a free seat to assign a name, or <b>✕</b> to clear it.<br><br>
+   <div class="mini">This area is count-only — it does <b>not</b> affect the main bay's hot-desk, occupancy, or conflict calculations.</div>
+  </div></div>
+ </div></div>
+</div>
+
+<div class="modal" id="modal"><div class="box">
+ <h3 id="mTitle">Add Person</h3>
+ <div class="field"><label>Full Name</label><input type="text" id="aName" placeholder="e.g. John Doe"></div>
+ <div class="field"><label>Assign Team</label><select id="aTeam"></select></div>
+ <div class="field"><label>Seat Type</label>
+    <select id="aType">
+        <option value="shared">Shared / Rota</option>
+        <option value="dedicated">Dedicated (Everyday)</option>
+        <option value="LOCKED">LOCKED (Executive)</option>
+    </select>
+ </div>
+ <div class="field" id="aDaysWrap"><label>Office Days</label><div class="daypick" id="aDays"></div></div>
+ <div id="aMsg" class="mini"></div>
+ <div style="display:flex;gap:10px;margin-top:20px">
+     <button class="btn green" style="flex:1" onclick="confirmAdd()">Confirm Assignment</button>
+     <button class="btn ghost" style="flex:1" onclick="closeModal()">Cancel</button>
+ </div>
+</div></div>
+
+<div class="modal" id="editModal"><div class="box" style="width:480px">
+ <h3 id="eTitle">Edit Desk</h3>
+ <div class="field"><label>Full Name (rename)</label><input type="text" id="eName" oninput="edCheck()"></div>
+ <div class="field"><label>Team</label><input list="teamList" id="eTeam" placeholder="Pick or type new team"><datalist id="teamList"></datalist></div>
+ <div class="field"><label>Seat Type</label>
+    <select id="eType">
+        <option value="shared">Shared / Rota</option>
+        <option value="dedicated">Dedicated (Everyday)</option>
+        <option value="LOCKED">LOCKED (Executive)</option>
+    </select>
+ </div>
+ <div class="field"><label>Desk per day · blank = WFH <span class="mini">(bay 281–354)</span></label>
+    <div id="eDays" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+ </div>
+ <div id="eMsg" class="mini" style="margin-top:6px"></div>
+ <div style="display:flex;gap:8px;margin-top:18px">
+     <button class="btn green" style="flex:1.4" onclick="saveEdit(false)">💾 Save</button>
+     <button class="btn" style="flex:1;background:var(--red);color:#fff" onclick="removeEdit()">🗑 Remove</button>
+     <button class="btn ghost" style="flex:1" onclick="closeEdit()">Cancel</button>
+ </div>
+</div></div>
+
+<div class="modal" id="portalModal"><div class="box" style="width: 480px;">
+ <h3>Find My Seat</h3>
+ <div class="mini" style="margin-bottom: 16px;">Select your name to view your weekly desk schedule.</div>
+ <div class="field">
+   <select id="pSelect" onchange="showEmployeeDetails()">
+     <option value="">-- Choose your name --</option>
+   </select>
+ </div>
+ <div id="pDetails" style="display: none;">
+   <div class="ticket">
+      <div class="ticket-row"><span class="ticket-label">Name</span><span class="ticket-val" id="tkName"></span></div>
+      <div class="ticket-row"><span class="ticket-label">Team</span><span class="ticket-val" id="tkTeam"></span></div>
+      <div class="ticket-row"><span class="ticket-label">Allocation</span><span class="ticket-val" id="tkType"></span></div>
+      <div style="margin-top: 16px;">
+         <span class="ticket-label">Weekly Schedule</span>
+         <div class="grid-days" id="tkGrid"></div>
+      </div>
+   </div>
+ </div>
+ <div style="margin-top:24px; display:flex;">
+     <button class="btn ghost" style="flex:1" onclick="closePortal()">Close Portal</button>
+ </div>
+</div></div>
+
+<div class="foot">Auto-saves to browser memory. Safe to refresh. | <a href="#" style="color:var(--muted)" onclick="resetState()">Clear Local Data</a></div>
+<div id="toast-container"></div>
+
+<script>
+// INITIAL STATE
+const INITIAL_DATA = [
+  {"name":"Leadership Member 1","team":"Leadership","old":"— (new)","days":{"Mon":"281","Tue":"281","Wed":"281","Thu":"281","Fri":"281"},"type":"LOCKED"},
+  {"name":"Leadership Member 2","team":"Leadership","old":"— (new)","days":{"Mon":"282","Tue":"282","Wed":"282","Thu":"282","Fri":"282"},"type":"LOCKED"},
+  {"name":"Leadership Member 3","team":"Leadership","old":"— (new)","days":{"Mon":"283","Tue":"283","Wed":"283","Thu":"283","Fri":"283"},"type":"LOCKED"},
+  {"name":"Leadership Member 4","team":"Leadership","old":"— (new)","days":{"Mon":"284","Tue":"284","Wed":"284","Thu":"284","Fri":"284"},"type":"LOCKED"},
+  {"name":"Leadership Member 5","team":"Leadership","old":"— (new)","days":{"Mon":"285","Tue":"285","Wed":"285","Thu":"285","Fri":"285"},"type":"LOCKED"},
+  {"name":"Leadership Member 6","team":"Leadership","old":"— (new)","days":{"Mon":"286","Tue":"286","Wed":"286","Thu":"286","Fri":"286"},"type":"LOCKED"},
+  {"name":"Deepti Goyal","team":"Finance Management","old":"292","days":{"Mon":"289","Tue":"289","Wed":"289","Thu":"289","Fri":"289"},"type":"LOCKED"},
+  {"name":"Mayuri Gupta","team":"Finance Management","old":"288","days":{"Mon":"287","Tue":"287","Wed":"287","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Rishabh Joshi","team":"Finance Management","old":"291","days":{"Mon":null,"Tue":null,"Wed":"288","Thu":"287","Fri":"287"},"type":"shared"},
+  {"name":"Upcoming Finance Person 1","team":"Finance Management","old":"— (new)","days":{"Mon":"288","Tue":"288","Wed":null,"Thu":null,"Fri":"288"},"type":"shared"},
+  {"name":"Akansha Dwevedi","team":"D365 L1 Support","old":"305","days":{"Mon":"306","Tue":"306","Wed":"306","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Anand Manav","team":"D365 L1 Support","old":"305","days":{"Mon":null,"Tue":null,"Wed":"307","Thu":"306","Fri":"306"},"type":"shared"},
+  {"name":"Harsh Singh Chauhan","team":"D365 L1 Support","old":"304","days":{"Mon":"307","Tue":"307","Wed":null,"Thu":null,"Fri":"307"},"type":"shared"},
+  {"name":"Upcoming L1 Person 3","team":"D365 L1 Support","old":"— (new)","days":{"Mon":null,"Tue":"308","Wed":"308","Thu":"307","Fri":null},"type":"shared"},
+  {"name":"Deveshi P. Parashar","team":"Data Team","old":"296","days":{"Mon":"294","Tue":"294","Wed":"294","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Pratham Sukhija","team":"Data Team","old":"295","days":{"Mon":null,"Tue":null,"Wed":"295","Thu":"294","Fri":"294"},"type":"shared"},
+  {"name":"Sachin Chauhan","team":"Data Team","old":"293","days":{"Mon":"295","Tue":"295","Wed":null,"Thu":null,"Fri":"295"},"type":"shared"},
+  {"name":"Sagar Taneja","team":"Data Team","old":"297","days":{"Mon":null,"Tue":"296","Wed":"296","Thu":"295","Fri":null},"type":"shared"},
+  {"name":"Shreya R. Pandey","team":"Data Team","old":"— (new)","days":{"Mon":"296","Tue":null,"Wed":null,"Thu":"296","Fri":"296"},"type":"shared"},
+  {"name":"Abhijit Kumar","team":"Data Team","old":"337","days":{"Mon":"297","Tue":"297","Wed":"297","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Aman Kumar","team":"Data Team","old":"336","days":{"Mon":null,"Tue":null,"Wed":"298","Thu":"297","Fri":"297"},"type":"shared"},
+  {"name":"KM Shweta","team":"Data Team","old":"335","days":{"Mon":"298","Tue":"298","Wed":null,"Thu":null,"Fri":"298"},"type":"shared"},
+  {"name":"Upcoming Data Person 1","team":"Data Team","old":"— (new)","days":{"Mon":null,"Tue":"293","Wed":"293","Thu":"298","Fri":null},"type":"shared"},
+  {"name":"Arpit Gaur","team":"Automation (ServiceNow)","old":"— (new)","days":{"Mon":"299","Tue":"299","Wed":"299","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Dhairya Gupta","team":"Automation (ServiceNow)","old":"303","days":{"Mon":null,"Tue":null,"Wed":"300","Thu":"299","Fri":"299"},"type":"shared"},
+  {"name":"Neha Kumari","team":"Automation (ServiceNow)","old":"302","days":{"Mon":"300","Tue":"300","Wed":null,"Thu":null,"Fri":"300"},"type":"shared"},
+  {"name":"Rajat Dhakre","team":"Automation (ServiceNow)","old":"300","days":{"Mon":null,"Tue":"301","Wed":"301","Thu":"300","Fri":null},"type":"shared"},
+  {"name":"Shashi Shrivastava","team":"Automation (ServiceNow)","old":"302","days":{"Mon":"301","Tue":null,"Wed":null,"Thu":"301","Fri":"301"},"type":"shared"},
+  {"name":"Shreshtha Gupta","team":"Automation (ServiceNow)","old":"299","days":{"Mon":"302","Tue":"302","Wed":"302","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Vineet Joshi","team":"Automation (ServiceNow)","old":"299","days":{"Mon":null,"Tue":null,"Wed":"303","Thu":"302","Fri":"302"},"type":"shared"},
+  {"name":"Yogyata","team":"Automation (ServiceNow)","old":"301","days":{"Mon":"303","Tue":"303","Wed":null,"Thu":null,"Fri":"303"},"type":"shared"},
+  {"name":"Upcoming L1 Person 1","team":"D365 L1 Support","old":"— (new)","days":{"Mon":"304","Tue":"304","Wed":"304","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Upcoming L1 Person 2","team":"D365 L1 Support","old":"— (new)","days":{"Mon":null,"Tue":null,"Wed":"305","Thu":"304","Fri":"304"},"type":"shared"},
+  {"name":"Kunal Chopra","team":"MBO BA","old":"308","days":{"Mon":"290","Tue":"290","Wed":"290","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Arvind Sarvesh","team":"MBO BA","old":"307","days":{"Mon":"291","Tue":"291","Wed":"291","Thu":null,"Fri":null},"type":"LOCKED"},
+  {"name":"Aman Sah","team":"MBO BA","old":"306","days":{"Mon":null,"Tue":"292","Wed":"292","Thu":"292","Fri":null},"type":"shared"},
+  {"name":"Namit Jain","team":"MBO QA (Testing)","old":"312","days":{"Mon":"312","Tue":"312","Wed":"312","Thu":"312","Fri":"312"},"type":"LOCKED"},
+  {"name":"Ankita Varshney","team":"MBO QA (Testing)","old":"310","days":{"Mon":"309","Tue":"309","Wed":"309","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Atif Khan","team":"MBO QA (Testing)","old":"309","days":{"Mon":null,"Tue":null,"Wed":"310","Thu":"309","Fri":"309"},"type":"shared"},
+  {"name":"Upcoming QA Person 1","team":"MBO QA (Testing)","old":"— (new)","days":{"Mon":"310","Tue":"310","Wed":null,"Thu":null,"Fri":"310"},"type":"shared"},
+  {"name":"Harsh Kumar Singh","team":"MBO QA (Testing)","old":"320","days":{"Mon":null,"Tue":"311","Wed":"311","Thu":"310","Fri":null},"type":"shared"},
+  {"name":"Kashish Aggarwal","team":"MBO QA (Testing)","old":"314","days":{"Mon":"311","Tue":null,"Wed":null,"Thu":"311","Fri":"311"},"type":"shared"},
+  {"name":"Lalit Kumar","team":"MBO QA (Testing)","old":"315","days":{"Mon":"313","Tue":"313","Wed":"313","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Upcoming QA Person 2","team":"MBO QA (Testing)","old":"— (new)","days":{"Mon":null,"Tue":null,"Wed":"314","Thu":"313","Fri":"313"},"type":"shared"},
+  {"name":"Nidhi Tyagi","team":"MBO QA (Testing)","old":"311","days":{"Mon":"314","Tue":"314","Wed":null,"Thu":null,"Fri":"314"},"type":"shared"},
+  {"name":"Prashant Sharma","team":"MBO QA (Testing)","old":"309","days":{"Mon":null,"Tue":"315","Wed":"315","Thu":"314","Fri":null},"type":"shared"},
+  {"name":"Pratham K. Sharma","team":"MBO QA (Testing)","old":"321","days":{"Mon":"315","Tue":null,"Wed":null,"Thu":"315","Fri":"315"},"type":"shared"},
+  {"name":"Upcoming QA Person 3","team":"MBO QA (Testing)","old":"— (new)","days":{"Mon":"316","Tue":"316","Wed":"316","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Rishikesh Saha","team":"MBO QA (Testing)","old":"316","days":{"Mon":null,"Tue":null,"Wed":"317","Thu":"316","Fri":"316"},"type":"shared"},
+  {"name":"Upcoming QA Person 4","team":"MBO QA (Testing)","old":"— (new)","days":{"Mon":"317","Tue":"317","Wed":null,"Thu":null,"Fri":"317"},"type":"shared"},
+  {"name":"Yash Chaudhary","team":"MBO QA (Testing)","old":"313","days":{"Mon":null,"Tue":"318","Wed":"318","Thu":"317","Fri":null},"type":"shared"},
+  {"name":"Ashok K. Chandola","team":"OBT Testing","old":"317","days":{"Mon":"319","Tue":"319","Wed":"319","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Nitish Kaushik","team":"OBT Testing","old":"318","days":{"Mon":null,"Tue":null,"Wed":"320","Thu":"319","Fri":"319"},"type":"shared"},
+  {"name":"Rohan Pandey","team":"OBT Testing","old":"319","days":{"Mon":"320","Tue":"320","Wed":null,"Thu":null,"Fri":"320"},"type":"shared"},
+  {"name":"Varun Bali","team":"OBT Testing","old":"322","days":{"Mon":null,"Tue":"321","Wed":"321","Thu":"320","Fri":null},"type":"shared"},
+  {"name":"Akash Verma","team":"FINOS & Apptio","old":"290","days":{"Mon":"322","Tue":"322","Wed":"322","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Kavita Rawat","team":"FINOS & Apptio","old":"289","days":{"Mon":null,"Tue":null,"Wed":"323","Thu":"322","Fri":"322"},"type":"shared"},
+  {"name":"Desmond Peris","team":"FINOS & Apptio","old":"323","days":{"Mon":"323","Tue":"323","Wed":null,"Thu":null,"Fri":"323"},"type":"shared"},
+  {"name":"Bhawana Garg","team":"FINOS & Apptio","old":"288","days":{"Mon":null,"Tue":"324","Wed":"324","Thu":"323","Fri":null},"type":"shared"},
+  {"name":"Pankaj Lohumi","team":"Service Delivery (SDM)","old":"326","days":{"Mon":"326","Tue":"326","Wed":"326","Thu":"326","Fri":"326"},"type":"LOCKED"},
+  {"name":"Pooja Modi","team":"Service Delivery (SDM)","old":"336","days":{"Mon":"336","Tue":"336","Wed":"336","Thu":"336","Fri":"336"},"type":"LOCKED"},
+  {"name":"Prateek Maheshwari","team":"Network","old":"327","days":{"Mon":"327","Tue":"327","Wed":"327","Thu":null,"Fri":null},"type":"dedicated"},
+  {"name":"Tanisha Dhar","team":"Network","old":"328","days":{"Mon":null,"Tue":"328","Wed":"328","Thu":"328","Fri":null},"type":"dedicated"},
+  {"name":"Pooja Nagar","team":"PMO","old":"332","days":{"Mon":"332","Tue":"332","Wed":"332","Thu":"332","Fri":"332"},"type":"LOCKED"},
+  {"name":"Isha Jha","team":"PMO","old":"331","days":{"Mon":"329","Tue":"329","Wed":"329","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Upcoming PMO Person 1","team":"PMO","old":"— (new)","days":{"Mon":null,"Tue":null,"Wed":"330","Thu":"329","Fri":"329"},"type":"shared"},
+  {"name":"Upcoming PMO Person 2","team":"PMO","old":"— (new)","days":{"Mon":"330","Tue":"330","Wed":null,"Thu":null,"Fri":"330"},"type":"shared"},
+  {"name":"Upcoming PMO Person 3","team":"PMO","old":"— (new)","days":{"Mon":null,"Tue":"331","Wed":"331","Thu":"330","Fri":null},"type":"shared"},
+  {"name":"Aniket Lohia","team":"Leisure","old":"333","days":{"Mon":"334","Tue":"334","Wed":"334","Thu":"334","Fri":"334"},"type":"LOCKED"},
+  {"name":"Raspreet Kaur","team":"Leisure","old":"334","days":{"Mon":"335","Tue":"335","Wed":"335","Thu":"335","Fri":"335"},"type":"LOCKED"},
+  {"name":"Amar Singh","team":"Leisure","old":"340","days":{"Mon":null,"Tue":"333","Wed":"333","Thu":"333","Fri":null},"type":"shared"},
+  {"name":"Mayank Bhardwaj","team":"Leisure","old":"342","days":{"Mon":null,"Tue":"338","Wed":"338","Thu":"338","Fri":null},"type":"shared"},
+  {"name":"Rajveer Singh","team":"Leisure","old":"338","days":{"Mon":null,"Tue":"339","Wed":"339","Thu":"339","Fri":null},"type":"shared"},
+  {"name":"Ruchi Mishra","team":"Leisure","old":"339","days":{"Mon":null,"Tue":"340","Wed":"340","Thu":"340","Fri":null},"type":"shared"},
+  {"name":"Shubham","team":"Leisure","old":"341","days":{"Mon":"333","Tue":null,"Wed":"341","Thu":null,"Fri":"333"},"type":"shared"},
+  {"name":"Surya P. Bhardwaj","team":"Supply","old":"347","days":{"Mon":"337","Tue":"337","Wed":"337","Thu":"337","Fri":"337"},"type":"LOCKED"},
+  {"name":"Radhika Dwivedi","team":"Cloud Infra","old":"343","days":{"Mon":"344","Tue":null,"Wed":"344","Thu":"344","Fri":null},"type":"shared"},
+  {"name":"Ritu Sharma","team":"Cloud Infra","old":"344","days":{"Mon":"345","Tue":null,"Wed":"345","Thu":"345","Fri":null},"type":"shared"},
+  {"name":"Ravi Kant","team":"Cloud Infra","old":"345","days":{"Mon":"346","Tue":null,"Wed":"346","Thu":"346","Fri":null},"type":"shared"},
+  {"name":"Rohit Nuwal","team":"Cloud Infra","old":"— (new)","days":{"Mon":"347","Tue":null,"Wed":"347","Thu":"347","Fri":null},"type":"shared"},
+  {"name":"Shyamal A. Palekar","team":"Salesforce","old":"324","days":{"Mon":"343","Tue":"343","Wed":"343","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Soni Ankush N.","team":"Salesforce","old":"325","days":{"Mon":"348","Tue":"344","Wed":"348","Thu":null,"Fri":null},"type":"shared"},
+  {"name":"Ankita Mirnali","team":"Salesforce","old":"— (new)","days":{"Mon":null,"Tue":"345","Wed":"349","Thu":null,"Fri":"343"},"type":"shared"},
+  {"name":"Aashish Malviya","team":"Salesforce","old":"— (new)","days":{"Mon":null,"Tue":"346","Wed":"350","Thu":null,"Fri":"344"},"type":"shared"},
+  {"name":"Sumitava Aich","team":"Salesforce","old":"— (new)","days":{"Mon":null,"Tue":"347","Wed":"351","Thu":null,"Fri":"345"},"type":"shared"},
+  {"name":"Tushar Kumar","team":"Salesforce","old":"— (new)","days":{"Mon":null,"Tue":"348","Wed":null,"Thu":null,"Fri":"346"},"type":"Tue+Fri"},
+  {"name":"Ashish Agrahari","team":"Salesforce","old":"— (new)","days":{"Mon":null,"Tue":"349","Wed":null,"Thu":null,"Fri":"347"},"type":"Tue+Fri"},
+  {"name":"Anshika Mishra","team":"Salesforce","old":"— (new)","days":{"Mon":null,"Tue":"350","Wed":null,"Thu":null,"Fri":"348"},"type":"Tue+Fri"},
+  {"name":"Bhagirath Singh","team":"Salesforce","old":"— (new)","days":{"Mon":null,"Tue":"351","Wed":null,"Thu":null,"Fri":"349"},"type":"Tue+Fri"},
+  {"name":"Kusum","team":"Salesforce","old":"— (new)","days":{"Mon":null,"Tue":"352","Wed":null,"Thu":null,"Fri":"350"},"type":"Tue+Fri"}
+];
+
+const DAYS = ['Mon','Tue','Wed','Thu','Fri'];
+const STORAGE_KEY = 'FCTG_Techlab_Seating_State';
+const APP_VERSION = '2026-06-09e';  // bumped whenever the built-in plan is updated
+
+const PODS = [
+  {n:'L', top:[281,282,283,284,285,286], bot:[]},
+  {n:1, top:[287,288,289,290,291,292], bot:[293,294,295,296,297,298]},
+  {n:2, top:[299,300,301,302,303], bot:[304,305,306,307,308]},
+  {n:3, top:[309,310,311,312,313,314], bot:[315,316,317,318,319,320]},
+  {n:4, top:[321,322,323,324,325,326], bot:[327,328,329,330,331,332]},
+  {n:5, top:[333,334,335,336,337], bot:[338,339,340,341,342]},
+  {n:6, top:[343,344,345,346,347,348], bot:[349,350,351,352,353,354]}
+];
+const HOT = [349,350,351,352,353,354]; 
+const PALETTE = ['#1f9d6b','#2b7fbf','#c2557a','#d98324','#6a5acd','#3a9d9d','#b5862b','#8e44ad','#2c7873','#c0392b','#16785f','#5b7fb4','#a0522d','#7d5a8c','#4a8db7'];
+
+const deskToPod = {};
+PODS.forEach((pod, index) => { [...(pod.top||[]), ...(pod.bot||[])].forEach(d => deskToPod[d] = index); });
+
+let STATE = [], TC = {}, curDay = 'Mon', hiTeam = null, searchHit = new Set(), VACATIONS = [];
+const tint = h => h + '22';
+
+function mapRosterFromServer(serverRoster) {
+    return serverRoster.map(row => {
+        const cleanDay = (val) => {
+            if (val === undefined || val === null) return null;
+            const str = String(val).trim().toUpperCase();
+            return (str === 'WFH' || str === 'FREE' || str === 'NULL' || str === '') ? null : String(val).trim();
+        };
+        return {
+            name: String(row.Name || row.name || '').trim(),
+            team: String(row.Team || row.team || 'Unassigned').trim(),
+            old: String(row['Old Seat'] || row.old || '').trim(),
+            days: {
+                Mon: cleanDay(row.Mon || (row.days && row.days.Mon)),
+                Tue: cleanDay(row.Tue || (row.days && row.days.Tue)),
+                Wed: cleanDay(row.Wed || (row.days && row.days.Wed)),
+                Thu: cleanDay(row.Thu || (row.days && row.days.Thu)),
+                Fri: cleanDay(row.Fri || (row.days && row.days.Fri))
+            },
+            type: String(row.Type || row.type || 'shared').trim()
+        };
+    });
+}
+
+function getWeekDates() {
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    const monday = new Date(today);
+    monday.setDate(today.getDate() + mondayOffset);
+    
+    const dates = {};
+    const dn = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+    for (let i = 0; i < 5; i++) {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        dates[dn[i]] = `${yyyy}-${mm}-${dd}`;
+    }
+    return dates;
+}
+
+function isOnVacation(name, day) {
+    if (!VACATIONS || VACATIONS.length === 0) return false;
+    const weekDates = getWeekDates();
+    const targetDateStr = weekDates[day];
+    if (!targetDateStr) return false;
+    const targetDate = new Date(targetDateStr);
+    
+    for (const vac of VACATIONS) {
+        if (vac.Name.trim().toLowerCase() === name.trim().toLowerCase()) {
+            const start = new Date(vac.Start_Date.substring(0, 10));
+            const end = new Date(vac.End_Date.substring(0, 10));
+            if (start <= targetDate && targetDate <= end) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+async function loadState() {
+    try {
+        const res = await fetch('/api/state');
+        if (res.ok) {
+            const data = await res.json();
+            if (data.roster && data.roster.length > 0) {
+                STATE = mapRosterFromServer(data.roster);
+                MIDBAY = data.midbay || {};
+                VACATIONS = data.vacations || [];
+                renderAll();
+                showToast('Loaded active plan from server.', 'success');
+                return;
+            }
+        }
+    } catch(e) {
+        console.error('Failed to load plan from server, falling back to local storage...', e);
+    }
+    
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(raw){
+            const s = JSON.parse(raw);
+            if(s && s.version === APP_VERSION && Array.isArray(s.state)){
+                STATE = s.state;
+                if(typeof MIDBAY!=='undefined') MIDBAY = s.midbay || {};
+                renderAll();
+                showToast('Loaded your local browser version.','success');
+                return;
+            }
+        }
+    } catch(e){}
+    
+    localStorage.removeItem(STORAGE_KEY);
+    STATE = JSON.parse(JSON.stringify(INITIAL_DATA));
+    MIDBAY = {};
+    renderAll();
+}
+
+async function saveToServer() {
+    const pin = prompt("Enter the Admin PIN to save this layout to the server:");
+    if (pin === null) return;
+    if (pin.trim() !== "250237") { showToast("Invalid Admin PIN.", "error"); return; }
+    
+    try {
+        const res = await fetch('/api/save_layout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                pin: pin.trim(),
+                roster: STATE,
+                midbay: (typeof MIDBAY !== 'undefined' ? MIDBAY : {})
+            })
+        });
+        const data = await res.json();
+        if (res.ok && data.ok) {
+            showToast(data.msg, 'success');
+            localStorage.removeItem(STORAGE_KEY);
+        } else {
+            showToast(data.msg || 'Failed to save to server.', 'error');
+        }
+    } catch(e) {
+        showToast('Error connecting to server.', 'error');
+    }
+}
+function saveState() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            version: APP_VERSION,
+            state: STATE,
+            midbay: (typeof MIDBAY!=='undefined' ? MIDBAY : {})
+        }));
+    } catch(e){}
+}
+function saveToFile() {
+    // Permanent, portable copy: bake current STATE + Middle Bay into a standalone HTML.
+    let html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    html = html.replace(/const INITIAL_DATA\s*=\s*\[[\s\S]*?\];/, 'const INITIAL_DATA = ' + JSON.stringify(STATE) + ';');
+    html = html.replace(/let MIDBAY=\{[\s\S]*?\};/, 'let MIDBAY=' + JSON.stringify(typeof MIDBAY!=='undefined'?MIDBAY:{}) + ';');
+    const stamp = new Date().toISOString().slice(0,10);
+    const blob = new Blob([html], {type:'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'FCTG_Seating_Plan_'+stamp+'.html'; a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('Saved! This file is a permanent copy with all your edits.','success');
+}
+
+function showToast(msg, type='info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = type === 'success' ? `✓ ${msg}` : type === 'error' ? `✕ ${msg}` : `ℹ ${msg}`;
+    container.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3500);
+}
+
+function teams() { return [...new Set(STATE.map(p=>p.team))].sort(); }
+function colors() { TC={}; teams().forEach((t,i) => TC[t] = PALETTE[i%PALETTE.length]); }
+function P2T(n) { const p = STATE.find(x=>x.name===n); return p ? p.team : ''; }
+function occ(day) { const m={}; STATE.forEach(p=>{ const d=p.days[day]; if(d)m[d]=p.name; }); return m; }
+function teamDesks(t) { const s=new Set(); STATE.filter(p=>p.team===t).forEach(p=>{ for(const d in p.days) if(p.days[d]) s.add(+p.days[d]); }); return [...s].sort((a,b)=>a-b); }
+function lockedMap() { const m={}; STATE.forEach(p=>{ if(p.type==='LOCKED' || p.type==='dedicated') for(const d in p.days) if(p.days[d]) m[p.days[d]]=p.name; }); return m; }
+function isTF(n) { const p=STATE.find(x=>x.name===n); return p&&p.type==='Tue+Fri'; }
+
+function renderAll() { saveState(); colors(); renderStats(); renderDays(); renderBay(); renderTeams(); renderGlance(); renderEmpty(); fillSelects(); }
+
+function renderStats() {
+    const lk = Object.keys(lockedMap()).length;
+    const mid = (typeof MIDBAY_DESKS!=='undefined') ? MIDBAY_DESKS.length : 12;
+    const total = 74 + mid;
+    document.getElementById('stats').innerHTML = [[74,'Bay Desks'],[mid,'Middle Bay'],[total,'Total Seats'],[STATE.length,'People'],[teams().length,'Teams'],[lk,'Locked/Ded'],[6,'Hot-desks']].map(s=>`<div class="stat"><div class="n">${s[0]}</div><div class="l">${s[1]}</div></div>`).join('');
+}
+function renderDays() { document.getElementById('days').innerHTML = DAYS.map(d=>`<button class="${d===curDay?'on':''}" onclick="setDay('${d}')" ondragover="handleDragOver(event)" ondrop="handleDropDay(event, '${d}')">${d}</button>`).join(''); document.getElementById('dayLabel').textContent = curDay; }
+function setDay(d) { curDay=d; renderDays(); renderBay(); renderGlance(); }
+
+function deskCell(dk) {
+    const m=occ(curDay), who=m[dk], team=who?P2T(who):null, lk=lockedMap(), isLock=lk[dk], isHot=HOT.includes(dk);
+    const isLDR = (dk >= 281 && dk <= 286);
+    const whoOnLeave = who && isOnVacation(who, curDay);
+    let cls='desk', style='', tag='', act='';
+    if(isLock || isLDR) cls+=' locked'; if(isHot) cls+=' hot'; if(!who || whoOnLeave) cls+=' free';
+    if(who && !isLDR && !whoOnLeave) { const c=TC[team]; style=`background:${tint(c)};border-color:${c}`; }
+    if(whoOnLeave) { style=`border: 1.5px dashed var(--red); background: var(--red-l);`; }
+    if(hiTeam && team!==hiTeam) cls+=' dim';
+    if(who && searchHit.has(who)) cls+=' hit';
+    if(isLDR) { tag='<span class="tag lock" style="background:var(--gold);color:#5a4410;">LOCKED</span>'; style = `border: 2px solid var(--gold) !important; background: var(--gold-l) !important; cursor: not-allowed; opacity: 1;`; } 
+    else if(whoOnLeave) { tag='<span class="tag" style="background:var(--red);color:#fff">Leave</span>'; }
+    else if(isLock) { tag='<span class="tag lock">lock</span>'; style += `; border-color: var(--gold); background: var(--gold-l);`; } 
+    else if(who&&isTF(who)) tag='<span class="tag tf">T/F</span>'; else if(isHot) tag='<span class="tag hot">hot</span>';
+    if(!isLDR && !isLock) { if(who) act=`<button class="act rem" title="Remove ${who}" onclick="event.stopPropagation();removePerson('${who.replace(/'/g,"\\'")}')">✕</button>`; if(!who) act=`<button class="act add" title="Add to desk ${dk}" onclick="event.stopPropagation();openAdd(${dk})">＋</button>`; }
+    const nm = whoOnLeave ? `Leave (${who})` : (who ? who.replace('Upcoming ','✦').replace(' (Tue only)','') : 'Free');
+    const tmn = who ? team.replace(' (Testing)','').replace(' (ServiceNow)','') : '';
+    const clickEvent = `onclick="deskClick(${dk})"`;
+    const dragStartEvent = who && !isLDR ? `draggable="true" ondragstart="handleDragStart(event, ${dk}, '${who.replace(/'/g,"\\'")}')"` : '';
+    const dragOverDropEvents = `ondragover="handleDragOver(event)" ondrop="handleDropDesk(event, ${dk})"`;
+    return `<div class="${cls}" style="${style}" ${clickEvent} ${dragStartEvent} ${dragOverDropEvents}><div class="dn">${dk}</div>${tag}<div class="who">${nm}</div><div class="tm">${tmn}</div>${act}</div>`;
+}
+
+function renderBay() {
+    document.getElementById('bay').innerHTML = PODS.map(pod => {
+        const r = a => `<div class="row ${a.length===5?'r5':''}">${a.map(deskCell).join('')}</div>`;
+        const desks = [...(pod.top||[]), ...(pod.bot||[])];
+        const tSet = new Set();
+        STATE.forEach(p => { for(const day of DAYS) { if(desks.includes(Number(p.days[day]))) tSet.add(p.team); } });
+        tSet.delete('Unassigned'); tSet.delete(''); tSet.delete('Leadership');
+        const headerText = pod.n === 'L' ? `Leadership Pod (281-286)` : `Pod ${pod.n} — ${Array.from(tSet).join(', ') || 'Empty'}`;
+        const podStyle = pod.n === 'L' ? `border: 2px solid var(--gold); border-radius: 12px; padding: 12px; background: rgba(228, 181, 59, 0.05); margin-bottom: 30px; box-shadow: 0 4px 15px rgba(228, 181, 59, 0.15);` : '';
+        const headerStyle = pod.n === 'L' ? `border-bottom-color: var(--gold); color: #8a6d23;` : '';
+        return `<div class="pod" style="${podStyle}"><div class="pod-h" style="${headerStyle}">${headerText}</div>${r(pod.top)}${pod.bot.length ? r(pod.bot) : ''}</div>`;
+    }).join('');
+}
+
+function renderTeams() {
+    const teamsList = document.getElementById('teams'); teamsList.innerHTML = '';
+    teams().forEach(t => {
+        const members = STATE.filter(p => p.team === t);
+        const isActive = (hiTeam === t);
+        const teamDiv = document.createElement('div');
+        teamDiv.innerHTML = `
+            <div class="teamrow ${isActive ? 'on' : ''}" onclick="toggleTeam('${t.replace(/'/g,"\\'")}')">
+                <span class="dot" style="background:${TC[t]}"></span>${t}<span class="ct">${members.length}</span>
+            </div>
+            <div class="team-members" style="display: ${isActive ? 'block' : 'none'}; padding: 5px 0 15px 25px; font-size: 12px; color: var(--muted);">
+                ${members.map(m => `<div style="padding: 3px 0; border-bottom: 1px solid #f0f0f0;">✦ ${m.name} <span style="font-family: monospace; float: right; margin-right: 10px;">${Object.values(m.days).find(d => d) || 'WFH'}</span></div>`).join('')}
+            </div>`;
+        teamsList.appendChild(teamDiv);
+    });
+}
+
+function toggleTeam(t) { hiTeam = hiTeam===t ? null : t; renderTeams(); renderBay(); }
+function deskClick(dk) { const who=occ(curDay)[dk]; if(who){ openEdit(dk, who); } else { openAdd(dk); } }
+
+function renderGlance() {
+    const container = document.getElementById('glance');
+    if (!container) return;
+    const m=occ(curDay), used=Object.keys(m).length, hotFree=HOT.filter(d=>!m[d]), allFree=[];
+    for(let d=281; d<=354; d++) if(!m[d]) allFree.push(d);
+    container.innerHTML = `<div style="display:flex;gap:14px;flex-wrap:wrap"><div class="stat" style="background:var(--green-l);border:0"><div class="n" style="color:var(--green)">${used}</div><div class="l">In office</div></div><div class="stat" style="background:var(--paper);border:0"><div class="n">${allFree.length}</div><div class="l">Free</div></div><div class="stat" style="background:var(--purple-l);border:0"><div class="n" style="color:var(--purple)">${hotFree.length}</div><div class="l">Hot free</div></div></div><div class="mini" style="margin-top:12px"><b>Free hot-desks:</b> ${hotFree.join(', ')||'none'}</div>`;
+}
+
+function renderEmpty() {
+    const e=[]; for(let d=281;d<=354;d++){ let any=false; DAYS.forEach(day=>{ if(occ(day)[d])any=true; }); if(!any)e.push(d); }
+    const el = document.getElementById('emptyd'); if(el) el.textContent=e.join(', ')||'none';
+}
+
+function doSearch() {
+    const q=document.getElementById('search').value.trim().toLowerCase(); searchHit=new Set();
+    if(q) { STATE.forEach(p=>{ if(p.name.toLowerCase().includes(q) || p.team.toLowerCase().includes(q)) searchHit.add(p.name); }); }
+    renderBay();
+}
+
+function removePerson(name) {
+    const p = STATE.find(x=>x.name===name);
+    if (p) {
+        const hasRegular = Object.values(p.days).some(dk => dk && !HOT.includes(Number(dk)));
+        if (hasRegular) {
+            const pin = prompt("Enter the Admin PIN to remove this person:");
+            if (pin === null) return;
+            if (pin.trim() !== "250237") { showToast("Invalid Admin PIN.", "error"); return; }
+        }
+    }
+    STATE = STATE.filter(p=>p.name!==name);
+    showToast(`${name} removed.`, "success");
+    renderAll();
+}
+
+let addDesk=null, aDays=new Set();
+function fillSelects() {
+    const ts=teams(); ['jteam','tteam','aTeam'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=ts.map(t=>`<option>${t}</option>`).join(''); });
+    const tl=document.getElementById('teamList'); if(tl) tl.innerHTML=ts.map(t=>`<option value="${t}">`).join('');
+    const tp=document.getElementById('tpod');
+    if(tp){
+        let o='<option value="auto">Auto — best free block (whole bay)</option>';
+        PODS.forEach((pod,i)=>{ if(pod.n==='L') return; const all=[...(pod.top||[]),...(pod.bot||[])]; const lo=Math.min(...all), hi=Math.max(...all); o+=`<option value="${i}">Pod ${pod.n} · seats ${lo}–${hi}</option>`; });
+        tp.innerHTML=o;
+    }
+    const mp=document.getElementById('mperson'); if(mp) mp.innerHTML=STATE.map(p=>`<option>${p.name}</option>`).join('');
+    const mp2=document.getElementById('mperson2'); if(mp2) mp2.innerHTML=STATE.map(p=>`<option>${p.name}</option>`).join('');
+}
+
+document.getElementById('aType').addEventListener('change', function(e) {
+    const daysWrap = document.getElementById('aDaysWrap');
+    if(e.target.value === 'LOCKED' || e.target.value === 'dedicated') { daysWrap.style.display = 'none'; aDays = new Set(['Mon','Tue','Wed','Thu','Fri']); } 
+    else { daysWrap.style.display = 'block'; aDays = new Set([curDay]); DAYS.forEach(x=>document.getElementById('a-'+x).classList.toggle('on', aDays.has(x))); }
+});
+
+function openAdd(dk) {
+    addDesk=dk; document.getElementById('aType').value = 'shared'; document.getElementById('aDaysWrap').style.display = 'block'; aDays=new Set([curDay]); 
+    document.getElementById('mTitle').textContent=`Assign Desk ${dk}`; document.getElementById('aName').value=''; document.getElementById('aMsg').textContent='';
+    document.getElementById('aDays').innerHTML=DAYS.map(d=>`<button id="a-${d}" class="${d===curDay?'on':''}" onclick="adTgl('${d}')">${d}</button>`).join('');
+    document.getElementById('modal').classList.add('on');
+}
+function adTgl(d) { if(aDays.has(d)) aDays.delete(d); else if(aDays.size<3) aDays.add(d); DAYS.forEach(x=>document.getElementById('a-'+x).classList.toggle('on',aDays.has(x))); }
+function closeModal() { document.getElementById('modal').classList.remove('on'); }
+
+// ---- Inline Edit / Rename feature ----
+let editName=null, editDesk=null;
+function openEdit(dk, who){
+    const p=STATE.find(x=>x.name===who); if(!p) return;
+    editName=who; editDesk=dk; fillSelects();
+    document.getElementById('eTitle').innerHTML=`Edit · Desk ${dk} <span class="mini" style="font-weight:400">(${p.team})</span>`;
+    document.getElementById('eName').value=p.name;
+    document.getElementById('eTeam').value=p.team;
+    document.getElementById('eType').value=p.type||'shared';
+    document.getElementById('eDays').innerHTML=DAYS.map(d=>{
+        const v=p.days[d]&&p.days[d]!=='WFH'?p.days[d]:'';
+        return `<div style="text-align:center"><div class="mini" style="margin-bottom:3px;font-weight:700;color:var(--navy)">${d}</div><input type="number" id="ed-${d}" value="${v}" placeholder="WFH" style="width:62px;text-align:center;padding:8px 4px" oninput="edCheck()"></div>`;
+    }).join('');
+    document.getElementById('eMsg').textContent='';
+    document.getElementById('editModal').classList.add('on');
+    edCheck();
+}
+function closeEdit(){ document.getElementById('editModal').classList.remove('on'); editName=null; }
+function edDaysObj(){
+    const o={Mon:null,Tue:null,Wed:null,Thu:null,Fri:null};
+    DAYS.forEach(d=>{ const v=document.getElementById('ed-'+d).value.trim(); o[d]= v? String(parseInt(v,10)) : null; });
+    return o;
+}
+function edConflicts(){
+    const o=edDaysObj(), list=[];
+    DAYS.forEach(d=>{
+        const dk=o[d]; if(!dk) return;
+        const n=parseInt(dk,10);
+        if(isNaN(n)||n<281||n>354){ list.push({day:d,range:true,desk:dk}); return; }
+        const other=STATE.find(x=>x.name!==editName && String(x.days[d])===String(dk));
+        if(other) list.push({day:d,desk:dk,who:other.name,team:other.team});
+    });
+    return list;
+}
+function edCheck(){
+    const c=edConflicts(), m=document.getElementById('eMsg');
+    const nm=document.getElementById('eName').value.trim();
+    let pre='';
+    if(nm && nm!==editName && STATE.find(x=>x.name===nm)) pre=`<div style="color:var(--red)">✕ Name "${nm}" already exists.</div>`;
+    if(!c.length){ m.innerHTML=pre+(pre?'':'<span style="color:var(--green)">✓ No conflicts — safe to save.</span>'); return !pre; }
+    m.innerHTML=pre+c.map(x=> x.range
+        ? `<div style="color:var(--red)">✕ ${x.day}: Desk ${x.desk} is outside the bay (281–354).</div>`
+        : `<div style="color:var(--red)">⚠ ${x.day}: Desk ${x.desk} is already taken by <b>${x.who}</b> (${x.team}) — saving will move <b>${x.who}</b> to WFH that day.</div>`
+    ).join('');
+    return false;
+}
+function saveEdit(force){
+    const p=STATE.find(x=>x.name===editName); if(!p) return;
+    const newName=document.getElementById('eName').value.trim();
+    if(!newName){ document.getElementById('eMsg').innerHTML='<div style="color:var(--red)">Name is required.</div>'; return; }
+    if(newName!==editName && STATE.find(x=>x.name===newName)){ document.getElementById('eMsg').innerHTML=`<div style="color:var(--red)">Name "${newName}" already exists.</div>`; return; }
+    
+    // Admin PIN check: if their current or new days have any regular desk (not a hot desk)
+    const newDays = edDaysObj();
+    const wasRegular = Object.values(p.days).some(dk => dk && !HOT.includes(Number(dk)));
+    const willBeRegular = Object.values(newDays).some(dk => dk && !HOT.includes(Number(dk)));
+    if (wasRegular || willBeRegular) {
+        const pin = prompt("Enter the Admin PIN to save changes to this regular desk:");
+        if (pin === null) return;
+        if (pin.trim() !== "250237") { showToast("Invalid Admin PIN.", "error"); return; }
+    }
+    
+    const c=edConflicts();
+    if(c.some(x=>x.range)){ edCheck(); return; }
+    if(c.length && !force){
+        edCheck();
+        const ppl=[...new Set(c.map(x=>x.who))].join(', ');
+        document.getElementById('eMsg').innerHTML+=`<div style="margin-top:10px;padding:10px;background:#fff4f4;border:1px solid var(--red);border-radius:8px">Move <b>${ppl}</b> to WFH on the clashing day(s) and give this seat to this person?<div style="margin-top:8px;display:flex;gap:8px"><button class="btn" style="background:var(--red);color:#fff;font-size:12px;padding:7px 12px" onclick="saveEdit(true)">Yes — resolve &amp; save</button><button class="btn ghost" style="font-size:12px;padding:7px 12px" onclick="edCheck()">Cancel</button></div></div>`;
+        return;
+    }
+    if(c.length && force){
+        c.forEach(x=>{ const o=STATE.find(z=>z.name===x.who); if(o) o.days[x.day]=null; });
+        showToast('Moved to WFH: '+[...new Set(c.map(x=>x.who))].join(', '),'info');
+    }
+    const oldName=p.name;
+    p.name=newName; p.team=document.getElementById('eTeam').value.trim()||p.team;
+    p.type=document.getElementById('eType').value; p.days=edDaysObj();
+    closeEdit(); renderAll();
+    showToast((oldName!==newName?`${oldName} → ${newName}`:newName)+' updated.','success');
+}
+function removeEdit(){
+    const p = STATE.find(x=>x.name===editName);
+    if (p) {
+        const hasRegular = Object.values(p.days).some(dk => dk && !HOT.includes(Number(dk)));
+        if (hasRegular) {
+            const pin = prompt("Enter the Admin PIN to remove this person:");
+            if (pin === null) return;
+            if (pin.trim() !== "250237") { showToast("Invalid Admin PIN.", "error"); return; }
+        }
+    }
+    if(confirm('Remove '+editName+' from the plan?')){ const n=editName; STATE=STATE.filter(x=>x.name!==n); closeEdit(); renderAll(); showToast(n+' removed.','success'); }
+}
+
+function confirmAdd() {
+    const name=document.getElementById('aName').value.trim(), team=document.getElementById('aTeam').value, days=[...aDays], type=document.getElementById('aType').value;
+    if(!name) { document.getElementById('aMsg').innerHTML='<span style="color:var(--red)">Enter a name.</span>'; return; }
+    if(!days.length) { document.getElementById('aMsg').innerHTML='<span style="color:var(--red)">Pick at least one day.</span>'; return; }
+    
+    // Admin PIN check for non-hot-desks
+    if (!HOT.includes(addDesk)) {
+        const pin = prompt("Enter the Admin PIN to assign a person to this regular desk:");
+        if (pin === null) return;
+        if (pin.trim() !== "250237") { showToast("Invalid Admin PIN.", "error"); return; }
+    }
+    
+    const clash = days.filter(d=>occ(d)[addDesk]);
+    if(clash.length) { document.getElementById('aMsg').innerHTML=`<span style="color:var(--red)">Conflict on ${clash.join(', ')}.</span>`; return; }
+    if(STATE.find(p=>p.name===name)) { document.getElementById('aMsg').innerHTML=`<span style="color:var(--red)">Person exists.</span>`; return; }
+    const dd={Mon:null,Tue:null,Wed:null,Thu:null,Fri:null}; days.forEach(d=>dd[d]=addDesk);
+    STATE.push({name, team, old:'— (new)', days:dd, type}); closeModal(); showToast(`${name} added.`, "success"); renderAll();
+}
+
+let mDays=new Set(), jDays=new Set();
+function dayPick(host,set,single) { document.getElementById(host).innerHTML=DAYS.map(d=>`<button id="${host}-${d}" onclick="dpT('${host}','${d}',${single})">${d}</button>`).join(''); }
+function dpT(host,d,single) {
+    const set=host==='mdays'?mDays:jDays;
+    if(single) { set.clear(); set.add(d); } else { if(set.has(d)) set.delete(d); else if(set.size<3) set.add(d); }
+    DAYS.forEach(x=>{ const e=document.getElementById(host+'-'+x); if(e) e.classList.toggle('on',set.has(x)); });
+}
+
+function moveScenarioUI(){
+    const sc=document.getElementById('mscenario').value;
+    document.getElementById('mdeskWrap').style.display = sc==='desk'?'':'none';
+    document.getElementById('mp2Wrap').style.display = sc==='swap'?'':'none';
+    document.getElementById('mscopeWrap').style.display = sc==='best'?'none':'';
+}
+function bad(t){ return `<div class="sugg bad">${t}</div>`; }
+
+function whatif() {
+    const name=document.getElementById('mperson').value, sc=document.getElementById('mscenario').value;
+    const r=document.getElementById('mresult'), day=[...mDays][0]||curDay;
+    const p=STATE.find(x=>x.name===name); if(!p){ r.innerHTML=bad('Pick a person.'); return; }
+    if(sc==='desk'){
+        const dk=+document.getElementById('mdesk').value;
+        if(!dk||dk<281||dk>354){ r.innerHTML=bad('Enter desk 281–354.'); return; }
+        const scope=document.getElementById('mscope').value;
+        const days = scope==='all'? DAYS.filter(d=>p.days[d]) : [day];
+        if(!days.length){ r.innerHTML=bad('This person has no office days selected.'); return; }
+        const rows=days.map(d=>{ const o=occ(d)[dk]; return (o&&o!==name)
+            ? `<div class="sugg bad">✕ ${d}: desk ${dk} taken by <b>${o}</b></div>`
+            : `<div class="sugg">✓ ${d}: desk ${dk} free</div>`; });
+        const withT=[...new Set(teamDesks(P2T(name)).map(x=>deskToPod[x]))].includes(deskToPod[dk]);
+        r.innerHTML=rows.join('')+`<div class="sugg ${withT?'':'warn'}">${withT?'✓ Same Pod as team ('+podOf(dk)+')':'⚠ Different Pod ('+podOf(dk)+') from team'}</div>`;
+    } else if(sc==='best'){
+        r.innerHTML=bestDeskOptions(p);
+    } else {
+        const n2=document.getElementById('mperson2').value, p2=STATE.find(x=>x.name===n2);
+        if(!p2||n2===name){ r.innerHTML=bad('Pick a different person to swap with.'); return; }
+        const a=p.days[day], b=p2.days[day];
+        if(!a||!b){ r.innerHTML=bad(`Both must be in office on ${day} to swap.`); return; }
+        r.innerHTML=`<div class="sugg"><b>Swap on ${day}</b><br>${name}: desk ${a} → <b>${b}</b> (${podOf(+b)})<br>${n2}: desk ${b} → <b>${a}</b> (${podOf(+a)})</div><div class="sugg info">No one else is displaced — they just trade desks.</div>`;
+    }
+}
+
+function bestDeskOptions(p){
+    const odays=DAYS.filter(d=>p.days[d]);
+    if(!odays.length) return bad('This person has no office days.');
+    const myPods=new Set(teamDesks(p.team).map(d=>deskToPod[d]));
+    const cands=[];
+    for(let d=287; d<=354; d++){
+        if(d>=281&&d<=286) continue;
+        const free=odays.every(day=>{ const o=occ(day)[d]; return !o||o===p.name; });
+        if(free){ const pod=deskToPod[d]; cands.push({d,rank:myPods.has(pod)?0:1}); }
+    }
+    cands.sort((a,b)=>a.rank-b.rank||a.d-b.d);
+    if(!cands.length) return bad('No desk is free on ALL their office days. Try "Move to a specific desk" for a single day.');
+    const top=cands.slice(0,8);
+    return `<div class="sugg info"><b>${p.name}</b> · office days: ${odays.join(', ')} · pick one:</div>`+
+      top.map(c=>`<div class="sugg ${c.rank===0?'':'warn'}"><b>Desk ${c.d}</b> · ${podOf(c.d)} ${c.rank===0?'· same pod ✓':''}<button class="btn green" style="margin-left:10px;font-size:12px;padding:5px 12px" onclick="applyTo('${p.name.replace(/'/g,"\\'")}',${c.d},'all')">Move here</button></div>`).join('');
+}
+
+function applyTo(name,desk,scope,day){
+    const p=STATE.find(x=>x.name===name); if(!p) return;
+    if(desk>=281&&desk<=286){ showToast('Leadership pod is locked.','error'); return; }
+    
+    const days = scope==='all' ? DAYS.filter(d=>p.days[d]) : [day||curDay];
+    
+    // Admin PIN check: if target desk is regular, OR if the person is leaving a regular desk on any of the moved days
+    const targetIsRegular = !HOT.includes(Number(desk));
+    const sourceIsRegular = days.some(d => p.days[d] && !HOT.includes(Number(p.days[d])));
+    if (targetIsRegular || sourceIsRegular) {
+        const pin = prompt(`Moving ${name} requires authentication. Enter the Admin PIN:`);
+        if (pin === null) return;
+        if (pin.trim() !== "250237") { showToast("Invalid Admin PIN.", "error"); return; }
+    }
+    
+    const clash=days.filter(d=>{ const o=occ(d)[desk]; return o&&o!==name; });
+    if(clash.length){ showToast(`Desk ${desk} busy on ${clash.join(', ')}.`,'error'); return; }
+    days.forEach(d=>p.days[d]=String(desk));
+    renderAll(); showToast(`${name} → desk ${desk} (${days.join(', ')}).`,'success');
+    document.getElementById('mresult').innerHTML=`<div class="sugg"><b>Done.</b> ${name} moved to desk ${desk} on ${days.join(', ')}.</div>`;
+}
+
+function applyMove() {
+    const name=document.getElementById('mperson').value, sc=document.getElementById('mscenario').value;
+    const day=[...mDays][0]||curDay, scope=document.getElementById('mscope').value;
+    if(sc==='desk'){
+        const dk=+document.getElementById('mdesk').value;
+        if(!dk){ showToast('Enter a desk.','error'); return; }
+        applyTo(name,dk,scope,day);
+    } else if(sc==='best'){
+        showToast('Use the "Move here" buttons in the suggestions.','info');
+    } else {
+        const n2=document.getElementById('mperson2').value, p=STATE.find(x=>x.name===name), p2=STATE.find(x=>x.name===n2);
+        if(!p2||n2===name){ showToast('Pick a different person to swap.','error'); return; }
+        const a=p.days[day], b=p2.days[day];
+        if(!a||!b){ showToast(`Both must be in office on ${day} to swap.`,'error'); return; }
+        
+        // Admin PIN check if either desk being swapped is a regular desk
+        const isRegA = a && !HOT.includes(Number(a));
+        const isRegB = b && !HOT.includes(Number(b));
+        if (isRegA || isRegB) {
+            const pin = prompt("Swapping regular desks requires authentication. Enter the Admin PIN:");
+            if (pin === null) return;
+            if (pin.trim() !== "250237") { showToast("Invalid Admin PIN.", "error"); return; }
+        }
+        
+        p.days[day]=b; p2.days[day]=a; renderAll();
+        showToast(`Swapped ${name} ↔ ${n2} on ${day}.`,'success');
+        document.getElementById('mresult').innerHTML=`<div class="sugg"><b>Swapped.</b> ${name} ↔ ${n2} on ${day}.</div>`;
+    }
+}
+
+function suggest() {
+    const team=document.getElementById('jteam').value, n=Math.max(1,+document.getElementById('jnum').value||1); let days=[...jDays]; if(!days.length) days=['Mon','Tue','Wed'];
+    const td=teamDesks(team), teamPods = [...new Set(td.map(d => deskToPod[d]))], primaryPod = teamPods.length ? teamPods[0] : 0, out=[]; let placed=0, plan=[];
+    const podDesks = Object.keys(deskToPod).filter(d => teamPods.includes(deskToPod[d])).map(Number);
+    const freeInPod = podDesks.filter(d => days.every(day => !occ(day)[d]) && d > 286);
+    if(freeInPod.length > 0) { const take = Math.min(freeInPod.length, n-placed); placed += take; plan.push(`<div class="sugg"><b>✓ ${take} inside team's Pod</b><br>Desks <span class="kbd">${freeInPod.slice(0,take).join(', ')}</span></div>`); }
+    if(placed < n) {
+        const adjDesks = []; for(let d=287; d<=348; d++) { if(!podDesks.includes(d) && days.every(day => !occ(day)[d])) adjDesks.push({desk: d, dist: Math.abs(deskToPod[d] - primaryPod)}); }
+        adjDesks.sort((a,b) => a.dist - b.dist);
+        if(adjDesks.length > 0) { const take = Math.min(adjDesks.length, n-placed); const ds = adjDesks.slice(0,take).map(x=>x.desk); placed += take; plan.push(`<div class="sugg warn"><b>↔ ${take} in adjacent Pods</b><br>Nearest: <span class="kbd">${ds.join(', ')}</span></div>`); }
+    }
+    if(placed < n) {
+        const hotAll = HOT.filter(d => days.every(day => !occ(day)[d]));
+        if(hotAll.length > 0) { const take = Math.min(hotAll.length, n-placed); const ds = hotAll.slice(0,take); placed += take; plan.push(`<div class="sugg" style="background:var(--purple-l);border-color:#d9cdec"><b>⚡ ${take} in Hot-Desk area</b></div>`); }
+    }
+    out.push(`<div class="sugg info"><b>${n} ${team} joiner(s)</b> · days ${days.join(', ')}</div>`); out.push(...plan);
+    if(placed<n) out.push(`<div class="sugg bad"><b>Shortfall: ${n-placed} unseated</b>.</div>`); else out.push(`<div class="sugg"><b>All seated. ✓</b></div>`);
+    document.getElementById('jresult').innerHTML=out.join('');
+}
+
+const BAY_NAME = 'Extreme Right Bay';
+function podOf(dk){ const i=deskToPod[dk]; if(i===undefined) return null; const p=PODS[i]; return p.n==='L'?'Leadership Pod':('Pod '+p.n); }
+function podsForRange(s,e){ const out=[]; for(let d=s;d<=e;d++){ const l=podOf(d); if(l && !out.includes(l)) out.push(l); } return out; }
+
+function podRange(i){ const all=[...(PODS[i].top||[]),...(PODS[i].bot||[])]; return [Math.min(...all),Math.max(...all)]; }
+
+function relocateAnalyze() {
+    const team=document.getElementById('tteam').value;
+    const podSel=document.getElementById('tpod').value;
+    const td=teamDesks(team), need=td.length;
+    const R=document.getElementById('tresult');
+    if(!need){ R.innerHTML='<div class="sugg bad"><b>No assigned desks</b><br>This team holds no seats to relocate.</div>'; return; }
+    const tdset=new Set(td);
+    const members=STATE.filter(p=>p.team===team);
+    const curPods=podsForRange(td[0],td[td.length-1]);
+    const contiguous = td.every((d,i)=> i===0 || d===td[i-1]+1);
+
+    // who sits where each day (excluding moving team)
+    const dayDesk={}; DAYS.forEach(d=>dayDesk[d]={});
+    STATE.forEach(p=>{ if(p.team===team) return; DAYS.forEach(day=>{ const dk=p.days[day]; if(dk) dayDesk[day][dk]=p.name; }); });
+
+    // search bounds
+    let lo=287, hi=354;
+    if(podSel!=='auto'){ const r=podRange(+podSel); lo=r[0]; hi=r[1]; }
+
+    const opts=[];
+    for(let s=lo; s+need-1<=hi; s++){
+        const win=[]; for(let k=0;k<need;k++) win.push(s+k);
+        if(win.every(d=>tdset.has(d))) continue;
+        const aff={}; win.forEach(d=>DAYS.forEach(day=>{ const nm=dayDesk[day][d]; if(nm) aff[nm]=P2T(nm); }));
+        const names=Object.keys(aff);
+        const dispTeams={}; names.forEach(n=>{ dispTeams[aff[n]]=(dispTeams[aff[n]]||0)+1; });
+        let peak=0; DAYS.forEach(day=>{ const c=win.filter(d=>dayDesk[day][d]).length; if(c>peak)peak=c; });
+        opts.push({s,e:s+need-1,names,dispTeams,pods:podsForRange(s,s+need-1),peak,free:names.length===0});
+    }
+    opts.sort((a,b)=>(b.free-a.free)||(a.names.length-b.names.length)||(a.s-b.s));
+
+    const dispList=o=>Object.entries(o.dispTeams).sort((a,b)=>b[1]-a[1]).map(([t,c])=>`${t} <b>(${c})</b>`).join(', ');
+    const moveBtn=o=>`<button class="btn ${o.free?'green':''}" style="${o.free?'':'background:#b06a00;color:#fff;'}margin-top:8px;font-size:12px;padding:7px 14px" onclick="moveTeamTo('${team.replace(/'/g,"\\'")}',${o.s},false)">➡ Move Team Here (${o.s}–${o.e})</button>`;
+    const card=o=>{
+        const pod=o.pods.join(' + ');
+        if(o.free) return `<div class="sugg"><b>✓ Seats ${o.s}–${o.e}</b> · ${pod} · ${BAY_NAME}<br><span style="color:var(--green);font-weight:600">Fully vacant</span> — zero displacement.${moveBtn(o)}</div>`;
+        return `<div class="sugg warn"><b>Seats ${o.s}–${o.e}</b> · ${pod} · ${BAY_NAME}<br>
+          <span style="color:var(--red)">${o.names.length} ${o.names.length===1?'person':'people'} already here</span> · peak ${o.peak}/${need} same-day · displaces: ${dispList(o)}<br>
+          <span class="mini">Will relocate: ${o.names.slice(0,6).join(', ')}${o.names.length>6?` +${o.names.length-6} more`:''}. Moving will push them to WFH for the clashing days.</span>${moveBtn(o)}</div>`;
+    };
+
+    const where = podSel==='auto' ? `${BAY_NAME} (all pods)` : `Pod ${PODS[+podSel].n} (seats ${lo}–${hi})`;
+    let out=`<div class="sugg info"><b>${team}</b> · <b>${members.length} people</b> · needs <b>${need}</b> contiguous seats<br>
+      <span class="mini">Now at <b>${td[0]}–${td[td.length-1]}</b> (${curPods.join(' + ')})${contiguous?'':' · currently split'}. Target: <b>${where}</b>.</span></div>`;
+
+    if(!opts.length){ out+=`<div class="sugg bad">No block of ${need} seats fits in ${where}.</div>`; R.innerHTML=out; return; }
+    const free=opts.filter(o=>o.free), paid=opts.filter(o=>!o.free);
+    if(free.length){ out+=`<div style="font-weight:700;color:var(--navy);margin:12px 0 4px;font-size:13px">FREE landing spots</div>`+free.slice(0,4).map(card).join(''); }
+    if(paid.length){ out+=`<div style="font-weight:700;color:var(--navy);margin:14px 0 4px;font-size:13px">Occupied spots (needs displacement)</div>`+paid.slice(0,4).map(card).join(''); }
+    R.innerHTML=out;
+}
+
+function moveTeamTo(team, start, force){
+    const pin = prompt(`Relocating ${team} requires authorization. Enter the Admin PIN:`);
+    if (pin === null) return;
+    if (pin.trim() !== "250237") { showToast("Invalid Admin PIN.", "error"); return; }
+    
+    const td=teamDesks(team), need=td.length;
+    const map={}; td.forEach((d,i)=> map[d]=start+i);  // preserve the team's internal rota, shifted
+    const members=STATE.filter(p=>p.team===team);
+    // detect clashes at destination (other teams, same day)
+    const clashes=[];
+    members.forEach(m=>DAYS.forEach(d=>{ const od=m.days[d]; if(od && map[od]!=null){ const nd=map[od]; const other=STATE.find(x=>x.team!==team && String(x.days[d])===String(nd)); if(other) clashes.push({day:d,desk:nd,who:other.name,team:other.team}); } }));
+    if(clashes.length && !force){
+        const ppl=[...new Set(clashes.map(c=>c.who))];
+        document.getElementById('tresult').insertAdjacentHTML('afterbegin',
+          `<div class="sugg warn" style="border:2px solid var(--red)"><b>⚠ ${ppl.length} ${ppl.length===1?'person is':'people are'} in the way at ${start}–${start+need-1}:</b><br>${ppl.join(', ')}<br><span class="mini">Moving ${team} here will push them to WFH on the clashing day(s).</span><div style="margin-top:8px"><button class="btn" style="background:var(--red);color:#fff;font-size:12px;padding:7px 12px" onclick="moveTeamTo('${team.replace(/'/g,"\\'")}',${start},true)">Resolve &amp; Move anyway</button></div></div>`);
+        return;
+    }
+    if(clashes.length && force){
+        clashes.forEach(c=>{ const o=STATE.find(z=>z.name===c.who); if(o) o.days[c.day]=null; });
+        showToast('Pushed to WFH: '+[...new Set(clashes.map(c=>c.who))].join(', '),'info');
+    }
+    members.forEach(m=>DAYS.forEach(d=>{ const od=m.days[d]; if(od && map[od]!=null) m.days[d]=String(map[od]); }));
+    renderAll();
+    showToast(`${team} moved to ${start}–${start+need-1}.`,'success');
+    relocateAnalyze();
+}
+
+function renderReport() {
+    let h='<div style="display:flex;flex-direction:column;gap:14px">';
+    DAYS.forEach(day=>{ const m=occ(day), used=Object.keys(m).length, pct=Math.round(used/74*100); h+=`<div><div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>${day}</span><span class="mono" style="color:var(--muted)">${used}/74 · ${pct}%</span></div><div class="bar"><i style="width:${pct}%"></i></div></div>`; });
+    h+='</div><h3 style="margin:24px 0 12px;font-size:14.5px">Desks Assigned per Team</h3><div style="font-size:13px;display:grid;gap:8px">';
+    const counts=teams().map(t=>[t,teamDesks(t)]).sort((a,b)=>b[1].length-a[1].length);
+    h+=counts.map(c=>`<div style="display:flex;justify-content:space-between;padding-bottom:6px;border-bottom:1px solid var(--line)"><span><span class="dot" style="display:inline-block;background:${TC[c[0]]};vertical-align:middle;margin-right:6px"></span> ${c[0]}</span><span class="mono" style="font-weight:600">${c[1].length} desks</span></div>`).join('');
+    document.getElementById('report').innerHTML=h+'</div>';
+}
+
+function resetState() {
+    if(confirm('Discard all edits and clear LocalStorage?')) { localStorage.removeItem(STORAGE_KEY); STATE = JSON.parse(JSON.stringify(INITIAL_DATA)); hiTeam = null; searchHit = new Set(); renderAll(); showToast("Reverted to base data.", "info"); }
+}
+
+function exportExcel() {
+    const wb=XLSX.utils.book_new(), ts=teams(), tr=[['Team','Desks','People']]; ts.forEach(t=>{ const d=teamDesks(t); tr.push([t, d.length?d[0]+'-'+d[d.length-1]:'flex', STATE.filter(p=>p.team===t).length]); }); XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(tr),'Seating Plan');
+    const rota=[['Desk',...DAYS]]; for(let d=281;d<=354;d++){ const row=[d]; DAYS.forEach(day=>row.push(occ(day)[d]||'—')); rota.push(row); } XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rota),'Daily Desk Rota');
+    const sp=[['Name','Team','Old Seat',...DAYS,'Type']]; STATE.forEach(p=>sp.push([p.name,p.team,p.old||'',...DAYS.map(d=>p.days[d]||'WFH'),p.type])); XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sp),'Seat by Person');
+    XLSX.writeFile(wb,'FCTG_Seating_Plan_Updated.xlsx'); showToast("Excel exported.", "success");
+}
+
+function importExcel(event) {
+    const file = event.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result), workbook = XLSX.read(data, {type: 'array'});
+            const sheetName = workbook.SheetNames.find(s => s.trim().toLowerCase() === 'seat by person');
+            if (!sheetName) { showToast("Error: 'Seat by Person' tab missing.", "error"); return; }
+            const worksheet = workbook.Sheets[sheetName], jsonData = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
+            if (jsonData.length === 0) { showToast("Error: Empty sheet.", "error"); return; }
+            const newState = [];
+            jsonData.forEach(row => {
+                if(!row.Name) return; 
+                const cleanDay = (val) => { const str = String(val).trim().toUpperCase(); return (str === 'WFH' || str === 'FREE' || str === 'NULL' || str === '') ? null : String(val).trim(); };
+                newState.push({ name: String(row.Name).trim(), team: String(row.Team || 'Unassigned').trim(), old: String(row['Old Seat'] || '').trim(), days: { Mon: cleanDay(row.Mon), Tue: cleanDay(row.Tue), Wed: cleanDay(row.Wed), Thu: cleanDay(row.Thu), Fri: cleanDay(row.Fri) }, type: String(row.Type || 'shared').trim() });
+            });
+            STATE = newState; saveState(); hiTeam = null; searchHit = new Set(); renderAll(); showToast(`Imported ${STATE.length} seats.`, "success"); document.getElementById('excelUpload').value = '';
+        } catch (err) { console.error(err); showToast("Format error.", "error"); }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function openPortal() {
+    const sel = document.getElementById('pSelect'); const sortedPeople = [...STATE].sort((a, b) => a.name.localeCompare(b.name));
+    sel.innerHTML = '<option value="">-- Choose your name --</option>' + sortedPeople.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+    document.getElementById('pDetails').style.display = 'none'; sel.value = ''; document.getElementById('portalModal').classList.add('on');
+}
+function closePortal() { document.getElementById('portalModal').classList.remove('on'); }
+
+function showEmployeeDetails() {
+    const name = document.getElementById('pSelect').value, detailsDiv = document.getElementById('pDetails');
+    if (!name) { detailsDiv.style.display = 'none'; return; }
+    const person = STATE.find(p => p.name === name); if (!person) return;
+    document.getElementById('tkName').textContent = person.name; document.getElementById('tkTeam').textContent = person.team;
+    let typeClass = 'tag tf'; if(person.type === 'LOCKED' || person.type === 'dedicated') typeClass = 'tag lock';
+    document.getElementById('tkType').innerHTML = `<span class="${typeClass}" style="position:static">${person.type}</span>`;
+    document.getElementById('tkGrid').innerHTML = DAYS.map(d => person.days[d] ? `<div class="grid-day"><div class="d-name">${d}</div><div class="d-desk">${person.days[d]}</div></div>` : `<div class="grid-day wfh"><div class="d-name">${d}</div><div class="d-desk">WFH</div></div>`).join('');
+    detailsDiv.style.display = 'block';
+}
+
+const MIDBAY_DESKS=[165,166,167,168,169,170,171,172,173,174,175,176];
+let MIDBAY={};
+function midCell(dk){
+    const who=MIDBAY[dk];
+    const cls='desk'+(who?'':' free');
+    const style='border-color:var(--gold);background:var(--gold-l)';
+    const nm=who||'Free · Reserved';
+    const act=who
+      ? `<button class="act rem" title="Clear" onclick="event.stopPropagation();midClear(${dk})">✕</button>`
+      : `<button class="act add" title="Assign desk ${dk}" onclick="event.stopPropagation();midAdd(${dk})">＋</button>`;
+    return `<div class="${cls}" style="${style}"><div class="dn">${dk}</div><span class="tag lock">resv</span><div class="who">${nm}</div><div class="tm">Middle Bay</div>${act}</div>`;
+}
+function renderMiddle(){
+    const n=Object.keys(MIDBAY).length;
+    document.getElementById('midStat').textContent=n+' / 12 assigned';
+    const row=a=>`<div class="row">${a.map(midCell).join('')}</div>`;
+    document.getElementById('midbay').innerHTML=`<div class="pod"><div class="pod-h" style="border-bottom-color:var(--gold);color:#8a6d23">Reserved · Pooja Modi (165–176)</div>${row(MIDBAY_DESKS.slice(0,6))}${row(MIDBAY_DESKS.slice(6))}</div>`;
+}
+function midAdd(dk){
+    const pin = prompt(`Assigning Middle Bay desk ${dk} requires authentication. Enter the Admin PIN:`);
+    if (pin === null) return;
+    if (pin.trim() !== "250237") { showToast("Invalid Admin PIN.", "error"); return; }
+    const n=prompt('Assign name to desk '+dk+':');
+    if(n&&n.trim()){ MIDBAY[dk]=n.trim(); renderMiddle(); saveState(); showToast('Assigned to desk '+dk,'success'); }
+}
+function midClear(dk){
+    const pin = prompt(`Clearing Middle Bay desk ${dk} requires authentication. Enter the Admin PIN:`);
+    if (pin === null) return;
+    if (pin.trim() !== "250237") { showToast("Invalid Admin PIN.", "error"); return; }
+    delete MIDBAY[dk]; renderMiddle(); saveState();
+}
+
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    ['map','join','move','team','report','middle'].forEach(t=>document.getElementById('tab-'+t).style.display = t===b.dataset.tab ? '' : 'none');
+    if(b.dataset.tab==='report') renderReport();
+    if(b.dataset.tab==='middle') renderMiddle();
+});
+
+// Drag and Drop Helper Functions
+let dragSourceDesk = null;
+let dragSourceName = null;
+
+function handleDragStart(ev, dk, name) {
+    dragSourceDesk = dk;
+    dragSourceName = name;
+    ev.dataTransfer.setData("text/plain", name);
+    ev.dataTransfer.effectAllowed = "move";
+}
+
+function handleDragOver(ev) {
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = "move";
+}
+
+async function handleDropDesk(ev, targetDesk) {
+    ev.preventDefault();
+    if (!dragSourceName) return;
+    const name = dragSourceName;
+    const fromDesk = dragSourceDesk;
+    if (fromDesk === targetDesk) return;
+    
+    if (targetDesk >= 281 && targetDesk <= 286) {
+        showToast('Leadership pod is locked.', 'error');
+        return;
+    }
+    
+    const p = STATE.find(x => x.name === name);
+    if (!p) return;
+    
+    const m = occ(curDay);
+    const whoTarget = m[targetDesk];
+    
+    const pin = prompt("Enter the Admin PIN to confirm and save changes to the server:");
+    if (pin === null) return;
+    if (pin.trim() !== "250237") { showToast("Invalid Admin PIN.", "error"); return; }
+    
+    if (whoTarget) {
+        const p2 = STATE.find(x => x.name === whoTarget);
+        if (p2) {
+            p.days[curDay] = String(targetDesk);
+            p2.days[curDay] = String(fromDesk);
+            renderAll();
+            showToast(`Swapped seats: ${p.name} ↔ ${p2.name} on ${curDay}.`, 'success');
+            await saveToServerSilent(pin);
+        }
+    } else {
+        p.days[curDay] = String(targetDesk);
+        renderAll();
+        showToast(`Moved ${p.name} to desk ${targetDesk} on ${curDay}.`, 'success');
+        await saveToServerSilent(pin);
+    }
+    
+    dragSourceDesk = null;
+    dragSourceName = null;
+}
+
+async function handleDropDay(ev, targetDay) {
+    ev.preventDefault();
+    if (!dragSourceName) return;
+    const name = dragSourceName;
+    const fromDesk = dragSourceDesk;
+    if (curDay === targetDay) return;
+    
+    const p = STATE.find(x => x.name === name);
+    if (!p) return;
+    
+    const targetOcc = occ(targetDay);
+    const occupant = targetOcc[fromDesk];
+    
+    if (occupant) {
+        showToast(`Conflict on ${targetDay}: Desk ${fromDesk} is already occupied by ${occupant}.`, 'error');
+        return;
+    }
+    
+    const pin = prompt("Enter the Admin PIN to confirm and save changes to the server:");
+    if (pin === null) return;
+    if (pin.trim() !== "250237") { showToast("Invalid Admin PIN.", "error"); return; }
+    
+    p.days[targetDay] = String(fromDesk);
+    p.days[curDay] = null;
+    
+    renderAll();
+    showToast(`Changed office day for ${p.name}: moved desk ${fromDesk} to ${targetDay}.`, 'success');
+    await saveToServerSilent(pin);
+    
+    dragSourceDesk = null;
+    dragSourceName = null;
+}
+
+async function saveToServerSilent(pin) {
+    try {
+        const res = await fetch('/api/save_layout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                pin: pin.trim(),
+                roster: STATE,
+                midbay: (typeof MIDBAY !== 'undefined' ? MIDBAY : {})
+            })
+        });
+        const data = await res.json();
+        if (res.ok && data.ok) {
+            showToast('Saved to server.', 'success');
+            localStorage.removeItem(STORAGE_KEY);
+        } else {
+            showToast(data.msg || 'Failed to save to server.', 'error');
+        }
+    } catch(e) {
+        showToast('Error syncing with server.', 'error');
+    }
+}
+
+dayPick('mdays',mDays,true); dayPick('jdays',jDays,false);
+loadState().then(() => { moveScenarioUI(); });
+</script>
+</body>
+</html>

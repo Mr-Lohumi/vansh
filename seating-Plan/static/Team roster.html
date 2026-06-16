@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FCTG GCC Techlab — Team Roster</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0f172a; --navy2: #1e293b; --ink: #0b1d2e; --paper: #f4f7fa; --card: #ffffff; 
+  --line: #d7dee5; --muted: #5b6b7b; --green: #55AF31; --green-l: #eaf6e4; 
+  --gold: #e4b53b; --gold-l: #fbf1d6; --purple: #7b5ea7; --purple-l: #efe9f6; 
+  --red: #c0392b; --shadow: 0 4px 12px rgba(16,42,67,.06);
+  --sat: #fde8e8; --sun: #fcebeb; --we-text: #c0392b;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; }
+h1, h2, h3 { font-family: 'Bricolage Grotesque', sans-serif; margin: 0; }
+header { background: linear-gradient(135deg, var(--navy), var(--navy2)); color: #fff; padding: 20px 26px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; box-shadow: var(--shadow); }
+header h1 { font-size: 24px; font-weight: 800; letter-spacing:-0.01em; }
+header .sub { color: #9fb3c8; font-size: 12.5px; margin-top: 3px; }
+.bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 12px 24px; background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; box-shadow: var(--shadow); }
+.btn { padding: 9px 15px; border: none; border-radius: 9px; background: var(--navy); color: #fff; font-family: 'Bricolage Grotesque'; font-weight: 700; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+.btn.ghost { background: var(--card); color: var(--navy); border: 1px solid var(--line); box-shadow: none; }
+.btn.green { background: var(--green); color: #fff; }
+.btn.gold { background: var(--gold); color: #5a4410; }
+.btn.red { background: var(--red); color: #fff; }
+input, select { padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: inherit; font-size: 13px; transition: 0.2s; }
+input:focus, select:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(28, 61, 90, 0.1); }
+label { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; display: block; margin-bottom: 4px; }
+.wrap { padding: 24px; overflow: auto; height: calc(100vh - 150px); }
+table { border-collapse: separate; border-spacing: 0; font-size: 12px; white-space: nowrap; background: #fff; border-radius: 12px; box-shadow: var(--shadow); border: 1px solid var(--line); }
+th, td { border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); padding: 4px; text-align: center; }
+th:last-child, td:last-child { border-right: none; }
+tr:last-child td { border-bottom: none; }
+th.team, td.team { background: var(--navy); text-align: left; font-weight: 600; color: #fff; position: sticky; left: 0; z-index: 3; min-width: 140px; border-right: 2px solid var(--line); padding-left:14px; }
+th.emp, td.emp { text-align: left; position: sticky; left: 140px; background: #fff; z-index: 3; min-width: 170px; border-right: 2px solid var(--line); padding-left:10px; }
+thead th { background: var(--navy); color: #fff; position: sticky; top: 0; z-index: 4; font-family: 'Bricolage Grotesque'; padding: 8px 4px; font-size: 12px; font-weight:600; letter-spacing:0.02em;}
+thead th.team, thead th.emp { z-index: 5; background: var(--navy2); border-right: 2px solid rgba(255,255,255,0.1); }
+th.sat, th.sun { background: #f59e0b; color: #fff; }
+td.we { background: #fffbeb; }
+.teamrow td { background: var(--navy2); text-align: left; font-family: 'Bricolage Grotesque'; font-size: 14px; color: #fff; padding: 6px 14px; }
+td.emp .x { color: var(--red); cursor: pointer; float: right; font-weight: 700; opacity: 0; transition: 0.2s; padding:0 4px; border-radius:4px;}
+td.emp:hover .x { opacity: 1; }
+td.emp .x:hover { background: #fee2e2; }
+select.cell-sel { width: 100%; border: none; background: transparent; font-size: 11.5px; font-weight: 600; cursor: pointer; text-align: center; padding: 4px 0; border-radius:4px; appearance:none;}
+select.cell-sel:hover { background: rgba(0,0,0,0.03); }
+select.cell-sel:focus { outline: 2px solid var(--green); background:#fff;}
+select.cell-sel.wfo { color: #1f6b2e; font-weight: 700; }
+select.cell-sel.wfh { color: #8a6400; font-weight: 700; }
+select.cell-sel.leave { color: #c0392b; font-weight: 700; }
+
+.panel { background: #fff; border: 1px solid var(--line); border-radius: 12px; margin: 16px 24px 0; padding: 20px; display: none; box-shadow: var(--shadow); }
+.panel.open { display: block; animation: fadeIn 0.2s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Toasts */
+#toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
+.toast { background: var(--navy); color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: translateX(120%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.toast.show { transform: translateX(0); }
+.toast.success { border-left: 4px solid var(--green); }
+.toast.error { border-left: 4px solid var(--red); }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>FCTG GCC Techlab — Team Roster</h1>
+    <div class="sub">Manage WFO/WFH/Leave Schedules - Synced centrally to secure database</div>
+  </div>
+  <div style="display:flex; gap:8px;">
+    <a href="/" class="btn ghost" style="background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.2); text-decoration: none;">← Back to Portal</a>
+    <a href="/planner" class="btn" style="background: rgba(255,255,255,0.95); color: var(--navy);">🗺️ Seating Planner</a>
+    <a href="/static/dashboard.html" class="btn ghost" style="background: rgba(255,255,255,0.95); color: var(--navy);">📊 Dashboard</a>
+  </div>
+</header>
+
+<div class="bar">
+  <button class="btn ghost" onclick="shiftMonth(-1)">◀ Prev</button>
+  <div id="monthLabel" style="font-family:'Bricolage Grotesque'; font-size:16px; font-weight:800; min-width:140px; text-align:center; color:var(--navy);">—</div>
+  <button class="btn ghost" onclick="shiftMonth(1)">Next ▶</button>
+  <button class="btn ghost" onclick="goToday()">Today</button>
+  <span style="width:6px"></span>
+  <button class="btn gold" onclick="exportMonth()">⬇ Export Excel</button>
+  <button class="btn ghost" onclick="togglePanel()">👥 Manage Employees</button>
+  <span id="status" style="font-size:12px; color:var(--muted); margin-left:auto; font-weight:600;"></span>
+</div>
+
+<div class="panel" id="mgr">
+  <h3 style="margin:0 0 16px; color:var(--navy);">Manage Employees</h3>
+  <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:end;">
+    <div><label>Name</label><input id="newName" placeholder="Employee Name" style="width:200px;"></div>
+    <div>
+       <label>Team</label>
+       <select id="newTeam" style="width:200px;"></select>
+    </div>
+      <div style="margin-bottom:8px;">
+         <a href="javascript:void(0)" onclick="createNewTeam()" style="font-size:12px; color:var(--navy); font-weight:700; text-decoration:underline;">+ Create New Team</a>
+         <br><a href="javascript:void(0)" onclick="deleteTeam()" style="font-size:12px; color:var(--red); font-weight:700; text-decoration:underline;">- Delete Selected Team</a>
+      </div>
+      <button class="btn green" onclick="addEmp()">+ Add to Roster</button>
+    </div>
+    <div style="margin-top:16px;">
+       <button class="btn ghost" onclick="configStatuses()" style="font-size:11px;">⚙️ Configure Dropdown Options</button>
+    </div>
+    <p style="font-size:12px; color:var(--muted); margin:12px 0 0;">
+    Select an existing team from the dropdown, or click "+ Create New Team" to add a brand new one. Removing people is done via the ✕ next to their name in the grid.
+  </p>
+</div>
+
+<div class="wrap"><table id="grid"></table></div>
+<div id="toast-container"></div>
+
+<script>
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const WN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let cur = new Date(); cur.setDate(1);
+  let PEOPLE = [], DATA = {};
+  let STATUSES = ['', 'WFO', 'WFH', 'Leave'];
+  window.dragVal = undefined;
+  window.addEventListener('mouseup', () => { 
+     if(window.dragVal !== undefined) { 
+        window.dragVal = undefined; 
+     } 
+  });
+
+function showToast(msg, type='success') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = msg;
+  c.appendChild(t);
+  setTimeout(()=>t.classList.add('show'), 10);
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(), 300); }, 3000);
+}
+
+function ym() { return cur.getFullYear()+'-'+String(cur.getMonth()+1).padStart(2,'0'); }
+function daysInMonth() { return new Date(cur.getFullYear(), cur.getMonth()+1, 0).getDate(); }
+
+async function fetchState() {
+  try {
+    const res = await fetch('/api/roster/state?month=' + ym());
+    if(!res.ok) throw new Error('Network err');
+      const json = await res.json();
+      PEOPLE = json.people || [];
+      DATA = json.marks || {};
+      STATUSES = json.statuses || ['', 'WFO', 'WFH', 'Leave'];
+      render();
+  } catch(e) {
+    showToast('Failed to load data from server. Please ensure server is running.', 'error');
+  }
+}
+
+async function doMigrate() {
+  try {
+    let localPeep = JSON.parse(localStorage.getItem('WF_PEOPLE'));
+    if(!localPeep || localPeep.length === 0) return; // nothing to migrate
+    
+    // Collect all month marks
+    let monthsData = {};
+    for(let i=0; i<localStorage.length; i++){
+      let k = localStorage.key(i);
+      if(k.startsWith('WF_202')){
+        monthsData[k] = JSON.parse(localStorage.getItem(k));
+      }
+    }
+    
+    const res = await fetch('/api/roster/migrate', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ people: localPeep, months_data: monthsData })
+    });
+    const ans = await res.json();
+    if(ans.ok) {
+      console.log('Migration OK');
+      // wipe local so we dont double migrate
+      localStorage.removeItem('WF_PEOPLE');
+      for(let k in monthsData) localStorage.removeItem(k);
+    }
+  } catch(e) {
+    console.error('Migration failed', e);
+  }
+}
+
+function render() {
+  document.getElementById('monthLabel').textContent = MONTHS[cur.getMonth()] + ' ' + cur.getFullYear();
+  const n = daysInMonth();
+  
+  let head = '<tr><th class="team">Team</th><th class="emp">Employee Name</th>';
+  for(let d=1; d<=n; d++){
+    const dt = new Date(cur.getFullYear(), cur.getMonth(), d);
+    const wd = dt.getDay();
+    const cls = wd===6 ? 'sat' : (wd===0 ? 'sun' : '');
+    head += `<th class="${cls}">${WN[wd]}<br>${d}</th>`;
+  }
+  head += '<th class="sum" style="background:#fcebeb; color:#c0392b;">Total WFH</th><th class="sum" style="background:#eaf6e4; color:#157952;">Total WFO</th><th class="sum" style="background:#1e293b; color:#9fb3c8;">Total Leave</th></tr>';
+  
+  const teams = {};
+  PEOPLE.forEach(p => { (teams[p.team] = teams[p.team] || []).push(p); });
+  
+  let body = '';
+    Object.keys(teams).sort().forEach(tm => {
+      body += `<tr class="teamrow"><td colspan="${n+5}">${tm}</td></tr>`;
+      teams[tm].sort((a,b)=>a.name.localeCompare(b.name)).forEach(p => {
+        const safeName = p.name.replace(/'/g,"\\'");
+        body += `<tr id="row-${safeName.replace(/[^a-zA-Z0-9]/g, '')}"><td class="team">${tm}</td><td class="emp">${p.name} <span class="x" title="Remove Employee" onclick="delEmp('${safeName}')">✕</span></td>`;
+        let wfh = 0, wfo = 0, leave = 0;
+        for(let d=1; d<=n; d++) {
+        const dt = new Date(cur.getFullYear(), cur.getMonth(), d);
+        const we = (dt.getDay()===0 || dt.getDay()===6);
+        const key = `${ym()}-${String(d).padStart(2,'0')}|${p.name}`;
+        const v = DATA[key] || '';
+        
+        if(v === 'WFH') wfh++;
+        if(v === 'WFO') wfo++;
+        if(v === 'Leave') leave++;
+        
+        // Generate Dropdown
+        let selCls = v.toLowerCase();
+        let opts = STATUSES.map(s => `<option value="${s}" ${s===v?'selected':''}>${s||' '}</option>`).join('');
+        
+        body += `<td class="${we ? 'we' : ''}" style="padding:2px;" 
+          onmousedown="window.dragVal = this.querySelector('select').value" 
+          onmouseenter="if(window.event.buttons===1 && window.dragVal !== undefined) { const s=this.querySelector('select'); if(s.value !== window.dragVal) { s.value=window.dragVal; mark(s, ${d}, '${safeName}'); } }">
+          <select class="cell-sel ${selCls}" onchange="mark(this, ${d}, '${safeName}'); window.dragVal=this.value;" style="height:100%; width:100%; padding:6px 0;">
+            ${opts}
+          </select>
+        </td>`;
+        }
+        body += `<td class="sum wfh-sum" style="background:#fcebeb; color:#c0392b; font-weight:bold; font-size:13px;">${wfh}</td><td class="sum wfo-sum" style="background:#eaf6e4; color:#157952; font-weight:bold; font-size:13px;">${wfo}</td><td class="sum leave-sum" style="background:#1e293b; color:#9fb3c8; font-weight:bold; font-size:13px;">${leave}</td></tr>`;
+      });
+  });
+  
+  document.getElementById('grid').innerHTML = '<thead>' + head + '</thead><tbody>' + body + '</tbody>';
+  document.getElementById('status').textContent = PEOPLE.length + ' people · ' + Object.keys(DATA).length + ' records';
+  
+  // Populate the select dropdown
+  const uniqueTeams = [...new Set(PEOPLE.map(p=>p.team))].sort();
+  let opts = uniqueTeams.map(t=>`<option value="${t}">${t}</option>`).join('');
+  if(!opts) opts = '<option value="">-- No teams found --</option>';
+  document.getElementById('newTeam').innerHTML = opts;
+}
+
+function createNewTeam() {
+  const t = prompt('Enter the name of the new team:');
+  if(t && t.trim()) {
+    const sel = document.getElementById('newTeam');
+    sel.innerHTML += `<option value="${t.trim()}" selected>${t.trim()}</option>`;
+    sel.value = t.trim();
+  }
+}
+
+async function mark(sel, day, name) {
+  const val = sel.value;
+  sel.className = 'cell-sel ' + val.toLowerCase();
+  const key = `${ym()}-${String(day).padStart(2,'0')}|${name}`;
+  if(val) DATA[key] = val; else delete DATA[key];
+  render2status();
+  updateTotalsFor(name);
+  
+  // Save to DB
+  try {
+    const res = await fetch('/api/roster/save_mark', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ month: ym(), name: name, day: day, mark: val })
+    });
+    if(!res.ok) throw new Error();
+  } catch(e) {
+    showToast('Failed to save to database. You might be offline.', 'error');
+  }
+}
+
+function render2status() {
+  document.getElementById('status').textContent = PEOPLE.length + ' people · ' + Object.keys(DATA).length + ' records';
+}
+
+function updateTotalsFor(name) {
+  const safeName = name.replace(/[^a-zA-Z0-9]/g, '');
+  const row = document.getElementById('row-' + safeName);
+  if(!row) return;
+  
+  let wfh = 0, wfo = 0, leave = 0;
+  const selects = row.querySelectorAll('select.cell-sel');
+  selects.forEach(s => {
+    if(s.value === 'WFH') wfh++;
+    if(s.value === 'WFO') wfo++;
+    if(s.value === 'Leave') leave++;
+  });
+  row.querySelector('.wfh-sum').textContent = wfh;
+  row.querySelector('.wfo-sum').textContent = wfo;
+  row.querySelector('.leave-sum').textContent = leave;
+}
+
+function shiftMonth(n) { cur.setMonth(cur.getMonth() + n); fetchState(); }
+function goToday() { cur = new Date(); cur.setDate(1); fetchState(); }
+function togglePanel() { 
+  const p = document.getElementById('mgr');
+  if(!p.classList.contains('open')) {
+    let pin = prompt("Admin PIN required to Manage Employees:");
+    if(pin !== '250237') {
+      showToast('Invalid PIN', 'error');
+      return;
+    }
+  }
+  p.classList.toggle('open'); 
+}
+
+async function addEmp() {
+  const n = document.getElementById('newName').value.trim();
+  const t = document.getElementById('newTeam').value.trim();
+  if(!n || !t) { showToast('Please enter both name and team.', 'error'); return; }
+  
+  try {
+    const res = await fetch('/api/roster/add_person', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ pin: '250237', name: n, team: t })
+    });
+    const ans = await res.json();
+    if(ans.ok) {
+      document.getElementById('newName').value='';
+      showToast('Added '+n);
+      fetchState();
+    } else {
+      showToast(ans.msg || 'Invalid PIN or server error.', 'error');
+    }
+  } catch(e) { showToast('Server connection error.', 'error'); }
+}
+
+async function delEmp(name) {
+  if(!confirm('Are you sure you want to completely remove '+name+' from the database?')) return;
+  
+  try {
+    const res = await fetch('/api/roster/remove_person', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ pin: '250237', name: name })
+    });
+    const ans = await res.json();
+    if(ans.ok) {
+      showToast('Removed '+name);
+      fetchState();
+    } else {
+      showToast(ans.msg || 'Invalid PIN or server error.', 'error');
+    }
+  } catch(e) { showToast('Server connection error.', 'error'); }
+}
+
+async function deleteTeam() {
+  const t = document.getElementById('newTeam').value;
+  if(!t) return;
+  if(!confirm('Are you sure you want to COMPLETELY DELETE team "'+t+'" and ALL of its members?')) return;
+  
+  try {
+    const res = await fetch('/api/roster/delete_team', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ pin: '250237', team: t })
+    });
+    const ans = await res.json();
+    if(ans.ok) {
+      showToast('Deleted team '+t);
+      fetchState();
+    } else {
+      showToast(ans.msg || 'Error', 'error');
+    }
+  } catch(e) { showToast('Server error.', 'error'); }
+}
+
+async function configStatuses() {
+  const raw = prompt("Enter a comma-separated list of dropdown options:\n(Leave first option blank for the default empty state)", STATUSES.join(', '));
+  if(raw !== null) {
+     const newStatuses = raw.split(',').map(s => s.trim());
+     if(newStatuses.length < 1) return;
+     try {
+       const res = await fetch('/api/roster/save_settings', {
+         method:'POST', headers:{'Content-Type':'application/json'},
+         body: JSON.stringify({ pin: '250237', statuses: newStatuses })
+       });
+       if((await res.json()).ok) {
+         showToast('Statuses updated!');
+         fetchState();
+       }
+     } catch(e) { showToast('Error saving statuses', 'error'); }
+  }
+}
+
+function exportMonth() {
+  const n = daysInMonth();
+  const rows = [['FCTG TechLab Workforce Planner — ' + MONTHS[cur.getMonth()] + ' ' + cur.getFullYear()]];
+  const hdr = ['Team', 'Employee'];
+  for(let d=1; d<=n; d++) {
+    const dt = new Date(cur.getFullYear(), cur.getMonth(), d);
+    hdr.push(WN[dt.getDay()] + ' ' + d);
+  }
+  rows.push(hdr);
+  
+  const teams = {};
+  PEOPLE.forEach(p => { (teams[p.team] = teams[p.team] || []).push(p); });
+  
+  Object.keys(teams).sort().forEach(tm => {
+    teams[tm].sort((a,b)=>a.name.localeCompare(b.name)).forEach((p, i) => {
+      const row = [i===0 ? tm : '', p.name];
+      for(let d=1; d<=n; d++) {
+        const key = `${ym()}-${String(d).padStart(2,'0')}|${p.name}`;
+        row.push(DATA[key] || '');
+      }
+      rows.push(row);
+    });
+    rows.push([]);
+  });
+  
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols'] = [{wch:22}, {wch:22}].concat(Array(n).fill({wch:7}));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, MONTHS[cur.getMonth()]);
+  XLSX.writeFile(wb, 'Workforce_' + ym() + '.xlsx');
+  showToast('Exported ' + ym() + '.xlsx');
+}
+
+// Startup
+(async function() {
+  await doMigrate();
+  await fetchState();
+})();
+</script>
+</body>
+</html>

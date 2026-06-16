@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FCTG GCC Techlab — Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0f172a; --navy2: #1e293b; --ink: #0b1d2e; --paper: #f4f7fa; --card: #ffffff; 
+  --line: #d7dee5; --muted: #5b6b7b; --green: #55AF31; --green-l: #eaf6e4; 
+  --gold: #f59e0b; --red: #c0392b; --shadow: 0 4px 12px rgba(16,42,67,.06);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; }
+h1, h2, h3 { font-family: 'Bricolage Grotesque', sans-serif; margin: 0; }
+
+header { background: linear-gradient(135deg, var(--navy), var(--navy2)); color: #fff; padding: 20px 26px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; box-shadow: var(--shadow); }
+header h1 { font-size: 24px; font-weight: 800; letter-spacing:-0.01em; }
+header .sub { color: #9fb3c8; font-size: 12.5px; margin-top: 3px; }
+
+.bar { display: flex; gap: 10px; align-items: center; padding: 12px 24px; background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; box-shadow: var(--shadow); }
+.btn { padding: 9px 15px; border: none; border-radius: 9px; background: var(--navy); color: #fff; font-family: 'Bricolage Grotesque'; font-weight: 700; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+.btn.ghost { background: var(--card); color: var(--navy); border: 1px solid var(--line); box-shadow: none; }
+.btn.green { background: var(--green); color: #fff; border-color: var(--green); }
+
+.grid { padding: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; max-width: 1400px; margin: 0 auto; }
+.card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); border: 1px solid var(--line); padding: 20px; display:flex; flex-direction: column; }
+.card h2 { font-size: 16px; color: var(--navy); margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+
+.stat-row { display: flex; gap: 12px; justify-content: space-between; margin-bottom: 24px; }
+.stat-box { flex: 1; background: var(--paper); border-radius: 8px; padding: 16px; text-align: center; border: 1px solid var(--line); }
+.stat-box.green { background: var(--green-l); border-color: #cbeabf; }
+.stat-box.navy { background: #e2e8f0; border-color: #cbd5e1; }
+.stat-box.red { background: #fee2e2; border-color: #fecaca; }
+.stat-num { font-family: 'Bricolage Grotesque'; font-size: 32px; font-weight: 800; color: var(--navy); line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--muted); letter-spacing: 0.05em; }
+
+.chart-container { position: relative; height: 300px; width: 100%; flex-grow: 1; }
+.donut-container { position: relative; height: 250px; width: 100%; display: flex; justify-content: center; }
+
+ul.leavelist { list-style: none; padding: 0; margin: 0; overflow-y: auto; max-height: 250px; }
+ul.leavelist li { padding: 10px 12px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+ul.leavelist li:last-child { border-bottom: none; }
+.badge { background: var(--navy); color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+
+/* Toasts */
+#toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+.toast { background: var(--navy); color: #fff; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-weight: 600; opacity: 0; transform: translateY(10px); transition: 0.3s; }
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.error { background: var(--red); }
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+  .stat-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>FCTG GCC Techlab — Dashboard</h1>
+    <div class="sub">Workforce Analytics & Insights - Synced centrally to secure database</div>
+  </div>
+  <div style="display:flex; gap:8px;">
+    <a href="/" class="btn ghost">← Back to Portal</a>
+    <a href="/planner" class="btn ghost">🗺️ Seating Planner</a>
+    <a href="/static/Team%20roster.html" class="btn ghost">📋 Team Roster</a>
+  </div>
+</header>
+
+<div class="bar">
+  <button class="btn ghost" onclick="shiftMonth(-1)">◀ Prev</button>
+  <div id="monthLabel" style="font-family:'Bricolage Grotesque'; font-size:16px; font-weight:800; min-width:140px; text-align:center; color:var(--navy);">—</div>
+  <button class="btn ghost" onclick="shiftMonth(1)">Next ▶</button>
+  <button class="btn ghost" onclick="goToday()">Current Month</button>
+</div>
+
+<div class="grid">
+  
+  <div class="card" style="grid-column: 1 / -1;">
+    <h2>Today's Live Snapshot</h2>
+    <div class="stat-row">
+      <div class="stat-box green">
+        <div class="stat-num" id="stat-wfo">0</div>
+        <div class="stat-label">In Office (WFO)</div>
+      </div>
+      <div class="stat-box navy">
+        <div class="stat-num" id="stat-wfh">0</div>
+        <div class="stat-label">Working Remote (WFH)</div>
+      </div>
+      <div class="stat-box red">
+        <div class="stat-num" id="stat-leave">0</div>
+        <div class="stat-label">On Leave</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-label">Total Workforce</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="grid-column: span 2;">
+    <h2>Daily Office Occupancy (WFO Trend)</h2>
+    <div class="chart-container">
+      <canvas id="trendChart"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 id="todayTitle">Today's Breakdown</h2>
+    <div class="donut-container">
+      <canvas id="donutChart"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 id="monthlyTitle">Monthly Breakdown</h2>
+    <div class="donut-container">
+      <canvas id="monthlyDonutChart"></canvas>
+    </div>
+  </div>
+
+  <div class="card" style="grid-column: span 2;">
+    <h2>Team Compliance (Total WFO Days Logged)</h2>
+    <div class="chart-container">
+      <canvas id="teamChart"></canvas>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2>Upcoming Leaves This Month</h2>
+    <ul class="leavelist" id="leaveList">
+      <li style="color:var(--muted); justify-content:center;">Loading...</li>
+    </ul>
+  </div>
+
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+let cur = new Date(); cur.setDate(1);
+
+let trendChartInst = null;
+let donutChartInst = null;
+let teamChartInst = null;
+
+function showToast(msg, type='success') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = msg;
+  c.appendChild(t);
+  setTimeout(()=>t.classList.add('show'), 10);
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(), 300); }, 3000);
+}
+
+function ym() { return cur.getFullYear()+'-'+String(cur.getMonth()+1).padStart(2,'0'); }
+function daysInMonth() { return new Date(cur.getFullYear(), cur.getMonth()+1, 0).getDate(); }
+
+async function fetchStats() {
+  document.getElementById('monthLabel').textContent = MONTHS[cur.getMonth()] + ' ' + cur.getFullYear();
+  
+  try {
+    const res = await fetch('/api/dashboard/stats?month=' + ym());
+    if(!res.ok) throw new Error('Network err');
+    const data = await res.json();
+    renderDashboard(data);
+  } catch(e) {
+    showToast('Failed to load dashboard stats from server.', 'error');
+  }
+}
+
+function renderDashboard(data) {
+  const today = new Date();
+  let targetDay = 1;
+  // If viewing current month, show today's snapshot. If viewing past/future, just show 1st of month.
+  if(cur.getFullYear() === today.getFullYear() && cur.getMonth() === today.getMonth()) {
+      targetDay = today.getDate();
+  }
+  
+  const daily = data.daily || {};
+  const teamStats = data.team_stats || {};
+  const leaves = data.leaves || [];
+  const totalP = data.total_people || 0;
+  
+  // 1. Snapshot
+  const snap = daily[targetDay] || {WFO:0, WFH:0, Leave:0};
+  document.getElementById('stat-wfo').textContent = snap.WFO;
+  document.getElementById('stat-wfh').textContent = snap.WFH;
+  document.getElementById('stat-leave').textContent = snap.Leave;
+  document.getElementById('stat-total').textContent = totalP;
+  
+  // 2. Trend Chart
+  const n = daysInMonth();
+  const labels = Array.from({length: n}, (_, i) => i + 1);
+  const wfoData = labels.map(d => daily[d] ? daily[d].WFO : 0);
+  const wfhData = labels.map(d => daily[d] ? daily[d].WFH : 0);
+  
+  if(trendChartInst) trendChartInst.destroy();
+  trendChartInst = new Chart(document.getElementById('trendChart'), {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        { label: 'In Office (WFO)', data: wfoData, borderColor: '#55AF31', backgroundColor: 'rgba(85,175,49,0.1)', fill: true, tension: 0.3 },
+        { label: 'Remote (WFH)', data: wfhData, borderColor: '#1e293b', borderDash: [5, 5], tension: 0.3 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+  
+  let monthlyChartInst = null;
+
+  // 3. Today's Donut Chart
+  document.getElementById('todayTitle').textContent = (targetDay === today.getDate() && cur.getMonth() === today.getMonth()) ? "Today's Breakdown" : `Breakdown for ${MONTHS[cur.getMonth()]} ${targetDay}`;
+  
+  if(donutChartInst) donutChartInst.destroy();
+  donutChartInst = new Chart(document.getElementById('donutChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['WFO', 'WFH', 'Leave'],
+      datasets: [{
+        data: [snap.WFO, snap.WFH, snap.Leave],
+        backgroundColor: ['#55AF31', '#1e293b', '#c0392b']
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '70%',
+      plugins: { legend: { position: 'bottom' } }
+    }
+  });
+  
+  // 3b. Monthly Donut Chart
+  document.getElementById('monthlyTitle').textContent = `${MONTHS[cur.getMonth()]} Summary`;
+  const totalWfo = wfoData.reduce((a,b)=>a+b, 0);
+  const totalWfh = wfhData.reduce((a,b)=>a+b, 0);
+  const totalLeave = Object.values(daily).reduce((a,b)=>a+b.Leave, 0);
+  
+  if(monthlyChartInst) monthlyChartInst.destroy();
+  monthlyChartInst = new Chart(document.getElementById('monthlyDonutChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['WFO', 'WFH', 'Leave'],
+      datasets: [{
+        data: [totalWfo, totalWfh, totalLeave],
+        backgroundColor: ['#55AF31', '#1e293b', '#c0392b']
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '70%',
+      plugins: { legend: { position: 'bottom' } }
+    }
+  });
+  
+  // 4. Team Chart
+  const teams = Object.keys(teamStats).sort();
+  const teamWfo = teams.map(t => teamStats[t].WFO);
+  
+  if(teamChartInst) teamChartInst.destroy();
+  teamChartInst = new Chart(document.getElementById('teamChart'), {
+    type: 'bar',
+    data: {
+      labels: teams,
+      datasets: [{
+        label: 'Total WFO Days Logged',
+        data: teamWfo,
+        backgroundColor: '#55AF31',
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      indexAxis: 'y', // horizontal bar
+      scales: { x: { beginAtZero: true } }
+    }
+  });
+  
+  // 5. Leave List
+  const listEl = document.getElementById('leaveList');
+  listEl.innerHTML = '';
+  
+  let filteredLeaves = leaves;
+  if(cur.getFullYear() === today.getFullYear() && cur.getMonth() === today.getMonth()) {
+      filteredLeaves = leaves.filter(l => l.day >= today.getDate());
+  }
+  
+  if(filteredLeaves.length === 0) {
+      listEl.innerHTML = '<li style="color:var(--muted); justify-content:center;">No upcoming leaves logged this month.</li>';
+  } else {
+      filteredLeaves.sort((a,b)=>a.day - b.day).forEach(l => {
+         const typeLabel = l.type && l.type !== 'Leave' ? ` (${l.type})` : '';
+         const li = document.createElement('li');
+         li.innerHTML = `<div><span style="font-weight:600; color:var(--navy);">${l.name}</span><span style="color:var(--muted); font-size:11px;">${typeLabel}</span><br><span style="font-size:11px; color:var(--muted);">${l.team}</span></div>
+                         <div style="text-align:right;"><div class="badge">${MONTHS[cur.getMonth()]} ${l.day}</div></div>`;
+         listEl.appendChild(li);
+      });
+  }
+}
+
+function shiftMonth(n) { cur.setMonth(cur.getMonth() + n); fetchStats(); }
+function goToday() { cur = new Date(); cur.setDate(1); fetchStats(); }
+
+// Startup
+fetchStats();
+</script>
+</body>
+</html>
